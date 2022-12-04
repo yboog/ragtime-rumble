@@ -1,4 +1,4 @@
-from drunkparanoia.config import DIRECTION_TO_SIDE, FLIPPED_DIRECTIONS
+from drunkparanoia.config import DIRECTION_TO_SIDE, DIRECTIONS
 from drunkparanoia.io import load_skin, image_mirror
 
 
@@ -18,15 +18,15 @@ class SpriteSheet:
         index += self.data['animations'][self.animation]['startframe']
         side = DIRECTION_TO_SIDE[direction]
         image = self.images[side][index]
-        flipped = direction in FLIPPED_DIRECTIONS
+        flipped = direction in DIRECTIONS.FLIPPED
         return image_mirror(image, horizontal=True) if flipped else image
 
     def animation_length(self):
-        return sum(self.data['animations'][self.animation]['durations'])
+        return sum(self.durations)
 
     @property
     def animation_is_done(self):
-        return self.index >= sum(self.durations)
+        return self.index >= sum(self.durations) - 1
 
     def restart(self):
         self.index = 0

@@ -7,6 +7,12 @@
     32,
     56
   ],
+  "box": [
+    -15,
+    -20,
+    30,
+    20
+  ],
   "sheets": {
     "face": "resources/skins/smith_face.png",
     "side": "resources/skins/smith_side.png",
@@ -41,6 +47,18 @@
     },
     "order": {
       "durations": [
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
         6
       ],
       "startframe": 16
@@ -49,37 +67,37 @@
       "durations": [
         6
       ],
-      "startframe": 17
+      "startframe": 29
     },
     "piano": {
       "durations": [
         6
       ],
-      "startframe": 18
+      "startframe": 30
     },
     "poker": {
       "durations": [
         6
       ],
-      "startframe": 19
+      "startframe": 31
     },
     "bully": {
       "durations": [
         6
       ],
-      "startframe": 20
+      "startframe": 32
     },
     "pee_in_pant": {
       "durations": [
         6
       ],
-      "startframe": 21
+      "startframe": 33
     },
     "bet": {
       "durations": [
         6
       ],
-      "startframe": 22
+      "startframe": 34
     },
     "call": {
       "durations": [
@@ -88,7 +106,7 @@
         6,
         6
       ],
-      "startframe": 23
+      "startframe": 35
     },
     "smoke": {
       "durations": [
@@ -102,27 +120,47 @@
         6,
         6,
         6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
         6
       ],
-      "startframe": 27
+      "startframe": 39
     },
     "bloodydeath": {
       "durations": [
         6
       ],
-      "startframe": 38
+      "startframe": 58
     },
-    "troughout": {
+    "vomit": {
       "durations": [
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
         6
       ],
-      "startframe": 39
-    },
-    "coma": {
-      "durations": [
-        6
-      ],
-      "startframe": 40
+      "startframe": 59
     }
   }
 }

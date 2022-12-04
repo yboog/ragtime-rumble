@@ -15,17 +15,38 @@ ANIMATIONS = [
     'call',
     'smoke',
     'bloodydeath',
-    'troughout',
+    'vomit',
     'coma'
 ]
 LOOPING_ANIMATIONS = ['idle', 'walk', 'piano', 'poker', 'pee_in_pant']
+HOLDABLE_ANIMATIONS = ['call', 'bloddydeath', 'coma']
 
 
-class CHARACTER_STATES:
-    STUCK = 'stuck'
-    MOVING = 'moving'
-    IDLE = 'idle'
+class COUNTDOWNS:
+    VOMIT_MAX = 500
+    VOMIT_MIN = 150
+    COMA_MIN = 2000
+    COMA_MAX = 5000
+
+
+class SPEED:
+    MAX = 1.5
+    MIN = .2
+    FACTOR = 1.2
+
+
+class ELEMENT_TYPES:
+    CHARACTER = 'character'
+    PROP = 'prop'
+
+
+class CHARACTER_STATUSES:
+    DUEL_ORIGIN = 'duel_origin'
+    DUEL_TARGET = 'duel_target'
     INTERACTING = 'interacting'
+    OUT = 'out'
+    FREE = 'free'
+    STUCK = 'stuck'
 
 
 class ANIMATION_SIDES:
@@ -36,6 +57,7 @@ class ANIMATION_SIDES:
 
 class DIRECTIONS:
     NO = None
+
     LEFT = 'left'
     RIGHT = 'right'
     UP = 'up'
@@ -44,6 +66,11 @@ class DIRECTIONS:
     DOWN_LEFT = 'down_left'
     UP_RIGHT = 'up_right'
     DOWN_RIGHT = 'down_right'
+
+    RIGHTS = RIGHT, UP_RIGHT, DOWN_RIGHT
+    LEFTS = LEFT, UP_LEFT, DOWN_LEFT
+    DIAGONALS = DOWN_LEFT, DOWN_RIGHT, UP_LEFT, UP_RIGHT
+    FLIPPED = LEFTS
 
 
 DIRECTION_TO_SIDE = {
@@ -58,13 +85,6 @@ DIRECTION_TO_SIDE = {
 }
 
 
-FLIPPED_DIRECTIONS = [
-    DIRECTIONS.LEFT,
-    DIRECTIONS.UP_LEFT,
-    DIRECTIONS.DOWN_LEFT
-]
-
-
 HAT_TO_DIRECTIONS = {
     (1, 0): DIRECTIONS.RIGHT,
     (-1, 0): DIRECTIONS.LEFT,
@@ -76,12 +96,5 @@ HAT_TO_DIRECTIONS = {
     (-1, -1): DIRECTIONS.UP_LEFT
 }
 
-
-DIAGONALS = [
-    DIRECTIONS.DOWN_LEFT,
-    DIRECTIONS.DOWN_RIGHT,
-    DIRECTIONS.UP_LEFT,
-    DIRECTIONS.UP_RIGHT
-]
 
 DIRECTION_TO_VECTOR = {v: k for k, v in HAT_TO_DIRECTIONS.items()}

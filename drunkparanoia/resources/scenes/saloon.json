@@ -1,0 +1,103 @@
+{
+    "name": "saloon",
+    "blocks": [
+        [50, 150, 50, 50],
+        [100, 50, 50, 50],
+        [200, 100, 50, 50],
+        [500, 200, 50, 50]
+    ],
+    "popspot": [
+        [100, 50],
+        [250, 150],
+        [450, 32],
+        [120, 260],
+        [600, 250],
+        [250, 300],
+        [350, 160],
+        [400, 50],
+        [300, 125],
+        [500, 64],
+        [380, 120],
+        [400, 75],
+        [500, 200]
+    ],
+    "background": [],
+    "elements": [
+        {
+            "type": "prop",
+            "file": "resources/sets/poker_table.png",
+            "position": [250, 250],
+            "center": [37, 55],
+            "box": [-28, -36, 54, 28]
+        },
+        {
+            "type": "prop",
+            "file": "resources/sets/poker_table.png",
+            "position": [550, 250],
+            "center": [37, 55],
+            "box": [-28, -36, 54, 28]
+        },
+        {
+            "type": "prop",
+            "file": "resources/sets/poker_table.png",
+            "position": [350, 300],
+            "center": [37, 55],
+            "box": [-28, -36, 54, 28]
+        },
+        {
+            "type": "prop",
+            "file": "resources/sets/poker_table.png",
+            "position": [450, 300],
+            "center": [37, 55],
+            "box": [-28, -36, 54, 28]
+        },
+        {
+            "type": "character",
+            "file": "resources/animdata/smith.json"
+        },
+        {
+            "type": "character",
+            "file": "resources/animdata/smith.json"
+        },
+        {
+            "type": "character",
+            "file": "resources/animdata/smith.json"
+        },
+        {
+            "type": "character",
+            "file": "resources/animdata/smith.json"
+        },
+        {
+            "type": "character",
+            "file": "resources/animdata/smith.json"
+        },
+        {
+            "type": "character",
+            "file": "resources/animdata/smith.json"
+        },
+        {
+            "type": "character",
+            "file": "resources/animdata/smith.json"
+        },
+        {
+            "type": "character",
+            "file": "resources/animdata/smith.json"
+        },
+        {
+            "type": "character",
+            "file": "resources/animdata/smith.json"
+        },
+        {
+            "type": "character",
+            "file": "resources/animdata/smith.json"
+        },
+        {
+            "type": "character",
+            "file": "resources/animdata/smith.json"
+        },
+        {
+            "type": "character",
+            "file": "resources/animdata/smith.json"
+        }
+    ]
+}

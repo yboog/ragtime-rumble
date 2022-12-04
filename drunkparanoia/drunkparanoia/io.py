@@ -65,11 +65,19 @@ def get_image(image_id):
 def load_image(filename, key_color=None):
     if _image_store.get(filename):
         return filename
-    image = pygame.image.load(filename).convert()
+
+    filepath = f'{GAMEROOT}/{filename}'
+    image = pygame.image.load(filepath).convert()
     if key_color is not None:
         image.set_colorkey(key_color)
     _image_store[filename] = image
     return filename
+
+
+def load_data(filename):
+    filepath = f'{GAMEROOT}/{filename}'
+    with open(filepath, 'r') as f:
+        return json.load(f)
 
 
 def image_mirror(id_, horizontal=True, vertical=False):

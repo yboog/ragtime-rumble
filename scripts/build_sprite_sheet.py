@@ -28,8 +28,7 @@ ORDER = [
     'call', # That fucking animator vocaulary
     'smoke',
     'bloodydeath',
-    'troughout',
-    'coma'
+    'vomit'
 ]
 
 
@@ -65,6 +64,7 @@ column_lenght = math.ceil(math.sqrt(len(images)))
 data = {
     'framesize': (64, 64),
     'center': (32, 56),
+    'box': (-15, -20, 30, 20),
     'sheets': {
         'face': f'resources/skins/{char}_face.png',
         'side': f'resources/skins/{char}_side.png',
