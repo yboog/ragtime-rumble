@@ -1,0 +1,128 @@
+{
+  "framesize": [
+    64,
+    64
+  ],
+  "center": [
+    32,
+    56
+  ],
+  "sheets": {
+    "face": "resources/skins/smith_face.png",
+    "side": "resources/skins/smith_side.png",
+    "back": "resources/skins/smith_back.png"
+  },
+  "animations": {
+    "idle": {
+      "durations": [
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        6
+      ],
+      "startframe": 0
+    },
+    "walk": {
+      "durations": [
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        6
+      ],
+      "startframe": 8
+    },
+    "order": {
+      "durations": [
+        6
+      ],
+      "startframe": 16
+    },
+    "drink": {
+      "durations": [
+        6
+      ],
+      "startframe": 17
+    },
+    "piano": {
+      "durations": [
+        6
+      ],
+      "startframe": 18
+    },
+    "poker": {
+      "durations": [
+        6
+      ],
+      "startframe": 19
+    },
+    "bully": {
+      "durations": [
+        6
+      ],
+      "startframe": 20
+    },
+    "pee_in_pant": {
+      "durations": [
+        6
+      ],
+      "startframe": 21
+    },
+    "bet": {
+      "durations": [
+        6
+      ],
+      "startframe": 22
+    },
+    "call": {
+      "durations": [
+        6,
+        6,
+        6,
+        6
+      ],
+      "startframe": 23
+    },
+    "smoke": {
+      "durations": [
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        6
+      ],
+      "startframe": 27
+    },
+    "bloodydeath": {
+      "durations": [
+        6
+      ],
+      "startframe": 38
+    },
+    "troughout": {
+      "durations": [
+        6
+      ],
+      "startframe": 39
+    },
+    "coma": {
+      "durations": [
+        6
+      ],
+      "startframe": 40
+    }
+  }
+}
