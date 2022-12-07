@@ -65,6 +65,25 @@
     },
     "drink": {
       "durations": [
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
         6
       ],
       "startframe": 29
@@ -73,31 +92,31 @@
       "durations": [
         6
       ],
-      "startframe": 30
+      "startframe": 49
     },
     "poker": {
       "durations": [
         6
       ],
-      "startframe": 31
+      "startframe": 50
     },
     "bully": {
       "durations": [
         6
       ],
-      "startframe": 32
+      "startframe": 51
     },
     "pee_in_pant": {
       "durations": [
         6
       ],
-      "startframe": 33
+      "startframe": 52
     },
     "bet": {
       "durations": [
         6
       ],
-      "startframe": 34
+      "startframe": 53
     },
     "call": {
       "durations": [
@@ -106,7 +125,7 @@
         6,
         6
       ],
-      "startframe": 35
+      "startframe": 54
     },
     "smoke": {
       "durations": [
@@ -130,13 +149,13 @@
         6,
         6
       ],
-      "startframe": 39
+      "startframe": 58
     },
     "bloodydeath": {
       "durations": [
         6
       ],
-      "startframe": 58
+      "startframe": 77
     },
     "vomit": {
       "durations": [
@@ -160,7 +179,13 @@
         6,
         6
       ],
-      "startframe": 59
+      "startframe": 78
+    },
+    "coma": {
+      "durations": [
+        6
+      ],
+      "startframe": 97
     }
   }
 }

@@ -14,6 +14,10 @@ def render_game(screen, scene):
     for character1, character2 in scene.possible_duels:
         draw_possible_duel(duel_surface, character1, character2)
     screen.blit(duel_surface, (0, 0))
+    # for rect in scene.no_go_zones:
+    #     draw_rect(screen, rect, 125)
+    # for interaction_zone in scene.interaction_zones:
+    #     draw_rect(screen, interaction_zone.zone, 15)
 
 
 def draw_possible_duel(screen, char1, char2):
@@ -25,6 +29,12 @@ def draw_possible_duel(screen, char1, char2):
 def render_element(screen, element):
     img = element.image
     screen.blit(get_image(img), element.render_position)
+    # from drunkparanoia.character import Character
+    # if isinstance(element, Character):
+    #     # screen.blit(get_image(img), element.render_position)
+    #     if element.path:
+    #         for point in [element.coordinates.position] + element.path:
+    #             draw_rect(screen, (point[0], point[1], 2, 2))
     # draw_rect(screen, element.screen_box, alpha=125)
 
 

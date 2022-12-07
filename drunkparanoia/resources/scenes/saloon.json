@@ -1,55 +1,372 @@
 {
     "name": "saloon",
-    "blocks": [
-        [50, 150, 50, 50],
-        [100, 50, 50, 50],
-        [200, 100, 50, 50],
-        [500, 200, 50, 50]
+    "no_go_zones": [
+        [
+            -10,
+            0,
+            20,
+            360
+        ],
+        [
+            0,
+            340,
+            640,
+            20
+        ],
+        [
+            0,
+            -10,
+            640,
+            10
+        ],
+        [
+            630,
+            0,
+            30,
+            360
+        ]
+    ],
+    "interaction_zones": [
+        {
+            "action": "order",
+            "target_position": [
+                100,
+                null
+            ],
+            "zone": [
+                90,
+                40,
+                60,
+                200
+            ],
+            "direction": "left"
+        },
+        {
+            "action": "poker",
+            "target_position": [
+                250,
+                210
+            ],
+            "zone": [
+                215,
+                190,
+                66,
+                24
+            ],
+            "direction": "down"
+        },
+        {
+            "action": "poker",
+            "target_position": [
+                250,
+                264
+            ],
+            "zone": [
+                215,
+                240,
+                66,
+                35
+            ],
+            "direction": "up"
+        }
     ],
     "popspot": [
-        [100, 50],
-        [250, 150],
-        [450, 32],
-        [120, 260],
-        [600, 250],
-        [250, 300],
-        [350, 160],
-        [400, 50],
-        [300, 125],
-        [500, 64],
-        [380, 120],
-        [400, 75],
-        [500, 200]
+        [
+            100,
+            50
+        ],
+        [
+            250,
+            150
+        ],
+        [
+            450,
+            32
+        ],
+        [
+            120,
+            260
+        ],
+        [
+            600,
+            250
+        ],
+        [
+            250,
+            300
+        ],
+        [
+            350,
+            160
+        ],
+        [
+            400,
+            50
+        ],
+        [
+            300,
+            125
+        ],
+        [
+            500,
+            64
+        ],
+        [
+            380,
+            120
+        ],
+        [
+            400,
+            75
+        ],
+        [
+            250,
+            300
+        ],
+        [
+            350,
+            160
+        ],
+        [
+            400,
+            50
+        ],
+        [
+            300,
+            125
+        ],
+        [
+            500,
+            64
+        ],
+        [
+            380,
+            120
+        ],
+        [
+            400,
+            75
+        ],
+        [
+            250,
+            300
+        ],
+        [
+            350,
+            160
+        ],
+        [
+            400,
+            50
+        ],
+        [
+            300,
+            125
+        ],
+        [
+            500,
+            64
+        ],
+        [
+            380,
+            120
+        ],
+        [
+            400,
+            75
+        ],
+        [
+            500,
+            200
+        ]
     ],
     "background": [],
     "elements": [
         {
             "type": "prop",
             "file": "resources/sets/poker_table.png",
-            "position": [250, 250],
-            "center": [37, 55],
-            "box": [-28, -36, 54, 28]
+            "position": [
+                250,
+                250
+            ],
+            "center": [
+                37,
+                55
+            ],
+            "box": [
+                -28,
+                -36,
+                54,
+                28
+            ]
         },
         {
             "type": "prop",
             "file": "resources/sets/poker_table.png",
-            "position": [550, 250],
-            "center": [37, 55],
-            "box": [-28, -36, 54, 28]
+            "position": [
+                550,
+                250
+            ],
+            "center": [
+                37,
+                55
+            ],
+            "box": [
+                -28,
+                -36,
+                54,
+                28
+            ]
         },
         {
             "type": "prop",
             "file": "resources/sets/poker_table.png",
-            "position": [350, 300],
-            "center": [37, 55],
-            "box": [-28, -36, 54, 28]
+            "position": [
+                350,
+                300
+            ],
+            "center": [
+                37,
+                55
+            ],
+            "box": [
+                -28,
+                -36,
+                54,
+                28
+            ]
         },
         {
             "type": "prop",
             "file": "resources/sets/poker_table.png",
-            "position": [450, 300],
-            "center": [37, 55],
-            "box": [-28, -36, 54, 28]
+            "position": [
+                450,
+                300
+            ],
+            "center": [
+                37,
+                55
+            ],
+            "box": [
+                -28,
+                -36,
+                54,
+                28
+            ]
+        },
+        {
+            "type": "prop",
+            "file": "resources/sets/saloon/UL2.png",
+            "position": [
+                0,
+                0
+            ],
+            "center": [
+                320.0,
+                360
+            ],
+            "box": null
+        },
+        {
+            "type": "prop",
+            "file": "resources/sets/saloon/UL1-escalier.png",
+            "position": [
+                0,
+                0
+            ],
+            "center": [
+                246.0,
+                158
+            ],
+            "box": null
+        },
+        {
+            "type": "prop",
+            "file": "resources/sets/saloon/OL-poteaux.png",
+            "position": [
+                11,
+                0
+            ],
+            "center": [
+                253.0,
+                159
+            ],
+            "box": null
+        },
+        {
+            "type": "prop",
+            "file": "resources/sets/saloon/BAR-UL.png",
+            "position": [
+                0,
+                180
+            ],
+            "center": [
+                32.5,
+                204
+            ],
+            "box": null
+        },
+        {
+            "type": "prop",
+            "file": "resources/sets/saloon/BAR-OL.png",
+            "position": [
+                42,
+                180
+            ],
+            "center": [
+                61.5,
+                299
+            ],
+            "box": null
+        },
+        {
+            "type": "prop",
+            "file": "resources/sets/saloon/BORDURE.png",
+            "position": [
+                0,
+                0
+            ],
+            "center": [
+                320.0,
+                360
+            ],
+            "box": null
+        },
+        {
+            "type": "character",
+            "file": "resources/animdata/smith.json"
+        },
+        {
+            "type": "character",
+            "file": "resources/animdata/smith.json"
+        },
+        {
+            "type": "character",
+            "file": "resources/animdata/smith.json"
+        },
+        {
+            "type": "character",
+            "file": "resources/animdata/smith.json"
+        },
+        {
+            "type": "character",
+            "file": "resources/animdata/smith.json"
+        },
+        {
+            "type": "character",
+            "file": "resources/animdata/smith.json"
+        },
+        {
+            "type": "character",
+            "file": "resources/animdata/smith.json"
+        },
+        {
+            "type": "character",
+            "file": "resources/animdata/smith.json"
+        },
+        {
+            "type": "character",
+            "file": "resources/animdata/smith.json"
         },
         {
             "type": "character",

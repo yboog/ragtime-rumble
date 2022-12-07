@@ -1,3 +1,4 @@
+import random
 from drunkparanoia.config import DIRECTION_TO_SIDE, DIRECTIONS
 from drunkparanoia.io import load_skin, image_mirror
 
@@ -6,7 +7,7 @@ class SpriteSheet:
     def __init__(self, data):
         self.data = data
         self.animation = 'idle'
-        self.index = 0
+        self.index = random.randrange(0, self.animation_length() - 1)
         self.images = load_skin(data)
 
     @property

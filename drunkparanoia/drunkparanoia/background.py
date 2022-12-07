@@ -11,6 +11,7 @@ class Prop:
 
     @property
     def render_position(self):
+        return self.coordinates.position
         offset_x, offset_y = self.center
         return self.coordinates.x - offset_x, self.coordinates.y - offset_y
 

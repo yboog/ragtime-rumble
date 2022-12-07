@@ -10,6 +10,10 @@ class Coordinates:
     def position(self):
         return self.x, self.y
 
+    @position.setter
+    def position(self, position):
+        self.x, self.y = position
+
     def shift(self, direction, speed):
         vector = DIRECTION_TO_VECTOR[direction]
         if vector[0] != 0 and vector[1] != 0:

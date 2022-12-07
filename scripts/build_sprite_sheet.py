@@ -28,7 +28,8 @@ ORDER = [
     'call', # That fucking animator vocaulary
     'smoke',
     'bloodydeath',
-    'vomit'
+    'vomit',
+    'coma'
 ]
 
 

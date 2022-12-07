@@ -1,1 +1,1 @@
-py -3.11 launcher.py
+py launcher.py

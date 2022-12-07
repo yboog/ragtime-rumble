@@ -21,6 +21,7 @@ def load_skins():
                 for frame in frames:
                     image_mirror(frame, horizontal=True)
 
+
 def load_skin(data):
     return {
         side: load_frames(data["sheets"][side], data['framesize'], (0, 255, 0))

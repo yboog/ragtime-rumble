@@ -23,14 +23,17 @@ HOLDABLE_ANIMATIONS = ['call', 'bloddydeath', 'coma']
 
 
 class COUNTDOWNS:
-    VOMIT_MAX = 500
-    VOMIT_MIN = 150
-    COMA_MIN = 2000
-    COMA_MAX = 5000
+    VOMIT_MAX = 800
+    VOMIT_MIN = 400
+    COMA_MIN = 500
+    COMA_MAX = 1500
+    COOLDOWN_MIN = 50
+    COOLDOWN_MAX = 125
+    COOLDOWN_PROBABILITY = 3
 
 
 class SPEED:
-    MAX = 1.5
+    MAX = 1
     MIN = .2
     FACTOR = 1.2
 
@@ -44,9 +47,11 @@ class CHARACTER_STATUSES:
     DUEL_ORIGIN = 'duel_origin'
     DUEL_TARGET = 'duel_target'
     INTERACTING = 'interacting'
+    AUTOPILOT = 'autopilot'
     OUT = 'out'
     FREE = 'free'
     STUCK = 'stuck'
+    DUELABLES = [FREE, AUTOPILOT]
 
 
 class ANIMATION_SIDES:
@@ -85,7 +90,7 @@ DIRECTION_TO_SIDE = {
 }
 
 
-HAT_TO_DIRECTIONS = {
+HAT_TO_DIRECTION = {
     (1, 0): DIRECTIONS.RIGHT,
     (-1, 0): DIRECTIONS.LEFT,
     (0, -1): DIRECTIONS.UP,
@@ -97,4 +102,4 @@ HAT_TO_DIRECTIONS = {
 }
 
 
-DIRECTION_TO_VECTOR = {v: k for k, v in HAT_TO_DIRECTIONS.items()}
+DIRECTION_TO_VECTOR = {v: k for k, v in HAT_TO_DIRECTION.items()}

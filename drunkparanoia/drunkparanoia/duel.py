@@ -10,13 +10,13 @@ def find_possible_duels(scene):
     characters = scene.characters
     possible_duels = []
     for char1 in characters:
-        if char1.status != CHARACTER_STATUSES.FREE:
+        if char1.status not in CHARACTER_STATUSES.DUELABLES:
             continue
         duel = None
         duel_distance = None
 
         for char2 in characters:
-            if char2.status != CHARACTER_STATUSES.FREE:
+            if char2.status not in CHARACTER_STATUSES.DUELABLES:
                 continue
             if char1 == char2:
                 continue
