@@ -1,9 +1,9 @@
 import json
 import random
 
-from drunkparanoia.background import Prop
+from drunkparanoia.background import Prop, Background
 from drunkparanoia.character import Character, Player, Npc
-from drunkparanoia.coordinates import box_hit_box
+from drunkparanoia.coordinates import box_hit_box, point_in_rectangle, box_hit_polygon
 from drunkparanoia.config import DIRECTIONS, GAMEROOT, ELEMENT_TYPES
 from drunkparanoia.duel import find_possible_duels
 from drunkparanoia.io import load_image, load_data
@@ -11,17 +11,27 @@ from drunkparanoia.sprite import SpriteSheet
 
 
 def load_scene(filename):
+
     filepath = f'{GAMEROOT}/{filename}'
     with open(filepath, 'r') as f:
         data = json.load(f)
     scene = Scene()
     scene.name = data['name']
     scene.no_go_zones = data['no_go_zones']
-    spots = data['popspot'][:]
+    scene.walls = data['walls']
+    scene.stairs = data['stairs']
+    scene.targets = data['targets']
+
+    for background in data['backgrounds']:
+        image = load_image(background['file'])
+        position = background['position']
+        scene.backgrounds.append(Background(image=image, position=position))
+
+    spots = data['popspots'][:]
     random.shuffle(spots)
     spots = iter(spots)
+
     for element in data['elements']:
-        print(element['file'], element['type'], element['type'] == ELEMENT_TYPES.PROP)
         if element['type'] == ELEMENT_TYPES.PROP:
             image = load_image(element['file'], (0, 255, 0))
             position = element['position']
@@ -36,7 +46,8 @@ def load_scene(filename):
             character = Character(position, spritesheet, scene)
             character.direction = random.choice(directions)
             scene.elements.append(character)
-    for interaction_zone in data['interaction_zones']:
+
+    for interaction_zone in data['interactions']:
         zone = InteractionZone(interaction_zone)
         scene.interaction_zones.append(zone)
     return scene
@@ -52,18 +63,45 @@ class Scene:
         self.possible_duels = []
         self.no_go_zones = []
         self.interaction_zones = []
+        self.backgrounds = []
+        self.walls = []
+        self.stairs = []
+        self.targets = []
 
     @property
     def characters(self):
         return [elt for elt in self.elements if isinstance(elt, Character)]
 
-    def collide_prop(self, box):
+    def inclination_at(self, point):
+        for stair in self.stairs:
+            if point_in_rectangle(point, *stair['zone']):
+                return stair['inclination']
+        return 0
+
+    def choice_destination_from(self, point):
+        targets = [
+            t for t in self.targets
+            if point_in_rectangle(point, *t['origin'])]
+        if not targets:
+            return
+        destinations = [
+            d for t in targets
+            for _ in range(t['weight'])
+            for d in t['destinations']]
+        destination = random.choice(destinations)
+        x = random.randrange(destination[0], destination[0] + destination[2])
+        y = random.randrange(destination[1], destination[1] + destination[3])
+        return x, y
+
+    def collide(self, box):
         for element in self.elements:
             if not isinstance(element, Prop) or not element.screen_box:
                 continue
             if box_hit_box(box, element.screen_box):
                 return True
-        return any(box_hit_box(zone, box) for zone in self.no_go_zones)
+        if any(box_hit_box(zone, box) for zone in self.no_go_zones):
+            return True
+        return any(box_hit_polygon(box, wall) for wall in self.walls)
 
     def __next__(self):
         for evaluable in self.npcs + self.players:
@@ -91,19 +129,10 @@ class Scene:
 
 class InteractionZone:
     def __init__(self, data):
-        self.target_position = data["target_position"]
+        self.target = data["target"]
         self.action = data["action"]
         self.zone = data["zone"]
         self.direction = data["direction"]
 
     def contains(self, position):
         return point_in_rectangle(position, *self.zone)
-
-
-def point_in_rectangle(p, left, top, width, height):
-    x, y = p
-    return left <= x <= left + width and top <= y <= top + height
-
-
-def create_path(origin, target, no_go_zones):
-    return [target]

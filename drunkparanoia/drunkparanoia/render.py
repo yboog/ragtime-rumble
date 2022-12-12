@@ -6,6 +6,8 @@ from drunkparanoia.io import get_image
 
 def render_game(screen, scene):
     screen.fill((60, 0, 18))
+    for background in scene.backgrounds:
+        screen.blit(get_image(background.image), background.position)
     elements = sorted(scene.elements, key=lambda x: x.coordinates.y)
     for element in elements:
         render_element(screen, element)
@@ -29,12 +31,17 @@ def draw_possible_duel(screen, char1, char2):
 def render_element(screen, element):
     img = element.image
     screen.blit(get_image(img), element.render_position)
-    # from drunkparanoia.character import Character
+    from drunkparanoia.character import Character
     # if isinstance(element, Character):
     #     # screen.blit(get_image(img), element.render_position)
     #     if element.path:
+    #         last = None
     #         for point in [element.coordinates.position] + element.path:
     #             draw_rect(screen, (point[0], point[1], 2, 2))
+    #             if last:
+    #                 pygame.draw.line(screen, (255, 255, 0), last, point, 2)
+    #             last = point
+
     # draw_rect(screen, element.screen_box, alpha=125)
 
 

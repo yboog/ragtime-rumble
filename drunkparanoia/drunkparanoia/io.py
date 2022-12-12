@@ -15,17 +15,16 @@ def load_skins():
     for skin in skins:
         with open(skin, 'r') as f:
             data = json.load(f)
-        for side, filepath in data['sheets'].items():
+        for filepath in data['sheets'].values():
             frames = load_frames(filepath, data['framesize'], (0, 255, 0))
-            if side == 'side':
-                for frame in frames:
-                    image_mirror(frame, horizontal=True)
+            for frame in frames:
+                image_mirror(frame, horizontal=True)
 
 
 def load_skin(data):
     return {
         side: load_frames(data["sheets"][side], data['framesize'], (0, 255, 0))
-        for side in ('face', 'side', 'back')}
+        for side in ('face', 'back')}
 
 
 def load_frames(filepath, frame_size, key_color):

@@ -73,6 +73,8 @@ class Npc:
                 proba = COUNTDOWNS.COOLDOWN_PROBABILITY
                 do_pause = random.randrange(0, proba) == 0
                 if do_pause:
+                    self.character.path = None
+                    self.character.ghost = None
                     self.is_cooling_down = True
                     self.cool_down = random.randrange(
                         COUNTDOWNS.COOLDOWN_MIN, COUNTDOWNS.COOLDOWN_MAX)
@@ -80,13 +82,15 @@ class Npc:
                     return
 
             if self.cool_down == 0:
+                self.character.end_autopilot()
                 self.is_cooling_down = False
                 self.character.status = CHARACTER_STATUSES.AUTOPILOT
                 functions = [shortest_path] * 2 + [equilateral_path]
-                function = random.choice(functions)
-                self.character.path = function(
-                    self.character.coordinates.position,
-                    (random.randrange(20, 620), random.randrange(20, 320)))
+                func = random.choice(functions)
+                self.character.ghost = None
+                destination = self.character.choice_destination()
+                position = self.character.coordinates.position
+                self.character.path = func(position, destination)
                 self.character.autopilot()
                 next(self.character)
                 return
@@ -115,6 +119,22 @@ class Character:
         self.buffer_animation = None
         self.buffer_direction = None
 
+    def choice_destination(self):
+        limit = 0
+        while True:
+            # if limit < 10:
+                # raise ValueError('impossible to find dest for ', self.coordinates.position)
+            dst = self.scene.choice_destination_from(self.coordinates.position)
+            if dst is None:
+                break
+            if not self.scene.collide(get_box(dst, self.box)):
+                return dst
+            limit += 1
+        pos = random.randrange(0, 640), random.randrange(0, 360)
+        while self.scene.collide(get_box(pos, self.box)):
+            pos = random.randrange(0, 640), random.randrange(0, 360)
+        return pos
+
     @property
     def box(self):
         return self.spritesheet.data['box'][:]
@@ -136,9 +156,10 @@ class Character:
         return self.spritesheet.image(self.direction)
 
     def offset(self):
-        position = self.coordinates.shift(self.direction, self.speed)
+        inclination = self.scene.inclination_at(self.coordinates.position)
+        position = self.coordinates.shift(self.direction, self.speed, inclination)
         box = get_box(position, self.box)
-        if not self.scene.collide_prop(box):
+        if not self.scene.collide(box):
             self.coordinates.x = position[0]
             self.coordinates.y = position[1]
             return
@@ -147,11 +168,11 @@ class Character:
                 self.end_autopilot()
             return
         box = get_box((self.coordinates.x, position[1]), self.box)
-        if not self.scene.collide_prop(box):
+        if not self.scene.collide(box):
             self.coordinates.y = position[1]
             return
         box = get_box((position[0], self.coordinates.y), self.box)
-        if not self.scene.collide_prop(box):
+        if not self.scene.collide(box):
             self.coordinates.x = position[0]
 
     def vomit(self):
@@ -260,10 +281,11 @@ class Character:
     def request_interaction(self):
         for zone in self.scene.interaction_zones:
             if zone.contains(self.coordinates.position):
-                self.go_to(zone.target_position, zone.action, zone.direction)
+                self.go_to(zone.target, zone.action, zone.direction)
 
     def go_to(self, position, action=None, direction=None):
         self.status = CHARACTER_STATUSES.AUTOPILOT
+        self.ghost = None
         self.path = shortest_path(
             self.coordinates.position, position.copy())
 

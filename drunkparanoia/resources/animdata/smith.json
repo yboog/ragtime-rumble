@@ -15,7 +15,6 @@
   ],
   "sheets": {
     "face": "resources/skins/smith_face.png",
-    "side": "resources/skins/smith_side.png",
     "back": "resources/skins/smith_back.png"
   },
   "animations": {

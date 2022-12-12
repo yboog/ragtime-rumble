@@ -1,1 +1,1 @@
-py launcher.py
+py %~dp0/launcher.py

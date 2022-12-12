@@ -1,6 +1,17 @@
 from drunkparanoia.coordinates import Coordinates
 
 
+class Background:
+    def __init__(self, image, position):
+        self.position = position
+        self.image = image
+
+
+class OL:
+    def __init__(self, image, position, y):
+        raise NotImplementedError
+
+
 class Prop:
     def __init__(self, image, position, center, box, scene):
         self.coordinates = Coordinates(position)
@@ -11,7 +22,6 @@ class Prop:
 
     @property
     def render_position(self):
-        return self.coordinates.position
         offset_x, offset_y = self.center
         return self.coordinates.x - offset_x, self.coordinates.y - offset_y
 

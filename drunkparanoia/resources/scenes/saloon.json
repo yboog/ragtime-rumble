@@ -1,420 +1,825 @@
 {
-    "name": "saloon",
-    "no_go_zones": [
-        [
-            -10,
-            0,
-            20,
-            360
-        ],
-        [
-            0,
-            340,
-            640,
-            20
-        ],
-        [
-            0,
-            -10,
-            640,
-            10
-        ],
-        [
-            630,
-            0,
-            30,
-            360
-        ]
+  "name": "saloon",
+  "no_go_zones": [
+    [
+      220,
+      136,
+      76,
+      106
     ],
-    "interaction_zones": [
-        {
-            "action": "order",
-            "target_position": [
-                100,
-                null
-            ],
-            "zone": [
-                90,
-                40,
-                60,
-                200
-            ],
-            "direction": "left"
-        },
-        {
-            "action": "poker",
-            "target_position": [
-                250,
-                210
-            ],
-            "zone": [
-                215,
-                190,
-                66,
-                24
-            ],
-            "direction": "down"
-        },
-        {
-            "action": "poker",
-            "target_position": [
-                250,
-                264
-            ],
-            "zone": [
-                215,
-                240,
-                66,
-                35
-            ],
-            "direction": "up"
-        }
+    [
+      220,
+      87,
+      201,
+      48
     ],
-    "popspot": [
-        [
-            100,
-            50
-        ],
-        [
-            250,
-            150
-        ],
-        [
-            450,
-            32
-        ],
-        [
-            120,
-            260
-        ],
-        [
-            600,
-            250
-        ],
-        [
-            250,
-            300
-        ],
-        [
-            350,
-            160
-        ],
-        [
-            400,
-            50
-        ],
-        [
-            300,
-            125
-        ],
-        [
-            500,
-            64
-        ],
-        [
-            380,
-            120
-        ],
-        [
-            400,
-            75
-        ],
-        [
-            250,
-            300
-        ],
-        [
-            350,
-            160
-        ],
-        [
-            400,
-            50
-        ],
-        [
-            300,
-            125
-        ],
-        [
-            500,
-            64
-        ],
-        [
-            380,
-            120
-        ],
-        [
-            400,
-            75
-        ],
-        [
-            250,
-            300
-        ],
-        [
-            350,
-            160
-        ],
-        [
-            400,
-            50
-        ],
-        [
-            300,
-            125
-        ],
-        [
-            500,
-            64
-        ],
-        [
-            380,
-            120
-        ],
-        [
-            400,
-            75
-        ],
-        [
-            500,
-            200
-        ]
+    [
+      0,
+      0,
+      480,
+      38
     ],
-    "background": [],
-    "elements": [
-        {
-            "type": "prop",
-            "file": "resources/sets/poker_table.png",
-            "position": [
-                250,
-                250
-            ],
-            "center": [
-                37,
-                55
-            ],
-            "box": [
-                -28,
-                -36,
-                54,
-                28
-            ]
-        },
-        {
-            "type": "prop",
-            "file": "resources/sets/poker_table.png",
-            "position": [
-                550,
-                250
-            ],
-            "center": [
-                37,
-                55
-            ],
-            "box": [
-                -28,
-                -36,
-                54,
-                28
-            ]
-        },
-        {
-            "type": "prop",
-            "file": "resources/sets/poker_table.png",
-            "position": [
-                350,
-                300
-            ],
-            "center": [
-                37,
-                55
-            ],
-            "box": [
-                -28,
-                -36,
-                54,
-                28
-            ]
-        },
-        {
-            "type": "prop",
-            "file": "resources/sets/poker_table.png",
-            "position": [
-                450,
-                300
-            ],
-            "center": [
-                37,
-                55
-            ],
-            "box": [
-                -28,
-                -36,
-                54,
-                28
-            ]
-        },
-        {
-            "type": "prop",
-            "file": "resources/sets/saloon/UL2.png",
-            "position": [
-                0,
-                0
-            ],
-            "center": [
-                320.0,
-                360
-            ],
-            "box": null
-        },
-        {
-            "type": "prop",
-            "file": "resources/sets/saloon/UL1-escalier.png",
-            "position": [
-                0,
-                0
-            ],
-            "center": [
-                246.0,
-                158
-            ],
-            "box": null
-        },
-        {
-            "type": "prop",
-            "file": "resources/sets/saloon/OL-poteaux.png",
-            "position": [
-                11,
-                0
-            ],
-            "center": [
-                253.0,
-                159
-            ],
-            "box": null
-        },
-        {
-            "type": "prop",
-            "file": "resources/sets/saloon/BAR-UL.png",
-            "position": [
-                0,
-                180
-            ],
-            "center": [
-                32.5,
-                204
-            ],
-            "box": null
-        },
-        {
-            "type": "prop",
-            "file": "resources/sets/saloon/BAR-OL.png",
-            "position": [
-                42,
-                180
-            ],
-            "center": [
-                61.5,
-                299
-            ],
-            "box": null
-        },
-        {
-            "type": "prop",
-            "file": "resources/sets/saloon/BORDURE.png",
-            "position": [
-                0,
-                0
-            ],
-            "center": [
-                320.0,
-                360
-            ],
-            "box": null
-        },
-        {
-            "type": "character",
-            "file": "resources/animdata/smith.json"
-        },
-        {
-            "type": "character",
-            "file": "resources/animdata/smith.json"
-        },
-        {
-            "type": "character",
-            "file": "resources/animdata/smith.json"
-        },
-        {
-            "type": "character",
-            "file": "resources/animdata/smith.json"
-        },
-        {
-            "type": "character",
-            "file": "resources/animdata/smith.json"
-        },
-        {
-            "type": "character",
-            "file": "resources/animdata/smith.json"
-        },
-        {
-            "type": "character",
-            "file": "resources/animdata/smith.json"
-        },
-        {
-            "type": "character",
-            "file": "resources/animdata/smith.json"
-        },
-        {
-            "type": "character",
-            "file": "resources/animdata/smith.json"
-        },
-        {
-            "type": "character",
-            "file": "resources/animdata/smith.json"
-        },
-        {
-            "type": "character",
-            "file": "resources/animdata/smith.json"
-        },
-        {
-            "type": "character",
-            "file": "resources/animdata/smith.json"
-        },
-        {
-            "type": "character",
-            "file": "resources/animdata/smith.json"
-        },
-        {
-            "type": "character",
-            "file": "resources/animdata/smith.json"
-        },
-        {
-            "type": "character",
-            "file": "resources/animdata/smith.json"
-        },
-        {
-            "type": "character",
-            "file": "resources/animdata/smith.json"
-        },
-        {
-            "type": "character",
-            "file": "resources/animdata/smith.json"
-        },
-        {
-            "type": "character",
-            "file": "resources/animdata/smith.json"
-        },
-        {
-            "type": "character",
-            "file": "resources/animdata/smith.json"
-        },
-        {
-            "type": "character",
-            "file": "resources/animdata/smith.json"
-        },
-        {
-            "type": "character",
-            "file": "resources/animdata/smith.json"
-        }
+    [
+      481,
+      0,
+      197,
+      65
+    ],
+    [
+      542,
+      65,
+      139,
+      36
+    ],
+    [
+      -10,
+      0,
+      10,
+      360
+    ],
+    [
+      0,
+      310,
+      179,
+      52
+    ],
+    [
+      542,
+      101,
+      27,
+      15
+    ],
+    [
+      617,
+      101,
+      23,
+      15
+    ],
+    [
+      451,
+      135,
+      28,
+      15
+    ],
+    [
+      542,
+      116,
+      2,
+      52
+    ],
+    [
+      477,
+      126,
+      2,
+      42
+    ],
+    [
+      220,
+      242,
+      59,
+      15
+    ],
+    [
+      19,
+      37,
+      71,
+      16
     ]
+  ],
+  "walls": [
+    [
+      [
+        427,
+        38
+      ],
+      [
+        480,
+        65
+      ],
+      [
+        480,
+        38
+      ]
+    ],
+    [
+      [
+        180,
+        310
+      ],
+      [
+        288,
+        366
+      ],
+      [
+        180,
+        366
+      ]
+    ],
+    [
+      [
+        200,
+        258
+      ],
+      [
+        279,
+        299
+      ],
+      [
+        280,
+        257
+      ]
+    ],
+    [
+      [
+        296,
+        242
+      ],
+      [
+        280,
+        258
+      ],
+      [
+        280,
+        242
+      ]
+    ],
+    [
+      [
+        422,
+        87
+      ],
+      [
+        479,
+        119
+      ],
+      [
+        479,
+        135
+      ],
+      [
+        421,
+        135
+      ]
+    ]
+  ],
+  "interactions": [
+    {
+      "action": "order",
+      "target": [
+        300,
+        null
+      ],
+      "zone": [
+        280,
+        120,
+        50,
+        130
+      ],
+      "direction": "left",
+      "position": [
+        300,
+        null
+      ]
+    },
+    {
+      "action": "bet",
+      "direction": "up",
+      "zone": [
+        330,
+        120,
+        60,
+        56
+      ],
+      "target": [
+        359,
+        155
+      ]
+    },
+    {
+      "action": "piano",
+      "direction": "up",
+      "zone": [
+        20,
+        30,
+        70,
+        66
+      ],
+      "target": [
+        55,
+        60
+      ]
+    },
+    {
+      "action": "balcony",
+      "direction": "down",
+      "zone": [
+        230,
+        69,
+        180,
+        30
+      ],
+      "target": [
+        null,
+        85
+      ]
+    }
+  ],
+  "popspots": [
+    [
+      327,
+      177
+    ],
+    [
+      379,
+      182
+    ],
+    [
+      364,
+      217
+    ],
+    [
+      364,
+      292
+    ],
+    [
+      329,
+      293
+    ],
+    [
+      303,
+      329
+    ],
+    [
+      410,
+      330
+    ],
+    [
+      411,
+      280
+    ],
+    [
+      469,
+      286
+    ],
+    [
+      460,
+      221
+    ],
+    [
+      522,
+      215
+    ],
+    [
+      539,
+      264
+    ],
+    [
+      531,
+      336
+    ],
+    [
+      460,
+      336
+    ],
+    [
+      597,
+      287
+    ],
+    [
+      589,
+      175
+    ],
+    [
+      609,
+      134
+    ],
+    [
+      609,
+      241
+    ],
+    [
+      608,
+      309
+    ],
+    [
+      171,
+      108
+    ],
+    [
+      136,
+      137
+    ],
+    [
+      181,
+      172
+    ],
+    [
+      164,
+      213
+    ],
+    [
+      140,
+      267
+    ],
+    [
+      96,
+      271
+    ],
+    [
+      96,
+      229
+    ],
+    [
+      68,
+      194
+    ],
+    [
+      41,
+      239
+    ],
+    [
+      30,
+      177
+    ],
+    [
+      69,
+      125
+    ],
+    [
+      26,
+      97
+    ],
+    [
+      79,
+      67
+    ],
+    [
+      228,
+      69
+    ],
+    [
+      345,
+      63
+    ]
+  ],
+  "stairs": [
+    {
+      "zone": [
+        421,
+        35,
+        57,
+        87
+      ],
+      "inclination": 0.5
+    },
+    {
+      "zone": [
+        181,
+        260,
+        101,
+        99
+      ],
+      "inclination": 0.5
+    }
+  ],
+  "backgrounds": [
+    {
+      "file": "resources/sets/background.png",
+      "position": [
+        0,
+        0
+      ]
+    }
+  ],
+  "targets": [
+    {
+      "weight": 3,
+      "origin": [
+        10,
+        50,
+        200,
+        100
+      ],
+      "destinations": [
+        [
+          10,
+          50,
+          100,
+          150
+        ],
+        [
+          110,
+          50,
+          300,
+          35
+        ],
+        [
+          111,
+          85,
+          99,
+          65
+        ]
+      ]
+    },
+    {
+      "origin": [
+        303,
+        148,
+        174,
+        21
+      ],
+      "weight": 3,
+      "destinations": [
+        [
+          303,
+          147,
+          41,
+          210
+        ],
+        [
+          304,
+          169,
+          336,
+          57
+        ],
+        [
+          345,
+          147,
+          131,
+          49
+        ]
+      ]
+    },
+    {
+      "origin": [
+        304,
+        169,
+        242,
+        57
+      ],
+      "weight": 3,
+      "destinations": [
+        [
+          305,
+          150,
+          140,
+          136
+        ],
+        [
+          445,
+          168,
+          97,
+          118
+        ],
+        [
+          543,
+          168,
+          112,
+          57
+        ]
+      ]
+    },
+    {
+      "origin": [
+        478,
+        168,
+        64,
+        58
+      ],
+      "weight": 3,
+      "destinations": [
+        [
+          479,
+          73,
+          63,
+          152
+        ]
+      ]
+    },
+    {
+      "origin": [
+        545,
+        169,
+        94,
+        56
+      ],
+      "weight": 3,
+      "destinations": [
+        [
+          543,
+          129,
+          96,
+          97
+        ],
+        [
+          569,
+          117,
+          46,
+          25
+        ],
+        [
+          478,
+          169,
+          160,
+          58
+        ]
+      ]
+    },
+    {
+      "origin": [
+        544,
+        127,
+        96,
+        42
+      ],
+      "weight": 3,
+      "destinations": [
+        [
+          568,
+          113,
+          50,
+          27
+        ],
+        [
+          547,
+          135,
+          80,
+          40
+        ],
+        [
+          428,
+          169,
+          212,
+          65
+        ]
+      ]
+    },
+    {
+      "origin": [
+        543,
+        168,
+        97,
+        58
+      ],
+      "weight": 3,
+      "destinations": [
+        [
+          544,
+          125,
+          94,
+          55
+        ],
+        [
+          473,
+          167,
+          69,
+          57
+        ]
+      ]
+    },
+    {
+      "origin": [
+        305,
+        228,
+        171,
+        85
+      ],
+      "weight": 3,
+      "destinations": [
+        [
+          306,
+          153,
+          64,
+          205
+        ],
+        [
+          309,
+          200,
+          167,
+          100
+        ],
+        [
+          478,
+          174,
+          50,
+          126
+        ]
+      ]
+    },
+    {
+      "origin": [
+        284,
+        283,
+        150,
+        75
+      ],
+      "weight": 3,
+      "destinations": [
+        [
+          285,
+          308,
+          353,
+          50
+        ],
+        [
+          304,
+          215,
+          81,
+          145
+        ]
+      ]
+    },
+    {
+      "origin": [
+        100,
+        265,
+        70,
+        50
+      ],
+      "weight": 3,
+      "destinations": [
+        [
+          65,
+          250,
+          114,
+          62
+        ]
+      ]
+    },
+    {
+      "origin": [
+        433,
+        313,
+        55,
+        45
+      ],
+      "weight": 3,
+      "destinations": [
+        [
+          281,
+          318,
+          357,
+          40
+        ]
+      ]
+    },
+    {
+      "origin": [
+        490,
+        313,
+        67,
+        45
+      ],
+      "weight": 3,
+      "destinations": [
+        [
+          489,
+          231,
+          39,
+          127
+        ],
+        [
+          288,
+          327,
+          241,
+          30
+        ]
+      ]
+    },
+    {
+      "origin": [
+        529,
+        313,
+        110,
+        47
+      ],
+      "weight": 3,
+      "destinations": [
+        [
+          454,
+          311,
+          118,
+          42
+        ]
+      ]
+    }
+  ],
+  "elements": [
+    {
+      "type": "character",
+      "file": "resources/animdata/smith.json"
+    },
+    {
+      "type": "character",
+      "file": "resources/animdata/smith.json"
+    },
+    {
+      "type": "character",
+      "file": "resources/animdata/smith.json"
+    },
+    {
+      "type": "character",
+      "file": "resources/animdata/smith.json"
+    },
+    {
+      "type": "character",
+      "file": "resources/animdata/smith.json"
+    },
+    {
+      "type": "character",
+      "file": "resources/animdata/smith.json"
+    },
+    {
+      "type": "character",
+      "file": "resources/animdata/smith.json"
+    },
+    {
+      "type": "character",
+      "file": "resources/animdata/smith.json"
+    },
+    {
+      "type": "character",
+      "file": "resources/animdata/smith.json"
+    },
+    {
+      "type": "character",
+      "file": "resources/animdata/smith.json"
+    },
+    {
+      "type": "character",
+      "file": "resources/animdata/smith.json"
+    },
+    {
+      "type": "character",
+      "file": "resources/animdata/smith.json"
+    },
+    {
+      "type": "character",
+      "file": "resources/animdata/smith.json"
+    },
+    {
+      "type": "character",
+      "file": "resources/animdata/smith.json"
+    },
+    {
+      "type": "character",
+      "file": "resources/animdata/smith.json"
+    },
+    {
+      "type": "character",
+      "file": "resources/animdata/smith.json"
+    },
+    {
+      "type": "character",
+      "file": "resources/animdata/smith.json"
+    },
+    {
+      "type": "character",
+      "file": "resources/animdata/smith.json"
+    },
+    {
+      "type": "character",
+      "file": "resources/animdata/smith.json"
+    },
+    {
+      "type": "character",
+      "file": "resources/animdata/smith.json"
+    },
+    {
+      "type": "character",
+      "file": "resources/animdata/smith.json"
+    },
+    {
+      "type": "character",
+      "file": "resources/animdata/smith.json"
+    },
+    {
+      "type": "character",
+      "file": "resources/animdata/smith.json"
+    },
+    {
+      "type": "character",
+      "file": "resources/animdata/smith.json"
+    },
+    {
+      "type": "character",
+      "file": "resources/animdata/smith.json"
+    },
+    {
+      "type": "character",
+      "file": "resources/animdata/smith.json"
+    },
+    {
+      "type": "character",
+      "file": "resources/animdata/smith.json"
+    },
+    {
+      "type": "character",
+      "file": "resources/animdata/smith.json"
+    },
+    {
+      "type": "character",
+      "file": "resources/animdata/smith.json"
+    }
+  ]
 }
