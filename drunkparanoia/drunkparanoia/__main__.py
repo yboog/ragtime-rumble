@@ -1,9 +1,11 @@
 
+import sys
+import pickle
 import pygame
+
 from drunkparanoia.io import load_skins
 from drunkparanoia.render import render_game
 from drunkparanoia.scene import load_scene
-
 
 pygame.init()
 screen = pygame.display.set_mode((640, 360), pygame.SCALED | pygame.FULLSCREEN)
@@ -18,16 +20,21 @@ joystick.init()
 scene.assign_player(0, joystick)
 scene.create_npcs()
 
-
+replay = []
 clock = pygame.time.Clock()
 continue_ = True
 while continue_:
     for event in pygame.event.get():
-        if (event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE
-                or event.type == pygame.QUIT):
+        end = (
+            event.type == pygame.KEYDOWN and
+            event.key == pygame.K_ESCAPE or
+            event.type == pygame.QUIT)
+        if end:
             continue_ = False
+
     next(scene)
+    # replay.append(pickle.dumps(scene))
     render_game(screen, scene)
     clock.tick(60)
     pygame.display.update()
-exit()
+sys.exit(0)

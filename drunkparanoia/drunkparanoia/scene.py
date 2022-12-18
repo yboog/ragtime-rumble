@@ -1,10 +1,13 @@
 import json
 import random
+import itertools
 
-from drunkparanoia.background import Prop, Background
+from drunkparanoia.background import Prop, Background, Overlay
 from drunkparanoia.character import Character, Player, Npc
-from drunkparanoia.coordinates import box_hit_box, point_in_rectangle, box_hit_polygon
-from drunkparanoia.config import DIRECTIONS, GAMEROOT, ELEMENT_TYPES
+from drunkparanoia.coordinates import (
+    box_hit_box, point_in_rectangle, box_hit_polygon, path_cross_polygon,
+    path_cross_rect)
+from drunkparanoia.config import DIRECTIONS, GAMEROOT
 from drunkparanoia.duel import find_possible_duels
 from drunkparanoia.io import load_image, load_data
 from drunkparanoia.sprite import SpriteSheet
@@ -27,25 +30,30 @@ def load_scene(filename):
         position = background['position']
         scene.backgrounds.append(Background(image=image, position=position))
 
+    for ol in data['overlays']:
+        image = load_image(ol['file'], (0, 255, 0))
+        scene.overlays.append(Overlay(image, ol['position'], ol['y']))
+
+    for prop in data['props']:
+        image = load_image(prop['file'], (0, 255, 0))
+        position = prop['position']
+        center = prop['center']
+        box = prop['box']
+        prop = Prop(image, position, center, box, scene)
+        scene.props.append(prop)
+
     spots = data['popspots'][:]
     random.shuffle(spots)
-    spots = iter(spots)
-
-    for element in data['elements']:
-        if element['type'] == ELEMENT_TYPES.PROP:
-            image = load_image(element['file'], (0, 255, 0))
-            position = element['position']
-            center = element['center']
-            box = element['box']
-            prop = Prop(image, position, center, box, scene)
-            scene.elements.append(prop)
-        elif element['type'] == ELEMENT_TYPES.CHARACTER:
-            position = next(spots)
-            spritesheet = SpriteSheet(load_data(element['file']))
-            directions = DIRECTIONS.LEFT, DIRECTIONS.RIGHT
-            character = Character(position, spritesheet, scene)
-            character.direction = random.choice(directions)
-            scene.elements.append(character)
+    spots = itertools.cycle(spots)
+    characters = itertools.cycle(data['characters'])
+    for _ in range(data['character_number']):
+        character = next(characters)
+        position = next(spots)
+        spritesheet = SpriteSheet(load_data(character['file']))
+        directions = DIRECTIONS.LEFT, DIRECTIONS.RIGHT
+        character = Character(position, spritesheet, scene)
+        character.direction = random.choice(directions)
+        scene.characters.append(character)
 
     for interaction_zone in data['interactions']:
         zone = InteractionZone(interaction_zone)
@@ -57,7 +65,9 @@ class Scene:
 
     def __init__(self):
         self.name = ""
-        self.elements = []
+        self.characters = []
+        self.props = []
+        self.overlays = []
         self.players = []
         self.npcs = []
         self.possible_duels = []
@@ -69,8 +79,8 @@ class Scene:
         self.targets = []
 
     @property
-    def characters(self):
-        return [elt for elt in self.elements if isinstance(elt, Character)]
+    def elements(self):
+        return self.characters + self.props + self.overlays
 
     def inclination_at(self, point):
         for stair in self.stairs:
@@ -82,16 +92,30 @@ class Scene:
         targets = [
             t for t in self.targets
             if point_in_rectangle(point, *t['origin'])]
+
         if not targets:
             return
+
         destinations = [
             d for t in targets
             for _ in range(t['weight'])
             for d in t['destinations']]
+
         destination = random.choice(destinations)
         x = random.randrange(destination[0], destination[0] + destination[2])
         y = random.randrange(destination[1], destination[1] + destination[3])
+
         return x, y
+
+    def cross(self, path):
+        for element in self.elements:
+            if not isinstance(element, Prop) or not element.screen_box:
+                continue
+            if path_cross_rect(path, element.screen_box):
+                return True
+        if any(path_cross_rect(zone, path) for zone in self.no_go_zones):
+            return True
+        return any(path_cross_polygon(path, wall) for wall in self.walls)
 
     def collide(self, box):
         for element in self.elements:

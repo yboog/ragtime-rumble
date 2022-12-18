@@ -64,3 +64,15 @@ def box_hit_polygon(rect, polygon):
     rect_path = Path(rect)
     polygon_path = Path(polygon)
     return rect_path.intersects_path(polygon_path, filled=True)
+
+
+def path_cross_polygon(path, polygon):
+    return Path(path).intersects_path(Path(polygon))
+
+
+def path_cross_rect(path, rect):
+    tl = [rect[0], rect[1]]
+    tr = [rect[0] + rect[2], rect[1]]
+    bl = [rect[0], rect[1] + rect[3]]
+    br = [rect[0] + rect[2], rect[1] + rect[3]]
+    return Path(path).intersects_path(Path(tl, tr, bl, br))

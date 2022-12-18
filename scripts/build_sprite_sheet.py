@@ -68,7 +68,6 @@ data = {
     'box': (-15, -20, 30, 20),
     'sheets': {
         'face': f'resources/skins/{char}_face.png',
-        'side': f'resources/skins/{char}_side.png',
         'back': f'resources/skins/{char}_back.png'
     },
     'animations': {}

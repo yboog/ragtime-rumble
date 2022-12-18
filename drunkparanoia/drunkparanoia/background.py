@@ -7,9 +7,12 @@ class Background:
         self.image = image
 
 
-class OL:
+class Overlay:
     def __init__(self, image, position, y):
-        raise NotImplementedError
+        self.image = image
+        self.switch = y
+        self.render_position = position
+        self.coordinates = Coordinates(position)
 
 
 class Prop:

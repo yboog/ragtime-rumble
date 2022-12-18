@@ -146,6 +146,11 @@
         6,
         6,
         6,
+        6,
+        6,
+        6,
+        6,
+        6,
         6
       ],
       "startframe": 58
@@ -154,7 +159,7 @@
       "durations": [
         6
       ],
-      "startframe": 77
+      "startframe": 82
     },
     "vomit": {
       "durations": [
@@ -178,13 +183,13 @@
         6,
         6
       ],
-      "startframe": 78
+      "startframe": 83
     },
     "coma": {
       "durations": [
         6
       ],
-      "startframe": 97
+      "startframe": 102
     }
   }
 }

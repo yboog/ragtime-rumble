@@ -1,41 +1,42 @@
 {
+  "character_number": 25,
   "name": "saloon",
   "no_go_zones": [
     [
       220,
-      136,
-      76,
-      106
+      142,
+      83,
+      116
     ],
     [
       220,
       87,
       201,
-      48
+      58
     ],
     [
       0,
-      0,
+      -50,
       480,
-      38
+      92
     ],
     [
       481,
       0,
       197,
-      65
+      70
     ],
     [
       542,
-      65,
+      70,
       139,
       36
     ],
     [
-      -10,
-      0,
-      10,
-      360
+      -100,
+      -100,
+      100,
+      560
     ],
     [
       0,
@@ -45,21 +46,21 @@
     ],
     [
       542,
-      101,
+      106,
       27,
-      15
+      11
     ],
     [
       617,
-      101,
+      106,
       23,
-      15
+      11
     ],
     [
       451,
-      135,
+      140,
       28,
-      15
+      25
     ],
     [
       542,
@@ -74,31 +75,31 @@
       42
     ],
     [
-      220,
-      242,
-      59,
-      15
-    ],
-    [
       19,
-      37,
+      42,
       71,
       16
+    ],
+    [
+      279,
+      257,
+      8,
+      47
     ]
   ],
   "walls": [
     [
       [
-        427,
-        38
+        425,
+        43
       ],
       [
         480,
-        65
+        70
       ],
       [
         480,
-        38
+        43
       ]
     ],
     [
@@ -117,30 +118,16 @@
     ],
     [
       [
-        200,
-        258
+        180,
+        255
       ],
       [
         279,
-        299
+        304
       ],
       [
-        280,
-        257
-      ]
-    ],
-    [
-      [
-        296,
-        242
-      ],
-      [
-        280,
-        258
-      ],
-      [
-        280,
-        242
+        279,
+        255
       ]
     ],
     [
@@ -154,11 +141,25 @@
       ],
       [
         479,
-        135
+        145
       ],
       [
-        421,
-        135
+        422,
+        145
+      ]
+    ],
+    [
+      [
+        288,
+        257
+      ],
+      [
+        288,
+        272
+      ],
+      [
+        303,
+        257
       ]
     ]
   ],
@@ -704,122 +705,52 @@
       ]
     }
   ],
-  "elements": [
+  "characters": [
     {
-      "type": "character",
-      "file": "resources/animdata/smith.json"
-    },
-    {
-      "type": "character",
-      "file": "resources/animdata/smith.json"
-    },
-    {
-      "type": "character",
-      "file": "resources/animdata/smith.json"
-    },
-    {
-      "type": "character",
-      "file": "resources/animdata/smith.json"
-    },
-    {
-      "type": "character",
-      "file": "resources/animdata/smith.json"
-    },
-    {
-      "type": "character",
-      "file": "resources/animdata/smith.json"
-    },
-    {
-      "type": "character",
-      "file": "resources/animdata/smith.json"
-    },
-    {
-      "type": "character",
-      "file": "resources/animdata/smith.json"
-    },
-    {
-      "type": "character",
-      "file": "resources/animdata/smith.json"
-    },
-    {
-      "type": "character",
-      "file": "resources/animdata/smith.json"
-    },
-    {
-      "type": "character",
-      "file": "resources/animdata/smith.json"
-    },
-    {
-      "type": "character",
-      "file": "resources/animdata/smith.json"
-    },
-    {
-      "type": "character",
-      "file": "resources/animdata/smith.json"
-    },
-    {
-      "type": "character",
-      "file": "resources/animdata/smith.json"
-    },
-    {
-      "type": "character",
-      "file": "resources/animdata/smith.json"
-    },
-    {
-      "type": "character",
-      "file": "resources/animdata/smith.json"
-    },
-    {
-      "type": "character",
-      "file": "resources/animdata/smith.json"
-    },
-    {
-      "type": "character",
-      "file": "resources/animdata/smith.json"
-    },
-    {
-      "type": "character",
-      "file": "resources/animdata/smith.json"
-    },
-    {
-      "type": "character",
-      "file": "resources/animdata/smith.json"
-    },
-    {
-      "type": "character",
-      "file": "resources/animdata/smith.json"
-    },
-    {
-      "type": "character",
-      "file": "resources/animdata/smith.json"
-    },
-    {
-      "type": "character",
-      "file": "resources/animdata/smith.json"
-    },
-    {
-      "type": "character",
-      "file": "resources/animdata/smith.json"
-    },
-    {
-      "type": "character",
-      "file": "resources/animdata/smith.json"
-    },
-    {
-      "type": "character",
-      "file": "resources/animdata/smith.json"
-    },
-    {
-      "type": "character",
-      "file": "resources/animdata/smith.json"
-    },
-    {
-      "type": "character",
-      "file": "resources/animdata/smith.json"
-    },
-    {
-      "type": "character",
       "file": "resources/animdata/smith.json"
     }
-  ]
+  ],
+  "overlays": [
+    {
+      "file": "resources/sets/downleft.png",
+      "position": [
+        0,
+        0
+      ],
+      "y": 500
+    },
+    {
+      "file": "resources/sets/upstairsrailing.png",
+      "position": [
+        0,
+        0
+      ],
+      "y": 163
+    },
+    {
+      "file": "resources/sets/downstairrailing.png",
+      "position": [
+        0,
+        0
+      ],
+      "y": 0
+    },
+    {
+      "file": "resources/sets/upstairs.png",
+      "position": [
+        0,
+        0
+      ],
+      "y": 140
+    },
+    {
+      "file": "resources/sets/verticalrailing.png",
+      "position": [
+        0,
+        0
+      ],
+      "y": 260
+    }
+  ],
+  "props": []
 }

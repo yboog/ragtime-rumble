@@ -8,7 +8,7 @@ def render_game(screen, scene):
     screen.fill((60, 0, 18))
     for background in scene.backgrounds:
         screen.blit(get_image(background.image), background.position)
-    elements = sorted(scene.elements, key=lambda x: x.coordinates.y)
+    elements = sorted(scene.elements, key=lambda elt: elt.switch)
     for element in elements:
         render_element(screen, element)
     duel_surface = pygame.Surface(screen.get_size(), pygame.SRCALPHA)
@@ -31,7 +31,7 @@ def draw_possible_duel(screen, char1, char2):
 def render_element(screen, element):
     img = element.image
     screen.blit(get_image(img), element.render_position)
-    from drunkparanoia.character import Character
+    # from drunkparanoia.character import Character
     # if isinstance(element, Character):
     #     # screen.blit(get_image(img), element.render_position)
     #     if element.path:

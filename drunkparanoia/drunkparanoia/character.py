@@ -123,16 +123,22 @@ class Character:
         limit = 0
         while True:
             # if limit < 10:
-                # raise ValueError('impossible to find dest for ', self.coordinates.position)
+            #     raise ValueError('impossible to find dest for ', self.coordinates.position)
             dst = self.scene.choice_destination_from(self.coordinates.position)
             if dst is None:
                 break
             if not self.scene.collide(get_box(dst, self.box)):
                 return dst
             limit += 1
-        pos = random.randrange(0, 640), random.randrange(0, 360)
+        x, y = [int(n) for n in self.coordinates.position]
+        x = random.randrange(x - 75, x + 75)
+        y = random.randrange(y - 75, y + 75)
+        pos = x, y
         while self.scene.collide(get_box(pos, self.box)):
-            pos = random.randrange(0, 640), random.randrange(0, 360)
+            x, y = [int(n) for n in self.coordinates.position]
+            x = random.randrange(x - 75, x + 75)
+            y = random.randrange(y - 75, y + 75)
+            pos = x, y
         return pos
 
     @property
@@ -150,6 +156,10 @@ class Character:
     def render_position(self):
         offset_x, offset_y = self.spritesheet.data['center']
         return self.coordinates.x - offset_x, self.coordinates.y - offset_y
+
+    @property
+    def switch(self):
+        return self.coordinates.y
 
     @property
     def image(self):

@@ -1,4 +1,6 @@
 import json
+import numpy as np
+from PIL import Image, ImageQt
 from PySide6 import QtWidgets, QtCore, QtGui
 
 
@@ -15,6 +17,49 @@ def get_stair_line(rect, inclination):
     line.setP1(QtCore.QPointF(rect.left(), p1.y() + offset))
     line.setP2(QtCore.QPointF(rect.right(), p2.y() + offset))
     return line
+
+
+class OverlaysModel(QtCore.QAbstractTableModel):
+    changed = QtCore.Signal()
+
+    def __init__(self, model):
+        super().__init__()
+        self.model = model
+
+    def rowCount(self, *_):
+        return len(self.model.data['overlays'])
+
+    def columnCount(self, *_):
+        return 2
+
+    def headerData(self, section, orientation, role):
+        if role != QtCore.Qt.DisplayRole:
+            return
+        if orientation != QtCore.Qt.Horizontal:
+            return
+        return ('file', 'switch')[section]
+
+    def flags(self, index):
+        flags = super().flags(index)
+        if index.column() == 1:
+            flags |= QtCore.Qt.ItemIsEditable
+        return flags
+
+    def setData(self, index, value, _):
+        if not index.isValid() or not index.column():
+            return
+        self.model.data['overlays'][index.row()]['y'] = value
+        self.changed.emit()
+        return True
+
+    def data(self, index, role):
+        if not index.isValid():
+            return
+        if role not in (QtCore.Qt.DisplayRole, QtCore.Qt.EditRole):
+            return
+        if index.column() == 0:
+            return self.model.data['overlays'][index.row()]['file']
+        return self.model.data['overlays'][index.row()]['y']
 
 
 class StairModel(QtCore.QAbstractTableModel):
@@ -231,6 +276,15 @@ class WallsModel(QtCore.QAbstractTableModel):
         return str(item)
 
 
+def remove_key_color(filename, key_color):
+    orig_color = tuple(key_color + [255])
+    replacement_color = (0, 0, 0, 0)
+    image = Image.open(filename).convert('RGBA')
+    data = np.array(image)
+    data[(data == orig_color).all(axis=-1)] = replacement_color
+    return ImageQt.ImageQt(Image.fromarray(data, mode='RGBA'))
+
+
 class LevelCanvasModel:
     def __init__(self, gameroot, data):
         self.data = data
@@ -240,13 +294,21 @@ class LevelCanvasModel:
             img = QtGui.QImage(f'{gameroot}/{background["file"]}')
             self.backgrounds.append(img)
 
+        self.overlays = []
+        color = [0, 255, 0]
+        for overlay in data['overlays']:
+            img = remove_key_color(f'{gameroot}/{overlay["file"]}', color)
+            self.overlays.append(img)
+
         self.walls = True
-        self.popspots = True
-        self.interactions = True
-        self.props = True
-        self.stairs = True
-        self.targets = True
+        self.popspots = False
+        self.interactions = False
+        self.props = False
+        self.stairs = False
+        self.targets = False
+        self.switches = True
         self.selected_target = None
+        self.wall_selected_rows = []
 
     def size(self):
         w = max(b.size().width() for b in self.backgrounds)
@@ -321,6 +383,15 @@ class LevelCanvas(QtWidgets.QWidget):
         positions = [bg['position'] for bg in self.model.data['backgrounds']]
         for pos, image in zip(positions, self.model.backgrounds):
             painter.drawImage(QtCore.QPoint(*pos), image)
+        positions = [ol['position'] for ol in self.model.data['overlays']]
+        for pos, image in zip(positions, self.model.overlays):
+            painter.drawImage(QtCore.QPoint(*pos), image)
+        if self.model.switches:
+            for ol in self.model.data['overlays']:
+                c = event.rect().left(), ol['y'], event.rect().right(), ol['y']
+                line = QtCore.QLine(*c)
+                painter.setPen(QtCore.Qt.white)
+                painter.drawLine(line)
         if self.rect_ and self.mode == 'rectangle':
             painter.setPen(QtCore.Qt.white)
             painter.setBrush(QtCore.Qt.NoBrush)
@@ -340,15 +411,42 @@ class LevelCanvas(QtWidgets.QWidget):
             for x, y in self.model.data['popspots']:
                 painter.drawEllipse(x, y, 2, 2)
         if self.model.walls:
-            painter.setPen(QtCore.Qt.red)
-            color = QtGui.QColor(QtCore.Qt.red)
-            color.setAlpha(50)
-            painter.setBrush(color)
+            i = 0
             for rect in self.model.data['no_go_zones']:
+                if i in self.model.wall_selected_rows:
+                    pen = QtGui.QPen(QtCore.Qt.white)
+                    pen.setWidth(3)
+                    painter.setPen(pen)
+                    color = QtGui.QColor(QtCore.Qt.white)
+                    color.setAlpha(50)
+                    painter.setBrush(color)
+                else:
+                    pen = QtGui.QPen(QtCore.Qt.red)
+                    pen.setWidth(1)
+                    painter.setPen(pen)
+                    color = QtGui.QColor(QtCore.Qt.red)
+                    color.setAlpha(50)
+                    painter.setBrush(color)
                 painter.drawRect(*rect)
+                i += 1
             for polygon in self.model.data['walls']:
+                if i in self.model.wall_selected_rows:
+                    pen = QtGui.QPen(QtCore.Qt.white)
+                    pen.setWidth(3)
+                    painter.setPen(pen)
+                    color = QtGui.QColor(QtCore.Qt.white)
+                    color.setAlpha(50)
+                    painter.setBrush(color)
+                else:
+                    pen = QtGui.QPen(QtCore.Qt.red)
+                    pen.setWidth(1)
+                    painter.setPen(pen)
+                    color = QtGui.QColor(QtCore.Qt.red)
+                    color.setAlpha(50)
+                    painter.setBrush(color)
                 polygon = QtGui.QPolygon([QtCore.QPoint(*p) for p in polygon])
                 painter.drawPolygon(polygon)
+                i += 1
         if self.model.stairs:
             for stair in self.model.data['stairs']:
                 color = QtGui.QColor("#DEABDE")
@@ -451,6 +549,8 @@ class Editor(QtWidgets.QWidget):
         self.walls.setSelectionMode(selection_mode)
         self.walls.setSelectionBehavior(selection_behavior)
         self.walls.setModel(self.walls_model)
+        method = self.walls_selected
+        self.walls.selectionModel().selectionChanged.connect(method)
 
         self.interactions_model = InteractionModel(self.model)
         self.interactions_model.changed.connect(self.canvas.repaint)
@@ -469,6 +569,11 @@ class Editor(QtWidgets.QWidget):
         self.targets = OriginDestinations(self.model)
         self.targets.changed.connect(self.canvas.repaint)
 
+        self.switches_model = OverlaysModel(self.model)
+        self.switches_model.changed.connect(self.canvas.repaint)
+        self.switches = QtWidgets.QTableView()
+        self.switches.setModel(self.switches_model)
+
         self.tab = QtWidgets.QTabWidget()
         self.tab.currentChanged.connect(self.tab_changed)
         self.tab.addTab(self.visibilities, 'Visibilites')
@@ -477,6 +582,7 @@ class Editor(QtWidgets.QWidget):
         self.tab.addTab(self.interactions, 'Interactions')
         self.tab.addTab(self.stairs, 'Stairs')
         self.tab.addTab(self.targets, 'Origin/Targets')
+        self.tab.addTab(self.switches, 'OL / Switches')
 
         self.rect_wall = QtWidgets.QPushButton('Create rect wall')
         self.rect_wall.setCheckable(True)
@@ -616,6 +722,13 @@ class Editor(QtWidgets.QWidget):
         self.model.props = self.visibilities.props.isChecked()
         self.model.stairs = self.visibilities.stairs.isChecked()
         self.model.targets = self.visibilities.targets.isChecked()
+        self.model.switches = self.visibilities.switches.isChecked()
+        self.repaint()
+
+    def walls_selected(self, *_):
+        indexes = self.walls.selectedIndexes()
+        rows = list({index.row() for index in indexes})
+        self.model.wall_selected_rows = rows
         self.repaint()
 
     def open(self):
@@ -768,17 +881,22 @@ class Visibilities(QtWidgets.QWidget):
     def __init__(self, model):
         super().__init__()
         self.model = model
-        self.walls = QtWidgets.QCheckBox('Walls', checked=True)
+        self.walls = QtWidgets.QCheckBox('Walls', checked=model.walls)
         self.walls.released.connect(self.update_visibilities.emit)
-        self.popspots = QtWidgets.QCheckBox('Pop Spots', checked=True)
+        s = model.popspots
+        self.popspots = QtWidgets.QCheckBox('Pop Spots', checked=s)
         self.popspots.released.connect(self.update_visibilities.emit)
-        self.interactions = QtWidgets.QCheckBox('Interactions', checked=True)
+        s = model.interactions
+        self.interactions = QtWidgets.QCheckBox('Interactions', checked=s)
         self.interactions.released.connect(self.update_visibilities.emit)
-        self.props = QtWidgets.QCheckBox('Props', checked=True)
+        self.props = QtWidgets.QCheckBox('Props', checked=model.props)
         self.props.released.connect(self.update_visibilities.emit)
-        self.stairs = QtWidgets.QCheckBox('Stairs', checked=True)
-        self.targets = QtWidgets.QCheckBox('Origin -> Destinations', checked=True)
+        self.stairs = QtWidgets.QCheckBox('Stairs', checked=model.stairs)
+        s = model.targets
+        self.targets = QtWidgets.QCheckBox('Origin -> Destinations', checked=s)
         self.targets.released.connect(self.update_visibilities.emit)
+        self.switches = QtWidgets.QCheckBox('Switches', checked=model.switches)
+        self.switches.released.connect(self.update_visibilities.emit)
 
         layout = QtWidgets.QVBoxLayout(self)
         layout.addWidget(self.walls)
@@ -787,6 +905,7 @@ class Visibilities(QtWidgets.QWidget):
         layout.addWidget(self.props)
         layout.addWidget(self.stairs)
         layout.addWidget(self.targets)
+        layout.addWidget(self.switches)
         layout.addStretch(1)
 
 
