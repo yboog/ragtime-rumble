@@ -66,7 +66,7 @@ column_lenght = math.ceil(math.sqrt(len(images)))
 data = {
     'framesize': (64, 64),
     'center': (32, 56),
-    'box': (-15, -20, 30, 20),
+    'box': (-18, -25, 36, 25),
     'sheets': {
         'face': f'resources/skins/{char}_face.png',
         'back': f'resources/skins/{char}_back.png'
