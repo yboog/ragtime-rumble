@@ -33,7 +33,7 @@ class COUNTDOWNS:
 
 
 class SPEED:
-    MAX = 1
+    MAX = 1.25
     MIN = .2
     FACTOR = 1.2
 

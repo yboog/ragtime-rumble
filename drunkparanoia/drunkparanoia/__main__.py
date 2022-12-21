@@ -10,7 +10,7 @@ from drunkparanoia.scene import load_scene
 pygame.init()
 screen = pygame.display.set_mode((640, 360), pygame.SCALED | pygame.FULLSCREEN)
 # screen = pygame.display.set_mode((640, 360), pygame.SCALED)
-# screen = pygame.display.set_mode((640, 360))
+screen = pygame.display.set_mode((640, 360))
 pygame.joystick.init()
 load_skins()
 
@@ -23,6 +23,9 @@ scene.create_npcs()
 replay = []
 clock = pygame.time.Clock()
 continue_ = True
+print('rumble', joystick.get_name(), joystick.rumble(1, 1, 2000))
+import time
+time.sleep(3)
 while continue_:
     for event in pygame.event.get():
         end = (
@@ -37,4 +40,5 @@ while continue_:
     render_game(screen, scene)
     clock.tick(60)
     pygame.display.update()
+joystick.stop_rumble()
 sys.exit(0)

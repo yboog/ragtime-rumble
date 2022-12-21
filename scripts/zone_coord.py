@@ -1,3 +1,4 @@
+import os
 import json
 import numpy as np
 from PIL import Image, ImageQt
@@ -17,6 +18,71 @@ def get_stair_line(rect, inclination):
     line.setP1(QtCore.QPointF(rect.left(), p1.y() + offset))
     line.setP2(QtCore.QPointF(rect.right(), p2.y() + offset))
     return line
+
+
+class PropsModel(QtCore.QAbstractTableModel):
+    changed = QtCore.Signal()
+
+    def __init__(self, model):
+        super().__init__()
+        self.model = model
+
+    def rowCount(self, *_):
+        return len(self.model.data['props'])
+
+    def columnCount(self, *_):
+        return 4
+
+    def headerData(self, section, orientation, role):
+        if role != QtCore.Qt.DisplayRole:
+            return
+        if orientation != QtCore.Qt.Horizontal:
+            return
+        return ('file', 'position', 'center', 'box')[section]
+
+    def flags(self, index):
+        flags = super().flags(index)
+        if index.column() != 0:
+            flags |= QtCore.Qt.ItemIsEditable
+        return flags
+
+    def setData(self, index, value, _):
+        if not index.isValid() or not index.column():
+            return False
+        prop = self.model.data['props'][index.row()]
+        try:
+            data = json.loads(value)
+            data = [int(n) for n in data]
+        except BaseException:
+            return False
+        match index.column():
+            case 0:
+                return False
+            case 1:
+                if not is_point(data):
+                    return False
+                prop['position'] = data
+            case 2:
+                if not is_point(data):
+                    return False
+                prop['center'] = data
+            case 3:
+                if not is_zone(data):
+                    return False
+                prop['box'] = data
+        self.changed.emit()
+        return True
+
+    def data(self, index, role):
+        if not index.isValid():
+            return
+        if role not in (QtCore.Qt.DisplayRole, QtCore.Qt.EditRole):
+            return
+        try:
+            key = ('file', 'position', 'center', 'box')[index.column()]
+            return str(self.model.data['props'][index.row()][key])
+        except IndexError:
+            print('fail', index)
 
 
 class OverlaysModel(QtCore.QAbstractTableModel):
@@ -47,7 +113,7 @@ class OverlaysModel(QtCore.QAbstractTableModel):
 
     def setData(self, index, value, _):
         if not index.isValid() or not index.column():
-            return
+            return False
         self.model.data['overlays'][index.row()]['y'] = value
         self.changed.emit()
         return True
@@ -300,13 +366,19 @@ class LevelCanvasModel:
             img = remove_key_color(f'{gameroot}/{overlay["file"]}', color)
             self.overlays.append(img)
 
+        self.props = []
+        color = [0, 255, 0]
+        for prop in data['props']:
+            img = remove_key_color(f'{gameroot}/{prop["file"]}', color)
+            self.props.append(img)
+
         self.walls = True
         self.popspots = False
         self.interactions = False
-        self.props = False
+        self.display_props = True
         self.stairs = False
         self.targets = False
-        self.switches = True
+        self.switches = False
         self.selected_target = None
         self.wall_selected_rows = []
 
@@ -386,30 +458,35 @@ class LevelCanvas(QtWidgets.QWidget):
         positions = [ol['position'] for ol in self.model.data['overlays']]
         for pos, image in zip(positions, self.model.overlays):
             painter.drawImage(QtCore.QPoint(*pos), image)
+        for prop, image in zip(self.model.data['props'], self.model.props):
+            x = prop['position'][0] - prop['center'][0]
+            y = prop['position'][1] - prop['center'][1]
+            painter.drawImage(x, y, image)
         if self.model.switches:
             for ol in self.model.data['overlays']:
                 c = event.rect().left(), ol['y'], event.rect().right(), ol['y']
                 line = QtCore.QLine(*c)
                 painter.setPen(QtCore.Qt.white)
                 painter.drawLine(line)
-        if self.rect_ and self.mode == 'rectangle':
-            painter.setPen(QtCore.Qt.white)
-            painter.setBrush(QtCore.Qt.NoBrush)
-            painter.drawRect(self.rect_)
-        elif self.point and self.mode == 'point':
-            painter.setPen(QtCore.Qt.red)
-            painter.setBrush(QtCore.Qt.red)
-            painter.drawEllipse(self.point, 2, 2)
-        elif self.polygon and self.mode == 'polygon':
-            painter.setPen(QtCore.Qt.yellow)
-            color = QtGui.QColor(QtCore.Qt.yellow)
-            color.setAlpha(100)
-            painter.drawPolygon(self.polygon)
         if self.model.popspots:
             painter.setPen(QtCore.Qt.yellow)
             painter.setBrush(QtCore.Qt.yellow)
             for x, y in self.model.data['popspots']:
                 painter.drawEllipse(x, y, 2, 2)
+        if self.model.display_props:
+            for prop in self.model.data['props']:
+                x = prop['position'][0] + prop['center'][0]
+                y = prop['position'][1] + prop['center'][1]
+                left = prop['position'][0] + prop['box'][0]
+                top = prop['position'][1] + prop['box'][1]
+                color = QtGui.QColor('pink')
+                painter.setPen(color)
+                color.setAlpha(50)
+                painter.setBrush(color)
+                painter.drawRect(left, top, prop['box'][2], prop['box'][3])
+                painter.setPen(QtCore.Qt.white)
+                painter.setBrush(QtCore.Qt.white)
+                painter.drawEllipse(prop['position'][0], prop['position'][1], 2, 2)
         if self.model.walls:
             i = 0
             for rect in self.model.data['no_go_zones']:
@@ -507,6 +584,21 @@ class LevelCanvas(QtWidgets.QWidget):
                     y = interaction['zone'][1] + interaction['zone'][3]
                     p2 = QtCore.QPoint(x, y)
                     painter.drawLine(p1, p2)
+
+        if self.rect_ and self.mode == 'rectangle':
+            painter.setPen(QtCore.Qt.white)
+            painter.setBrush(QtCore.Qt.NoBrush)
+            painter.drawRect(self.rect_)
+        elif self.point and self.mode == 'point':
+            painter.setPen(QtCore.Qt.red)
+            painter.setBrush(QtCore.Qt.red)
+            painter.drawEllipse(self.point, 2, 2)
+        elif self.polygon and self.mode == 'polygon':
+            painter.setPen(QtCore.Qt.yellow)
+            color = QtGui.QColor(QtCore.Qt.yellow)
+            color.setAlpha(100)
+            painter.drawPolygon(self.polygon)
+
         painter.end()
 
 
@@ -569,20 +661,25 @@ class Editor(QtWidgets.QWidget):
         self.targets = OriginDestinations(self.model)
         self.targets.changed.connect(self.canvas.repaint)
 
-        self.switches_model = OverlaysModel(self.model)
-        self.switches_model.changed.connect(self.canvas.repaint)
-        self.switches = QtWidgets.QTableView()
-        self.switches.setModel(self.switches_model)
+        self.overlays_model = OverlaysModel(self.model)
+        self.overlays_model.changed.connect(self.canvas.repaint)
+        self.overlays = QtWidgets.QTableView()
+        self.overlays.setModel(self.overlays_model)
+
+        self.props_model = PropsModel(self.model)
+        self.props_model.changed.connect(self.canvas.repaint)
+        self.props = QtWidgets.QTableView()
+        self.props.setModel(self.props_model)
 
         self.tab = QtWidgets.QTabWidget()
         self.tab.currentChanged.connect(self.tab_changed)
-        self.tab.addTab(self.visibilities, 'Visibilites')
         self.tab.addTab(self.popspots, 'Pop spots')
         self.tab.addTab(self.walls, 'Walls')
         self.tab.addTab(self.interactions, 'Interactions')
         self.tab.addTab(self.stairs, 'Stairs')
         self.tab.addTab(self.targets, 'Origin/Targets')
-        self.tab.addTab(self.switches, 'OL / Switches')
+        self.tab.addTab(self.props, 'Props')
+        self.tab.addTab(self.overlays, 'OL / Switches')
 
         self.rect_wall = QtWidgets.QPushButton('Create rect wall')
         self.rect_wall.setCheckable(True)
@@ -620,9 +717,12 @@ class Editor(QtWidgets.QWidget):
         action1.triggered.connect(self.save)
         action2 = QtGui.QAction('📁', self)
         action2.triggered.connect(self.open)
+        action3 = QtGui.QAction('play', self)
+        action3.triggered.connect(self.play)
         self.toolbar = QtWidgets.QToolBar()
         self.toolbar.addAction(action1)
         self.toolbar.addAction(action2)
+        self.toolbar.addAction(action3)
 
         buttons = QtWidgets.QGridLayout()
         buttons.setSpacing(2)
@@ -634,19 +734,24 @@ class Editor(QtWidgets.QWidget):
         buttons.addWidget(self.create_origin, 1, 1)
         buttons.addWidget(self.create_destination, 2, 1)
 
+        buttons_spacing = QtWidgets.QVBoxLayout()
+        buttons_spacing.addLayout(buttons)
+        buttons_spacing.addWidget(self.visibilities)
+        buttons_spacing.addSpacing(1)
+
         right = QtWidgets.QVBoxLayout()
-        right.addLayout(buttons)
         right.addWidget(self.tab)
         right.addWidget(self.delete)
 
-        vlayout = QtWidgets.QHBoxLayout()
-        vlayout.addWidget(self.canvas)
-        vlayout.addLayout(right)
+        hlayout = QtWidgets.QHBoxLayout()
+        hlayout.addWidget(self.canvas)
+        hlayout.addLayout(buttons_spacing)
 
         layout = QtWidgets.QVBoxLayout(self)
         layout.setContentsMargins(0, 0, 0, 0)
         layout.addWidget(self.toolbar)
-        layout.addLayout(vlayout)
+        layout.addLayout(hlayout)
+        layout.addLayout(right)
 
     def tab_changed(self, *_):
         for table in (self.walls, self.interactions):
@@ -660,8 +765,11 @@ class Editor(QtWidgets.QWidget):
         self.canvas.repaint()
 
     def add_point(self, point):
-        if self.group.checkedId() == 3:
-            self.model.data['popspots'].append((point.x(), point.y()))
+        if self.group.checkedId() == 2:
+            self.popspotsmodel.layoutAboutToBeChanged.emit()
+            self.model.data['popspots'].append([point.x(), point.y()])
+            self.popspotsmodel.layoutChanged.emit()
+            self.canvas.repaint()
 
     def add_rectangle(self, rect):
         if self.group.checkedId() == 0:
@@ -719,7 +827,7 @@ class Editor(QtWidgets.QWidget):
         self.model.walls = self.visibilities.walls.isChecked()
         self.model.popspots = self.visibilities.popspots.isChecked()
         self.model.interactions = self.visibilities.interactions.isChecked()
-        self.model.props = self.visibilities.props.isChecked()
+        self.model.display_props = self.visibilities.props.isChecked()
         self.model.stairs = self.visibilities.stairs.isChecked()
         self.model.targets = self.visibilities.targets.isChecked()
         self.model.switches = self.visibilities.switches.isChecked()
@@ -737,6 +845,11 @@ class Editor(QtWidgets.QWidget):
     def save(self):
         with open(self.filename, 'w') as f:
             json.dump(self.model.data, f, indent=2)
+
+    def play(self):
+        import subprocess
+        here = os.path.dirname(__file__)
+        subprocess.Popen(f'{here}/../launcher.bat')
 
 
 class OriginModel(QtCore.QAbstractTableModel):
@@ -889,9 +1002,10 @@ class Visibilities(QtWidgets.QWidget):
         s = model.interactions
         self.interactions = QtWidgets.QCheckBox('Interactions', checked=s)
         self.interactions.released.connect(self.update_visibilities.emit)
-        self.props = QtWidgets.QCheckBox('Props', checked=model.props)
+        self.props = QtWidgets.QCheckBox('Props', checked=model.display_props)
         self.props.released.connect(self.update_visibilities.emit)
         self.stairs = QtWidgets.QCheckBox('Stairs', checked=model.stairs)
+        self.stairs.released.connect(self.update_visibilities.emit)
         s = model.targets
         self.targets = QtWidgets.QCheckBox('Origin -> Destinations', checked=s)
         self.targets.released.connect(self.update_visibilities.emit)

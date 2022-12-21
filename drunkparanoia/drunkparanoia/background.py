@@ -24,6 +24,10 @@ class Prop:
         self.box = box
 
     @property
+    def switch(self):
+        return self.coordinates.y
+
+    @property
     def render_position(self):
         offset_x, offset_y = self.center
         return self.coordinates.x - offset_x, self.coordinates.y - offset_y
