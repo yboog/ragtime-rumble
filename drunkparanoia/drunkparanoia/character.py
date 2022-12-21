@@ -32,8 +32,8 @@ class Player:
                 return
             commands = get_current_commands(self.joystick)
             if commands.get('X'):
-                self.character.kill(self.character.duel_target)
-                self.character.kill(self.character.duel_target, black_screen=True)
+                target = self.character.duel_target
+                self.character.kill(target, black_screen=True)
             if commands.get('A'):
                 self.character.release_duel()
             next(self.character)
@@ -43,6 +43,7 @@ class Player:
             commands = get_current_commands(self.joystick)
             if commands.get('X'):
                 self.character.aim(self.character.duel_target)
+                self.character.kill(self.character.duel_target)
             if not self.character.spritesheet.animation_is_done:
                 next(self.character)
             return
@@ -355,18 +356,20 @@ class Character:
         self.spritesheet.index = 0
 
     def kill(self, target, black_screen=False):
+        black_screen = black_screen and self.scene.apply_black_screen(target)
         self.stop()
-        self.status = CHARACTER_STATUSES.INTERACTING
-        self.spritesheet.animation = 'gunshot'
+        if black_screen:
+            self.status = CHARACTER_STATUSES.FREE
+            self.spritesheet.animation = 'idle'
+        else:
+            self.status = CHARACTER_STATUSES.INTERACTING
+            self.spritesheet.animation = 'gunshot'
         self.spritesheet.index = 0
         target.stop()
         target.aim(self)
         target.status = CHARACTER_STATUSES.INTERACTING
         target.spritesheet.animation = 'death'
         target.spritesheet.index = 0
-        if black_screen:
-            print('black screen')
-            self.scene.kill(target)
 
     def release_duel(self):
         self.duel_target.spritesheet.animation = 'idle'

@@ -1,3 +1,4 @@
+import sys
 import json
 import random
 import itertools
@@ -25,6 +26,9 @@ def load_scene(filename):
     scene.stairs = data['stairs']
     scene.targets = data['targets']
     scene.fences = data['fences']
+    position = data['score']['ol']['position']
+    image = load_image(data['score']['ol']['file'], key_color=(0, 255, 0))
+    scene.score_ol = Overlay(image, position, sys.maxsize)
 
     for background in data['backgrounds']:
         image = load_image(background['file'])
@@ -66,6 +70,7 @@ class Scene:
 
     def __init__(self):
         self.name = ""
+        self.score_ol = None
         self.characters = []
         self.props = []
         self.overlays = []
@@ -133,9 +138,12 @@ class Scene:
     def __next__(self):
         for evaluable in self.npcs + self.players:
             next(evaluable)
-        self.possible_duels = find_possible_duels(self)
+
         if self.black_screen_countdown > 0:
             self.black_screen_countdown -= 1
+            self.possible_duels = []
+            return
+        self.possible_duels = find_possible_duels(self)
 
     def assign_player(self, index, joystick):
         characters = self.characters
@@ -155,10 +163,11 @@ class Scene:
                 continue
             self.npcs.append(Npc(character))
 
-    def kill(self, character):
-            # if character not in [p.character for p in self.players]:
-            #     return
+    def apply_black_screen(self, character):
+        if character not in [p.character for p in self.players]:
+            return False
         self.black_screen_countdown = COUNTDOWNS.BLACK_SCREEN_COUNT_DOWN
+        return True
 
     @property
     def dying_characters(self):

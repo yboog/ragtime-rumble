@@ -1,6 +1,12 @@
 {
   "character_number": 25,
   "name": "saloon",
+  "score": {
+    "ol": {
+      "file": "resources/ui/saloon/ol.png",
+      "position": [0, 300]
+    }
+  },
   "fences": [
     [
       225,

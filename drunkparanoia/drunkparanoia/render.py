@@ -19,6 +19,8 @@ def render_game(screen, scene):
     for character1, character2 in scene.possible_duels:
         draw_possible_duel(duel_surface, character1, character2)
     screen.blit(duel_surface, (0, 0))
+    image = get_image(scene.score_ol.image)
+    screen.blit(image, scene.score_ol.render_position)
     # for rect in scene.no_go_zones:
     #     draw_rect(screen, rect, 125)
     # for interaction_zone in scene.interaction_zones:
