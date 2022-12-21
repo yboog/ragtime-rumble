@@ -18,8 +18,8 @@ ANIMATIONS = [
     'vomit',
     'coma'
 ]
-LOOPING_ANIMATIONS = ['idle', 'walk', 'piano', 'poker', 'pee_in_pant']
-HOLDABLE_ANIMATIONS = ['call', 'bloddydeath', 'coma']
+LOOPING_ANIMATIONS = ['idle', 'walk', 'piano', 'poker', 'suspicious']
+HOLDABLE_ANIMATIONS = ['call', 'death', 'coma']
 
 
 class COUNTDOWNS:
@@ -30,6 +30,11 @@ class COUNTDOWNS:
     COOLDOWN_MIN = 50
     COOLDOWN_MAX = 300
     COOLDOWN_PROBABILITY = 2
+    DUEL_CHECK_MIN = 15
+    DUEL_CHECK_MAX = 45
+    DUEL_RELEASE_TIME_MIN = 10
+    DUEL_RELEASE_TIME_MAX = 100
+    BLACK_SCREEN_COUNT_DOWN = 100
 
 
 class SPEED:
@@ -51,7 +56,7 @@ class CHARACTER_STATUSES:
     OUT = 'out'
     FREE = 'free'
     STUCK = 'stuck'
-    DUELABLES = [FREE, AUTOPILOT]
+    DUELABLES = [FREE, AUTOPILOT, STUCK]
 
 
 class ANIMATION_SIDES:

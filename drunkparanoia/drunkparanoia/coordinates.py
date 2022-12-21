@@ -75,4 +75,6 @@ def path_cross_rect(path, rect):
     tr = [rect[0] + rect[2], rect[1]]
     bl = [rect[0], rect[1] + rect[3]]
     br = [rect[0] + rect[2], rect[1] + rect[3]]
-    return Path(path).intersects_path(Path(tl, tr, bl, br))
+    path = Path(path)
+    path2 = Path([tl, tr, bl, br])
+    return path.intersects_path(path2)

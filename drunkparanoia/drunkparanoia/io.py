@@ -67,7 +67,7 @@ def load_image(filename, key_color=None):
         return filename
 
     filepath = f'{GAMEROOT}/{filename}'
-    image = pygame.image.load(filepath).convert()
+    image = pygame.image.load(filepath).convert_alpha()
     if key_color is not None:
         image.set_colorkey(key_color)
     _image_store[filename] = image

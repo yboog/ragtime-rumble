@@ -26,6 +26,27 @@ class Player:
                 self.character.request_interaction()
                 return
 
+        if self.character.status == CHARACTER_STATUSES.DUEL_ORIGIN:
+            if not self.character.spritesheet.animation_is_done:
+                next(self.character)
+                return
+            commands = get_current_commands(self.joystick)
+            if commands.get('X'):
+                self.character.kill(self.character.duel_target)
+                self.character.kill(self.character.duel_target, black_screen=True)
+            if commands.get('A'):
+                self.character.release_duel()
+            next(self.character)
+            return
+
+        if self.character.status == CHARACTER_STATUSES.DUEL_TARGET:
+            commands = get_current_commands(self.joystick)
+            if commands.get('X'):
+                self.character.aim(self.character.duel_target)
+            if not self.character.spritesheet.animation_is_done:
+                next(self.character)
+            return
+
         if self.character.status == CHARACTER_STATUSES.INTERACTING:
             next(self.character)
             return
@@ -44,13 +65,31 @@ class Player:
 
 
 class Npc:
-    # TODO
+
     def __init__(self, character):
         self.character = character
+        self.next_duel_check_countdown = random.randrange(
+            COUNTDOWNS.DUEL_CHECK_MIN, COUNTDOWNS.DUEL_CHECK_MAX)
         self.coma_count_down = random.randrange(
             COUNTDOWNS.COMA_MIN, COUNTDOWNS.COMA_MAX)
         self.cool_down = 0
+        self.release_time = 0
         self.is_cooling_down = False
+
+    def test_duels(self):
+        if self.next_duel_check_countdown > 0:
+            self.next_duel_check_countdown -= 1
+            return False
+        origin = [c for c, _ in self.character.scene.possible_duels]
+        if self.character not in origin:
+            return False
+        self.character.request_duel()
+        self.next_duel_check_countdown = random.randrange(
+            COUNTDOWNS.DUEL_CHECK_MIN, COUNTDOWNS.DUEL_CHECK_MAX)
+        self.release_time = random.randrange(
+            COUNTDOWNS.DUEL_RELEASE_TIME_MIN,
+            COUNTDOWNS.DUEL_RELEASE_TIME_MAX)
+        return True
 
     def __next__(self):
         if self.coma_count_down == 0:
@@ -65,10 +104,14 @@ class Npc:
         self.coma_count_down -= 1
 
         if self.character.status == CHARACTER_STATUSES.AUTOPILOT:
+            if self.test_duels():
+                return
             next(self.character)
             return
 
         if self.character.status == CHARACTER_STATUSES.FREE:
+            if self.test_duels():
+                return
             if self.is_cooling_down is False:
                 proba = COUNTDOWNS.COOLDOWN_PROBABILITY
                 do_pause = random.randrange(0, proba) == 0
@@ -101,6 +144,17 @@ class Npc:
             next(self.character)
             return
 
+        if self.character.status == CHARACTER_STATUSES.DUEL_ORIGIN:
+            if not self.character.spritesheet.animation_is_done:
+                next(self.character)
+                return
+            if self.release_time == 0:
+                self.character.release_duel()
+                next(self.character)
+                return
+            self.release_time -= 1
+            return
+
         next(self.character)
 
 
@@ -114,6 +168,7 @@ class Character:
         self.vomit_count_down = random.randrange(
             COUNTDOWNS.VOMIT_MIN, COUNTDOWNS.VOMIT_MAX)
         self.status = CHARACTER_STATUSES.FREE
+        self.duel_target = None
         self.ghost = None
         self.path = None
         self.buffer_animation = None
@@ -122,8 +177,6 @@ class Character:
     def choice_destination(self):
         limit = 0
         while True:
-            # if limit < 10:
-            #     raise ValueError('impossible to find dest for ', self.coordinates.position)
             dst = self.scene.choice_destination_from(self.coordinates.position)
             if dst is None:
                 break
@@ -230,12 +283,28 @@ class Character:
 
             case CHARACTER_STATUSES.INTERACTING:
                 if self.spritesheet.animation_is_done:
-                    if self.spritesheet.animation == 'call':
-                        self.spritesheet.animation = 'smoke'
-                    else:
-                        self.status = CHARACTER_STATUSES.FREE
-                        self.spritesheet.animation = 'idle'
+                    match self.spritesheet.animation:
+                        case 'call':
+                            self.spritesheet.animation = 'smoke'
+                        case 'death':
+                            self.spritesheet.animation = 'coma'
+                            self.status = CHARACTER_STATUSES.OUT
+                        case _:
+                            self.status = CHARACTER_STATUSES.FREE
+                            self.spritesheet.animation = 'idle'
                     self.spritesheet.index = 0
+                    return
+                next(self.spritesheet)
+                return
+
+            case CHARACTER_STATUSES.DUEL_ORIGIN:
+                if self.spritesheet.animation_is_done:
+                    return
+                next(self.spritesheet)
+                return
+
+            case CHARACTER_STATUSES.DUEL_TARGET:
+                if self.spritesheet.animation_is_done:
                     return
                 next(self.spritesheet)
                 return
@@ -246,6 +315,12 @@ class Character:
             self.offset()
 
         self.eval_animation()
+
+    def aim(self, character):
+        if self.coordinates.x > character.coordinates.x:
+            self.direction = DIRECTIONS.LEFT
+        else:
+            self.direction = DIRECTIONS.RIGHT
 
     def eval_animation(self):
         if self.spritesheet.animation_is_done:
@@ -279,16 +354,52 @@ class Character:
         self.spritesheet.animation = 'idle'
         self.spritesheet.index = 0
 
-    def request_duel(self):
-        for origin, _ in self.scene.possible_duels:
-            if origin != self:
-                continue
-
+    def kill(self, target, black_screen=False):
+        self.stop()
         self.status = CHARACTER_STATUSES.INTERACTING
-        self.spritesheet.animation = 'call'
+        self.spritesheet.animation = 'gunshot'
+        self.spritesheet.index = 0
+        target.stop()
+        target.aim(self)
+        target.status = CHARACTER_STATUSES.INTERACTING
+        target.spritesheet.animation = 'death'
+        target.spritesheet.index = 0
+        if black_screen:
+            print('black screen')
+            self.scene.kill(target)
+
+    def release_duel(self):
+        self.duel_target.spritesheet.animation = 'idle'
+        self.duel_target.spritesheet.index = 0
+        self.duel_target.status = CHARACTER_STATUSES.FREE
+        self.duel_target.duel_target = None
+        self.duel_target = None
+        self.status = CHARACTER_STATUSES.INTERACTING
+        self.spritesheet.animation = 'smoke'
         self.spritesheet.index = 0
 
+    def request_duel(self):
+        for origin, target in self.scene.possible_duels:
+            if origin != self:
+                continue
+            self.stop()
+            self.status = CHARACTER_STATUSES.DUEL_ORIGIN
+            self.spritesheet.animation = 'call'
+            self.spritesheet.index = 0
+            self.duel_target = target
+            target.stop()
+            target.status = CHARACTER_STATUSES.DUEL_TARGET
+            target.spritesheet.animation = 'suspicious'
+            target.spritesheet.index = 0
+            target.duel_target = self
+            return
+
     def request_interaction(self):
+        for character1, character2 in self.scene.possible_duels:
+            if character1 == self:
+                self.kill(character2)
+                return
+
         for zone in self.scene.interaction_zones:
             if zone.contains(self.coordinates.position):
                 self.go_to(zone.target, zone.action, zone.direction)

@@ -7,7 +7,7 @@ from drunkparanoia.character import Character, Player, Npc
 from drunkparanoia.coordinates import (
     box_hit_box, point_in_rectangle, box_hit_polygon, path_cross_polygon,
     path_cross_rect)
-from drunkparanoia.config import DIRECTIONS, GAMEROOT
+from drunkparanoia.config import DIRECTIONS, GAMEROOT, COUNTDOWNS
 from drunkparanoia.duel import find_possible_duels
 from drunkparanoia.io import load_image, load_data
 from drunkparanoia.sprite import SpriteSheet
@@ -24,6 +24,7 @@ def load_scene(filename):
     scene.walls = data['walls']
     scene.stairs = data['stairs']
     scene.targets = data['targets']
+    scene.fences = data['fences']
 
     for background in data['backgrounds']:
         image = load_image(background['file'])
@@ -35,7 +36,7 @@ def load_scene(filename):
         scene.overlays.append(Overlay(image, ol['position'], ol['y']))
 
     for prop in data['props']:
-        image = load_image(prop['file'], (0, 255, 0))
+        image = load_image(prop['file'])
         position = prop['position']
         center = prop['center']
         box = prop['box']
@@ -77,6 +78,8 @@ class Scene:
         self.walls = []
         self.stairs = []
         self.targets = []
+        self.fences = []
+        self.black_screen_countdown = 0
 
     @property
     def elements(self):
@@ -131,6 +134,8 @@ class Scene:
         for evaluable in self.npcs + self.players:
             next(evaluable)
         self.possible_duels = find_possible_duels(self)
+        if self.black_screen_countdown > 0:
+            self.black_screen_countdown -= 1
 
     def assign_player(self, index, joystick):
         characters = self.characters
@@ -149,6 +154,16 @@ class Scene:
             if character in assigned_characters:
                 continue
             self.npcs.append(Npc(character))
+
+    def kill(self, character):
+            # if character not in [p.character for p in self.players]:
+            #     return
+        self.black_screen_countdown = COUNTDOWNS.BLACK_SCREEN_COUNT_DOWN
+
+    @property
+    def dying_characters(self):
+        return [
+            c for c in self.characters if c.spritesheet.animation == 'death']
 
 
 class InteractionZone:

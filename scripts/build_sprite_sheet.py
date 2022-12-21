@@ -16,20 +16,21 @@ gamedata_output_path = f'{repo_root}/drunkparanoia/resources/animdata/{char}.jso
 
 
 ORDER = [
-    'idle',
-    'walk',
-    'order',
+    'bet',
+    'bully',
+    'call',
+    'coma',
+    'death',
     'drink',
+    'gunshot',
+    'idle',
+    'order',
     'piano',
     'poker',
-    'bully',
-    'pee_in_pant',
-    'bet',
-    'call', # That fucking animator vocaulary
     'smoke',
-    'bloodydeath',
+    'suspicious',
     'vomit',
-    'coma'
+    'walk',
 ]
 
 
@@ -78,6 +79,7 @@ for anim in ORDER:
     data['animations'][anim] = {
         'durations': [6 for _ in range(len(animations[anim]))],
         'startframe': start}
+    print(anim, len(animations[anim]), start)
     start += len(animations[anim])
 
 with open(gamedata_output_path, 'w') as f:
@@ -89,3 +91,4 @@ fill_canvas(canvas, images, column_lenght, width, height)
 canvas.save(output, "png")
 print(os.path.exists(os.path.dirname(output)))
 print(output, canvas.isNull())
+print(len(images))

@@ -266,6 +266,38 @@ def is_point(data):
     return all(isinstance(n, (int, float)) for n in data)
 
 
+class FencesModel(QtCore.QAbstractListModel):
+    changed = QtCore.Signal()
+
+    def __init__(self, model):
+        super().__init__()
+        self.model = model
+
+    def rowCount(self, *_):
+        return len(self.model.data['fences'])
+
+    def flags(self, index):
+        return super().flags(index) | QtCore.Qt.ItemIsEditable
+
+    def setData(self, index, value, role):
+        try:
+            data = json.loads(value)
+        except TypeError:
+            return False
+        if not is_zone(data):
+            return False
+        self.model.data['fences'][index.row()] = data
+        self.changed.emit()
+        return True
+
+    def data(self, index, role):
+        if not index.isValid():
+            return
+
+        if role in (QtCore.Qt.DisplayRole, QtCore.Qt.EditRole):
+            return str(self.model.data['fences'][index.row()])
+
+
 class PopspotsModel(QtCore.QAbstractListModel):
     def __init__(self, model):
         super().__init__()
@@ -379,6 +411,7 @@ class LevelCanvasModel:
         self.stairs = False
         self.targets = False
         self.switches = False
+        self.fences = False
         self.selected_target = None
         self.wall_selected_rows = []
 
@@ -556,6 +589,14 @@ class LevelCanvas(QtWidgets.QWidget):
                     painter.setPen(QtCore.Qt.white)
                     painter.setBrush(QtCore.Qt.NoBrush)
                     painter.drawLine(origin.center(), dst.center())
+        if self.model.fences:
+            color = QtGui.QColor(QtCore.Qt.cyan)
+            painter.setPen(color)
+            color.setAlpha(50)
+            painter.setBrush(color)
+            for fence in self.model.data['fences']:
+                print(fence)
+                painter.drawRect(*fence)
         if self.model.interactions:
             color = QtGui.QColor(QtCore.Qt.green)
             color.setAlpha(50)
@@ -666,6 +707,11 @@ class Editor(QtWidgets.QWidget):
         self.overlays = QtWidgets.QTableView()
         self.overlays.setModel(self.overlays_model)
 
+        self.fences_model = FencesModel(self.model)
+        self.fences_model.changed.connect(self.canvas.repaint)
+        self.fences = QtWidgets.QListView()
+        self.fences.setModel(self.fences_model)
+
         self.props_model = PropsModel(self.model)
         self.props_model.changed.connect(self.canvas.repaint)
         self.props = QtWidgets.QTableView()
@@ -679,6 +725,7 @@ class Editor(QtWidgets.QWidget):
         self.tab.addTab(self.stairs, 'Stairs')
         self.tab.addTab(self.targets, 'Origin/Targets')
         self.tab.addTab(self.props, 'Props')
+        self.tab.addTab(self.fences, 'Fences')
         self.tab.addTab(self.overlays, 'OL / Switches')
 
         self.rect_wall = QtWidgets.QPushButton('Create rect wall')
@@ -699,6 +746,8 @@ class Editor(QtWidgets.QWidget):
         self.create_origin.setCheckable(True)
         self.create_destination = QtWidgets.QPushButton('Create destination zone')
         self.create_destination.setCheckable(True)
+        self.create_fence = QtWidgets.QPushButton('Create fence')
+        self.create_fence.setCheckable(True)
 
         self.group = QtWidgets.QButtonGroup()
         self.group.addButton(self.rect_wall, 0)
@@ -708,6 +757,7 @@ class Editor(QtWidgets.QWidget):
         self.group.addButton(self.create_stair, 4)
         self.group.addButton(self.create_origin, 5)
         self.group.addButton(self.create_destination, 6)
+        self.group.addButton(self.create_fence, 7)
         self.group.idReleased.connect(self.mode_changed)
         self.group.setExclusive(True)
 
@@ -733,6 +783,7 @@ class Editor(QtWidgets.QWidget):
         buttons.addWidget(self.create_stair, 0, 1)
         buttons.addWidget(self.create_origin, 1, 1)
         buttons.addWidget(self.create_destination, 2, 1)
+        buttons.addWidget(self.create_fence, 3, 1)
 
         buttons_spacing = QtWidgets.QVBoxLayout()
         buttons_spacing.addLayout(buttons)
@@ -761,7 +812,7 @@ class Editor(QtWidgets.QWidget):
     def mode_changed(self, index):
         self.canvas.mode = (
             'rectangle', 'polygon', 'point', 'rectangle',
-            'rectangle', 'rectangle', 'rectangle')[index]
+            'rectangle', 'rectangle', 'rectangle', 'rectangle')[index]
         self.canvas.repaint()
 
     def add_point(self, point):
@@ -812,6 +863,11 @@ class Editor(QtWidgets.QWidget):
             rect = [rect.left(), rect.top(), rect.width(), rect.height()]
             self.model.data['targets'][self.model.selected_target]['destinations'].append(rect)
             self.targets.destinations_model.layoutChanged.emit()
+        if self.group.checkedId() == 7:
+            self.fences_model.layoutAboutToBeChanged.emit()
+            rect = [rect.left(), rect.top(), rect.width(), rect.height()]
+            self.model.data['fences'].append(rect)
+            self.fences_model.layoutChanged.emit()
 
     def add_polygon(self, polygon):
         self.walls_model.layoutAboutToBeChanged.emit()
@@ -831,6 +887,7 @@ class Editor(QtWidgets.QWidget):
         self.model.stairs = self.visibilities.stairs.isChecked()
         self.model.targets = self.visibilities.targets.isChecked()
         self.model.switches = self.visibilities.switches.isChecked()
+        self.model.fences = self.visibilities.fences.isChecked()
         self.repaint()
 
     def walls_selected(self, *_):
@@ -1011,6 +1068,8 @@ class Visibilities(QtWidgets.QWidget):
         self.targets.released.connect(self.update_visibilities.emit)
         self.switches = QtWidgets.QCheckBox('Switches', checked=model.switches)
         self.switches.released.connect(self.update_visibilities.emit)
+        self.fences = QtWidgets.QCheckBox('Fences', checked=s)
+        self.fences.released.connect(self.update_visibilities.emit)
 
         layout = QtWidgets.QVBoxLayout(self)
         layout.addWidget(self.walls)
@@ -1020,6 +1079,7 @@ class Visibilities(QtWidgets.QWidget):
         layout.addWidget(self.stairs)
         layout.addWidget(self.targets)
         layout.addWidget(self.switches)
+        layout.addWidget(self.fences)
         layout.addStretch(1)
 
 

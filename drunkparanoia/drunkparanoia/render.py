@@ -2,10 +2,13 @@ import numpy
 import math
 import pygame
 from drunkparanoia.io import get_image
+from drunkparanoia.config import COUNTDOWNS
 
 
 def render_game(screen, scene):
-    screen.fill((60, 0, 18))
+    if scene.black_screen_countdown:
+        render_death_screen(screen, scene)
+        return
     for background in scene.backgrounds:
         screen.blit(get_image(background.image), background.position)
     elements = sorted(scene.elements, key=lambda elt: elt.switch)
@@ -20,6 +23,15 @@ def render_game(screen, scene):
     #     draw_rect(screen, rect, 125)
     # for interaction_zone in scene.interaction_zones:
     #     draw_rect(screen, interaction_zone.zone, 15)
+
+
+def render_death_screen(screen, scene):
+    if scene.black_screen_countdown == COUNTDOWNS.BLACK_SCREEN_COUNT_DOWN:
+        screen.fill((255, 255, 255))
+    else:
+        screen.fill((0, 0, 0))
+    for character in scene.dying_characters:
+        render_element(screen, character)
 
 
 def draw_possible_duel(screen, char1, char2):
@@ -42,7 +54,7 @@ def render_element(screen, element):
     #                 pygame.draw.line(screen, (255, 255, 0), last, point, 2)
     #             last = point
 
-    # draw_rect(screen, element.screen_box, alpha=125)
+        # draw_rect(screen, element.screen_box, alpha=125)
 
 
 def draw_rect(surface, box, alpha=255):
