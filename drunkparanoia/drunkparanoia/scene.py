@@ -35,6 +35,13 @@ def load_scene(filename):
         position = background['position']
         scene.backgrounds.append(Background(image=image, position=position))
 
+    for i in range(1, 5):
+        player_key = f'player{i}'
+        scene.score_positions.append(data['score'][player_key]['position'])
+        scene.score_images.append([
+            load_image(data['score'][player_key][f'file{j}'])
+            for j in range(1, 5)])
+
     for ol in data['overlays']:
         image = load_image(ol['file'], (0, 255, 0))
         scene.overlays.append(Overlay(image, ol['position'], ol['y']))
@@ -71,6 +78,8 @@ class Scene:
     def __init__(self):
         self.name = ""
         self.score_ol = None
+        self.score_images = []
+        self.score_positions = []
         self.characters = []
         self.props = []
         self.overlays = []
@@ -85,6 +94,10 @@ class Scene:
         self.targets = []
         self.fences = []
         self.black_screen_countdown = 0
+
+    def score_image(self, player_n, score):
+        index = int(round((score / COUNTDOWNS.MAX_LIFE) * 3))
+        return self.score_images[player_n][index]
 
     @property
     def elements(self):
@@ -164,8 +177,8 @@ class Scene:
             self.npcs.append(Npc(character))
 
     def apply_black_screen(self, character):
-        if character not in [p.character for p in self.players]:
-            return False
+        # if character not in [p.character for p in self.players]:
+        #     return False
         self.black_screen_countdown = COUNTDOWNS.BLACK_SCREEN_COUNT_DOWN
         return True
 

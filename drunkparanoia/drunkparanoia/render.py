@@ -6,21 +6,39 @@ from drunkparanoia.config import COUNTDOWNS
 
 
 def render_game(screen, scene):
+    # Background Color.
     if scene.black_screen_countdown:
         render_death_screen(screen, scene)
         return
+    # Background.
     for background in scene.backgrounds:
         screen.blit(get_image(background.image), background.position)
+    duel_surface = pygame.Surface(screen.get_size(), pygame.SRCALPHA)
+    # Duel.
+    duel_surface.set_alpha(50)
+    for character in scene.characters:
+        if character.duel_target:
+            pos1 = character.coordinates.position
+            pos2 = character.duel_target.coordinates.position
+            pygame.draw.line(duel_surface, (255, 0, 0), pos1, pos2, 3)
+    screen.blit(duel_surface, (0, 0))
+    # Background.
     elements = sorted(scene.elements, key=lambda elt: elt.switch)
     for element in elements:
         render_element(screen, element)
+    # Possible duel.
     duel_surface = pygame.Surface(screen.get_size(), pygame.SRCALPHA)
     duel_surface.set_alpha(50)
     for character1, character2 in scene.possible_duels:
         draw_possible_duel(duel_surface, character1, character2)
     screen.blit(duel_surface, (0, 0))
+    # Scores.
     image = get_image(scene.score_ol.image)
     screen.blit(image, scene.score_ol.render_position)
+    for player in scene.players:
+        image = get_image(scene.score_image(player.index, player.life))
+        position = scene.score_positions[player.index]
+        screen.blit(image, position)
     # for rect in scene.no_go_zones:
     #     draw_rect(screen, rect, 125)
     # for interaction_zone in scene.interaction_zones:
@@ -28,8 +46,9 @@ def render_game(screen, scene):
 
 
 def render_death_screen(screen, scene):
-    if scene.black_screen_countdown == COUNTDOWNS.BLACK_SCREEN_COUNT_DOWN:
+    if scene.black_screen_countdown >= COUNTDOWNS.BLACK_SCREEN_COUNT_DOWN - 5:
         screen.fill((255, 255, 255))
+        print('white')
     else:
         screen.fill((0, 0, 0))
     for character in scene.dying_characters:
@@ -46,16 +65,6 @@ def render_element(screen, element):
     img = element.image
     screen.blit(get_image(img), element.render_position)
     # from drunkparanoia.character import Character
-    # if isinstance(element, Character):
-    #     # screen.blit(get_image(img), element.render_position)
-    #     if element.path:
-    #         last = None
-    #         for point in [element.coordinates.position] + element.path:
-    #             draw_rect(screen, (point[0], point[1], 2, 2))
-    #             if last:
-    #                 pygame.draw.line(screen, (255, 255, 0), last, point, 2)
-    #             last = point
-
         # draw_rect(screen, element.screen_box, alpha=125)
 
 

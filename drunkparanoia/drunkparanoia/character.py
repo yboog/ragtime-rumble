@@ -7,11 +7,17 @@ from drunkparanoia.coordinates import Coordinates, get_box, distance
 
 
 class Player:
+    _index = 0
+
     def __init__(self, character, joystick):
         self.character = character
         self.joystick = joystick
+        self.life = COUNTDOWNS.START_LIFE
+        self.index = self._index
+        Player._index += 1
 
     def __next__(self):
+        self.life -= 1
         if self.character.status == CHARACTER_STATUSES.STUCK:
             next(self.character)
             return
@@ -42,8 +48,9 @@ class Player:
         if self.character.status == CHARACTER_STATUSES.DUEL_TARGET:
             commands = get_current_commands(self.joystick)
             if commands.get('X'):
-                self.character.aim(self.character.duel_target)
-                self.character.kill(self.character.duel_target)
+                target = self.character.duel_target
+                self.character.aim(target)
+                self.character.kill(target, black_screen=True)
             if not self.character.spritesheet.animation_is_done:
                 next(self.character)
             return
@@ -95,6 +102,9 @@ class Npc:
     def __next__(self):
         if self.coma_count_down == 0:
             if self.character.status != CHARACTER_STATUSES.OUT:
+                if self.character.duel_target:
+                    self.character.duel_target.duel_target = None
+                    self.character.duel_target = None
                 self.character.status = CHARACTER_STATUSES.OUT
                 self.character.spritesheet.animation = 'vomit'
                 self.character.spritesheet.index = 0
@@ -370,13 +380,17 @@ class Character:
         target.status = CHARACTER_STATUSES.INTERACTING
         target.spritesheet.animation = 'death'
         target.spritesheet.index = 0
+        if self.duel_target:
+            self.duel_target.duel_target = None
+            self.duel_target = None
 
     def release_duel(self):
-        self.duel_target.spritesheet.animation = 'idle'
-        self.duel_target.spritesheet.index = 0
-        self.duel_target.status = CHARACTER_STATUSES.FREE
-        self.duel_target.duel_target = None
-        self.duel_target = None
+        if self.duel_target:
+            self.duel_target.spritesheet.animation = 'idle'
+            self.duel_target.spritesheet.index = 0
+            self.duel_target.status = CHARACTER_STATUSES.FREE
+            self.duel_target.duel_target = None
+            self.duel_target = None
         self.status = CHARACTER_STATUSES.INTERACTING
         self.spritesheet.animation = 'smoke'
         self.spritesheet.index = 0
@@ -394,6 +408,7 @@ class Character:
             target.status = CHARACTER_STATUSES.DUEL_TARGET
             target.spritesheet.animation = 'suspicious'
             target.spritesheet.index = 0
+            target.aim(self)
             target.duel_target = self
             return
 
