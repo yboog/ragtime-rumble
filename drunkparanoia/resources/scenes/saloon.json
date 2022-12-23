@@ -1,38 +1,53 @@
 {
-  "character_number": 3,
+  "character_number": 8,
   "name": "saloon",
   "score": {
     "ol": {
       "file": "resources/ui/saloon/ol.png",
-      "position": [0, 312]
+      "position": [
+        0,
+        312
+      ]
     },
     "player1": {
-      "position": [5, 325],
-      "file4":"/resources/ui/saloon/player-1/player-1-00.png",
-      "file3":"/resources/ui/saloon/player-1/player-1-01.png",
-      "file2":"/resources/ui/saloon/player-1/player-1-02.png",
-      "file1":"/resources/ui/saloon/player-1/player-1-03.png"
+      "position": [
+        5,
+        325
+      ],
+      "file4": "/resources/ui/saloon/player-1/player-1-00.png",
+      "file3": "/resources/ui/saloon/player-1/player-1-01.png",
+      "file2": "/resources/ui/saloon/player-1/player-1-02.png",
+      "file1": "/resources/ui/saloon/player-1/player-1-03.png"
     },
     "player2": {
-      "position": [30, 325],
-      "file4":"/resources/ui/saloon/player-2/player-2-00.png",
-      "file3":"/resources/ui/saloon/player-2/player-2-01.png",
-      "file2":"/resources/ui/saloon/player-2/player-2-02.png",
-      "file1":"/resources/ui/saloon/player-2/player-2-03.png"
+      "position": [
+        50,
+        325
+      ],
+      "file4": "/resources/ui/saloon/player-2/player-2-00.png",
+      "file3": "/resources/ui/saloon/player-2/player-2-01.png",
+      "file2": "/resources/ui/saloon/player-2/player-2-02.png",
+      "file1": "/resources/ui/saloon/player-2/player-2-03.png"
     },
     "player3": {
-      "position": [55, 325],
-      "file4":"/resources/ui/saloon/player-3/player-3-00.png",
-      "file3":"/resources/ui/saloon/player-3/player-3-01.png",
-      "file2":"/resources/ui/saloon/player-3/player-3-02.png",
-      "file1":"/resources/ui/saloon/player-3/player-3-03.png"
+      "position": [
+        55,
+        325
+      ],
+      "file4": "/resources/ui/saloon/player-3/player-3-00.png",
+      "file3": "/resources/ui/saloon/player-3/player-3-01.png",
+      "file2": "/resources/ui/saloon/player-3/player-3-02.png",
+      "file1": "/resources/ui/saloon/player-3/player-3-03.png"
     },
     "player4": {
-      "position": [80, 325],
-      "file4":"/resources/ui/saloon/player-4/player-4-00.png",
-      "file3":"/resources/ui/saloon/player-4/player-4-01.png",
-      "file2":"/resources/ui/saloon/player-4/player-4-02.png",
-      "file1":"/resources/ui/saloon/player-4/player-4-03.png"
+      "position": [
+        80,
+        325
+      ],
+      "file4": "/resources/ui/saloon/player-4/player-4-00.png",
+      "file3": "/resources/ui/saloon/player-4/player-4-01.png",
+      "file2": "/resources/ui/saloon/player-4/player-4-02.png",
+      "file1": "/resources/ui/saloon/player-4/player-4-03.png"
     }
   },
   "fences": [
@@ -133,6 +148,18 @@
       300,
       20,
       21
+    ],
+    [
+      -10,
+      360,
+      660,
+      200
+    ],
+    [
+      640,
+      -10,
+      238,
+      380
     ]
   ],
   "walls": [
@@ -259,7 +286,7 @@
       ]
     },
     {
-      "action": "balcony",
+      "action": "piano",
       "direction": "down",
       "zone": [
         230,
@@ -490,313 +517,644 @@
   ],
   "targets": [
     {
-      "weight": 3,
       "origin": [
-        10,
-        50,
-        200,
-        100
-      ],
-      "destinations": [
-        [
-          10,
-          50,
-          100,
-          150
-        ],
-        [
-          110,
-          50,
-          300,
-          35
-        ],
-        [
-          111,
-          85,
-          99,
-          65
-        ]
-      ]
-    },
-    {
-      "origin": [
-        303,
-        148,
-        174,
-        21
+        0,
+        51,
+        42,
+        28
       ],
       "weight": 3,
       "destinations": [
         [
-          303,
-          147,
+          1,
+          66,
           41,
-          210
-        ],
-        [
-          304,
-          169,
-          336,
-          57
-        ],
-        [
-          345,
-          147,
-          131,
-          49
+          69
         ]
       ]
     },
     {
       "origin": [
-        304,
-        169,
-        242,
-        57
+        0,
+        66,
+        98,
+        62
       ],
       "weight": 3,
       "destinations": [
         [
-          305,
-          150,
-          140,
+          0,
+          66,
+          97,
           136
         ],
         [
-          445,
-          168,
-          97,
-          118
-        ],
-        [
-          543,
-          168,
-          112,
-          57
-        ]
-      ]
-    },
-    {
-      "origin": [
-        478,
-        168,
-        64,
-        58
-      ],
-      "weight": 3,
-      "destinations": [
-        [
-          479,
-          73,
-          63,
-          152
-        ]
-      ]
-    },
-    {
-      "origin": [
-        545,
-        169,
-        94,
-        56
-      ],
-      "weight": 3,
-      "destinations": [
-        [
-          543,
-          129,
-          96,
-          97
-        ],
-        [
-          569,
-          117,
-          46,
-          25
-        ],
-        [
-          478,
-          169,
-          160,
-          58
-        ]
-      ]
-    },
-    {
-      "origin": [
-        544,
-        127,
-        96,
-        42
-      ],
-      "weight": 3,
-      "destinations": [
-        [
-          568,
-          113,
-          50,
-          27
-        ],
-        [
-          547,
-          135,
-          80,
-          40
-        ],
-        [
-          428,
-          169,
-          212,
-          65
-        ]
-      ]
-    },
-    {
-      "origin": [
-        543,
-        168,
-        97,
-        58
-      ],
-      "weight": 3,
-      "destinations": [
-        [
-          544,
-          125,
-          94,
-          55
-        ],
-        [
-          473,
-          167,
-          69,
-          57
-        ]
-      ]
-    },
-    {
-      "origin": [
-        305,
-        228,
-        171,
-        85
-      ],
-      "weight": 3,
-      "destinations": [
-        [
-          306,
-          153,
-          64,
-          205
-        ],
-        [
-          309,
-          200,
-          167,
-          100
-        ],
-        [
-          478,
-          174,
-          50,
-          126
-        ]
-      ]
-    },
-    {
-      "origin": [
-        284,
-        283,
-        150,
-        75
-      ],
-      "weight": 3,
-      "destinations": [
-        [
-          285,
-          308,
-          353,
-          50
-        ],
-        [
-          304,
-          215,
-          81,
-          145
-        ]
-      ]
-    },
-    {
-      "origin": [
-        100,
-        265,
-        70,
-        50
-      ],
-      "weight": 3,
-      "destinations": [
-        [
-          65,
-          250,
-          114,
+          98,
+          66,
+          121,
           62
         ]
       ]
     },
     {
       "origin": [
-        433,
-        313,
-        55,
-        45
+        98,
+        66,
+        60,
+        62
       ],
       "weight": 3,
       "destinations": [
         [
-          281,
-          318,
-          357,
-          40
-        ]
-      ]
-    },
-    {
-      "origin": [
-        490,
-        313,
-        67,
-        45
-      ],
-      "weight": 3,
-      "destinations": [
-        [
-          489,
-          231,
-          39,
-          127
+          1,
+          64,
+          219,
+          64
         ],
         [
-          288,
-          327,
-          241,
+          101,
+          51,
+          117,
           30
         ]
       ]
     },
     {
       "origin": [
-        529,
-        313,
-        110,
-        47
+        158,
+        66,
+        60,
+        62
       ],
       "weight": 3,
       "destinations": [
         [
-          454,
-          311,
-          118,
-          42
+          163,
+          49,
+          55,
+          203
+        ]
+      ]
+    },
+    {
+      "origin": [
+        102,
+        46,
+        320,
+        34
+      ],
+      "weight": 3,
+      "destinations": [
+        [
+          103,
+          46,
+          319,
+          34
+        ]
+      ]
+    },
+    {
+      "origin": [
+        102,
+        45,
+        118,
+        22
+      ],
+      "weight": 3,
+      "destinations": [
+        [
+          102,
+          45,
+          116,
+          82
+        ]
+      ]
+    },
+    {
+      "origin": [
+        165,
+        52,
+        53,
+        71
+      ],
+      "weight": 3,
+      "destinations": [
+        [
+          165,
+          124,
+          55,
+          130
+        ]
+      ]
+    },
+    {
+      "origin": [
+        165,
+        120,
+        55,
+        74
+      ],
+      "weight": 3,
+      "destinations": [
+        [
+          129,
+          79,
+          90,
+          49
+        ],
+        [
+          138,
+          184,
+          79,
+          68
+        ]
+      ]
+    },
+    {
+      "origin": [
+        1,
+        129,
+        30,
+        75
+      ],
+      "weight": 3,
+      "destinations": [
+        [
+          0,
+          205,
+          31,
+          100
+        ],
+        [
+          58,
+          67,
+          90,
+          61
+        ]
+      ]
+    },
+    {
+      "origin": [
+        0,
+        206,
+        32,
+        50
+      ],
+      "weight": 3,
+      "destinations": [
+        [
+          0,
+          155,
+          31,
+          151
+        ]
+      ]
+    },
+    {
+      "origin": [
+        32,
+        129,
+        64,
+        72
+      ],
+      "weight": 3,
+      "destinations": [
+        [
+          0,
+          68,
+          96,
+          133
+        ]
+      ]
+    },
+    {
+      "origin": [
+        0,
+        174,
+        95,
+        27
+      ],
+      "weight": 3,
+      "destinations": [
+        [
+          1,
+          180,
+          216,
+          17
+        ],
+        [
+          19,
+          74,
+          77,
+          100
+        ]
+      ]
+    },
+    {
+      "origin": [
+        92,
+        174,
+        125,
+        77
+      ],
+      "weight": 3,
+      "destinations": [
+        [
+          91,
+          175,
+          125,
+          75
+        ],
+        [
+          91,
+          215,
+          89,
+          87
+        ]
+      ]
+    },
+    {
+      "origin": [
+        128,
+        180,
+        90,
+        49
+      ],
+      "weight": 3,
+      "destinations": [
+        [
+          0,
+          176,
+          147,
+          29
+        ],
+        [
+          92,
+          207,
+          57,
+          97
+        ],
+        [
+          167,
+          81,
+          49,
+          103
+        ]
+      ]
+    },
+    {
+      "origin": [
+        87,
+        256,
+        93,
+        50
+      ],
+      "weight": 3,
+      "destinations": [
+        [
+          1,
+          254,
+          87,
+          54
+        ],
+        [
+          93,
+          181,
+          124,
+          73
+        ],
+        [
+          287,
+          307,
+          128,
+          53
+        ]
+      ]
+    },
+    {
+      "origin": [
+        367,
+        45,
+        56,
+        36
+      ],
+      "weight": 3,
+      "destinations": [
+        [
+          479,
+          75,
+          62,
+          41
+        ]
+      ]
+    },
+    {
+      "origin": [
+        479,
+        75,
+        62,
+        43
+      ],
+      "weight": 3,
+      "destinations": [
+        [
+          481,
+          170,
+          62,
+          48
+        ],
+        [
+          375,
+          50,
+          50,
+          50
+        ]
+      ]
+    },
+    {
+      "origin": [
+        307,
+        150,
+        108,
+        131
+      ],
+      "weight": 3,
+      "destinations": [
+        [
+          415,
+          150,
+          57,
+          129
+        ],
+        [
+          304,
+          280,
+          112,
+          78
+        ]
+      ]
+    },
+    {
+      "origin": [
+        415,
+        148,
+        57,
+        132
+      ],
+      "weight": 3,
+      "destinations": [
+        [
+          304,
+          148,
+          76,
+          212
+        ],
+        [
+          475,
+          172,
+          163,
+          58
+        ],
+        [
+          475,
+          233,
+          43,
+          50
+        ]
+      ]
+    },
+    {
+      "origin": [
+        303,
+        280,
+        114,
+        45
+      ],
+      "weight": 3,
+      "destinations": [
+        [
+          290,
+          301,
+          127,
+          59
+        ],
+        [
+          312,
+          153,
+          128,
+          115
+        ]
+      ]
+    },
+    {
+      "origin": [
+        475,
+        231,
+        44,
+        53
+      ],
+      "weight": 3,
+      "destinations": [
+        [
+          477,
+          276,
+          48,
+          82
+        ]
+      ]
+    },
+    {
+      "origin": [
+        479,
+        323,
+        159,
+        37
+      ],
+      "weight": 3,
+      "destinations": [
+        [
+          294,
+          322,
+          242,
+          38
+        ]
+      ]
+    },
+    {
+      "origin": [
+        580,
+        281,
+        60,
+        78
+      ],
+      "weight": 3,
+      "destinations": [
+        [
+          585,
+          151,
+          55,
+          127
+        ],
+        [
+          487,
+          281,
+          89,
+          78
+        ]
+      ]
+    },
+    {
+      "origin": [
+        477,
+        275,
+        51,
+        45
+      ],
+      "weight": 3,
+      "destinations": [
+        [
+          531,
+          282,
+          99,
+          80
+        ],
+        [
+          479,
+          319,
+          45,
+          43
+        ],
+        [
+          411,
+          204,
+          108,
+          78
+        ]
+      ]
+    },
+    {
+      "origin": [
+        414,
+        321,
+        77,
+        37
+      ],
+      "weight": 3,
+      "destinations": [
+        [
+          287,
+          313,
+          127,
+          43
+        ],
+        [
+          493,
+          297,
+          147,
+          63
+        ]
+      ]
+    },
+    {
+      "origin": [
+        583,
+        229,
+        55,
+        51
+      ],
+      "weight": 3,
+      "destinations": [
+        [
+          488,
+          281,
+          150,
+          77
+        ],
+        [
+          549,
+          116,
+          91,
+          112
+        ]
+      ]
+    },
+    {
+      "origin": [
+        551,
+        131,
+        93,
+        96
+      ],
+      "weight": 3,
+      "destinations": [
+        [
+          581,
+          225,
+          55,
+          135
+        ],
+        [
+          453,
+          187,
+          105,
+          40
+        ]
+      ]
+    },
+    {
+      "origin": [
+        5,
+        255,
+        84,
+        48
+      ],
+      "weight": 3,
+      "destinations": [
+        [
+          3,
+          253,
+          171,
+          53
+        ]
+      ]
+    },
+    {
+      "origin": [
+        475,
+        179,
+        70,
+        46
+      ],
+      "weight": 3,
+      "destinations": [
+        [
+          551,
+          150,
+          81,
+          74
+        ],
+        [
+          319,
+          157,
+          146,
+          114
+        ]
+      ]
+    },
+    {
+      "origin": [
+        368,
+        153,
+        85,
+        117
+      ],
+      "weight": 3,
+      "destinations": [
+        [
+          307,
+          215,
+          109,
+          84
         ]
       ]
     }

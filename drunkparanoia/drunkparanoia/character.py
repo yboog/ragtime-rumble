@@ -9,15 +9,25 @@ from drunkparanoia.coordinates import Coordinates, get_box, distance
 class Player:
     _index = 0
 
-    def __init__(self, character, joystick):
+    def __init__(self, character, joystick, scene):
         self.character = character
+        self.scene = scene
         self.joystick = joystick
-        self.life = COUNTDOWNS.START_LIFE
+        self.life = COUNTDOWNS.MAX_LIFE
         self.index = self._index
         Player._index += 1
 
+    def kill(self, target, black_screen=False):
+        self.character.kill(target, black_screen)
+        player = self.scene.find_player(target)
+        if player:
+            player.life = 0
+
     def __next__(self):
-        self.life -= 1
+        # self.life -= 1
+        if self.character.status == CHARACTER_STATUSES.OUT:
+            return
+
         if self.character.status == CHARACTER_STATUSES.STUCK:
             next(self.character)
             return
@@ -29,6 +39,13 @@ class Player:
                 self.character.request_duel()
                 return
             if commands.get('X'):
+                for character1, character2 in self.scene.possible_duels:
+                    if character1 == self.character:
+                        self.kill(character2)
+                        return
+                    if character2 == self.character:
+                        self.kill(character1)
+                        return
                 self.character.request_interaction()
                 return
 
@@ -38,8 +55,8 @@ class Player:
                 return
             commands = get_current_commands(self.joystick)
             if commands.get('X'):
-                target = self.character.duel_target
-                self.character.kill(target, black_screen=True)
+                self.kill(self.character.duel_target, black_screen=True)
+
             if commands.get('A'):
                 self.character.release_duel()
             next(self.character)
@@ -50,7 +67,7 @@ class Player:
             if commands.get('X'):
                 target = self.character.duel_target
                 self.character.aim(target)
-                self.character.kill(target, black_screen=True)
+                self.kill(target, black_screen=True)
             if not self.character.spritesheet.animation_is_done:
                 next(self.character)
             return
@@ -74,8 +91,9 @@ class Player:
 
 class Npc:
 
-    def __init__(self, character):
+    def __init__(self, character, scene):
         self.character = character
+        self.scene = scene
         self.next_duel_check_countdown = random.randrange(
             COUNTDOWNS.DUEL_CHECK_MIN, COUNTDOWNS.DUEL_CHECK_MAX)
         self.coma_count_down = random.randrange(
@@ -397,6 +415,8 @@ class Character:
 
     def request_duel(self):
         for origin, target in self.scene.possible_duels:
+            if target == self:
+                origin, target = target, origin
             if origin != self:
                 continue
             self.stop()
@@ -404,20 +424,17 @@ class Character:
             self.spritesheet.animation = 'call'
             self.spritesheet.index = 0
             self.duel_target = target
+            self.path = None
             target.stop()
             target.status = CHARACTER_STATUSES.DUEL_TARGET
             target.spritesheet.animation = 'suspicious'
             target.spritesheet.index = 0
             target.aim(self)
             target.duel_target = self
+            target.path = None
             return
 
     def request_interaction(self):
-        for character1, character2 in self.scene.possible_duels:
-            if character1 == self:
-                self.kill(character2)
-                return
-
         for zone in self.scene.interaction_zones:
             if zone.contains(self.coordinates.position):
                 self.go_to(zone.target, zone.action, zone.direction)
@@ -457,11 +474,16 @@ class Character:
         self.direction = direction or self.direction
         self.accelerate()
         self.offset()
+
         if not self.ghost:
             if self.speed == 0:
                 self.path.pop(0)
             self.ghost = self.coordinates.position
             self.eval_animation()
+            return
+        elif self.ghost == self.coordinates.position:
+            self.end_autopilot()
+            self.path = None
             return
 
         dist1 = distance(self.ghost, self.path[0])
@@ -532,5 +554,3 @@ def shortest_path(orig, dst):
     if reverse:
         orig, dst = dst, orig
     return [intermediate, dst]
-
-

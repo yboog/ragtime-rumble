@@ -3,6 +3,16 @@ import math
 import pygame
 from drunkparanoia.io import get_image
 from drunkparanoia.config import COUNTDOWNS
+from drunkparanoia.character import Character
+
+
+def render_no_player(screen):
+    color = 255, 255, 255
+    font = pygame.font.SysFont('Consolas', 30)
+    text = font.render('no pad detected', True, color)
+    x, y = screen.get_size()
+    text_rect = text.get_rect(center=(x / 2, y / 2))
+    screen.blit(text, text_rect)
 
 
 def render_game(screen, scene):
@@ -64,6 +74,16 @@ def draw_possible_duel(screen, char1, char2):
 def render_element(screen, element):
     img = element.image
     screen.blit(get_image(img), element.render_position)
+    # if isinstance(element, Character):
+    #     # screen.blit(get_image(img), element.render_position)
+    #     if element.path:
+    #         last = None
+    #         for point in [element.coordinates.position] + element.path:
+    #             draw_rect(screen, (point[0], point[1], 2, 2))
+    #             if last:
+    #                 pygame.draw.line(screen, (255, 255, 0), last, point, 2)
+    #             last = point
+
     # from drunkparanoia.character import Character
         # draw_rect(screen, element.screen_box, alpha=125)
 

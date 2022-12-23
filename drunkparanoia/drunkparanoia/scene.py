@@ -158,29 +158,33 @@ class Scene:
             return
         self.possible_duels = find_possible_duels(self)
 
-    def assign_player(self, index, joystick):
-        characters = self.characters
-        for player in self.players:
-            for character in characters:
-                if player.character == character:
-                    msg = f'Character {index} already assigned to player'
-                    raise ValueError(msg)
+    def create_player(self, joystick):
+        player_characters = [player.character for player in self.players]
+        for character in self.characters:
+            if character in player_characters:
+                continue
+            player = Player(character, joystick, self)
+            self.players.append(player)
+            return
 
-        player = Player(self.characters[index], joystick)
-        self.players.append(player)
+    def find_player(self, character):
+        for player in self.players:
+            if player.character == character:
+                return player
 
     def create_npcs(self):
         assigned_characters = [player.character for player in self.players]
         for character in self.characters:
             if character in assigned_characters:
                 continue
-            self.npcs.append(Npc(character))
+            self.npcs.append(Npc(character, self))
 
     def apply_black_screen(self, character):
-        # if character not in [p.character for p in self.players]:
-        #     return False
-        self.black_screen_countdown = COUNTDOWNS.BLACK_SCREEN_COUNT_DOWN
-        return True
+        for player in self.players:
+            if player.character == character:
+                self.black_screen_countdown = COUNTDOWNS.BLACK_SCREEN_COUNT_DOWN
+                return True
+        return False
 
     @property
     def dying_characters(self):
