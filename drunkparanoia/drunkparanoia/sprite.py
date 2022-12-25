@@ -14,11 +14,11 @@ class SpriteSheet:
     def durations(self):
         return self.data['animations'][self.animation]['durations']
 
-    def image(self, direction):
+    def image(self, direction, variation=0):
         index = image_index_from_durations(self.index, self.durations)
         index += self.data['animations'][self.animation]['startframe']
         side = DIRECTION_TO_SIDE[direction]
-        image = self.images[side][index]
+        image = self.images[variation][side][index]
         flipped = direction in DIRECTIONS.FLIPPED
         return image_mirror(image, horizontal=True) if flipped else image
 

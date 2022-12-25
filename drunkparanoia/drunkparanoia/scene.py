@@ -63,13 +63,14 @@ def load_scene(filename):
         position = next(spots)
         spritesheet = SpriteSheet(load_data(character['file']))
         directions = DIRECTIONS.LEFT, DIRECTIONS.RIGHT
-        character = Character(position, spritesheet, scene)
+        character = Character(position, spritesheet, character['variation'], scene)
         character.direction = random.choice(directions)
         scene.characters.append(character)
 
     for interaction_zone in data['interactions']:
         zone = InteractionZone(interaction_zone)
         scene.interaction_zones.append(zone)
+
     return scene
 
 

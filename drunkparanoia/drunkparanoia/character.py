@@ -188,10 +188,11 @@ class Npc:
 
 
 class Character:
-    def __init__(self, position, spritesheet, scene):
+    def __init__(self, position, spritesheet, variation, scene):
         self.spritesheet = spritesheet
         self.coordinates = Coordinates(position)
         self.direction = DIRECTIONS.DOWN
+        self.variation = variation
         self.speed = 0
         self.scene = scene
         self.vomit_count_down = random.randrange(
@@ -245,7 +246,7 @@ class Character:
 
     @property
     def image(self):
-        return self.spritesheet.image(self.direction)
+        return self.spritesheet.image(self.direction, self.variation)
 
     def offset(self):
         inclination = self.scene.inclination_at(self.coordinates.position)

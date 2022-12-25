@@ -58,7 +58,6 @@ def render_game(screen, scene):
 def render_death_screen(screen, scene):
     if scene.black_screen_countdown >= COUNTDOWNS.BLACK_SCREEN_COUNT_DOWN - 5:
         screen.fill((255, 255, 255))
-        print('white')
     else:
         screen.fill((0, 0, 0))
     for character in scene.dying_characters:
@@ -113,7 +112,6 @@ def draw_dashed_line(surf, color, start_pos, end_pos, width=1, dash_length=4):
             xcoords = list(range(x1, x2, dl if x1 < x2 else -dl))
             ycoords = [y1] * len(xcoords)
         except TypeError as e:
-            print(x1, x2, -dl)
             raise TypeError from e
     else:
         a = abs(x2 - x1)

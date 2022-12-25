@@ -1,6 +1,180 @@
 {
-  "character_number": 8,
+  "character_number": 16,
   "name": "saloon",
+  "startups": {
+    "unassigned": [
+      [
+        320,
+        50
+      ],
+      [
+        320,
+        80
+      ],
+      [
+        320,
+        110
+      ],
+      [
+        320,
+        140
+      ]
+    ],
+    "groups": [
+      {
+        "popspots": {
+          "left": [
+            30,
+            240
+          ],
+          "right": [
+            93,
+            240
+          ],
+          "up": [
+            62,
+            215
+          ],
+          "down": [
+            62,
+            260
+          ]
+        },
+        "assigned": [
+          [
+            62,
+            175
+          ],
+          [
+            62,
+            155
+          ],
+          [
+            62,
+            135
+          ],
+          [
+            62,
+            115
+          ]
+        ]
+      },
+      {
+        "popspots": {
+          "left": [
+            98,
+            165
+          ],
+          "right": [
+            160,
+            165
+          ],
+          "up": [
+            131,
+            140
+          ],
+          "down": [
+            131,
+            185
+          ]
+        },
+        "assigned": [
+          [
+            131,
+            100
+          ],
+          [
+            131,
+            80
+          ],
+          [
+            131,
+            60
+          ],
+          [
+            131,
+            40
+          ]
+        ]
+      },
+      {
+        "popspots": {
+          "left": [
+            417,
+            315
+          ],
+          "right": [
+            479,
+            315
+          ],
+          "up": [
+            448,
+            290
+          ],
+          "down": [
+            448,
+            335
+          ]
+        },
+        "assigned": [
+          [
+            448,
+            250
+          ],
+          [
+            448,
+            230
+          ],
+          [
+            448,
+            210
+          ],
+          [
+            448,
+            190
+          ]
+        ]
+      },
+      {
+        "popspots": {
+          "left": [
+            520,
+            260
+          ],
+          "right": [
+            582,
+            260
+          ],
+          "up": [
+            551,
+            235
+          ],
+          "down": [
+            551,
+            280
+          ]
+        },
+        "assigned": [
+          [
+            551,
+            195
+          ],
+          [
+            551,
+            175
+          ],
+          [
+            551,
+            155
+          ],
+          [
+            551,
+            135
+          ]
+        ]
+      }
+    ]
+  },
   "score": {
     "ol": {
       "file": "resources/ui/saloon/ol.png",
@@ -56,6 +230,18 @@
       114,
       75,
       140
+    ],
+    [
+      539,
+      65,
+      8,
+      82
+    ],
+    [
+      546,
+      146,
+      1,
+      1
     ]
   ],
   "no_go_zones": [
@@ -371,7 +557,7 @@
     ],
     [
       55,
-      136
+      135
     ],
     [
       158,
@@ -479,7 +665,7 @@
     ],
     [
       69,
-      75
+      85
     ],
     [
       507,
@@ -1161,7 +1347,16 @@
   ],
   "characters": [
     {
-      "file": "resources/animdata/smith.json"
+      "file": "resources/animdata/smith.json",
+      "variation": 0
+    },
+    {
+      "file": "resources/animdata/smith.json",
+      "variation": 1
+    },
+    {
+      "file": "resources/animdata/smith.json",
+      "variation": 2
     }
   ],
   "overlays": [
@@ -1209,10 +1404,11 @@
   "props": [
     {
       "file": "resources/props/poker-droite-bas.png",
+      "visible_at_splash": true,
       "position": [
         450,
         325
-      ],
+        ],
       "center": [
         30,
         45
@@ -1226,6 +1422,7 @@
     },
     {
       "file": "resources/props/poker-droite-haut.png",
+      "visible_at_splash": true,
       "position": [
         550,
         275
@@ -1243,6 +1440,7 @@
     },
     {
       "file": "resources/props/poker-gauche-bas.png",
+      "visible_at_splash": true,
       "position": [
         60,
         250
@@ -1260,6 +1458,7 @@
     },
     {
       "file": "resources/props/poker-gauche-haut.png",
+      "visible_at_splash": true,
       "position": [
         130,
         175
@@ -1277,6 +1476,7 @@
     },
     {
       "file": "resources/props/piano.png",
+      "visible_at_splash": false,
       "position": [
         70,
         30
@@ -1294,6 +1494,7 @@
     },
     {
       "file": "resources/props/machine-a-sous.png",
+      "visible_at_splash": false,
       "position": [
         370,
         130

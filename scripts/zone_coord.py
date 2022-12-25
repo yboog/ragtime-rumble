@@ -1,5 +1,7 @@
 import os
 import json
+import subprocess
+
 import numpy as np
 from PIL import Image, ImageQt
 from PySide6 import QtWidgets, QtCore, QtGui
@@ -20,6 +22,148 @@ def get_stair_line(rect, inclination):
     return line
 
 
+class UnassignedSpotModel(QtCore.QAbstractListModel):
+    changed = QtCore.Signal()
+
+    def __init__(self, model):
+        super().__init__()
+        self.model = model
+
+    def rowCount(self, *_):
+        return len(self.model.data['startups']['unassigned'])
+
+    def setData(self, index, value, role):
+        try:
+            data = json.loads(value)
+        except BaseException:
+            return False
+        if not is_point(data):
+            return False
+        self.model.data['startups']['unassigned'][index.row()] = data
+        self.changed.emit()
+        return True
+
+    def flags(self, index):
+        return super().flags(index) | QtCore.Qt.ItemIsEditable
+
+    def data(self, index, role):
+        if not index.isValid():
+            return
+
+        if role in (QtCore.Qt.DisplayRole, QtCore.Qt.EditRole):
+            return str(self.model.data['startups']['unassigned'][index.row()])
+
+
+class GroupAttributesModel(QtCore.QAbstractTableModel):
+    changed = QtCore.Signal()
+
+    def __init__(self, model, parent=None):
+        super().__init__(parent)
+        self.model = model
+
+    def rowCount(self, *_):
+        return 8 if self.model.selected_group is not None else 0
+
+    def columnCount(self, *_):
+        return 2
+
+    def flags(self, index):
+        flags = super().flags(index)
+        if index.column() > 0:
+            flags |= QtCore.Qt.ItemIsEditable
+        return flags
+
+    def setData(self, index, value, role):
+        if not index.isValid():
+            return False
+        try:
+            data = json.loads(value)
+        except BaseException:
+            return False
+        if not is_point(data):
+            return
+        group_index = self.model.selected_group
+        group = self.model.data['startups']['groups'][group_index]
+        self.layoutAboutToBeChanged.emit()
+        if index.row() < 4:
+            d = ("left", "right", "up", "down")[index.row()]
+            group['popspots'][d] = data
+        else:
+            group['assigned'][index.row() - 4] = data
+        self.layoutChanged.emit()
+        self.changed.emit()
+
+    def data(self, index, role):
+        if not index.isValid():
+            return
+        if role not in (QtCore.Qt.DisplayRole, QtCore.Qt.EditRole):
+            return
+        row = index.row()
+        keys = ("left", "right", "up", "down", "pos1", "pos2", "pos3", "pos4")
+        if index.column() == 0:
+            return keys[row]
+        groups = self.model.data['startups']['groups']
+        group = self.model.selected_group
+        if row < 4:
+            return str(groups[group]['popspots'][keys[row]])
+        return str(groups[group]['assigned'][row - 4])
+
+
+class GroupsListModel(QtCore.QAbstractListModel):
+    def __init__(self, model, parent=None):
+        super().__init__(parent)
+        self.model = model
+
+    def rowCount(self, *_):
+        return len(self.model.data['startups']['groups'])
+
+    def data(self, index, role):
+        if role == QtCore.Qt.DisplayRole:
+            return str(index.row() + 1)
+
+
+class Startups(QtWidgets.QWidget):
+    changed = QtCore.Signal()
+
+    def __init__(self, model, parent=None):
+        super().__init__(parent)
+        self.model = model
+        self.unassigned_label = QtWidgets.QLabel('Unassigned Gamepad positions')
+        self.unassigned_model = UnassignedSpotModel(self.model)
+        self.unassigned_model.changed.connect(self.changed.emit)
+        self.unassigned_stops = QtWidgets.QListView()
+        self.unassigned_stops.setModel(self.unassigned_model)
+
+        unnasighed_layout = QtWidgets.QVBoxLayout()
+        unnasighed_layout.addWidget(self.unassigned_label)
+        unnasighed_layout.addWidget(self.unassigned_stops)
+
+        self.groups_model = GroupsListModel(self.model)
+        self.groups = QtWidgets.QListView()
+        self.groups.setModel(self.groups_model)
+        self.groups.selectionModel().selectionChanged.connect(self.set_group)
+
+        self.groups_attributes_model = GroupAttributesModel(self.model)
+        self.groups_attributes_model.changed.connect(self.changed.emit)
+        self.groups_attributes = QtWidgets.QTableView()
+        self.groups_attributes.setModel(self.groups_attributes_model)
+        self.groups_attributes.verticalHeader().hide()
+        self.groups_attributes.horizontalHeader().hide()
+
+        layout = QtWidgets.QHBoxLayout(self)
+        layout.addLayout(unnasighed_layout)
+        layout.addWidget(self.groups)
+        layout.addWidget(self.groups_attributes)
+
+    def set_group(self, *_):
+        indexes = self.groups.selectionModel().selectedIndexes()
+        self.groups_attributes_model.layoutAboutToBeChanged.emit()
+        self.model.selected_group = indexes[0].row() if indexes else None
+        self.groups_attributes_model.layoutChanged.emit()
+        self.changed.emit()
+        return
+
+
 class PropsModel(QtCore.QAbstractTableModel):
     changed = QtCore.Signal()
 
@@ -31,14 +175,14 @@ class PropsModel(QtCore.QAbstractTableModel):
         return len(self.model.data['props'])
 
     def columnCount(self, *_):
-        return 4
+        return 5
 
     def headerData(self, section, orientation, role):
         if role != QtCore.Qt.DisplayRole:
             return
         if orientation != QtCore.Qt.Horizontal:
             return
-        return ('file', 'position', 'center', 'box')[section]
+        return ('file', 'position', 'center', 'box', 'visible at splash')[section]
 
     def flags(self, index):
         flags = super().flags(index)
@@ -50,11 +194,12 @@ class PropsModel(QtCore.QAbstractTableModel):
         if not index.isValid() or not index.column():
             return False
         prop = self.model.data['props'][index.row()]
-        try:
-            data = json.loads(value)
-            data = [int(n) for n in data]
-        except BaseException:
-            return False
+        if index.column() != 4:
+            try:
+                data = json.loads(value)
+                data = [int(n) for n in data]
+            except BaseException:
+                return False
         match index.column():
             case 0:
                 return False
@@ -70,6 +215,10 @@ class PropsModel(QtCore.QAbstractTableModel):
                 if not is_zone(data):
                     return False
                 prop['box'] = data
+            case 4:
+                if value.lower() not in ('true', 'false'):
+                    return False
+                prop['visible_at_splash'] = value.lower() == 'true'
         self.changed.emit()
         return True
 
@@ -79,7 +228,9 @@ class PropsModel(QtCore.QAbstractTableModel):
         if role not in (QtCore.Qt.DisplayRole, QtCore.Qt.EditRole):
             return
         try:
-            key = ('file', 'position', 'center', 'box')[index.column()]
+            key = (
+                'file', 'position', 'center', 'box',
+                'visible_at_splash')[index.column()]
             return str(self.model.data['props'][index.row()][key])
         except IndexError:
             print('fail', index)
@@ -299,6 +450,8 @@ class FencesModel(QtCore.QAbstractListModel):
 
 
 class PopspotsModel(QtCore.QAbstractListModel):
+    changed = QtCore.Signal()
+
     def __init__(self, model):
         super().__init__()
         self.model = model
@@ -306,11 +459,25 @@ class PopspotsModel(QtCore.QAbstractListModel):
     def rowCount(self, *_):
         return len(self.model.data['popspots'])
 
+    def setData(self, index, value, role):
+        try:
+            data = json.loads(value)
+        except BaseException:
+            return False
+        if not is_point(data):
+            return False
+        self.model.data['popspots'][index.row()] = data
+        self.changed.emit()
+        return True
+
+    def flags(self, index):
+        return super().flags(index) | QtCore.Qt.ItemIsEditable
+
     def data(self, index, role):
         if not index.isValid():
             return
 
-        if role == QtCore.Qt.DisplayRole:
+        if role in (QtCore.Qt.DisplayRole, QtCore.Qt.EditRole):
             return str(self.model.data['popspots'][index.row()])
 
 
@@ -404,6 +571,7 @@ class LevelCanvasModel:
             img = remove_key_color(f'{gameroot}/{prop["file"]}', color)
             self.props.append(img)
 
+        self.filter = True
         self.walls = True
         self.popspots = False
         self.interactions = False
@@ -412,7 +580,10 @@ class LevelCanvasModel:
         self.targets = False
         self.switches = False
         self.fences = False
+        self.startups = True
+
         self.selected_target = None
+        self.selected_group = None
         self.wall_selected_rows = []
 
     def size(self):
@@ -495,6 +666,12 @@ class LevelCanvas(QtWidgets.QWidget):
             x = prop['position'][0] - prop['center'][0]
             y = prop['position'][1] - prop['center'][1]
             painter.drawImage(x, y, image)
+        if self.model.filter:
+            color = QtGui.QColor(QtCore.Qt.white)
+            color.setAlpha(100)
+            painter.setBrush(color)
+            painter.setPen(color)
+            painter.drawRect(event.rect())
         if self.model.switches:
             for ol in self.model.data['overlays']:
                 c = event.rect().left(), ol['y'], event.rect().right(), ol['y']
@@ -595,7 +772,6 @@ class LevelCanvas(QtWidgets.QWidget):
             color.setAlpha(50)
             painter.setBrush(color)
             for fence in self.model.data['fences']:
-                print(fence)
                 painter.drawRect(*fence)
         if self.model.interactions:
             color = QtGui.QColor(QtCore.Qt.green)
@@ -625,6 +801,36 @@ class LevelCanvas(QtWidgets.QWidget):
                     y = interaction['zone'][1] + interaction['zone'][3]
                     p2 = QtCore.QPoint(x, y)
                     painter.drawLine(p1, p2)
+
+        if self.model.startups:
+            painter.setBrush(QtCore.Qt.green)
+            painter.setPen(QtCore.Qt.blue)
+            for point in self.model.data['startups']['unassigned']:
+                painter.drawEllipse(point[0], point[1], 4, 4)
+            for i, group in enumerate(self.model.data['startups']['groups']):
+                painter.setBrush(QtCore.Qt.green)
+                painter.setPen(QtCore.Qt.blue)
+                for point in group['assigned']:
+                    painter.drawEllipse(point[0], point[1], 4, 4)
+                directions = 'left', 'up', 'right', 'down'
+                points = [
+                    QtCore.QPoint(*group['popspots'][d]) for d in directions]
+                if i == self.model.selected_group:
+                    color = QtCore.Qt.white
+                else:
+                    color = QtCore.Qt.magenta
+                color = QtGui.QColor(color)
+                painter.setPen(color)
+                color.setAlpha(50)
+                painter.setBrush(color)
+                polygon = QtGui.QPolygon(points)
+                painter.drawPolygon(polygon)
+                painter.setBrush(QtCore.Qt.black)
+                painter.setPen(QtCore.Qt.black)
+                for direction in directions:
+                    painter.drawText(
+                        QtCore.QPoint(*group['popspots'][direction]),
+                        direction)
 
         if self.rect_ and self.mode == 'rectangle':
             painter.setPen(QtCore.Qt.white)
@@ -671,6 +877,7 @@ class Editor(QtWidgets.QWidget):
 
         selection_mode = QtWidgets.QAbstractItemView.ExtendedSelection
         self.popspotsmodel = PopspotsModel(self.model)
+        self.popspotsmodel.changed.connect(self.canvas.repaint)
         self.popspots = QtWidgets.QListView()
         self.popspots.setSelectionMode(selection_mode)
         self.popspots.setModel(self.popspotsmodel)
@@ -717,6 +924,9 @@ class Editor(QtWidgets.QWidget):
         self.props = QtWidgets.QTableView()
         self.props.setModel(self.props_model)
 
+        self.startups = Startups(self.model)
+        self.startups.changed.connect(self.canvas.repaint)
+
         self.tab = QtWidgets.QTabWidget()
         self.tab.currentChanged.connect(self.tab_changed)
         self.tab.addTab(self.popspots, 'Pop spots')
@@ -727,6 +937,7 @@ class Editor(QtWidgets.QWidget):
         self.tab.addTab(self.props, 'Props')
         self.tab.addTab(self.fences, 'Fences')
         self.tab.addTab(self.overlays, 'OL / Switches')
+        self.tab.addTab(self.startups, 'Startups')
 
         self.rect_wall = QtWidgets.QPushButton('Create rect wall')
         self.rect_wall.setCheckable(True)
@@ -856,6 +1067,7 @@ class Editor(QtWidgets.QWidget):
                 "destinations": []}
             self.model.data['targets'].append(target)
             self.targets.origin_model.layoutChanged.emit()
+            self.targets.select_last()
         if self.group.checkedId() == 6:
             if self.model.selected_target is None:
                 return
@@ -880,6 +1092,7 @@ class Editor(QtWidgets.QWidget):
         self.canvas.keyPressEvent(event)
 
     def change_visibilities(self):
+        self.model.filter = self.visibilities.filter.isChecked()
         self.model.walls = self.visibilities.walls.isChecked()
         self.model.popspots = self.visibilities.popspots.isChecked()
         self.model.interactions = self.visibilities.interactions.isChecked()
@@ -888,6 +1101,7 @@ class Editor(QtWidgets.QWidget):
         self.model.targets = self.visibilities.targets.isChecked()
         self.model.switches = self.visibilities.switches.isChecked()
         self.model.fences = self.visibilities.fences.isChecked()
+        self.model.startups = self.visibilities.startups.isChecked()
         self.repaint()
 
     def walls_selected(self, *_):
@@ -904,7 +1118,6 @@ class Editor(QtWidgets.QWidget):
             json.dump(self.model.data, f, indent=2)
 
     def play(self):
-        import subprocess
         here = os.path.dirname(__file__)
         subprocess.Popen(f'{here}/../launcher.bat')
 
@@ -916,7 +1129,7 @@ class OriginModel(QtCore.QAbstractTableModel):
         super().__init__()
         self.model = model
 
-    def rowCount(self, _):
+    def rowCount(self, *_):
         return len(self.model.data['targets'])
 
     def columnCount(self, _):
@@ -962,9 +1175,7 @@ class OriginModel(QtCore.QAbstractTableModel):
             return
         row, col = index.row(), index.column()
         target = self.model.data['targets'][row]
-        if col == 0:
-            return str(target['origin'])
-        return str(target['weight'])
+        return str(target['weight']) if col == 0 else str(target['origin'])
 
 
 class DestinationsModel(QtCore.QAbstractListModel):
@@ -1044,6 +1255,13 @@ class OriginDestinations(QtWidgets.QWidget):
         self.changed.emit()
         self.destinations_model.layoutChanged.emit()
 
+    def select_last(self):
+        self.origin.selectionModel().clear()
+        last_row = self.origin.model().rowCount() - 1
+        index = self.origin.model().index(last_row, 0)
+        self.origin.selectionModel().select(
+            index, QtCore.QItemSelectionModel.Select)
+
 
 class Visibilities(QtWidgets.QWidget):
     update_visibilities = QtCore.Signal()
@@ -1051,6 +1269,8 @@ class Visibilities(QtWidgets.QWidget):
     def __init__(self, model):
         super().__init__()
         self.model = model
+        self.filter = QtWidgets.QCheckBox('Filter', checked=model.filter)
+        self.filter.released.connect(self.update_visibilities.emit)
         self.walls = QtWidgets.QCheckBox('Walls', checked=model.walls)
         self.walls.released.connect(self.update_visibilities.emit)
         s = model.popspots
@@ -1070,8 +1290,11 @@ class Visibilities(QtWidgets.QWidget):
         self.switches.released.connect(self.update_visibilities.emit)
         self.fences = QtWidgets.QCheckBox('Fences', checked=s)
         self.fences.released.connect(self.update_visibilities.emit)
+        self.startups = QtWidgets.QCheckBox('Startups', checked=model.startups)
+        self.startups.released.connect(self.update_visibilities.emit)
 
         layout = QtWidgets.QVBoxLayout(self)
+        layout.addWidget(self.filter)
         layout.addWidget(self.walls)
         layout.addWidget(self.popspots)
         layout.addWidget(self.interactions)
@@ -1080,6 +1303,7 @@ class Visibilities(QtWidgets.QWidget):
         layout.addWidget(self.targets)
         layout.addWidget(self.switches)
         layout.addWidget(self.fences)
+        layout.addWidget(self.startups)
         layout.addStretch(1)
 
 

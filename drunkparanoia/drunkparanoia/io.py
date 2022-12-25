@@ -1,12 +1,39 @@
 import os
 import json
-import itertools
 import pygame
+import itertools
+import numpy as np
+from PIL import Image
+
 from drunkparanoia.config import GAMEROOT
 
 
 _animation_store = {}
 _image_store = {}
+
+
+def swap_colors(surface, palette1, palette2):
+    """ THX Chat GPT:"""
+    swapped_surface = pygame.Surface(surface.get_size())
+    original_pixels = pygame.PixelArray(surface)
+    swapped_pixels = pygame.PixelArray(swapped_surface)
+    for x in range(original_pixels.shape[0]):
+        for y in range(original_pixels.shape[1]):
+            color = original_pixels[x, y]
+            # Transform a bit pixel into a list comparable with palette data.
+            check = [color >> 16, color >> 8 & 0xff, color & 0xff]
+            if check in palette1:
+                index = palette1.index(check)
+                color = palette2[index]
+                swapped_color = color[0] << 16 | color[1] << 8 | color[2]
+            else:
+                swapped_color = color
+            swapped_pixels[x, y] = swapped_color
+    # PixelArray is expensive for memory, then we force an immediate delete.
+    # In case of the garbage collector would delay the memory clear to later.
+    del original_pixels
+    del swapped_pixels
+    return swapped_surface
 
 
 def load_skins():
@@ -22,20 +49,40 @@ def load_skins():
 
 
 def load_skin(data):
-    return {
-        side: load_frames(data["sheets"][side], data['framesize'], (0, 255, 0))
-        for side in ('face', 'back')}
+    size = data['framesize']
+    sheets = data["sheets"]
+    # Build original colors skin.
+    result = [{
+        side: load_frames(sheets[side], size, (0, 255, 0))
+        for side in ('face', 'back')}]
+    # Build color variations
+    for i, variation in enumerate(data['variations']):
+        palette1 = [colors[0] for colors in variation]
+        palette2 = [colors[1] for colors in variation]
+        skin = {}
+        for side in ('face', 'back'):
+            image = load_frames(
+                sheets[side], size, (0, 255, 0), palette1, palette2, i)
+            skin[side] = image
+        result.append(skin)
+    return result
 
 
-def load_frames(filepath, frame_size, key_color):
+def load_frames(
+        filepath, frame_size, key_color,
+        palette1=None, palette2=None, variation=None):
     """
     Split a huge sheet in memory.
     """
-    filepath = f'{GAMEROOT}/{filepath}'
-    if _animation_store.get(filepath):
-        return _animation_store.get(filepath, [])
+    filepath = filename_id = f'{GAMEROOT}/{filepath}'
+    if variation is not None:
+        filename_id = f'{GAMEROOT}/{filepath}.{variation}'
+    if _animation_store.get(filename_id):
+        return _animation_store.get(filename_id, [])
 
     sheet = pygame.image.load(filepath).convert()
+    if palette1 and palette2:
+        sheet = swap_colors(sheet, palette1, palette2)
     width, height = frame_size
     row = sheet.get_height() / height
     col = sheet.get_width() / width
@@ -51,10 +98,10 @@ def load_frames(filepath, frame_size, key_color):
         x, y = i * width, j * height
         image.blit(sheet, (0, 0), (x, y, width, height))
         image.set_colorkey(key_color)
-        id_ = f'{filepath}[{i}.{j}]'
+        id_ = f'{filename_id}[{i}.{j}]'
         _image_store[id_] = image
         ids.append(id_)
-    _animation_store[filepath] = ids
+    _animation_store[filename_id] = ids
     return ids
 
 
