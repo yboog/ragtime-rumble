@@ -1,6 +1,8 @@
 import sys
 import json
 import random
+import pygame
+
 import itertools
 
 from drunkparanoia.background import Prop, Background, Overlay
@@ -8,9 +10,11 @@ from drunkparanoia.character import Character, Player, Npc
 from drunkparanoia.coordinates import (
     box_hit_box, point_in_rectangle, box_hit_polygon, path_cross_polygon,
     path_cross_rect)
-from drunkparanoia.config import DIRECTIONS, GAMEROOT, COUNTDOWNS
+from drunkparanoia.config import (
+    DIRECTIONS, GAMEROOT, COUNTDOWNS, LOOP_STATUSES)
 from drunkparanoia.duel import find_possible_duels
-from drunkparanoia.io import load_image, load_data
+from drunkparanoia.io import load_image, load_data, quit_event, list_joysticks
+from drunkparanoia.joystick import get_current_commands
 from drunkparanoia.sprite import SpriteSheet
 
 
@@ -20,12 +24,19 @@ def load_scene(filename):
     with open(filepath, 'r') as f:
         data = json.load(f)
     scene = Scene()
+    scene.character_number = data['character_number']
     scene.name = data['name']
     scene.no_go_zones = data['no_go_zones']
     scene.walls = data['walls']
     scene.stairs = data['stairs']
     scene.targets = data['targets']
     scene.fences = data['fences']
+    scene.startups = data['startups']
+    popspots = data['popspots'][:]
+    random.shuffle(popspots)
+    scene.popspot_generator = itertools.cycle(popspots)
+    scene.character_generator = itertools.cycle(data['characters'])
+
     position = data['score']['ol']['position']
     image = load_image(data['score']['ol']['file'], key_color=(0, 255, 0))
     scene.score_ol = Overlay(image, position, sys.maxsize)
@@ -51,27 +62,136 @@ def load_scene(filename):
         position = prop['position']
         center = prop['center']
         box = prop['box']
-        prop = Prop(image, position, center, box, scene)
+        visible_at_dispatch = prop['visible_at_dispatch']
+        prop = Prop(image, position, center, box, visible_at_dispatch, scene)
         scene.props.append(prop)
-
-    spots = data['popspots'][:]
-    random.shuffle(spots)
-    spots = itertools.cycle(spots)
-    characters = itertools.cycle(data['characters'])
-    for _ in range(data['character_number']):
-        character = next(characters)
-        position = next(spots)
-        spritesheet = SpriteSheet(load_data(character['file']))
-        directions = DIRECTIONS.LEFT, DIRECTIONS.RIGHT
-        character = Character(position, spritesheet, character['variation'], scene)
-        character.direction = random.choice(directions)
-        scene.characters.append(character)
 
     for interaction_zone in data['interactions']:
         zone = InteractionZone(interaction_zone)
         scene.interaction_zones.append(zone)
 
     return scene
+
+
+class GameLoop:
+    def __init__(self):
+        self.status = LOOP_STATUSES.AWAITING
+        self.scene = None
+        self.dispatcher = None
+        self.done = False
+        self.clock = pygame.time.Clock()
+
+    def start_scene(self, scene):
+        self.status = LOOP_STATUSES.DISPATCHING
+        self.dispatcher = PlayerDispatcher(scene, list_joysticks())
+        self.scene = scene
+
+    def __next__(self):
+        self.done = self.done or quit_event()
+        if self.done:
+            return
+
+        match self.status:
+            case LOOP_STATUSES.BATTLE:
+                next(self.scene)
+                self.clock.tick(60)
+
+            case LOOP_STATUSES.DISPATCHING:
+                next(self.dispatcher)
+                self.clock.tick(60)
+                if self.dispatcher.done:
+                    self.start_game()
+
+    def start_game(self):
+        while len(self.scene.characters) <= self.scene.character_number:
+            self.scene.build_character()
+        self.scene.create_npcs()
+        self.status = LOOP_STATUSES.BATTLE
+
+
+class PlayerDispatcher:
+
+    def __init__(self, scene, joysticks):
+        self.done = False
+        self.scene = scene
+        self.joysticks = joysticks
+        self.joysticks_column = [2] * len(joysticks)
+        self.characters = [None, None, None, None]
+        self.cooldowns = [0, 0, 0, 0]
+        self.assigned = [None, None, None, None, None]
+        self.players = [None for _ in range(len(joysticks))]
+
+    def eval_player_selection(self, i, joystick):
+        group = column_to_group(self.joysticks_column[i])
+        if get_current_commands(joystick).get('LEFT'):
+            character = self.characters[group][0]
+        elif get_current_commands(joystick).get('RIGHT'):
+            character = self.characters[group][1]
+        elif get_current_commands(joystick).get('UP'):
+            character = self.characters[group][2]
+        elif get_current_commands(joystick).get('DOWN'):
+            character = self.characters[group][3]
+        else:
+            return
+        player = Player(character, joystick, i, self.scene)
+        self.scene.players.append(player)
+        self.players[i] = player
+
+    def __next__(self):
+        if self.done:
+            return
+
+        for i, joystick in enumerate(self.joysticks):
+            if self.cooldowns[i] > 0:
+                self.cooldowns[i] -= 1
+                continue
+
+            if joystick in self.assigned:
+                if not self.players[i]:
+                    self.eval_player_selection(i, joystick)
+                continue
+
+            if get_current_commands(joystick).get('LEFT'):
+                value = max((0, self.joysticks_column[i] - 1))
+                self.joysticks_column[i] = value
+                self.cooldowns[i] = 10
+
+            elif get_current_commands(joystick).get('RIGHT'):
+                value = min((4, self.joysticks_column[i] + 1))
+                self.joysticks_column[i] = value
+                self.cooldowns[i] = 10
+
+            elif get_current_commands(joystick).get('A'):
+                column = self.joysticks_column[i]
+                if column == 2:
+                    continue
+                if self.assigned[column] is None:
+                    self.assigned[column] = joystick
+                    self.generate_characters(column)
+
+        self.done = sum(bool(p) for p in self.players) == len(self.joysticks)
+
+    def generate_characters(self, column):
+        index = column_to_group(column)
+        group = self.scene.startups['groups'][index]
+        directions = {
+            'left': DIRECTIONS.RIGHT,
+            'right': DIRECTIONS.LEFT,
+            'up': DIRECTIONS.DOWN,
+            'down': DIRECTIONS.UP}
+
+        self.characters[index] = [
+            self.scene.build_character(group['popspots'][position], direction)
+            for position, direction in directions.items()]
+
+
+def column_to_group(column):
+    """
+    On dispatching screen, the column 2 is the unisgned one.
+    To find the corresponding startups group, you need top map the column to
+    the group and swallow the 2 index.
+    """
+    return column if column < 2 else column - 1
 
 
 class Scene:
@@ -94,7 +214,20 @@ class Scene:
         self.stairs = []
         self.targets = []
         self.fences = []
+
         self.black_screen_countdown = 0
+        self.popspot_generator = None
+        self.character_generator = None
+
+    def build_character(self, position=None, direction=None):
+        position = position or next(self.popspot_generator)
+        direction = direction or random.choice(DIRECTIONS.ALL)
+        char = next(self.character_generator)
+        spritesheet = SpriteSheet(load_data(char['file']))
+        char = Character(position, spritesheet, char['variation'], self)
+        char.direction = direction
+        self.characters.append(char)
+        return char
 
     def score_image(self, player_n, score):
         index = int(round((score / COUNTDOWNS.MAX_LIFE) * 3))
@@ -158,15 +291,6 @@ class Scene:
             self.possible_duels = []
             return
         self.possible_duels = find_possible_duels(self)
-
-    def create_player(self, joystick):
-        player_characters = [player.character for player in self.players]
-        for character in self.characters:
-            if character in player_characters:
-                continue
-            player = Player(character, joystick, self)
-            self.players.append(player)
-            return
 
     def find_player(self, character):
         for player in self.players:

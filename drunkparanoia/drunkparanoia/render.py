@@ -2,8 +2,41 @@ import numpy
 import math
 import pygame
 from drunkparanoia.io import get_image
-from drunkparanoia.config import COUNTDOWNS
-from drunkparanoia.character import Character
+from drunkparanoia.config import COUNTDOWNS, LOOP_STATUSES
+from drunkparanoia.scene import column_to_group
+# from drunkparanoia.character import Character
+
+
+def render_game(screen, loop):
+    if loop.status == LOOP_STATUSES.BATTLE:
+        render_scene(screen, loop.scene)
+    if loop.status == LOOP_STATUSES.DISPATCHING:
+        render_dispatching(screen, loop)
+
+
+def render_dispatching(screen, loop):
+    screen.fill((0, 0, 0))
+    elements = [p for p in loop.scene.props if p.visible_at_dispatch]
+    elements += loop.scene.characters
+    for element in sorted(elements, key=lambda elt: elt.switch):
+        render_element(screen, element)
+    gamepad_image = get_image('resources/ui/gamepad.png')
+    offset_x = gamepad_image.get_size()[0] / 2
+    offset_y = gamepad_image.get_size()[1] / 2
+    column_counts = [0, 0, 0, 0, 0]
+    for i, _ in enumerate(loop.dispatcher.joysticks):
+        column = loop.dispatcher.joysticks_column[i]
+        row = column_counts[column]
+        startups = loop.scene.startups
+        if column == 2:  # Unassigned
+            position = startups['unassigned'][row]
+        else:
+            group = startups['groups'][column_to_group(column)]
+            position = group['assigned'][row]
+        x = position[0] - offset_x
+        y = position[1] - offset_y
+        screen.blit(gamepad_image, (x, y))
+        column_counts[column] += 1
 
 
 def render_no_player(screen):
@@ -15,7 +48,7 @@ def render_no_player(screen):
     screen.blit(text, text_rect)
 
 
-def render_game(screen, scene):
+def render_scene(screen, scene):
     # Background Color.
     if scene.black_screen_countdown:
         render_death_screen(screen, scene)

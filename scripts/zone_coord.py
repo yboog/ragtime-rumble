@@ -182,7 +182,9 @@ class PropsModel(QtCore.QAbstractTableModel):
             return
         if orientation != QtCore.Qt.Horizontal:
             return
-        return ('file', 'position', 'center', 'box', 'visible at splash')[section]
+        return (
+            'file', 'position', 'center', 'box',
+            'visible at dispatch')[section]
 
     def flags(self, index):
         flags = super().flags(index)
@@ -218,7 +220,7 @@ class PropsModel(QtCore.QAbstractTableModel):
             case 4:
                 if value.lower() not in ('true', 'false'):
                     return False
-                prop['visible_at_splash'] = value.lower() == 'true'
+                prop['visible_at_dispatch'] = value.lower() == 'true'
         self.changed.emit()
         return True
 
@@ -230,7 +232,7 @@ class PropsModel(QtCore.QAbstractTableModel):
         try:
             key = (
                 'file', 'position', 'center', 'box',
-                'visible_at_splash')[index.column()]
+                'visible_at_dispatch')[index.column()]
             return str(self.model.data['props'][index.row()][key])
         except IndexError:
             print('fail', index)

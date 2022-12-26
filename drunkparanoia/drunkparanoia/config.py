@@ -22,6 +22,13 @@ LOOPING_ANIMATIONS = ['idle', 'walk', 'piano', 'poker', 'suspicious']
 HOLDABLE_ANIMATIONS = ['call', 'death', 'coma']
 
 
+class LOOP_STATUSES:
+    PAUSE = 'pause'
+    AWAITING = 'awaiting'
+    DISPATCHING = 'assignation'
+    BATTLE = 'fight'
+
+
 class COUNTDOWNS:
     VOMIT_MIN = 1000
     VOMIT_MAX = 1800
@@ -78,6 +85,7 @@ class DIRECTIONS:
     UP_RIGHT = 'up_right'
     DOWN_RIGHT = 'down_right'
 
+    ALL = LEFT, RIGHT, UP, DOWN, UP_LEFT, DOWN_LEFT, UP_RIGHT, DOWN_RIGHT
     RIGHTS = RIGHT, UP_RIGHT, DOWN_RIGHT
     LEFTS = LEFT, UP_LEFT, DOWN_LEFT
     DIAGONALS = DOWN_LEFT, DOWN_RIGHT, UP_LEFT, UP_RIGHT

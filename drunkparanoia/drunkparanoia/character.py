@@ -7,15 +7,13 @@ from drunkparanoia.coordinates import Coordinates, get_box, distance
 
 
 class Player:
-    _index = 0
 
-    def __init__(self, character, joystick, scene):
+    def __init__(self, character, joystick, index, scene):
         self.character = character
         self.scene = scene
         self.joystick = joystick
         self.life = COUNTDOWNS.MAX_LIFE
-        self.index = self._index
-        Player._index += 1
+        self.index = index
 
     def kill(self, target, black_screen=False):
         self.character.kill(target, black_screen)

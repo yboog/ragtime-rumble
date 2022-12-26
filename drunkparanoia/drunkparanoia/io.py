@@ -2,14 +2,39 @@ import os
 import json
 import pygame
 import itertools
-import numpy as np
-from PIL import Image
-
 from drunkparanoia.config import GAMEROOT
+from drunkparanoia.joystick import get_current_commands
 
 
 _animation_store = {}
 _image_store = {}
+
+
+def load_main_resources():
+    load_image('resources/ui/gamepad.png', (0, 255, 0))
+
+
+def quit_event():
+    return any((
+        event.type == pygame.KEYDOWN and
+        event.key == pygame.K_ESCAPE or
+        event.type == pygame.QUIT)
+        for event in pygame.event.get())
+
+
+def list_joysticks():
+    pygame.joystick.init()
+    pygame.joystick.get_count()
+    joysticks = []
+    for i in range(pygame.joystick.get_count()):
+        try:
+            joystick = pygame.joystick.Joystick(i)
+            joystick.init()
+            get_current_commands(joystick)
+            joysticks.append(joystick)
+        except BaseException:
+            print(f'Unsupported joystick {joystick.get_name()}')
+    return joysticks[:4]
 
 
 def swap_colors(surface, palette1, palette2):
@@ -70,13 +95,12 @@ def load_skin(data):
 
 def load_frames(
         filepath, frame_size, key_color,
-        palette1=None, palette2=None, variation=None):
+        palette1=None, palette2=None, variation=0):
     """
     Split a huge sheet in memory.
     """
-    filepath = filename_id = f'{GAMEROOT}/{filepath}'
-    if variation is not None:
-        filename_id = f'{GAMEROOT}/{filepath}.{variation}'
+    filepath = f'{GAMEROOT}/{filepath}'
+    filename_id = f'{GAMEROOT}/{filepath}.{variation}'
     if _animation_store.get(filename_id):
         return _animation_store.get(filename_id, [])
 

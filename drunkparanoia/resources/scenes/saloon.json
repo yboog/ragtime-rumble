@@ -1404,7 +1404,7 @@
   "props": [
     {
       "file": "resources/props/poker-droite-bas.png",
-      "visible_at_splash": true,
+      "visible_at_dispatch": true,
       "position": [
         450,
         325
@@ -1422,7 +1422,7 @@
     },
     {
       "file": "resources/props/poker-droite-haut.png",
-      "visible_at_splash": true,
+      "visible_at_dispatch": true,
       "position": [
         550,
         275
@@ -1440,7 +1440,7 @@
     },
     {
       "file": "resources/props/poker-gauche-bas.png",
-      "visible_at_splash": true,
+      "visible_at_dispatch": true,
       "position": [
         60,
         250
@@ -1458,7 +1458,7 @@
     },
     {
       "file": "resources/props/poker-gauche-haut.png",
-      "visible_at_splash": true,
+      "visible_at_dispatch": true,
       "position": [
         130,
         175
@@ -1476,7 +1476,7 @@
     },
     {
       "file": "resources/props/piano.png",
-      "visible_at_splash": false,
+      "visible_at_dispatch": false,
       "position": [
         70,
         30
@@ -1494,7 +1494,7 @@
     },
     {
       "file": "resources/props/machine-a-sous.png",
-      "visible_at_splash": false,
+      "visible_at_dispatch": false,
       "position": [
         370,
         130

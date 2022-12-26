@@ -16,8 +16,10 @@ class Overlay:
 
 
 class Prop:
-    def __init__(self, image, position, center, box, scene):
+    def __init__(
+            self, image, position, center, box, visible_at_dispatch, scene):
         self.coordinates = Coordinates(position)
+        self.visible_at_dispatch = visible_at_dispatch
         self.center = center
         self.image = image
         self.scene = scene
