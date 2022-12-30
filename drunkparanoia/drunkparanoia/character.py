@@ -14,12 +14,17 @@ class Player:
         self.joystick = joystick
         self.life = COUNTDOWNS.MAX_LIFE
         self.index = index
+        self.killer = None
+        self.pnj_killed = 0
 
     def kill(self, target, black_screen=False):
         self.character.kill(target, black_screen)
         player = self.scene.find_player(target)
         if player:
+            player.killer = self.index
             player.life = 0
+        else:
+            self.pnj_killed += 1
 
     def __next__(self):
         # self.life -= 1
@@ -40,9 +45,11 @@ class Player:
                 for character1, character2 in self.scene.possible_duels:
                     if character1 == self.character:
                         self.kill(character2)
+                        self.scene.apply_white_screen(self.character)
                         return
                     if character2 == self.character:
                         self.kill(character1)
+                        self.scene.apply_white_screen(self.character)
                         return
                 self.character.request_interaction()
                 return
@@ -120,6 +127,9 @@ class Npc:
             if self.character.status != CHARACTER_STATUSES.OUT:
                 if self.character.duel_target:
                     self.character.duel_target.duel_target = None
+                    self.character.duel_target.spritesheet.animation = 'idle'
+                    self.character.duel_target.spritesheet.index = 0
+                    self.character.duel_target.status = CHARACTER_STATUSES.FREE
                     self.character.duel_target = None
                 self.character.status = CHARACTER_STATUSES.OUT
                 self.character.spritesheet.animation = 'vomit'
@@ -383,7 +393,7 @@ class Character:
         self.spritesheet.index = 0
 
     def kill(self, target, black_screen=False):
-        black_screen = black_screen and self.scene.apply_black_screen(target)
+        black_screen = black_screen and self.scene.apply_black_screen(self, target)
         self.stop()
         if black_screen:
             self.status = CHARACTER_STATUSES.FREE

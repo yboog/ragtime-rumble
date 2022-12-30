@@ -50,7 +50,7 @@ def render_no_player(screen):
 
 def render_scene(screen, scene):
     # Background Color.
-    if scene.black_screen_countdown:
+    if scene.black_screen_countdown or scene.white_screen_countdown:
         render_death_screen(screen, scene)
         return
     # Background.
@@ -63,7 +63,7 @@ def render_scene(screen, scene):
         if character.duel_target:
             pos1 = character.coordinates.position
             pos2 = character.duel_target.coordinates.position
-            pygame.draw.line(duel_surface, (255, 0, 0), pos1, pos2, 3)
+            pygame.draw.line(duel_surface, (255, 255, 0), pos1, pos2, 6)
     screen.blit(duel_surface, (0, 0))
     # Background.
     elements = sorted(scene.elements, key=lambda elt: elt.switch)
@@ -89,8 +89,10 @@ def render_scene(screen, scene):
 
 
 def render_death_screen(screen, scene):
-    if scene.black_screen_countdown >= COUNTDOWNS.BLACK_SCREEN_COUNT_DOWN - 5:
+    if scene.white_screen_countdown:
         screen.fill((255, 255, 255))
+        if scene.killer:
+            render_element(screen, scene.killer)
     else:
         screen.fill((0, 0, 0))
     for character in scene.dying_characters:

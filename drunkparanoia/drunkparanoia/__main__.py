@@ -3,7 +3,7 @@ import sys
 # import pickle
 import pygame
 
-from drunkparanoia.io import load_skins, list_joysticks, load_main_resources
+from drunkparanoia.io import load_skins, load_main_resources
 from drunkparanoia.render import render_game
 from drunkparanoia.scene import load_scene, GameLoop
 

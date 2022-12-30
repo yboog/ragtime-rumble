@@ -216,6 +216,8 @@ class Scene:
         self.fences = []
 
         self.black_screen_countdown = 0
+        self.white_screen_countdown = 0
+        self.killer = None
         self.popspot_generator = None
         self.character_generator = None
 
@@ -286,8 +288,11 @@ class Scene:
         for evaluable in self.npcs + self.players:
             next(evaluable)
 
-        if self.black_screen_countdown > 0:
-            self.black_screen_countdown -= 1
+        if self.black_screen_countdown or self.white_screen_countdown:
+            if self.white_screen_countdown:
+                self.white_screen_countdown -= 1
+            else:
+                self.black_screen_countdown -= 1
             self.possible_duels = []
             return
         self.possible_duels = find_possible_duels(self)
@@ -304,12 +309,19 @@ class Scene:
                 continue
             self.npcs.append(Npc(character, self))
 
-    def apply_black_screen(self, character):
+    def apply_black_screen(self, origin, target):
+        self.white_screen_countdown = COUNTDOWNS.WHITE_SCREEN
         for player in self.players:
-            if player.character == character:
-                self.black_screen_countdown = COUNTDOWNS.BLACK_SCREEN_COUNT_DOWN
+            if player.character == target:
+                self.killer = None
+                self.black_screen_countdown = COUNTDOWNS.BLACK_SCREEN
                 return True
+        self.killer = origin
         return False
+
+    def apply_white_screen(self, origin):
+        self.white_screen_countdown = COUNTDOWNS.WHITE_SCREEN
+        self.killer = origin
 
     @property
     def dying_characters(self):
