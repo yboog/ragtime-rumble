@@ -2,8 +2,8 @@ import sys
 import json
 import random
 import pygame
-
 import itertools
+from copy import deepcopy
 
 from drunkparanoia.background import Prop, Background, Overlay
 from drunkparanoia.character import Character, Player, Npc
@@ -16,6 +16,55 @@ from drunkparanoia.duel import find_possible_duels
 from drunkparanoia.io import load_image, load_data, quit_event, list_joysticks
 from drunkparanoia.joystick import get_current_commands
 from drunkparanoia.sprite import SpriteSheet
+
+
+VIRGIN_SCORES = {
+    'player 1': {
+        'player 2': [0, 0],
+        'player 3': [0, 0],
+        'player 4': [0, 0],
+        'civilians': 0,
+        'victory': 0
+    },
+    'player 2': {
+        'player 1': [0, 0],
+        'player 3': [0, 0],
+        'player 4': [0, 0],
+        'civilians': 0,
+        'victory': 0
+    },
+    'player 3': {
+        'player 1': [0, 0],
+        'player 2': [0, 0],
+        'player 4': [0, 0],
+        'civilians': 0,
+        'victory': 0
+    },
+    'player 4': {
+        'player 1': [0, 0],
+        'player 2': [0, 0],
+        'player 3': [0, 0],
+        'civilians': 0,
+        'victory': 0
+    }
+}
+
+
+def get_score_data(scores, row, col):
+    row_keys = list(VIRGIN_SCORES)
+    col_keys = (
+        'player 1',
+        'player 2',
+        'player 3',
+        'player 4',
+        'total',
+        'civilians',
+        'victory')
+    if col_keys[col] == 'total':
+        data = [scores[row_keys[row]].get(col_keys[i]) for i in range(4)]
+        data = [d for d in data if d is not None]
+        return [sum(d[0] for d in data), sum(d[1] for d in data)]
+    return scores[row_keys[row]].get(col_keys[col])
 
 
 def load_scene(filename):
@@ -76,15 +125,21 @@ def load_scene(filename):
 class GameLoop:
     def __init__(self):
         self.status = LOOP_STATUSES.AWAITING
+        self.scene_path = None
         self.scene = None
         self.dispatcher = None
         self.done = False
         self.clock = pygame.time.Clock()
+        self.scores = deepcopy(VIRGIN_SCORES)
+        self.joysticks = list_joysticks()
 
-    def start_scene(self, scene):
+    def set_scene(self, path):
+        self.scene_path = path
+
+    def start_scene(self):
+        self.scene = load_scene(self.scene_path)
         self.status = LOOP_STATUSES.DISPATCHING
-        self.dispatcher = PlayerDispatcher(scene, list_joysticks())
-        self.scene = scene
+        self.dispatcher = PlayerDispatcher(self.scene, self.joysticks)
 
     def __next__(self):
         self.done = self.done or quit_event()
@@ -95,12 +150,42 @@ class GameLoop:
             case LOOP_STATUSES.BATTLE:
                 next(self.scene)
                 self.clock.tick(60)
+                if self.scene.ultime_showdown:
+                    self.status = LOOP_STATUSES.LAST_KILL
 
             case LOOP_STATUSES.DISPATCHING:
                 next(self.dispatcher)
                 self.clock.tick(60)
                 if self.dispatcher.done:
                     self.start_game()
+
+            case LOOP_STATUSES.LAST_KILL:
+                self.clock.tick(30)
+                next(self.scene)
+                if self.scene.done:
+                    self.show_score()
+
+            case LOOP_STATUSES.SCORE:
+                for joystick in self.joysticks:
+                    if get_current_commands(joystick).get("A"):
+                        self.start_scene()
+                self.clock.tick(10)
+
+    def show_score(self):
+        self.status = LOOP_STATUSES.SCORE
+        for player in self.scene.players:
+            player_key = f'player {player.index + 1}'
+            if not player.dead:
+                self.scores[player_key]['victory'] += 1
+            if player.killer is not None:
+                killer_key = f'player {player.killer + 1}'
+                self.scores[killer_key][player_key][0] += 1
+                self.scores[player_key][killer_key][1] += 1
+            self.scores[player_key]['civilians'] += player.npc_killed
+
+    @property
+    def tick_time(self):
+        return 30 if self.status == LOOP_STATUSES.LAST_KILL else 60
 
     def start_game(self):
         while len(self.scene.characters) <= self.scene.character_number:
@@ -220,6 +305,17 @@ class Scene:
         self.killer = None
         self.popspot_generator = None
         self.character_generator = None
+
+    @property
+    def done(self):
+        return sum(True for p in self.players if not p.dead) == 1
+
+    @property
+    def ultime_showdown(self):
+        if self.done:
+            return False
+        return sum(
+            True for p in self.players if (not p.dead and not p.dying)) == 1
 
     def build_character(self, position=None, direction=None):
         position = position or next(self.popspot_generator)

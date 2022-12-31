@@ -2,20 +2,118 @@ import numpy
 import math
 import pygame
 from drunkparanoia.io import get_image
-from drunkparanoia.config import COUNTDOWNS, LOOP_STATUSES
-from drunkparanoia.scene import column_to_group
+from drunkparanoia.config import LOOP_STATUSES
+from drunkparanoia.scene import column_to_group, get_score_data
 # from drunkparanoia.character import Character
 
 
 def render_game(screen, loop):
-    if loop.status == LOOP_STATUSES.BATTLE:
-        render_scene(screen, loop.scene)
+    if loop.status == LOOP_STATUSES.SCORE:
+        return render_score(screen, loop)
+    render_scene(screen, loop.scene)
+    if loop.status == LOOP_STATUSES.LAST_KILL:
+        render_last_kill(screen, loop)
+        return
     if loop.status == LOOP_STATUSES.DISPATCHING:
         render_dispatching(screen, loop)
 
 
-def render_dispatching(screen, loop):
+CELL_WIDTH = 55
+CELL_HEIGHT = 35
+COL_COUNT = 7
+ROW_COUNT = 4
+
+
+def render_score(screen, loop):
     screen.fill((0, 0, 0))
+    for row in range(ROW_COUNT):
+        player = f'player {row + 1}'
+        pos = get_player_pos(screen, row)
+        draw_text(screen, player, pos, (200, 200, 200))
+        for col in range(COL_COUNT):
+            rect = get_cell_rect(screen, row, col)
+            pygame.draw.rect(screen, (30, 30, 30), rect, width=1)
+            data = get_score_data(loop.scores, row, col)
+            draw_score_data(screen, rect, data)
+
+    headers = 'p1', 'p2', 'p3', 'p4', 'tot', 'npc', 'win'
+    for col in range(COL_COUNT):
+        text = headers[col]
+        rect = get_header_rect(screen, col)
+        draw_text(screen, text, rect.center, (200, 200, 200))
+
+    x = screen.get_size()[0] / 2
+    y = get_cell_rect(screen, ROW_COUNT + 1, 0).centery
+    draw_text(screen, 'Press "a" button to restart', (x, y))
+
+
+def draw_score_data(screen, rect, data):
+    if data is None:
+        pygame.draw.rect(screen, (100, 100, 100), rect)
+        return
+    if isinstance(data, int):
+        draw_text(screen, str(data), rect.center, (255, 255, 0))
+        return
+    if isinstance(data, list):
+        rect1 = pygame.Rect(
+            rect.left, rect.top, rect.width / 2, rect.height / 2)
+        draw_text(screen, str(data[0]), rect1.center, (0, 255, 0))
+        rect2 = pygame.Rect(
+            rect.centerx, rect.centery, rect.width / 2, rect.height / 2)
+        draw_text(screen, str(data[1]), rect2.center, (255, 0, 0))
+        pygame.draw.line(
+            screen, (255, 255, 255), rect.topright, rect.bottomleft, 1)
+
+
+def get_header_rect(screen, col):
+    return get_cell_rect(screen, -1, col)
+
+
+def get_player_pos(screen, row):
+    rect = get_cell_rect(screen, row, 0)
+    x, y = rect.midleft
+    x -= 39
+    return x, y
+
+
+def get_cell_rect(screen, row, col):
+    x = (screen.get_size()[0] / 2)
+    x -= CELL_WIDTH * (COL_COUNT / 2)
+    x += CELL_WIDTH * col
+    y = screen.get_size()[1] / 2
+    y -= CELL_HEIGHT * (ROW_COUNT / 2)
+    y += CELL_HEIGHT * row
+    return pygame.Rect(x, y, CELL_WIDTH, CELL_HEIGHT)
+
+
+def render_last_kill(screen, loop):
+    if loop.scene.white_screen_countdown:
+        screen.fill((255, 255, 255))
+    else:
+        temp = pygame.Surface(screen.get_size(), pygame.SRCALPHA)
+        temp.fill((0, 0, 0))
+        temp.set_alpha(180)
+        screen.blit(temp, (0, 0))
+    for player in loop.scene.players:
+        render_element(screen, player.character)
+        x, y = player.character.coordinates.position
+        y += 15
+        draw_text(screen, f'player {player.index + 1}', (x, y))
+
+
+def draw_text(surface, text, pos, color=None):
+    color = color or (255, 255, 255)
+    font = pygame.font.SysFont('Consolas', 15)
+    text = font.render(text, True, color)
+    text_rect = text.get_rect(center=pos)
+    surface.blit(text, text_rect)
+
+
+def render_dispatching(screen, loop):
+    temp = pygame.Surface(screen.get_size(), pygame.SRCALPHA)
+    temp.fill((0, 0, 0))
+    temp.set_alpha(180)
+    screen.blit(temp, (0, 0))
     elements = [p for p in loop.scene.props if p.visible_at_dispatch]
     elements += loop.scene.characters
     for element in sorted(elements, key=lambda elt: elt.switch):
@@ -36,6 +134,9 @@ def render_dispatching(screen, loop):
         x = position[0] - offset_x
         y = position[1] - offset_y
         screen.blit(gamepad_image, (x, y))
+        x = position[0] + gamepad_image.get_size()[0]
+        y = position[1]
+        draw_text(screen, str(i + 1), (x, y))
         column_counts[column] += 1
 
 

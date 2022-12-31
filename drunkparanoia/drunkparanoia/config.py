@@ -31,7 +31,6 @@ class LOOP_STATUSES:
     SCORE = 'score'
 
 
-
 class COUNTDOWNS:
     VOMIT_MIN = 1000
     VOMIT_MAX = 1800

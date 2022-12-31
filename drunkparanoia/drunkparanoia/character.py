@@ -15,7 +15,16 @@ class Player:
         self.life = COUNTDOWNS.MAX_LIFE
         self.index = index
         self.killer = None
-        self.pnj_killed = 0
+        self.npc_killed = 0
+
+    @property
+    def dying(self):
+        return (
+            self.life == 0 and self.character.status != CHARACTER_STATUSES.OUT)
+
+    @property
+    def dead(self):
+        return self.character.status == CHARACTER_STATUSES.OUT
 
     def kill(self, target, black_screen=False):
         self.character.kill(target, black_screen)
@@ -24,7 +33,7 @@ class Player:
             player.killer = self.index
             player.life = 0
         else:
-            self.pnj_killed += 1
+            self.npc_killed += 1
 
     def __next__(self):
         # self.life -= 1
@@ -45,10 +54,6 @@ class Player:
                 for character1, character2 in self.scene.possible_duels:
                     if character1 == self.character:
                         self.kill(character2)
-                        self.scene.apply_white_screen(self.character)
-                        return
-                    if character2 == self.character:
-                        self.kill(character1)
                         self.scene.apply_white_screen(self.character)
                         return
                 self.character.request_interaction()
