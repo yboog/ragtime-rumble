@@ -27,6 +27,9 @@ class LOOP_STATUSES:
     AWAITING = 'awaiting'
     DISPATCHING = 'assignation'
     BATTLE = 'fight'
+    LAST_KILL = 'lastkill'
+    SCORE = 'score'
+
 
 
 class COUNTDOWNS:
