@@ -13,7 +13,8 @@ from drunkparanoia.coordinates import (
 from drunkparanoia.config import (
     DIRECTIONS, GAMEROOT, COUNTDOWNS, LOOP_STATUSES)
 from drunkparanoia.duel import find_possible_duels
-from drunkparanoia.io import load_image, load_data, quit_event, list_joysticks
+from drunkparanoia.io import (
+    load_image, load_data, quit_event, list_joysticks, image_mirror)
 from drunkparanoia.joystick import get_current_commands
 from drunkparanoia.sprite import SpriteSheet
 
@@ -75,6 +76,7 @@ def load_scene(filename):
     scene = Scene()
     scene.character_number = data['character_number']
     scene.name = data['name']
+    scene.vfx = data['vfx']
     scene.no_go_zones = data['no_go_zones']
     scene.walls = data['walls']
     scene.stairs = data['stairs']
@@ -97,10 +99,16 @@ def load_scene(filename):
 
     for i in range(1, 5):
         player_key = f'player{i}'
-        scene.score_positions.append(data['score'][player_key]['position'])
-        scene.score_images.append([
-            load_image(data['score'][player_key][f'file{j}'])
+        position = data['score'][player_key]['life']['position']
+        scene.life_positions.append(position)
+        scene.life_images.append([
+            load_image(data['score'][player_key]['life'][f'file{j}'])
             for j in range(1, 5)])
+        position = data['score'][player_key]['bullet']['position']
+        scene.bullet_positions.append(position)
+        on = load_image(data['score'][player_key]['bullet']['on'])
+        off = load_image(data['score'][player_key]['bullet']['off'])
+        scene.bullet_images.append([on, off])
 
     for ol in data['overlays']:
         image = load_image(ol['file'], (0, 255, 0))
@@ -284,8 +292,11 @@ class Scene:
     def __init__(self):
         self.name = ""
         self.score_ol = None
-        self.score_images = []
-        self.score_positions = []
+        self.vfx = []
+        self.life_images = []
+        self.life_positions = []
+        self.bullet_positions = []
+        self.bullet_images = []
         self.characters = []
         self.props = []
         self.overlays = []
@@ -306,6 +317,16 @@ class Scene:
         self.popspot_generator = None
         self.character_generator = None
 
+    def create_vfx(self, name, position, flipped=True):
+        for vfx in self.vfx:
+            if vfx.get('type') != 'static' or vfx.get('name') != name:
+                continue
+            image = load_image(vfx['file'])
+            if flipped:
+                image = image_mirror(image, horizontal=True)
+            self.overlays.append(Overlay(image, position, vfx['y']))
+            return
+
     @property
     def done(self):
         return sum(True for p in self.players if not p.dead) == 1
@@ -322,14 +343,18 @@ class Scene:
         direction = direction or random.choice(DIRECTIONS.ALL)
         char = next(self.character_generator)
         spritesheet = SpriteSheet(load_data(char['file']))
-        char = Character(position, spritesheet, char['variation'], self)
+        variation = random.choice(list(range(spritesheet.variation_count)))
+        char = Character(position, spritesheet, variation, self)
         char.direction = direction
         self.characters.append(char)
         return char
 
-    def score_image(self, player_n, score):
+    def life_image(self, player_n, score):
         index = int(round((score / COUNTDOWNS.MAX_LIFE) * 3))
-        return self.score_images[player_n][index]
+        return self.life_images[player_n][index]
+
+    def bullet_image(self, player_n, on=True):
+        return self.bullet_images[player_n][0 if on else 1]
 
     @property
     def elements(self):

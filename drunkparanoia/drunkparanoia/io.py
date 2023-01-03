@@ -34,6 +34,7 @@ def list_joysticks():
             joysticks.append(joystick)
         except BaseException:
             print(f'Unsupported joystick {joystick.get_name()}')
+            raise
     return joysticks[:4]
 
 
@@ -62,15 +63,12 @@ def swap_colors(surface, palette1, palette2):
 
 
 def load_skins():
-    d = f'{GAMEROOT}/resources/animdata'
-    skins = [f'{d}/{f}' for f in os.listdir(d)]
+    directory = f'{GAMEROOT}/resources/animdata'
+    skins = [f'{directory}/{file}' for file in os.listdir(directory)]
     for skin in skins:
         with open(skin, 'r') as f:
             data = json.load(f)
-        for filepath in data['sheets'].values():
-            frames = load_frames(filepath, data['framesize'], (0, 255, 0))
-            for frame in frames:
-                image_mirror(frame, horizontal=True)
+        load_skin(data)
 
 
 def load_skin(data):
@@ -87,7 +85,7 @@ def load_skin(data):
         skin = {}
         for side in ('face', 'back'):
             image = load_frames(
-                sheets[side], size, (0, 255, 0), palette1, palette2, i)
+                sheets[side], size, (0, 255, 0), palette1, palette2, i + 1)
             skin[side] = image
         result.append(skin)
     return result
@@ -133,10 +131,9 @@ def get_image(image_id):
     return _image_store.get(image_id)
 
 
-def load_image(filename, key_color=None):
-    if _image_store.get(filename):
+def load_image(filename, key_color=None, flipped=False):
+    if _image_store.get(filename) and flipped is False:
         return filename
-
     filepath = f'{GAMEROOT}/{filename}'
     image = pygame.image.load(filepath).convert_alpha()
     if key_color is not None:

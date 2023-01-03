@@ -13,6 +13,7 @@ class Player:
         self.scene = scene
         self.joystick = joystick
         self.life = COUNTDOWNS.MAX_LIFE
+        self.bullet_cooldown = 0
         self.index = index
         self.killer = None
         self.npc_killed = 0
@@ -34,61 +35,38 @@ class Player:
             player.life = 0
         else:
             self.npc_killed += 1
+        self.bullet_cooldown = COUNTDOWNS.BULLET_COOLDOWN
 
     def __next__(self):
         # self.life -= 1
         if self.character.status == CHARACTER_STATUSES.OUT:
             return
 
-        if self.character.status == CHARACTER_STATUSES.STUCK:
-            next(self.character)
-            return
+        if self.bullet_cooldown > 0:
+            self.bullet_cooldown -= 1
 
-        if self.character.status == CHARACTER_STATUSES.FREE:
-            commands = get_current_commands(self.joystick)
-            if commands.get('A'):
-                self.character.stop()
-                self.character.request_duel()
-                return
-            if commands.get('X'):
-                for character1, character2 in self.scene.possible_duels:
-                    if character1 == self.character:
-                        self.kill(character2)
-                        self.scene.apply_white_screen(self.character)
-                        return
-                self.character.request_interaction()
-                return
-
-        if self.character.status == CHARACTER_STATUSES.DUEL_ORIGIN:
-            if not self.character.spritesheet.animation_is_done:
+        match self.character.status:
+            case CHARACTER_STATUSES.STUCK:
                 next(self.character)
                 return
-            commands = get_current_commands(self.joystick)
-            if commands.get('X'):
-                self.kill(self.character.duel_target, black_screen=True)
 
-            if commands.get('A'):
-                self.character.release_duel()
-            next(self.character)
-            return
+            case CHARACTER_STATUSES.FREE:
+                if self.evaluate_free():
+                    return
 
-        if self.character.status == CHARACTER_STATUSES.DUEL_TARGET:
-            commands = get_current_commands(self.joystick)
-            if commands.get('X'):
-                target = self.character.duel_target
-                self.character.aim(target)
-                self.kill(target, black_screen=True)
-            if not self.character.spritesheet.animation_is_done:
+            case CHARACTER_STATUSES.DUEL_ORIGIN:
+                return self.evaluate_duel_as_origin()
+
+            case CHARACTER_STATUSES.DUEL_TARGET:
+                return self.evaluate_duel_as_target()
+
+            case CHARACTER_STATUSES.INTERACTING:
                 next(self.character)
-            return
+                return
 
-        if self.character.status == CHARACTER_STATUSES.INTERACTING:
-            next(self.character)
-            return
-
-        if self.character.status == CHARACTER_STATUSES.AUTOPILOT:
-            next(self.character)
-            return
+            case CHARACTER_STATUSES.AUTOPILOT:
+                next(self.character)
+                return
 
         direction = get_pressed_direction(self.joystick)
         if direction:
@@ -97,6 +75,42 @@ class Player:
         else:
             self.character.decelerate()
         next(self.character)
+
+    def evaluate_duel_as_target(self):
+        commands = get_current_commands(self.joystick)
+        if commands.get('X') and not self.bullet_cooldown:
+            target = self.character.duel_target
+            self.character.aim(target)
+            self.kill(target, black_screen=True)
+        if not self.character.spritesheet.animation_is_done:
+            next(self.character)
+
+    def evaluate_duel_as_origin(self):
+        if not self.character.spritesheet.animation_is_done:
+            next(self.character)
+            return
+        commands = get_current_commands(self.joystick)
+        if commands.get('X') and not self.bullet_cooldown:
+            self.kill(self.character.duel_target, black_screen=True)
+
+        if commands.get('A'):
+            self.character.release_duel()
+        next(self.character)
+
+    def evaluate_free(self):
+        commands = get_current_commands(self.joystick)
+        if commands.get('A'):
+            self.character.stop()
+            self.character.request_duel()
+            return True
+        if commands.get('X'):
+            if not self.bullet_cooldown:
+                for character1, character2 in self.scene.possible_duels:
+                    if character1 == self.character:
+                        self.kill(character2)
+                        self.scene.apply_white_screen(self.character)
+                        return True
+            return self.character.request_interaction()
 
 
 class Npc:
@@ -127,22 +141,59 @@ class Npc:
             COUNTDOWNS.DUEL_RELEASE_TIME_MAX)
         return True
 
-    def __next__(self):
-        if self.coma_count_down == 0:
-            if self.character.status != CHARACTER_STATUSES.OUT:
-                if self.character.duel_target:
-                    self.character.duel_target.duel_target = None
-                    self.character.duel_target.spritesheet.animation = 'idle'
-                    self.character.duel_target.spritesheet.index = 0
-                    self.character.duel_target.status = CHARACTER_STATUSES.FREE
-                    self.character.duel_target = None
-                self.character.status = CHARACTER_STATUSES.OUT
-                self.character.spritesheet.animation = 'vomit'
-                self.character.spritesheet.index = 0
-                self.character.buffer_animation = 'coma'
+    def fall_to_coma(self):
+        if self.character.status != CHARACTER_STATUSES.OUT:
+            if self.character.duel_target:
+                self.character.duel_target.duel_target = None
+                self.character.duel_target.spritesheet.animation = 'idle'
+                self.character.duel_target.spritesheet.index = 0
+                self.character.duel_target.status = CHARACTER_STATUSES.FREE
+                self.character.duel_target = None
+            self.character.status = CHARACTER_STATUSES.OUT
+            self.character.spritesheet.animation = 'vomit'
+            self.character.spritesheet.index = 0
+            self.character.buffer_animation = 'coma'
+            return
+        next(self.character)
+
+    def evaluate_free(self):
+        if self.test_duels():
+            return
+
+        if self.is_cooling_down is False:
+            proba = COUNTDOWNS.COOLDOWN_PROBABILITY
+            do_pause = random.randrange(0, proba) == 0
+            if do_pause:
+                self.character.path = None
+                self.character.ghost = None
+                self.is_cooling_down = True
+                self.cool_down = random.randrange(
+                    COUNTDOWNS.COOLDOWN_MIN, COUNTDOWNS.COOLDOWN_MAX)
+                next(self.character)
                 return
+
+        if self.cool_down == 0:
+            self.character.end_autopilot()
+            self.is_cooling_down = False
+            self.character.status = CHARACTER_STATUSES.AUTOPILOT
+            functions = [shortest_path] * 2 + [equilateral_path]
+            func = random.choice(functions)
+            self.character.ghost = None
+            destination = self.character.choice_destination()
+            position = self.character.coordinates.position
+            self.character.path = func(position, destination)
+            self.character.autopilot()
             next(self.character)
             return
+
+        if self.character.speed:
+            self.character.decelerate()
+        self.cool_down -= 1
+        next(self.character)
+
+    def __next__(self):
+        if self.coma_count_down == 0:
+            return self.fall_to_coma()
         self.coma_count_down -= 1
 
         if self.character.status == CHARACTER_STATUSES.AUTOPILOT:
@@ -152,39 +203,7 @@ class Npc:
             return
 
         if self.character.status == CHARACTER_STATUSES.FREE:
-            if self.test_duels():
-                return
-            if self.is_cooling_down is False:
-                proba = COUNTDOWNS.COOLDOWN_PROBABILITY
-                do_pause = random.randrange(0, proba) == 0
-                if do_pause:
-                    self.character.path = None
-                    self.character.ghost = None
-                    self.is_cooling_down = True
-                    self.cool_down = random.randrange(
-                        COUNTDOWNS.COOLDOWN_MIN, COUNTDOWNS.COOLDOWN_MAX)
-                    next(self.character)
-                    return
-
-            if self.cool_down == 0:
-                self.character.end_autopilot()
-                self.is_cooling_down = False
-                self.character.status = CHARACTER_STATUSES.AUTOPILOT
-                functions = [shortest_path] * 2 + [equilateral_path]
-                func = random.choice(functions)
-                self.character.ghost = None
-                destination = self.character.choice_destination()
-                position = self.character.coordinates.position
-                self.character.path = func(position, destination)
-                self.character.autopilot()
-                next(self.character)
-                return
-
-            if self.character.speed:
-                self.character.decelerate()
-            self.cool_down -= 1
-            next(self.character)
-            return
+            self.evaluate_free()
 
         if self.character.status == CHARACTER_STATUSES.DUEL_ORIGIN:
             if not self.character.spritesheet.animation_is_done:
@@ -318,9 +337,12 @@ class Character:
 
             case CHARACTER_STATUSES.STUCK:
                 if self.spritesheet.animation_is_done:
+                    if self.spritesheet.animation == 'vomit':
+                        pos = self.render_position
+                        flipped = self.direction in DIRECTIONS.FLIPPED
+                        self.scene.create_vfx('vomit', pos, flipped)
                     self.status = CHARACTER_STATUSES.FREE
                     self.stop()
-                    return
                 next(self.spritesheet)
                 return
 
@@ -452,6 +474,8 @@ class Character:
         for zone in self.scene.interaction_zones:
             if zone.contains(self.coordinates.position):
                 self.go_to(zone.target, zone.action, zone.direction)
+                return True
+        return False
 
     def go_to(self, position, action=None, direction=None):
         self.status = CHARACTER_STATUSES.AUTOPILOT

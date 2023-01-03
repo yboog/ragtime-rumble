@@ -16,6 +16,7 @@ def render_game(screen, loop):
         return
     if loop.status == LOOP_STATUSES.DISPATCHING:
         render_dispatching(screen, loop)
+        render_players_ol_score(screen, loop.scene)
 
 
 CELL_WIDTH = 55
@@ -177,16 +178,24 @@ def render_scene(screen, scene):
         draw_possible_duel(duel_surface, character1, character2)
     screen.blit(duel_surface, (0, 0))
     # Scores.
-    image = get_image(scene.score_ol.image)
-    screen.blit(image, scene.score_ol.render_position)
-    for player in scene.players:
-        image = get_image(scene.score_image(player.index, player.life))
-        position = scene.score_positions[player.index]
-        screen.blit(image, position)
+    render_players_ol_score(screen, scene)
     # for rect in scene.no_go_zones:
     #     draw_rect(screen, rect, 125)
     # for interaction_zone in scene.interaction_zones:
     #     draw_rect(screen, interaction_zone.zone, 15)
+
+
+def render_players_ol_score(screen, scene):
+    image = get_image(scene.score_ol.image)
+    screen.blit(image, scene.score_ol.render_position)
+    for player in scene.players:
+        image = get_image(scene.life_image(player.index, player.life))
+        position = scene.life_positions[player.index]
+        screen.blit(image, position)
+        on = player.bullet_cooldown == 0
+        image = get_image(scene.bullet_image(player.index, on))
+        position = scene.bullet_positions[player.index]
+        screen.blit(image, position)
 
 
 def render_death_screen(screen, scene):
@@ -209,17 +218,15 @@ def draw_possible_duel(screen, char1, char2):
 def render_element(screen, element):
     img = element.image
     screen.blit(get_image(img), element.render_position)
-    if isinstance(element, Character):
-        # screen.blit(get_image(img), element.render_position)
-        if element.path:
-            last = None
-            for point in [element.coordinates.position] + element.path:
-                draw_rect(screen, (point[0], point[1], 2, 2))
-                if last:
-                    pygame.draw.line(screen, (255, 255, 0), last, point, 2)
-                last = point
+    # if isinstance(element, Character):
+    #     if element.path:
+    #         last = None
+    #         for point in [element.coordinates.position] + element.path:
+    #             draw_rect(screen, (point[0], point[1], 2, 2))
+    #             if last:
+    #                 pygame.draw.line(screen, (255, 255, 0), last, point, 2)
+    #             last = point
 
-    # from drunkparanoia.character import Character
     #     draw_rect(screen, element.screen_box, alpha=125)
 
 

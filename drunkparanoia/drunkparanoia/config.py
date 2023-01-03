@@ -18,8 +18,14 @@ ANIMATIONS = [
     'vomit',
     'coma'
 ]
+
 LOOPING_ANIMATIONS = ['idle', 'walk', 'piano', 'poker', 'suspicious']
 HOLDABLE_ANIMATIONS = ['call', 'death', 'coma']
+
+
+class DUEL:
+    RANGE = (20, 120)
+    TOLERENCE = 15
 
 
 class LOOP_STATUSES:
@@ -32,21 +38,22 @@ class LOOP_STATUSES:
 
 
 class COUNTDOWNS:
-    VOMIT_MIN = 1000
-    VOMIT_MAX = 1800
+    VOMIT_MIN = 500
+    VOMIT_MAX = 1500
     COMA_MIN = 500
     COMA_MAX = 10000
     COOLDOWN_MIN = 50
     COOLDOWN_MAX = 300
     COOLDOWN_PROBABILITY = 2
-    DUEL_CHECK_MIN = 50
-    DUEL_CHECK_MAX = 250
+    DUEL_CHECK_MIN = 125
+    DUEL_CHECK_MAX = 400
     DUEL_RELEASE_TIME_MIN = 10
-    DUEL_RELEASE_TIME_MAX = 125
+    DUEL_RELEASE_TIME_MAX = 95
     BLACK_SCREEN = 92
     WHITE_SCREEN = 8
     START_LIFE = 1500
     MAX_LIFE = 2000
+    BULLET_COOLDOWN = 600
 
 
 class SPEED:

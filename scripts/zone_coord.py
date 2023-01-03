@@ -586,6 +586,7 @@ class LevelCanvasModel:
 
         self.selected_target = None
         self.selected_group = None
+        self.selected_interaction = None
         self.wall_selected_rows = []
 
     def size(self):
@@ -780,8 +781,12 @@ class LevelCanvas(QtWidgets.QWidget):
             color.setAlpha(50)
             painter.setBrush(color)
             align = QtCore.Qt.AlignCenter
-            for interaction in self.model.data['interactions']:
-                painter.setPen(QtCore.Qt.green)
+            for i, interaction in enumerate(self.model.data['interactions']):
+                selection = self.model.selected_interaction
+                if i == selection and selection is not None:
+                    painter.setPen(QtCore.Qt.white)
+                else:
+                    painter.setPen(QtCore.Qt.green)
                 painter.setBrush(color)
                 rect = QtCore.QRect(*interaction['zone'])
                 painter.drawRect(rect)
@@ -900,6 +905,8 @@ class Editor(QtWidgets.QWidget):
         self.interactions.setSelectionMode(selection_mode)
         self.interactions.setSelectionBehavior(selection_behavior)
         self.interactions.setModel(self.interactions_model)
+        method = self.interaction_selected
+        self.interactions.selectionModel().selectionChanged.connect(method)
 
         self.stairs_model = StairModel(self.model)
         self.stairs_model.changed.connect(self.canvas.repaint)
@@ -1104,6 +1111,16 @@ class Editor(QtWidgets.QWidget):
         self.model.switches = self.visibilities.switches.isChecked()
         self.model.fences = self.visibilities.fences.isChecked()
         self.model.startups = self.visibilities.startups.isChecked()
+        self.repaint()
+
+    def interaction_selected(self, *_):
+        indexes = self.interactions.selectionModel().selectedIndexes()
+        if not indexes:
+            self.model.selected_interaction = None
+            self.repaint()
+            return
+        rows = list({index.row() for index in indexes})
+        self.model.selected_interaction = rows[0]
         self.repaint()
 
     def walls_selected(self, *_):

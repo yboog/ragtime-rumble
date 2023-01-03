@@ -11,6 +11,10 @@ class SpriteSheet:
         self.images = load_skin(data)
 
     @property
+    def variation_count(self):
+        return len(self.data['variations']) + 1
+
+    @property
     def durations(self):
         return self.data['animations'][self.animation]['durations']
 

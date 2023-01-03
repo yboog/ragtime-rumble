@@ -24,11 +24,11 @@
       {
         "popspots": {
           "left": [
-            23,
+            21,
             240
           ],
           "right": [
-            98,
+            101,
             240
           ],
           "up": [
@@ -66,7 +66,7 @@
             165
           ],
           "right": [
-            167,
+            171,
             165
           ],
           "up": [
@@ -184,44 +184,84 @@
       ]
     },
     "player1": {
-      "position": [
-        5,
-        325
-      ],
-      "file4": "/resources/ui/saloon/player-1/player-1-00.png",
-      "file3": "/resources/ui/saloon/player-1/player-1-01.png",
-      "file2": "/resources/ui/saloon/player-1/player-1-02.png",
-      "file1": "/resources/ui/saloon/player-1/player-1-03.png"
+      "life": {
+        "position": [
+          5,
+          325
+        ],
+        "file4": "/resources/ui/saloon/player-1/player-1-00.png",
+        "file3": "/resources/ui/saloon/player-1/player-1-01.png",
+        "file2": "/resources/ui/saloon/player-1/player-1-02.png",
+        "file1": "/resources/ui/saloon/player-1/player-1-03.png"
+      },
+      "bullet": {
+        "position": [
+          15,
+          325
+        ],
+        "on": "/resources/ui/saloon/bullet.png",
+        "off": "/resources/ui/saloon/bullet_off.png"
+      }
     },
     "player2": {
-      "position": [
-        50,
-        325
-      ],
-      "file4": "/resources/ui/saloon/player-2/player-2-00.png",
-      "file3": "/resources/ui/saloon/player-2/player-2-01.png",
-      "file2": "/resources/ui/saloon/player-2/player-2-02.png",
-      "file1": "/resources/ui/saloon/player-2/player-2-03.png"
+      "life": {
+        "position": [
+          50,
+          325
+        ],
+        "file4": "/resources/ui/saloon/player-2/player-2-00.png",
+        "file3": "/resources/ui/saloon/player-2/player-2-01.png",
+        "file2": "/resources/ui/saloon/player-2/player-2-02.png",
+        "file1": "/resources/ui/saloon/player-2/player-2-03.png"
+      },
+      "bullet": {
+        "position": [
+          60,
+          325
+        ],
+        "on": "/resources/ui/saloon/bullet.png",
+        "off": "/resources/ui/saloon/bullet_off.png"
+      }
     },
     "player3": {
-      "position": [
-        55,
-        325
-      ],
-      "file4": "/resources/ui/saloon/player-3/player-3-00.png",
-      "file3": "/resources/ui/saloon/player-3/player-3-01.png",
-      "file2": "/resources/ui/saloon/player-3/player-3-02.png",
-      "file1": "/resources/ui/saloon/player-3/player-3-03.png"
+      "life": {
+        "position": [
+          55,
+          325
+        ],
+        "file4": "/resources/ui/saloon/player-3/player-3-00.png",
+        "file3": "/resources/ui/saloon/player-3/player-3-01.png",
+        "file2": "/resources/ui/saloon/player-3/player-3-02.png",
+        "file1": "/resources/ui/saloon/player-3/player-3-03.png"
+      },
+      "bullet": {
+        "position": [
+          65,
+          325
+        ],
+        "on": "/resources/ui/saloon/bullet.png",
+        "off": "/resources/ui/saloon/bullet_off.png"
+      }
     },
     "player4": {
-      "position": [
-        80,
-        325
-      ],
-      "file4": "/resources/ui/saloon/player-4/player-4-00.png",
-      "file3": "/resources/ui/saloon/player-4/player-4-01.png",
-      "file2": "/resources/ui/saloon/player-4/player-4-02.png",
-      "file1": "/resources/ui/saloon/player-4/player-4-03.png"
+      "life": {
+        "position": [
+          80,
+          325
+        ],
+        "file4": "/resources/ui/saloon/player-4/player-4-00.png",
+        "file3": "/resources/ui/saloon/player-4/player-4-01.png",
+        "file2": "/resources/ui/saloon/player-4/player-4-02.png",
+        "file1": "/resources/ui/saloon/player-4/player-4-03.png"
+      },
+      "bullet": {
+        "position": [
+          90,
+          325
+        ],
+        "on": "/resources/ui/saloon/bullet.png",
+        "off": "/resources/ui/saloon/bullet_off.png"
+      }
     }
   },
   "fences": [
@@ -454,7 +494,7 @@
       ],
       "target": [
         369,
-        155
+        158
       ]
     },
     {
@@ -496,7 +536,7 @@
       ],
       "target": [
         550,
-        232
+        234
       ]
     },
     {
@@ -539,6 +579,174 @@
       "target": [
         551,
         282
+      ]
+    },
+    {
+      "action": "poker",
+      "direction": "right",
+      "zone": [
+        383,
+        288,
+        43,
+        44
+      ],
+      "target": [
+        407,
+        312
+      ]
+    },
+    {
+      "action": "poker",
+      "direction": "down",
+      "zone": [
+        420,
+        257,
+        60,
+        35
+      ],
+      "target": [
+        450,
+        283
+      ]
+    },
+    {
+      "action": "poker",
+      "direction": "left",
+      "zone": [
+        479,
+        291,
+        31,
+        37
+      ],
+      "target": [
+        490,
+        313
+      ]
+    },
+    {
+      "action": "poker",
+      "direction": "left",
+      "zone": [
+        420,
+        323,
+        56,
+        40
+      ],
+      "target": [
+        447,
+        336
+      ]
+    },
+    {
+      "action": "poker",
+      "direction": "left",
+      "zone": [
+        31,
+        247,
+        56,
+        31
+      ],
+      "target": [
+        58,
+        262
+      ]
+    },
+    {
+      "action": "poker",
+      "direction": "left",
+      "zone": [
+        86,
+        207,
+        38,
+        41
+      ],
+      "target": [
+        104,
+        236
+      ]
+    },
+    {
+      "action": "poker",
+      "direction": "right",
+      "zone": [
+        1,
+        207,
+        33,
+        46
+      ],
+      "target": [
+        17,
+        236
+      ]
+    },
+    {
+      "action": "poker",
+      "direction": "down",
+      "zone": [
+        35,
+        176,
+        51,
+        42
+      ],
+      "target": [
+        60,
+        210
+      ]
+    },
+    {
+      "action": "poker",
+      "direction": "left",
+      "zone": [
+        104,
+        175,
+        50,
+        31
+      ],
+      "target": [
+        130,
+        185
+      ]
+    },
+    {
+      "action": "poker",
+      "direction": "left",
+      "zone": [
+        159,
+        136,
+        33,
+        38
+      ],
+      "target": [
+        172,
+        162
+      ]
+    },
+    {
+      "action": "poker",
+      "direction": "right",
+      "zone": [
+        73,
+        138,
+        31,
+        36
+      ],
+      "target": [
+        92,
+        160
+      ]
+    },
+    {
+      "action": "poker",
+      "direction": "down",
+      "zone": [
+        102,
+        104,
+        56,
+        34
+      ],
+      "target": [
+        131,
+        140
       ]
     }
   ],
@@ -1347,16 +1555,7 @@
   ],
   "characters": [
     {
-      "file": "resources/animdata/smith.json",
-      "variation": 0
-    },
-    {
-      "file": "resources/animdata/smith.json",
-      "variation": 1
-    },
-    {
-      "file": "resources/animdata/smith.json",
-      "variation": 2
+      "file": "resources/animdata/smith.json"
     }
   ],
   "overlays": [
@@ -1399,6 +1598,14 @@
         0
       ],
       "y": 260
+    }
+  ],
+  "vfx": [
+    {
+      "name": "vomit",
+      "type": "static",
+      "file": "resources/props/vomit.png",
+      "y": -1000
     }
   ],
   "props": [

@@ -2,6 +2,58 @@ from drunkparanoia.config import DIRECTIONS
 
 
 def get_keystate(key_name, joystick):
+    name_to_function = {
+        'XBox One S Controller': get_x_input_keystate,
+        'Controller (8BitDo Pro 2)': get_x_input_keystate,
+        'USB,2-axis 8-button gamepad': get_2_axis_8_button_keystate,
+        'Generic USB Joystick': get_generic_user_joystick_keystate}
+    function = name_to_function.get(joystick.get_name(), get_x_input_keystate)
+    return function(key_name, joystick)
+
+
+def get_2_axis_8_button_keystate(key_name, joystick):
+    match key_name:
+        case "A":
+            return joystick.get_button(1) == 1
+        case 'X':
+            return joystick.get_button(3) == 1
+        case 'select':
+            return joystick.get_button(6) == 1
+        case 'start':
+            return joystick.get_button(7) == 1
+        case 'UP':
+            return joystick.get_axis(1) < -.5
+        case 'DOWN':
+            return joystick.get_axis(1) > .5
+        case 'LEFT':
+            return joystick.get_axis(0) < -.5
+        case 'RIGHT':
+            return joystick.get_axis(0) > .5
+    return False
+
+
+def get_generic_user_joystick_keystate(key_name, joystick):
+    match key_name:
+        case "A":
+            return joystick.get_button(2) == 1
+        case 'X':
+            return joystick.get_button(3) == 1
+        case 'select':
+            return joystick.get_button(6) == 1
+        case 'start':
+            return joystick.get_button(9) == 1
+        case 'UP':
+            return joystick.get_hat(0)[1] == 1 or joystick.get_axis(1) < -.5
+        case 'DOWN':
+            return joystick.get_hat(0)[1] == -1 or joystick.get_axis(1) > .5
+        case 'LEFT':
+            return joystick.get_hat(0)[0] == -1 or joystick.get_axis(0) < -.5
+        case 'RIGHT':
+            return joystick.get_hat(0)[0] == 1 or joystick.get_axis(0) > .5
+    return False
+
+
+def get_x_input_keystate(key_name, joystick):
     match key_name:
         case "A":
             return joystick.get_button(0) == 1

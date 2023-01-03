@@ -36,10 +36,10 @@
     56
   ],
   "box": [
-    -18,
-    -25,
-    36,
-    25
+    -10,
+    -8,
+    20,
+    10
   ],
   "sheets": {
     "face": "resources/skins/smith_face.png",

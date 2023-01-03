@@ -1,10 +1,5 @@
-from drunkparanoia.config import DIRECTIONS, CHARACTER_STATUSES
+from drunkparanoia.config import DIRECTIONS, CHARACTER_STATUSES, DUEL
 from drunkparanoia.coordinates import path_cross_rect
-
-
-class DUEL:
-    RANGE = (20, 200)
-    TOLERENCE = 15
 
 
 def find_possible_duels(scene):
