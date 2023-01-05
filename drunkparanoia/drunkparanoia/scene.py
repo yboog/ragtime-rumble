@@ -455,7 +455,12 @@ class InteractionZone:
         self.target = data["target"]
         self.action = data["action"]
         self.zone = data["zone"]
+        self.attraction = data["attraction"]
         self.direction = data["direction"]
 
     def contains(self, position):
         return point_in_rectangle(position, *self.zone)
+
+    def attract(self, position):
+        return point_in_rectangle(position, *self.attraction)
+

@@ -349,7 +349,7 @@ class InteractionModel(QtCore.QAbstractTableModel):
         return len(self.model.data['interactions'])
 
     def columnCount(self, *_):
-        return 4
+        return 5
 
     def flags(self, index):
         flags = super().flags(index)
@@ -358,22 +358,26 @@ class InteractionModel(QtCore.QAbstractTableModel):
 
     def setData(self, index, value, _):
         row, col = index.row(), index.column()
+
         if col == 0:
             if value not in ['poker', 'piano', 'bet', 'rob', 'balcony']:
                 return False
             self.model.data['interactions'][row]['action'] = value
             self.changed.emit()
             return True
-        elif col == 2:
+
+        elif col in (3, 4):
             try:
                 data = json.loads(value)
                 if not is_zone(data):
                     raise TypeError()
-                self.model.data['interactions'][row]['zone'] = data
+                key = 'zone' if col == 3 else 'attraction'
+                self.model.data['interactions'][row][key] = data
                 self.changed.emit()
                 return True
             except TypeError:
                 return False
+
         elif col == 1:
             try:
                 data = [v.strip(" ") for v in value.strip('[]').split(',')]
@@ -386,7 +390,8 @@ class InteractionModel(QtCore.QAbstractTableModel):
             except BaseException as e:
                 print(e)
                 return False
-        elif col == 3:
+
+        elif col == 2:
             directions = ['left', 'right', 'up', 'down']
             if value not in directions:
                 return False
@@ -397,15 +402,18 @@ class InteractionModel(QtCore.QAbstractTableModel):
     def headerData(self, section, orientation, role):
         if orientation != QtCore.Qt.Horizontal or role != QtCore.Qt.DisplayRole:
             return
-        return ["Action", "Target", "Zone", "Direction"][section]
+        return ["Action", "Target", "Direction", "Zone", "Attraction"][section]
 
     def data(self, index, role):
         if not index.isValid():
             return
+
         if role not in (QtCore.Qt.DisplayRole, QtCore.Qt.EditRole):
             return
+
         interaction = self.model.data['interactions'][index.row()]
-        k = ["action", "target", "zone", "direction"][index.column()]
+        col = index.column()
+        k = ["action", "target", "direction", "zone", "attraction"][col]
         return str(interaction[k])
 
 
@@ -787,11 +795,17 @@ class LevelCanvas(QtWidgets.QWidget):
                     painter.setPen(QtCore.Qt.white)
                 else:
                     painter.setPen(QtCore.Qt.green)
+                color.setAlpha(50)
+                painter.setBrush(color)
                 painter.setBrush(color)
                 rect = QtCore.QRect(*interaction['zone'])
                 painter.drawRect(rect)
                 text = get_interaction_text(interaction)
                 painter.drawText(rect, align, text)
+                color.setAlpha(25)
+                painter.setBrush(color)
+                painter.setPen(QtCore.Qt.NoPen)
+                painter.drawRect(*interaction['attraction'])
                 painter.setPen(QtCore.Qt.white)
                 painter.setBrush(QtCore.Qt.white)
                 if None not in interaction['target']:

@@ -122,6 +122,9 @@ class Npc:
             COUNTDOWNS.DUEL_CHECK_MIN, COUNTDOWNS.DUEL_CHECK_MAX)
         self.coma_count_down = random.randrange(
             COUNTDOWNS.COMA_MIN, COUNTDOWNS.COMA_MAX)
+        self.interaction_cooldown = random.randrange(
+            COUNTDOWNS.INTERACTION_COOLDOWN_MIN,
+            COUNTDOWNS.INTERACTION_COOLDOWN_MAX)
         self.cool_down = 0
         self.release_time = 0
         self.is_cooling_down = False
@@ -156,9 +159,19 @@ class Npc:
             return
         next(self.character)
 
+    def interaction_zone(self):
+        condition = (
+            (zone := self.character.attraction_zone()) and
+            self.interaction_cooldown == 0 and
+            random.choice(range(COUNTDOWNS.INTERACTION_PROBABILITY)) == 0)
+        if condition:
+            return zone
+
     def evaluate_free(self):
         if self.test_duels():
             return
+        if self.interaction_cooldown > 0:
+            self.interaction_cooldown -=1
 
         if self.is_cooling_down is False:
             proba = COUNTDOWNS.COOLDOWN_PROBABILITY
@@ -171,6 +184,14 @@ class Npc:
                     COUNTDOWNS.COOLDOWN_MIN, COUNTDOWNS.COOLDOWN_MAX)
                 next(self.character)
                 return
+
+        if zone := self.interaction_zone():
+            self.character.go_to(zone.target, zone.action, zone.direction)
+            self.interaction_cooldown = random.randrange(
+                COUNTDOWNS.INTERACTION_COOLDOWN_MIN,
+                COUNTDOWNS.INTERACTION_COOLDOWN_MAX)
+            next(self.character)
+            return
 
         if self.cool_down == 0:
             self.character.end_autopilot()
@@ -476,6 +497,11 @@ class Character:
                 self.go_to(zone.target, zone.action, zone.direction)
                 return True
         return False
+
+    def attraction_zone(self):
+        return next((
+            zone for zone in self.scene.interaction_zones if
+            zone.attract(self.coordinates.position)), None)
 
     def go_to(self, position, action=None, direction=None):
         self.status = CHARACTER_STATUSES.AUTOPILOT
