@@ -52,9 +52,11 @@ def draw_score_data(screen, rect, data):
     if data is None:
         pygame.draw.rect(screen, (100, 100, 100), rect)
         return
+
     if isinstance(data, int):
         draw_text(screen, str(data), rect.center, (255, 255, 0))
         return
+
     if isinstance(data, list):
         rect1 = pygame.Rect(
             rect.left, rect.top, rect.width / 2, rect.height / 2)
@@ -218,6 +220,7 @@ def draw_possible_duel(screen, char1, char2):
 def render_element(screen, element):
     img = element.image
     screen.blit(get_image(img), element.render_position)
+    ### RENDER PATHS
     # if isinstance(element, Character):
     #     if element.path:
     #         last = None

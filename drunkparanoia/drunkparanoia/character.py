@@ -14,6 +14,7 @@ class Player:
         self.joystick = joystick
         self.life = COUNTDOWNS.MAX_LIFE
         self.bullet_cooldown = 0
+        self.action_cooldown = 0
         self.index = index
         self.killer = None
         self.npc_killed = 0
@@ -45,6 +46,9 @@ class Player:
         if self.bullet_cooldown > 0:
             self.bullet_cooldown -= 1
 
+        if self.action_cooldown > 0:
+            self.action_cooldown -= 1
+
         match self.character.status:
             case CHARACTER_STATUSES.STUCK:
                 next(self.character)
@@ -61,8 +65,7 @@ class Player:
                 return self.evaluate_duel_as_target()
 
             case CHARACTER_STATUSES.INTERACTING:
-                next(self.character)
-                return
+                return self.evaluate_interacting()
 
             case CHARACTER_STATUSES.AUTOPILOT:
                 next(self.character)
@@ -75,6 +78,15 @@ class Player:
         else:
             self.character.decelerate()
         next(self.character)
+
+    def evaluate_interacting(self):
+        is_looping = self.character.spritesheet.animation in LOOPING_ANIMATIONS
+        commands = get_current_commands(self.joystick)
+        if not is_looping or not commands.get('X') or self.action_cooldown:
+            next(self.character)
+            return
+        self.action_cooldown = COUNTDOWNS.ACTION_COOLDOWN
+        self.character.set_free()
 
     def evaluate_duel_as_target(self):
         commands = get_current_commands(self.joystick)
@@ -110,7 +122,11 @@ class Player:
                         self.kill(character2)
                         self.scene.apply_white_screen(self.character)
                         return True
-            return self.character.request_interaction()
+            if self.action_cooldown != 0:
+                return
+            interact = self.character.request_interaction()
+            if interact:
+                self.action_cooldown = COUNTDOWNS.ACTION_COOLDOWN
 
 
 class Npc:
@@ -125,6 +141,7 @@ class Npc:
         self.interaction_cooldown = random.randrange(
             COUNTDOWNS.INTERACTION_COOLDOWN_MIN,
             COUNTDOWNS.INTERACTION_COOLDOWN_MAX)
+        self.interaction_loop_cooldown = 0
         self.cool_down = 0
         self.release_time = 0
         self.is_cooling_down = False
@@ -171,7 +188,7 @@ class Npc:
         if self.test_duels():
             return
         if self.interaction_cooldown > 0:
-            self.interaction_cooldown -=1
+            self.interaction_cooldown -= 1
 
         if self.is_cooling_down is False:
             proba = COUNTDOWNS.COOLDOWN_PROBABILITY
@@ -186,7 +203,7 @@ class Npc:
                 return
 
         if zone := self.interaction_zone():
-            self.character.go_to(zone.target, zone.action, zone.direction)
+            self.character.go_to(zone.target, zone)
             self.interaction_cooldown = random.randrange(
                 COUNTDOWNS.INTERACTION_COOLDOWN_MIN,
                 COUNTDOWNS.INTERACTION_COOLDOWN_MAX)
@@ -216,6 +233,17 @@ class Npc:
         if self.coma_count_down == 0:
             return self.fall_to_coma()
         self.coma_count_down -= 1
+
+        if self.character.status == CHARACTER_STATUSES.INTERACTING:
+            if self.interaction_loop_cooldown <= 0:
+                self.character.set_free()
+                self.interaction_loop_cooldown = random.choice(range(
+                    COUNTDOWNS.INTERACTION_LOOP_COOLDOWN_MIN,
+                    COUNTDOWNS.INTERACTION_LOOP_COOLDOWN_MAX))
+                return
+            self.interaction_loop_cooldown -= 1
+            next(self.character)
+            return
 
         if self.character.status == CHARACTER_STATUSES.AUTOPILOT:
             if self.test_duels():
@@ -254,8 +282,9 @@ class Character:
         self.duel_target = None
         self.ghost = None
         self.path = None
+        self.buffer_interaction_zone = None
         self.buffer_animation = None
-        self.buffer_direction = None
+        self.interacting_zone = None
 
     def choice_destination(self):
         limit = 0
@@ -303,7 +332,8 @@ class Character:
 
     def offset(self):
         inclination = self.scene.inclination_at(self.coordinates.position)
-        position = self.coordinates.shift(self.direction, self.speed, inclination)
+        position = self.coordinates.shift(
+            self.direction, self.speed, inclination)
         box = get_box(position, self.box)
         if not self.scene.collide(box):
             self.coordinates.x = position[0]
@@ -376,8 +406,9 @@ class Character:
                             self.spritesheet.animation = 'coma'
                             self.status = CHARACTER_STATUSES.OUT
                         case _:
-                            self.status = CHARACTER_STATUSES.FREE
-                            self.spritesheet.animation = 'idle'
+                            looping = LOOPING_ANIMATIONS
+                            if self.spritesheet.animation not in looping:
+                                self.set_free()
                     self.spritesheet.index = 0
                     return
                 next(self.spritesheet)
@@ -401,6 +432,14 @@ class Character:
             self.offset()
 
         self.eval_animation()
+
+    def set_free(self):
+        self.status = CHARACTER_STATUSES.FREE
+        self.spritesheet.animation = 'idle'
+        self.spritesheet.index = 0
+        if self.interacting_zone:
+            self.interacting_zone.busy = False
+            self.interacting_zone = None
 
     def aim(self, character):
         if self.coordinates.x > character.coordinates.x:
@@ -472,8 +511,6 @@ class Character:
 
     def request_duel(self):
         for origin, target in self.scene.possible_duels:
-            if target == self:
-                origin, target = target, origin
             if origin != self:
                 continue
             self.stop()
@@ -493,8 +530,8 @@ class Character:
 
     def request_interaction(self):
         for zone in self.scene.interaction_zones:
-            if zone.contains(self.coordinates.position):
-                self.go_to(zone.target, zone.action, zone.direction)
+            if zone.contains(self.coordinates.position) and not zone.busy:
+                self.go_to(zone.target, zone)
                 return True
         return False
 
@@ -503,27 +540,26 @@ class Character:
             zone for zone in self.scene.interaction_zones if
             zone.attract(self.coordinates.position)), None)
 
-    def go_to(self, position, action=None, direction=None):
+    def go_to(self, position, zone=None):
         self.status = CHARACTER_STATUSES.AUTOPILOT
         self.ghost = None
-        self.path = shortest_path(
-            self.coordinates.position, position.copy())
-
-        self.buffer_animation = action
-        self.buffer_direction = direction
+        self.path = shortest_path(self.coordinates.position, position.copy())
+        self.buffer_interaction_zone = zone
 
     def end_autopilot(self):
         self.stop()
         self.ghost = None
-        if self.buffer_direction:
-            self.direction = self.buffer_direction
-        if self.buffer_animation:
-            self.spritesheet.animation = self.buffer_animation
+        zone = self.buffer_interaction_zone
+        if zone and not zone.busy:
+            self.spritesheet.animation = zone.action
             self.spritesheet.index = 0
-            self.buffer_animation = None
+            self.direction = zone.direction
+            self.interacting_zone = zone
+            self.interacting_zone.busy = True
             self.status = CHARACTER_STATUSES.INTERACTING
         else:
             self.status = CHARACTER_STATUSES.FREE
+        self.buffer_interaction_zone = None
         self.eval_animation()
         return
 

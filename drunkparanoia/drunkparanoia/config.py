@@ -19,7 +19,7 @@ ANIMATIONS = [
     'coma'
 ]
 
-LOOPING_ANIMATIONS = ['idle', 'walk', 'piano', 'poker', 'suspicious']
+LOOPING_ANIMATIONS = ['idle', 'walk', 'piano', 'poker', 'suspicious', 'balcony']
 HOLDABLE_ANIMATIONS = ['call', 'death', 'coma']
 
 
@@ -38,6 +38,7 @@ class LOOP_STATUSES:
 
 
 class COUNTDOWNS:
+    ACTION_COOLDOWN = 15
     VOMIT_MIN = 500
     VOMIT_MAX = 1500
     COMA_MIN = 500
@@ -57,6 +58,8 @@ class COUNTDOWNS:
     INTERACTION_PROBABILITY = 4
     INTERACTION_COOLDOWN_MIN = 125
     INTERACTION_COOLDOWN_MAX = 350
+    INTERACTION_LOOP_COOLDOWN_MIN = 45
+    INTERACTION_LOOP_COOLDOWN_MAX = 150
 
 
 class SPEED:

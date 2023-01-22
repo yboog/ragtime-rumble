@@ -11,7 +11,7 @@ from drunkparanoia.coordinates import (
     box_hit_box, point_in_rectangle, box_hit_polygon, path_cross_polygon,
     path_cross_rect)
 from drunkparanoia.config import (
-    DIRECTIONS, GAMEROOT, COUNTDOWNS, LOOP_STATUSES)
+    DIRECTIONS, GAMEROOT, COUNTDOWNS, LOOP_STATUSES, CHARACTER_STATUSES)
 from drunkparanoia.duel import find_possible_duels
 from drunkparanoia.io import (
     load_image, load_data, quit_event, list_joysticks, image_mirror)
@@ -196,7 +196,7 @@ class GameLoop:
         return 30 if self.status == LOOP_STATUSES.LAST_KILL else 60
 
     def start_game(self):
-        while len(self.scene.characters) <= self.scene.character_number:
+        while len(self.scene.characters) < self.scene.character_number:
             self.scene.build_character()
         self.scene.create_npcs()
         self.status = LOOP_STATUSES.BATTLE
@@ -216,19 +216,21 @@ class PlayerDispatcher:
 
     def eval_player_selection(self, i, joystick):
         group = column_to_group(self.joysticks_column[i])
-        if get_current_commands(joystick).get('LEFT'):
-            character = self.characters[group][0]
-        elif get_current_commands(joystick).get('RIGHT'):
-            character = self.characters[group][1]
-        elif get_current_commands(joystick).get('UP'):
-            character = self.characters[group][2]
-        elif get_current_commands(joystick).get('DOWN'):
-            character = self.characters[group][3]
-        else:
-            return
-        player = Player(character, joystick, i, self.scene)
-        self.scene.players.append(player)
-        self.players[i] = player
+        for j, direction in enumerate(('LEFT', 'RIGHT', 'UP', 'DOWN')):
+            if get_current_commands(joystick).get(direction):
+                character = self.characters[group][j]
+                player = Player(character, joystick, i, self.scene)
+                self.scene.players.append(player)
+                self.players[i] = player
+                for k in range(4):
+                    if j == k:
+                        continue
+                    npc = Npc(self.characters[group][k], self.scene)
+                    npc.interaction_loop_cooldown = random.choice(range(
+                        COUNTDOWNS.INTERACTION_LOOP_COOLDOWN_MIN,
+                        COUNTDOWNS.INTERACTION_LOOP_COOLDOWN_MAX))
+                    self.scene.npcs.append(npc)
+                return
 
     def __next__(self):
         if self.done:
@@ -274,8 +276,8 @@ class PlayerDispatcher:
             'down': DIRECTIONS.UP}
 
         self.characters[index] = [
-            self.scene.build_character(group['popspots'][position], direction)
-            for position, direction in directions.items()]
+            self.scene.build_character(group, direction, popspot_key)
+            for popspot_key, direction in directions.items()]
 
 
 def column_to_group(column):
@@ -338,16 +340,34 @@ class Scene:
         return sum(
             True for p in self.players if (not p.dead and not p.dying)) == 1
 
-    def build_character(self, position=None, direction=None):
-        position = position or next(self.popspot_generator)
-        direction = direction or random.choice(DIRECTIONS.ALL)
+    def build_character(self, group=None, direction=None, popspot=None):
+        if group and popspot:
+            position = group['popspots'][popspot]
+        else:
+            position = next(self.popspot_generator)
+            direction = direction or random.choice(DIRECTIONS.ALL)
         char = next(self.character_generator)
         spritesheet = SpriteSheet(load_data(char['file']))
         variation = random.choice(list(range(spritesheet.variation_count)))
         char = Character(position, spritesheet, variation, self)
+        if group:
+            zone = self.get_interaction(group['interactions'][direction])
+            zone.busy = zone
+            char.interacting_zone = zone
+            char.spritesheet.animation = zone.action
+            char.current_interaction = zone.id
+            char.status = CHARACTER_STATUSES.INTERACTING
         char.direction = direction
         self.characters.append(char)
         return char
+
+    def get_interaction(self, interaction_id):
+        for interaction in self.interaction_zones:
+            if interaction.id == interaction_id:
+                return interaction
+        raise ValueError(
+            f'{interaction_id} not found in '
+            f'{[it.id for it in self.interaction_zones]}')
 
     def life_image(self, player_n, score):
         index = int(round((score / COUNTDOWNS.MAX_LIFE) * 3))
@@ -425,6 +445,7 @@ class Scene:
 
     def create_npcs(self):
         assigned_characters = [player.character for player in self.players]
+        assigned_characters += [npc.character for npc in self.npcs]
         for character in self.characters:
             if character in assigned_characters:
                 continue
@@ -452,15 +473,16 @@ class Scene:
 
 class InteractionZone:
     def __init__(self, data):
+        self.id = data['id']
         self.target = data["target"]
         self.action = data["action"]
         self.zone = data["zone"]
         self.attraction = data["attraction"]
         self.direction = data["direction"]
+        self.busy = False
 
     def contains(self, position):
         return point_in_rectangle(position, *self.zone)
 
     def attract(self, position):
         return point_in_rectangle(position, *self.attraction)
-

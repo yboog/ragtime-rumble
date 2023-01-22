@@ -65,7 +65,7 @@ class GroupAttributesModel(QtCore.QAbstractTableModel):
         return 8 if self.model.selected_group is not None else 0
 
     def columnCount(self, *_):
-        return 2
+        return 3
 
     def flags(self, index):
         flags = super().flags(index)
@@ -76,37 +76,52 @@ class GroupAttributesModel(QtCore.QAbstractTableModel):
     def setData(self, index, value, role):
         if not index.isValid():
             return False
-        try:
-            data = json.loads(value)
-        except BaseException:
-            return False
-        if not is_point(data):
-            return
+        col = index.column()
+        if col == 1:
+            try:
+                data = json.loads(value)
+            except BaseException:
+                return False
+        else:
+            data = value
+
         group_index = self.model.selected_group
         group = self.model.data['startups']['groups'][group_index]
-        self.layoutAboutToBeChanged.emit()
         if index.row() < 4:
+            if col == 0:
+                return False
             d = ("left", "right", "up", "down")[index.row()]
-            group['popspots'][d] = data
-        else:
-            group['assigned'][index.row() - 4] = data
-        self.layoutChanged.emit()
-        self.changed.emit()
+            if col == 1:
+                if not is_point(data):
+                    return False
+                group['popspots'][d] = data
+            else:
+                group['interactions'][d] = data
+            return True
+
+        if col != 1 or not is_point(data):
+            return False
+        group['assigned'][index.row() - 4] = data
+        return True
 
     def data(self, index, role):
         if not index.isValid():
             return
         if role not in (QtCore.Qt.DisplayRole, QtCore.Qt.EditRole):
             return
-        row = index.row()
+        row, col = index.row(), index.column()
         keys = ("left", "right", "up", "down", "pos1", "pos2", "pos3", "pos4")
         if index.column() == 0:
             return keys[row]
         groups = self.model.data['startups']['groups']
         group = self.model.selected_group
         if row < 4:
+            if col == 2:
+                return groups[group]['interactions'][keys[row]]
             return str(groups[group]['popspots'][keys[row]])
-        return str(groups[group]['assigned'][row - 4])
+        if col < 2:
+            return str(groups[group]['assigned'][row - 4])
+        return ' --- '
 
 
 class GroupsListModel(QtCore.QAbstractListModel):
@@ -349,7 +364,7 @@ class InteractionModel(QtCore.QAbstractTableModel):
         return len(self.model.data['interactions'])
 
     def columnCount(self, *_):
-        return 5
+        return 7
 
     def flags(self, index):
         flags = super().flags(index)
@@ -399,10 +414,29 @@ class InteractionModel(QtCore.QAbstractTableModel):
             self.changed.emit()
             return True
 
+        elif col == 5:
+            if value.lower() not in ["0", "1", "true", "false"]:
+                return False
+            value = value.lower() in ["1", "true"]
+            self.model.data['interactions'][row]['busy'] = value
+            return True
+
+        elif col == 6:
+            existing_ids = [
+                self.model.data['interactions'][r]["id"]
+                for r in range(self.rowCount()) if r != row]
+            if value in existing_ids:
+                return False
+            self.model.data['interactions'][row]['id'] = value
+            return True
+
     def headerData(self, section, orientation, role):
         if orientation != QtCore.Qt.Horizontal or role != QtCore.Qt.DisplayRole:
             return
-        return ["Action", "Target", "Direction", "Zone", "Attraction"][section]
+        h = [
+            "Action", "Target", "Direction",
+            "Zone", "Attraction", "Busy", "id"]
+        return h[section]
 
     def data(self, index, role):
         if not index.isValid():
@@ -413,8 +447,10 @@ class InteractionModel(QtCore.QAbstractTableModel):
 
         interaction = self.model.data['interactions'][index.row()]
         col = index.column()
-        k = ["action", "target", "direction", "zone", "attraction"][col]
-        return str(interaction[k])
+        keys = [
+            "action", "target", "direction",
+            "zone", "attraction", "busy", "id"]
+        return str(interaction.get(keys[col]))
 
 
 def is_zone(data):

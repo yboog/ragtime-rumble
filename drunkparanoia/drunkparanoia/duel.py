@@ -40,7 +40,7 @@ def find_possible_duels(scene):
             duel = (char1, char2)
             duel_distance = dist
 
-        if duel is not None and (duel[1], duel[0]) not in possible_duels:
+        if duel is not None:
             possible_duels.append(duel)
 
     return possible_duels

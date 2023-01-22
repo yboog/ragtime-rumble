@@ -1,5 +1,5 @@
 {
-  "character_number": 32,
+  "character_number": 1,
   "name": "saloon",
   "startups": {
     "unassigned": [
@@ -57,7 +57,13 @@
             62,
             105
           ]
-        ]
+        ],
+        "interactions": {
+          "left": "poker-1-left",
+          "right": "poker-1-right",
+          "up": "poker-1-up",
+          "down": "poker-1-down"
+        }
       },
       {
         "popspots": {
@@ -95,7 +101,13 @@
             131,
             30
           ]
-        ]
+        ],
+        "interactions": {
+          "left": "poker-2-left",
+          "right": "poker-2-right",
+          "up": "poker-2-up",
+          "down": "poker-2-down"
+        }
       },
       {
         "popspots": {
@@ -133,7 +145,13 @@
             448,
             180
           ]
-        ]
+        ],
+        "interactions": {
+          "left": "poker-3-left",
+          "right": "poker-2-right",
+          "up": "poker-2-up",
+          "down": "poker-2-down"
+        }
       },
       {
         "popspots": {
@@ -171,7 +189,13 @@
             551,
             125
           ]
-        ]
+        ],
+        "interactions": {
+          "left": "poker-2-left",
+          "right": "poker-2-right",
+          "up": "poker-2-up",
+          "down": "poker-2-down"
+        }
       }
     ]
   },
@@ -471,6 +495,7 @@
         300,
         null
       ],
+      "busy": false,
       "zone": [
         280,
         120,
@@ -486,12 +511,14 @@
         280,
         120,
         100,
-        160
-      ]
+        130
+      ],
+      "id": "order"
     },
     {
       "action": "bet",
       "direction": "up",
+      "busy": false,
       "zone": [
         340,
         140,
@@ -507,10 +534,12 @@
         160,
         95,
         60
-      ]
+      ],
+      "id": "bet"
     },
     {
       "action": "piano",
+      "busy": false,
       "direction": "up",
       "zone": [
         30,
@@ -527,10 +556,12 @@
         45,
         80,
         50
-      ]
+      ],
+      "id": "piano"
     },
     {
       "action": "piano",
+      "busy": false,
       "direction": "down",
       "zone": [
         230,
@@ -543,15 +574,17 @@
         85
       ],
       "attraction": [
-        200,
+        230,
         50,
-        210,
+        180,
         30
-      ]
+      ],
+      "id": "balcony"
     },
     {
       "action": "poker",
       "direction": "down",
+
       "zone": [
         530,
         210,
@@ -567,10 +600,12 @@
         210,
         45,
         33
-      ]
+      ],
+      "id": "poker-4-up"
     },
     {
       "action": "poker",
+
       "direction": "right",
       "zone": [
         497,
@@ -587,10 +622,12 @@
         237,
         35,
         36
-      ]
+      ],
+      "id": "poker-4-left"
     },
     {
       "action": "poker",
+
       "direction": "left",
       "zone": [
         575,
@@ -607,10 +644,12 @@
         237,
         35,
         35
-      ]
+      ],
+      "id": "poker-4-right"
     },
     {
       "action": "poker",
+
       "direction": "up",
       "zone": [
         530,
@@ -627,10 +666,12 @@
         265,
         45,
         35
-      ]
+      ],
+      "id": "poker-4-down"
     },
     {
       "action": "poker",
+
       "direction": "right",
       "zone": [
         383,
@@ -647,10 +688,12 @@
         288,
         43,
         44
-      ]
+      ],
+      "id": "poker-3-left"
     },
     {
       "action": "poker",
+
       "direction": "down",
       "zone": [
         420,
@@ -667,10 +710,12 @@
         257,
         60,
         35
-      ]
+      ],
+      "id": "poker-3-up"
     },
     {
       "action": "poker",
+
       "direction": "left",
       "zone": [
         479,
@@ -687,10 +732,12 @@
         291,
         31,
         37
-      ]
+      ],
+      "id": "poker-3-right"
     },
     {
       "action": "poker",
+
       "direction": "left",
       "zone": [
         420,
@@ -707,10 +754,12 @@
         323,
         56,
         40
-      ]
+      ],
+      "id": "poker-3-down"
     },
     {
       "action": "poker",
+
       "direction": "left",
       "zone": [
         31,
@@ -727,10 +776,12 @@
         247,
         56,
         31
-      ]
+      ],
+      "id": "poker-1-down"
     },
     {
       "action": "poker",
+
       "direction": "left",
       "zone": [
         86,
@@ -747,10 +798,12 @@
         207,
         38,
         41
-      ]
+      ],
+      "id": "poker-1-right"
     },
     {
       "action": "poker",
+
       "direction": "right",
       "zone": [
         1,
@@ -767,10 +820,12 @@
         207,
         33,
         46
-      ]
+      ],
+      "id": "poker-1-left"
     },
     {
       "action": "poker",
+
       "direction": "down",
       "zone": [
         35,
@@ -787,10 +842,12 @@
         176,
         51,
         42
-      ]
+      ],
+      "id": "poker-1-up"
     },
     {
       "action": "poker",
+
       "direction": "left",
       "zone": [
         104,
@@ -807,10 +864,12 @@
         175,
         50,
         31
-      ]
+      ],
+      "id": "poker-2-down"
     },
     {
       "action": "poker",
+
       "direction": "left",
       "zone": [
         159,
@@ -827,10 +886,12 @@
         136,
         33,
         38
-      ]
+      ],
+      "id": "poker-2-right"
     },
     {
       "action": "poker",
+
       "direction": "right",
       "zone": [
         73,
@@ -847,10 +908,12 @@
         138,
         31,
         36
-      ]
+      ],
+      "id": "poker-2-left"
     },
     {
       "action": "poker",
+
       "direction": "down",
       "zone": [
         102,
@@ -867,7 +930,8 @@
         104,
         56,
         34
-      ]
+      ],
+      "id": "poker-2-up"
     }
   ],
   "popspots": [
