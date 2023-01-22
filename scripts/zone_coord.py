@@ -22,6 +22,57 @@ def get_stair_line(rect, inclination):
     return line
 
 
+class PathsModel(QtCore.QAbstractTableModel):
+    changed = QtCore.Signal()
+
+    def __init__(self, model):
+        super().__init__()
+        self.model = model
+
+    def headerData(self, section, orientation, role):
+        if role != QtCore.Qt.DisplayRole:
+            return
+        if orientation != QtCore.Qt.Horizontal:
+            return
+        return ('Hard', 'Path')[section]
+
+    def rowCount(self, *_):
+        return len(self.model.data['paths'])
+
+    def columnCount(self, *_):
+        return 2
+
+    def setData(self, index, value, role):
+        try:
+            data = json.loads(value)
+        except BaseException as e:
+            return False
+
+        row, col = index.row(), index.column()
+        if col == 0:
+            self.model.data['paths'][row]['hard'] = bool(data)
+        else:
+            if not all(isinstance(n, int) for p in data for n in p):
+                return False
+            self.model.data['paths'][row]['points'] = data
+        self.changed.emit()
+        return True
+
+    def flags(self, index):
+        return super().flags(index) | QtCore.Qt.ItemIsEditable
+
+    def data(self, index, role):
+        if not index.isValid():
+            return
+
+        if role not in (QtCore.Qt.DisplayRole, QtCore.Qt.EditRole):
+            return
+        if index.column() == 0:
+            return str(self.model.data['paths'][index.row()]['hard'])
+        if index.column() == 1:
+            return str(self.model.data['paths'][index.row()]['points'])
+
+
 class UnassignedSpotModel(QtCore.QAbstractListModel):
     changed = QtCore.Signal()
 
@@ -627,6 +678,7 @@ class LevelCanvasModel:
         self.switches = False
         self.fences = False
         self.startups = True
+        self.paths = False
 
         self.selected_target = None
         self.selected_group = None
@@ -643,6 +695,7 @@ class LevelCanvas(QtWidgets.QWidget):
     rect_drawn = QtCore.Signal(object)
     point_set = QtCore.Signal(object)
     polygon_drawn = QtCore.Signal(object)
+    path_drawn = QtCore.Signal(object)
 
     def __init__(self, model):
         super().__init__()
@@ -651,6 +704,8 @@ class LevelCanvas(QtWidgets.QWidget):
         self.rect_ = None
         self.point = None
         self.polygon = None
+        self.path = None
+        self.tmp_path = None
         self.mode = 'None'
 
     def sizeHint(self):
@@ -661,27 +716,41 @@ class LevelCanvas(QtWidgets.QWidget):
             return
         if self.mode == 'rectangle':
             self.polygon = None
+            self.path = None
             self.point = None
             self.rect_ = QtCore.QRect(
                 event.position().toPoint(),
                 event.position().toPoint())
         elif self.mode == 'point':
             self.rect_ = None
+            self.path = None
             self.point = None
             self.point = event.position().toPoint()
         elif self.mode == 'polygon' and not self.polygon:
             self.polygon = QtGui.QPolygon([event.position().toPoint()])
+            self.path = None
             self.point = None
             self.rect_ = None
         elif self.mode == 'polygon':
             self.polygon << event.position().toPoint()
+        elif self.mode == 'path' and not self.path:
+            self.polygon = None
+            self.point = None
+            self.rect_ = None
+            self.path = QtGui.QPainterPath(event.position().toPoint())
         self.repaint()
 
     def keyPressEvent(self, event):
-        if event.key() == QtCore.Qt.Key_Return and self.polygon:
-            self.polygon_drawn.emit(self.polygon)
-            self.polygon = None
-            self.repaint()
+        if event.key() == QtCore.Qt.Key_Return:
+            if self.polygon:
+                self.polygon_drawn.emit(self.polygon)
+                self.polygon = None
+                self.repaint()
+            elif self.path:
+                self.path_drawn.emit(self.path)
+                self.path = None
+                self.tmp_path = None
+                self.repaint()
 
     def mouseMoveEvent(self, event):
         if self.mode == 'point':
@@ -690,6 +759,11 @@ class LevelCanvas(QtWidgets.QWidget):
             self.rect_.setBottomRight(event.position().toPoint())
         elif self.mode == 'polygon':
             self.polygon[-1] = event.position().toPoint()
+        elif self.mode == 'path':
+            if not self.path:
+                return
+            self.tmp_path = QtGui.QPainterPath(self.path)
+            self.tmp_path.lineTo(event.position().toPoint())
         self.repaint()
 
     def mouseReleaseEvent(self, event):
@@ -697,6 +771,9 @@ class LevelCanvas(QtWidgets.QWidget):
             self.point_set.emit(self.point)
         elif self.mode == 'rectangle':
             self.rect_drawn.emit(self.rect_)
+        elif self.mode == 'path':
+            self.path.lineTo(event.position().toPoint())
+            self.tmp_path = QtGui.QPainterPath(self.path)
         self.point = None
         self.rect_ = None
         self.repaint()
@@ -889,6 +966,30 @@ class LevelCanvas(QtWidgets.QWidget):
                         QtCore.QPoint(*group['popspots'][direction]),
                         direction)
 
+        if self.model.paths:
+            painter.setBrush(QtCore.Qt.NoBrush)
+            for path in self.model.data['paths']:
+                if path['hard']:
+                    pen = QtGui.QPen(QtCore.Qt.blue)
+                    pen.setWidth(2)
+                    pen.setStyle(QtCore.Qt.SolidLine)
+                else:
+                    pen = QtGui.QPen(QtCore.Qt.cyan)
+                    pen.setStyle(QtCore.Qt.DashDotDotLine)
+                painter.setPen(pen)
+                points = [QtCore.QPoint(*p) for p in path['points']]
+                start = None
+                for end in points:
+                    if start is None:
+                        start = end
+                        continue
+                    painter.drawLine(start, end)
+                    start = end
+                painter.setPen(QtCore.Qt.green)
+                painter.drawEllipse(points[0], 2, 2)
+                painter.setPen(QtCore.Qt.red)
+                painter.drawEllipse(points[-1], 1, 1)
+
         if self.rect_ and self.mode == 'rectangle':
             painter.setPen(QtCore.Qt.white)
             painter.setBrush(QtCore.Qt.NoBrush)
@@ -901,7 +1002,12 @@ class LevelCanvas(QtWidgets.QWidget):
             painter.setPen(QtCore.Qt.yellow)
             color = QtGui.QColor(QtCore.Qt.yellow)
             color.setAlpha(100)
+            painter.setBrush(color)
             painter.drawPolygon(self.polygon)
+        elif self.tmp_path and self.mode == 'path':
+            painter.setPen(QtCore.Qt.green)
+            painter.setBrush(QtCore.Qt.NoBrush)
+            painter.drawPath(self.tmp_path)
 
         painter.end()
 
@@ -918,6 +1024,7 @@ def get_interaction_text(interaction):
 
 
 class Editor(QtWidgets.QWidget):
+
     def __init__(self, gameroot, filename):
         super().__init__()
         self.setMinimumWidth(1100)
@@ -929,6 +1036,7 @@ class Editor(QtWidgets.QWidget):
         self.canvas.point_set.connect(self.add_point)
         self.canvas.rect_drawn.connect(self.add_rectangle)
         self.canvas.polygon_drawn.connect(self.add_polygon)
+        self.canvas.path_drawn.connect(self.add_path)
         self.visibilities = Visibilities(self.model)
         self.visibilities.update_visibilities.connect(self.change_visibilities)
 
@@ -973,6 +1081,12 @@ class Editor(QtWidgets.QWidget):
         self.overlays = QtWidgets.QTableView()
         self.overlays.setModel(self.overlays_model)
 
+        self.paths_model = PathsModel(self.model)
+        self.paths_model.changed.connect(self.canvas.repaint)
+        self.paths = QtWidgets.QTableView()
+        self.paths.setWordWrap(True)
+        self.paths.setModel(self.paths_model)
+
         self.fences_model = FencesModel(self.model)
         self.fences_model.changed.connect(self.canvas.repaint)
         self.fences = QtWidgets.QListView()
@@ -995,6 +1109,7 @@ class Editor(QtWidgets.QWidget):
         self.tab.addTab(self.targets, 'Origin/Targets')
         self.tab.addTab(self.props, 'Props')
         self.tab.addTab(self.fences, 'Fences')
+        self.tab.addTab(self.paths, 'NPC Paths')
         self.tab.addTab(self.overlays, 'OL / Switches')
         self.tab.addTab(self.startups, 'Startups')
 
@@ -1018,6 +1133,8 @@ class Editor(QtWidgets.QWidget):
         self.create_destination.setCheckable(True)
         self.create_fence = QtWidgets.QPushButton('Create fence')
         self.create_fence.setCheckable(True)
+        self.create_path = QtWidgets.QPushButton('Create Path')
+        self.create_path.setCheckable(True)
 
         self.group = QtWidgets.QButtonGroup()
         self.group.addButton(self.rect_wall, 0)
@@ -1028,6 +1145,7 @@ class Editor(QtWidgets.QWidget):
         self.group.addButton(self.create_origin, 5)
         self.group.addButton(self.create_destination, 6)
         self.group.addButton(self.create_fence, 7)
+        self.group.addButton(self.create_path, 8)
         self.group.idReleased.connect(self.mode_changed)
         self.group.setExclusive(True)
 
@@ -1050,6 +1168,7 @@ class Editor(QtWidgets.QWidget):
         buttons.addWidget(self.poly_wall, 1, 0)
         buttons.addWidget(self.add_popspots, 2, 0)
         buttons.addWidget(self.create_interaction, 3, 0)
+        buttons.addWidget(self.create_path, 4, 0)
         buttons.addWidget(self.create_stair, 0, 1)
         buttons.addWidget(self.create_origin, 1, 1)
         buttons.addWidget(self.create_destination, 2, 1)
@@ -1082,7 +1201,8 @@ class Editor(QtWidgets.QWidget):
     def mode_changed(self, index):
         self.canvas.mode = (
             'rectangle', 'polygon', 'point', 'rectangle',
-            'rectangle', 'rectangle', 'rectangle', 'rectangle')[index]
+            'rectangle', 'rectangle', 'rectangle', 'rectangle',
+            'path')[index]
         self.canvas.repaint()
 
     def add_point(self, point):
@@ -1140,6 +1260,14 @@ class Editor(QtWidgets.QWidget):
             self.model.data['fences'].append(rect)
             self.fences_model.layoutChanged.emit()
 
+    def add_path(self, path):
+        data = [
+            [int(path.elementAt(i).x), int(path.elementAt(i).y)]
+            for i in range(path.elementCount())]
+        self.paths_model.layoutAboutToBeChanged.emit()
+        self.model.data['paths'].append({'points': data, 'hard': True})
+        self.paths_model.layoutChanged.emit()
+
     def add_polygon(self, polygon):
         self.walls_model.layoutAboutToBeChanged.emit()
         data = [(p.x(), p.y()) for p in polygon]
@@ -1161,6 +1289,7 @@ class Editor(QtWidgets.QWidget):
         self.model.switches = self.visibilities.switches.isChecked()
         self.model.fences = self.visibilities.fences.isChecked()
         self.model.startups = self.visibilities.startups.isChecked()
+        self.model.paths = self.visibilities.paths.isChecked()
         self.repaint()
 
     def interaction_selected(self, *_):
@@ -1357,22 +1486,28 @@ class Visibilities(QtWidgets.QWidget):
         self.targets.released.connect(self.update_visibilities.emit)
         self.switches = QtWidgets.QCheckBox('Switches', checked=model.switches)
         self.switches.released.connect(self.update_visibilities.emit)
+        self.paths = QtWidgets.QCheckBox('NPC paths', checked=model.paths)
+        self.paths.released.connect(self.update_visibilities.emit)
         self.fences = QtWidgets.QCheckBox('Fences', checked=s)
         self.fences.released.connect(self.update_visibilities.emit)
         self.startups = QtWidgets.QCheckBox('Startups', checked=model.startups)
         self.startups.released.connect(self.update_visibilities.emit)
 
+        grid = QtWidgets.QGridLayout()
+        grid.addWidget(self.filter, 0, 0)
+        grid.addWidget(self.walls, 1, 0)
+        grid.addWidget(self.popspots, 2, 0)
+        grid.addWidget(self.interactions, 3, 0)
+        grid.addWidget(self.props, 4, 0)
+        grid.addWidget(self.stairs, 5, 0)
+        grid.addWidget(self.targets, 0, 1)
+        grid.addWidget(self.switches, 1, 1)
+        grid.addWidget(self.fences, 2, 1)
+        grid.addWidget(self.paths, 3, 1)
+        grid.addWidget(self.startups, 4, 1)
+
         layout = QtWidgets.QVBoxLayout(self)
-        layout.addWidget(self.filter)
-        layout.addWidget(self.walls)
-        layout.addWidget(self.popspots)
-        layout.addWidget(self.interactions)
-        layout.addWidget(self.props)
-        layout.addWidget(self.stairs)
-        layout.addWidget(self.targets)
-        layout.addWidget(self.switches)
-        layout.addWidget(self.fences)
-        layout.addWidget(self.startups)
+        layout.addLayout(grid)
         layout.addStretch(1)
 
 
