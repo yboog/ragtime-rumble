@@ -1,9 +1,17 @@
+
 import random
 from drunkparanoia.config import (
-    DIRECTIONS, SPEED, COUNTDOWNS, HAT_TO_DIRECTION, HOLDABLE_ANIMATIONS)
+    DIRECTIONS, SPEED, COUNTDOWNS, HAT_TO_DIRECTION, HOLDABLE_ANIMATIONS,
+    SMOOTH_PATH_SELECTION_RADIUS, SMOOTH_PATH_USAGE_PROBABILITY)
 from drunkparanoia.joystick import get_pressed_direction, get_current_commands
 from drunkparanoia.config import LOOPING_ANIMATIONS, CHARACTER_STATUSES
 from drunkparanoia.coordinates import Coordinates, get_box, distance
+
+
+NPC_NAMES = (
+    'Wyatt', 'Cornelius', 'Chris', 'Jesse', 'Bob', 'Rich', 'Emmett', 'William',
+    'Butch', 'John', 'Ned', 'Borlaf', 'Scare Jones', 'Ike', 'Billy',
+    'Frankie', 'Jackson', 'Roy', 'Dan', 'Juan', 'Scott')
 
 
 class Player:
@@ -187,6 +195,7 @@ class Npc:
     def evaluate_free(self):
         if self.test_duels():
             return
+
         if self.interaction_cooldown > 0:
             self.interaction_cooldown -= 1
 
@@ -214,12 +223,8 @@ class Npc:
             self.character.end_autopilot()
             self.is_cooling_down = False
             self.character.status = CHARACTER_STATUSES.AUTOPILOT
-            functions = [shortest_path] * 2 + [equilateral_path]
-            func = random.choice(functions)
             self.character.ghost = None
-            destination = self.character.choice_destination()
-            position = self.character.coordinates.position
-            self.character.path = func(position, destination)
+            self.character.path = self.build_path()
             self.character.autopilot()
             next(self.character)
             return
@@ -228,6 +233,20 @@ class Npc:
             self.character.decelerate()
         self.cool_down -= 1
         next(self.character)
+
+    def build_path(self):
+        position = self.character.coordinates.position
+        if random.choice(range(SMOOTH_PATH_USAGE_PROBABILITY)) == 0:
+            paths = filter_close_paths(
+                position, self.scene.smooth_paths,
+                SMOOTH_PATH_SELECTION_RADIUS)
+            if paths:
+                return smooth_path_to_path(position, random.choice(paths))
+
+        functions = [shortest_path] * 2 + [equilateral_path]
+        func = random.choice(functions)
+        destination = self.character.choice_destination()
+        return func(position, destination)
 
     def __next__(self):
         if self.coma_count_down == 0:
@@ -295,6 +314,7 @@ class Character:
             if not self.scene.collide(get_box(dst, self.box)):
                 return dst
             limit += 1
+
         x, y = [int(n) for n in self.coordinates.position]
         x = random.randrange(x - 75, x + 75)
         y = random.randrange(y - 75, y + 75)
@@ -497,6 +517,7 @@ class Character:
         if self.duel_target:
             self.duel_target.duel_target = None
             self.duel_target = None
+        self.scene.kill_message(self, target)
 
     def release_duel(self):
         if self.duel_target:
@@ -615,6 +636,18 @@ def equilateral_path(origin, dst):
         [origin[0], dst[1]],
         [dst[0], origin[1]]))
     return [intermediate, dst]
+
+
+def filter_close_paths(point, paths, maxdistance):
+    return [path for path in paths if distance(point, path[0]) < maxdistance]
+
+
+def smooth_path_to_path(orig, points):
+    path = []
+    for point in points:
+        path.extend(shortest_path(orig, point))
+        orig = point
+    return path
 
 
 def shortest_path(orig, dst):

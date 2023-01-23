@@ -1,10 +1,16 @@
 import numpy
 import math
 import pygame
-from drunkparanoia.io import get_image
+from drunkparanoia.io import get_image, get_font
 from drunkparanoia.config import LOOP_STATUSES
 from drunkparanoia.scene import column_to_group, get_score_data
 from drunkparanoia.character import Character
+
+
+KILL_MESSAGE_SCREEN_PADDING = 10
+KILL_MESSAGE_PADDING = 1
+KILL_MESSAGE_MARGIN = 2
+
 
 
 def render_game(screen, loop):
@@ -17,6 +23,7 @@ def render_game(screen, loop):
     if loop.status == LOOP_STATUSES.DISPATCHING:
         render_dispatching(screen, loop)
         render_players_ol_score(screen, loop.scene)
+    render_messages(screen, loop.scene)
 
 
 CELL_WIDTH = 55
@@ -275,3 +282,29 @@ def draw_dashed_line(surf, color, start_pos, end_pos, width=1, dash_length=4):
         start = (round(x1), round(y1))
         end = (round(x2), round(y2))
         pygame.draw.line(surf, color, start, end, width)
+
+
+def render_messages(screen, scene):
+    for i, (text, alpha) in enumerate(scene.messager.data):
+        font = pygame.font.Font(get_font('Pixel-Western.TTF'), 8)
+        text_surface = font.render(text, False, (0, 0, 0))
+        text_surface.set_alpha(alpha)
+        text_rect = text_surface.get_rect()
+        top = (
+            i * (
+                text_rect.height +
+                (KILL_MESSAGE_MARGIN * 2) +
+                KILL_MESSAGE_PADDING))
+        text_rect.topright = (screen.get_width(), top)
+        text_rect.top += KILL_MESSAGE_SCREEN_PADDING
+        text_rect.right -= KILL_MESSAGE_SCREEN_PADDING
+        bg_surface = pygame.Surface((
+            text_rect.width + (KILL_MESSAGE_MARGIN * 2),
+            text_rect.height + (KILL_MESSAGE_MARGIN * 2)))
+        bg_surface.fill((248, 213, 155))
+        bg_surface.set_alpha(alpha)
+        bg_rect = bg_surface.get_rect()
+        bg_rect.top = text_rect.top - KILL_MESSAGE_MARGIN
+        bg_rect.left = text_rect.left - KILL_MESSAGE_MARGIN
+        screen.blit(bg_surface, bg_rect)
+        screen.blit(text_surface, text_rect)

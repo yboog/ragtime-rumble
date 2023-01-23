@@ -21,6 +21,8 @@ ANIMATIONS = [
 
 LOOPING_ANIMATIONS = ['idle', 'walk', 'piano', 'poker', 'suspicious', 'balcony']
 HOLDABLE_ANIMATIONS = ['call', 'death', 'coma']
+SMOOTH_PATH_SELECTION_RADIUS = 50
+SMOOTH_PATH_USAGE_PROBABILITY = 2
 
 
 class DUEL:
@@ -38,6 +40,8 @@ class LOOP_STATUSES:
 
 
 class COUNTDOWNS:
+    MESSAGE_DISPLAY_TIME = 300
+    MESSAGE_FADEOFF_DURATION = 35
     ACTION_COOLDOWN = 15
     VOMIT_MIN = 500
     VOMIT_MAX = 1500

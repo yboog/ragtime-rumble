@@ -71,6 +71,10 @@ def load_skins():
         load_skin(data)
 
 
+def get_font(filename):
+    return f'{GAMEROOT}/resources/fonts/{filename}'
+
+
 def load_skin(data):
     size = data['framesize']
     sheets = data["sheets"]

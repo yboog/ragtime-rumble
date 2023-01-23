@@ -6,7 +6,7 @@ import itertools
 from copy import deepcopy
 
 from drunkparanoia.background import Prop, Background, Overlay
-from drunkparanoia.character import Character, Player, Npc
+from drunkparanoia.character import Character, Player, Npc, NPC_NAMES
 from drunkparanoia.coordinates import (
     box_hit_box, point_in_rectangle, box_hit_polygon, path_cross_polygon,
     path_cross_rect)
@@ -83,6 +83,8 @@ def load_scene(filename):
     scene.targets = data['targets']
     scene.fences = data['fences']
     scene.startups = data['startups']
+    scene.smooth_paths = [p['points'] for p in data['paths'] if not p['hard']]
+    scene.hard_paths = [p['points'] for p in data['paths'] if p['hard']]
     popspots = data['popspots'][:]
     random.shuffle(popspots)
     scene.popspot_generator = itertools.cycle(popspots)
@@ -293,31 +295,36 @@ class Scene:
 
     def __init__(self):
         self.name = ""
-        self.score_ol = None
-        self.vfx = []
-        self.life_images = []
-        self.life_positions = []
+        # Score
         self.bullet_positions = []
         self.bullet_images = []
+        self.life_images = []
+        self.life_positions = []
+        self.score_ol = None
+        # Data
+        self.backgrounds = []
         self.characters = []
-        self.props = []
+        self.fences = []
+        self.hard_paths = []
+        self.interaction_zones = []
+        self.no_go_zones = []
+        self.npcs = []
         self.overlays = []
         self.players = []
-        self.npcs = []
         self.possible_duels = []
-        self.no_go_zones = []
-        self.interaction_zones = []
-        self.backgrounds = []
-        self.walls = []
+        self.props = []
+        self.smooth_paths = []
         self.stairs = []
         self.targets = []
-        self.fences = []
-
+        self.vfx = []
+        self.walls = []
+        # Runtime
         self.black_screen_countdown = 0
         self.white_screen_countdown = 0
         self.killer = None
         self.popspot_generator = None
         self.character_generator = None
+        self.messager = Messager()
 
     def create_vfx(self, name, position, flipped=True):
         for vfx in self.vfx:
@@ -426,6 +433,7 @@ class Scene:
         return any(box_hit_polygon(box, wall) for wall in self.walls)
 
     def __next__(self):
+        next(self.messager)
         for evaluable in self.npcs + self.players:
             next(evaluable)
 
@@ -442,6 +450,13 @@ class Scene:
         for player in self.players:
             if player.character == character:
                 return player
+
+    def kill_message(self, killer, victim):
+        pl = self.find_player(killer)
+        name1 = f'Player {pl.index}' if pl else random.choice(NPC_NAMES)
+        pl = self.find_player(victim)
+        name2 = f'Player {pl.index}' if pl else random.choice(NPC_NAMES)
+        self.messager.add_message(f'{name1} shooted {name2}')
 
     def create_npcs(self):
         assigned_characters = [player.character for player in self.players]
@@ -469,6 +484,35 @@ class Scene:
     def dying_characters(self):
         return [
             c for c in self.characters if c.spritesheet.animation == 'death']
+
+
+class Messager:
+    def __init__(self):
+        self.messages = []
+
+    def add_message(self, message):
+        self.messages.append([message, COUNTDOWNS.MESSAGE_DISPLAY_TIME])
+
+    def __next__(self):
+        to_delete = []
+        for i, message in enumerate(self.messages):
+            if message[1] > 0:
+                message[1] -= 1
+            else:
+                to_delete.append(i)
+        for i in sorted(to_delete, reverse=True):
+            del self.messages[i]
+
+    @property
+    def data(self):
+        return [
+            [text, self.get_opacity(countdown)]
+            for text, countdown in self.messages]
+
+    def get_opacity(self, countdown):
+        if countdown > COUNTDOWNS.MESSAGE_FADEOFF_DURATION:
+            return 255
+        return int((countdown / COUNTDOWNS.MESSAGE_FADEOFF_DURATION) * 255)
 
 
 class InteractionZone:
