@@ -3,15 +3,10 @@ import random
 from drunkparanoia.config import (
     DIRECTIONS, SPEED, COUNTDOWNS, HAT_TO_DIRECTION, HOLDABLE_ANIMATIONS,
     SMOOTH_PATH_SELECTION_RADIUS, SMOOTH_PATH_USAGE_PROBABILITY)
+from drunkparanoia.io import choice_death_sentence, choice_random_name
 from drunkparanoia.joystick import get_pressed_direction, get_current_commands
 from drunkparanoia.config import LOOPING_ANIMATIONS, CHARACTER_STATUSES
 from drunkparanoia.coordinates import Coordinates, get_box, distance
-
-
-NPC_NAMES = (
-    'Wyatt', 'Cornelius', 'Chris', 'Jesse', 'Bob', 'Rich', 'Emmett', 'William',
-    'Butch', 'John', 'Ned', 'Borlaf', 'Scare Jones', 'Ike', 'Billy',
-    'Frankie', 'Jackson', 'Roy', 'Dan', 'Juan', 'Scott')
 
 
 class Player:
@@ -181,6 +176,12 @@ class Npc:
             self.character.spritesheet.animation = 'vomit'
             self.character.spritesheet.index = 0
             self.character.buffer_animation = 'coma'
+            player = self.scene.find_player(self)
+            name = (
+                f'Player {player.index + 1}'
+                if player else choice_random_name('man'))
+            messenger = self.scene.messenger
+            messenger.add_message(choice_death_sentence('french').format(name=name))
             return
         next(self.character)
 

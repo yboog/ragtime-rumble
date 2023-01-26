@@ -6,7 +6,7 @@ import itertools
 from copy import deepcopy
 
 from drunkparanoia.background import Prop, Background, Overlay
-from drunkparanoia.character import Character, Player, Npc, NPC_NAMES
+from drunkparanoia.character import Character, Player, Npc
 from drunkparanoia.coordinates import (
     box_hit_box, point_in_rectangle, box_hit_polygon, path_cross_polygon,
     path_cross_rect)
@@ -14,7 +14,8 @@ from drunkparanoia.config import (
     DIRECTIONS, GAMEROOT, COUNTDOWNS, LOOP_STATUSES, CHARACTER_STATUSES)
 from drunkparanoia.duel import find_possible_duels
 from drunkparanoia.io import (
-    load_image, load_data, quit_event, list_joysticks, image_mirror)
+    load_image, load_data, quit_event, list_joysticks, image_mirror,
+    choice_kill_sentence, choice_random_name)
 from drunkparanoia.joystick import get_current_commands
 from drunkparanoia.sprite import SpriteSheet
 
@@ -324,7 +325,7 @@ class Scene:
         self.killer = None
         self.popspot_generator = None
         self.character_generator = None
-        self.messager = Messager()
+        self.messenger = Messenger()
 
     def create_vfx(self, name, position, flipped=True):
         for vfx in self.vfx:
@@ -433,7 +434,7 @@ class Scene:
         return any(box_hit_polygon(box, wall) for wall in self.walls)
 
     def __next__(self):
-        next(self.messager)
+        next(self.messenger)
         for evaluable in self.npcs + self.players:
             next(evaluable)
 
@@ -453,10 +454,11 @@ class Scene:
 
     def kill_message(self, killer, victim):
         pl = self.find_player(killer)
-        name1 = f'Player {pl.index}' if pl else random.choice(NPC_NAMES)
+        name1 = f'Player {pl.index + 1}' if pl else choice_random_name('man')
         pl = self.find_player(victim)
-        name2 = f'Player {pl.index}' if pl else random.choice(NPC_NAMES)
-        self.messager.add_message(f'{name1} shooted {name2}')
+        name2 = f'Player {pl.index + 1}' if pl else choice_random_name('man')
+        msg = choice_kill_sentence('french')
+        self.messenger.add_message(f'{name1} {msg} {name2}')
 
     def create_npcs(self):
         assigned_characters = [player.character for player in self.players]
@@ -486,12 +488,13 @@ class Scene:
             c for c in self.characters if c.spritesheet.animation == 'death']
 
 
-class Messager:
+class Messenger:
     def __init__(self):
         self.messages = []
 
     def add_message(self, message):
         self.messages.append([message, COUNTDOWNS.MESSAGE_DISPLAY_TIME])
+        self.messages = self.messages[-4:]
 
     def __next__(self):
         to_delete = []

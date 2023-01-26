@@ -46,7 +46,7 @@ class COUNTDOWNS:
     VOMIT_MIN = 500
     VOMIT_MAX = 1500
     COMA_MIN = 500
-    COMA_MAX = 10000
+    COMA_MAX = 1500
     COOLDOWN_MIN = 50
     COOLDOWN_MAX = 300
     COOLDOWN_PROBABILITY = 2
@@ -67,7 +67,7 @@ class COUNTDOWNS:
 
 
 class SPEED:
-    MAX = 1.25
+    MAX = 1.1
     MIN = .2
     FACTOR = 1.2
 

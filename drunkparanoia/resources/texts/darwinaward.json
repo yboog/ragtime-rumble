@@ -1,0 +1,28 @@
+{
+    "french": [
+        "{name} ne passera pas l'hiver",
+        "{name} en a bu la bière de trop ",
+        "{name} a voulu faire ses lacets",
+        "triste fin pour {name}",
+        "{name} ne tiends pas l'alcool",
+        "{name} gît dans son vomit",
+        "pauvre {name}",
+        "trois enfants attendent sans espoir {name}",
+        "{name} ne s'en relèvera pas",
+        "{name} est un boulet",
+        "bien mal appris qui crois en {name}",
+        "{name} ... la mort lui va si bien ",
+        "la vie de {name} fut bien courte",
+        "{name} ... si jeune et pourtant",
+        "{name} aurait dire écouter sa mère",
+        "{name} n'a jamais cru aux messages de préventions",
+        "Pour {name}, c'est l'heure de la sieste.",
+        "rompiche rompiche .. {name}",
+        "{name} mange les pissenlits par la racine.",
+        "{name} à rejoint Jésus et les autres.",
+        "{name} à vu un éléphant rose de trop."
+    ],
+    "english": [
+        "{name} eats flowers by the root."
+    ]
+}

@@ -1,6 +1,8 @@
+
 import os
 import json
 import pygame
+import random
 import itertools
 from drunkparanoia.config import GAMEROOT
 from drunkparanoia.joystick import get_current_commands
@@ -8,6 +10,50 @@ from drunkparanoia.joystick import get_current_commands
 
 _animation_store = {}
 _image_store = {}
+_name_generators = {}
+_death_sentences_generators = {}
+_kill_sentences_generators = {}
+
+
+def choice_random_name(gender):
+    global _name_generators
+    if not _name_generators:
+        filepath = f'{GAMEROOT}/resources/texts/names.json'
+        with open(filepath, 'rb') as f:
+            data = json.load(f)
+
+        man = data['man']
+        random.shuffle(man)
+        _name_generators['man'] = itertools.cycle(man)
+
+        woman = data['woman']
+        random.shuffle(woman)
+        _name_generators['woman'] = itertools.cycle(woman)
+    return next(_name_generators[gender])
+
+
+def choice_death_sentence(language):
+    if not _death_sentences_generators:
+        filepath = f'{GAMEROOT}/resources/texts/darwinaward.json'
+        with open(filepath, 'rb') as f:
+            data = json.load(f)
+        for key in data:
+            array = data[key]
+            random.shuffle(array)
+            _death_sentences_generators[key] = itertools.cycle(array)
+    return next(_death_sentences_generators[language])
+
+
+def choice_kill_sentence(language):
+    if not _kill_sentences_generators:
+        filepath = f'{GAMEROOT}/resources/texts/kills.json'
+        with open(filepath, 'rb') as f:
+            data = json.load(f)
+        for key in data:
+            array = data[key]
+            random.shuffle(array)
+            _kill_sentences_generators[key] = itertools.cycle(array)
+    return next(_kill_sentences_generators[language])
 
 
 def load_main_resources():
@@ -82,8 +128,8 @@ def load_skin(data):
     result = [{
         side: load_frames(sheets[side], size, (0, 255, 0))
         for side in ('face', 'back')}]
-    # Build color variations
-    for i, variation in enumerate(data['variations']):
+    # Build color variants
+    for i, variation in enumerate(data['variants']):
         palette1 = [colors[0] for colors in variation]
         palette2 = [colors[1] for colors in variation]
         skin = {}

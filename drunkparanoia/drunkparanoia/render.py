@@ -1,4 +1,4 @@
-import numpy
+
 import math
 import pygame
 from drunkparanoia.io import get_image, get_font
@@ -10,7 +10,8 @@ from drunkparanoia.character import Character
 KILL_MESSAGE_SCREEN_PADDING = 10
 KILL_MESSAGE_PADDING = 1
 KILL_MESSAGE_MARGIN = 2
-
+MESSAGE_FONT_SIZE = 8
+MESSAGE_FONT_FILE = 'pixel-western-v4.otf'
 
 
 def render_game(screen, loop):
@@ -273,8 +274,8 @@ def draw_dashed_line(surf, color, start_pos, end_pos, width=1, dash_length=4):
         dx = dl * a / c
         dy = dl * b / c
 
-        xcoords = list(numpy.arange(x1, x2, dx if x1 < x2 else -dx))
-        ycoords = list(numpy.arange(y1, y2, dy if y1 < y2 else -dy))
+        xcoords = list(arange(x1, x2, dx if x1 < x2 else -dx))
+        ycoords = list(arange(y1, y2, dy if y1 < y2 else -dy))
 
     next_coords = list(zip(xcoords[1::2], ycoords[1::2]))
     last_coords = list(zip(xcoords[::2], ycoords[::2]))
@@ -284,9 +285,17 @@ def draw_dashed_line(surf, color, start_pos, end_pos, width=1, dash_length=4):
         pygame.draw.line(surf, color, start, end, width)
 
 
+def arange(start, stop, step):
+    result = [start]
+    value = start
+    while (value := value + step) < stop:
+        result.append(value)
+    return result
+
+
 def render_messages(screen, scene):
-    for i, (text, alpha) in enumerate(scene.messager.data):
-        font = pygame.font.Font(get_font('Pixel-Western.TTF'), 8)
+    for i, (text, alpha) in enumerate(scene.messenger.data):
+        font = pygame.font.Font(get_font(MESSAGE_FONT_FILE), MESSAGE_FONT_SIZE)
         text_surface = font.render(text, False, (0, 0, 0))
         text_surface.set_alpha(alpha)
         text_rect = text_surface.get_rect()
