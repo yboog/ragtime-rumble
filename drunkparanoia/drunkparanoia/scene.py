@@ -11,7 +11,8 @@ from drunkparanoia.coordinates import (
     box_hit_box, point_in_rectangle, box_hit_polygon, path_cross_polygon,
     path_cross_rect)
 from drunkparanoia.config import (
-    DIRECTIONS, GAMEROOT, COUNTDOWNS, LOOP_STATUSES, CHARACTER_STATUSES)
+    DIRECTIONS, GAMEROOT, COUNTDOWNS, LOOP_STATUSES, CHARACTER_STATUSES,
+    MAX_MESSAGES)
 from drunkparanoia.duel import find_possible_duels
 from drunkparanoia.io import (
     load_image, load_data, quit_event, list_joysticks, image_mirror,
@@ -494,7 +495,7 @@ class Messenger:
 
     def add_message(self, message):
         self.messages.append([message, COUNTDOWNS.MESSAGE_DISPLAY_TIME])
-        self.messages = self.messages[-4:]
+        self.messages = self.messages[-MAX_MESSAGES:]
 
     def __next__(self):
         to_delete = []

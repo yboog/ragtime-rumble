@@ -2562,29 +2562,7 @@
       "id": "bet"
     },
     {
-      "action": "piano",
-      "busy": false,
-      "direction": "up",
-      "zone": [
-        30,
-        45,
-        80,
-        50
-      ],
-      "target": [
-        70,
-        70
-      ],
-      "attraction": [
-        30,
-        45,
-        80,
-        50
-      ],
-      "id": "piano"
-    },
-    {
-      "action": "piano",
+      "action": "balcony",
       "busy": false,
       "direction": "down",
       "zone": [

@@ -44,6 +44,7 @@ class Player:
     def __next__(self):
         # self.life -= 1
         if self.character.status == CHARACTER_STATUSES.OUT:
+            next(self.character)
             return
 
         if self.bullet_cooldown > 0:
@@ -172,6 +173,7 @@ class Npc:
                 self.character.duel_target.spritesheet.index = 0
                 self.character.duel_target.status = CHARACTER_STATUSES.FREE
                 self.character.duel_target = None
+
             self.character.status = CHARACTER_STATUSES.OUT
             self.character.spritesheet.animation = 'vomit'
             self.character.spritesheet.index = 0
@@ -254,36 +256,37 @@ class Npc:
             return self.fall_to_coma()
         self.coma_count_down -= 1
 
-        if self.character.status == CHARACTER_STATUSES.INTERACTING:
-            if self.interaction_loop_cooldown <= 0:
-                self.character.set_free()
-                self.interaction_loop_cooldown = random.choice(range(
-                    COUNTDOWNS.INTERACTION_LOOP_COOLDOWN_MIN,
-                    COUNTDOWNS.INTERACTION_LOOP_COOLDOWN_MAX))
-                return
-            self.interaction_loop_cooldown -= 1
-            next(self.character)
-            return
-
-        if self.character.status == CHARACTER_STATUSES.AUTOPILOT:
-            if self.test_duels():
-                return
-            next(self.character)
-            return
-
-        if self.character.status == CHARACTER_STATUSES.FREE:
-            self.evaluate_free()
-
-        if self.character.status == CHARACTER_STATUSES.DUEL_ORIGIN:
-            if not self.character.spritesheet.animation_is_done:
+        match self.character.status:
+            case CHARACTER_STATUSES.INTERACTING:
+                if self.interaction_loop_cooldown <= 0:
+                    self.character.set_free()
+                    self.interaction_loop_cooldown = random.choice(range(
+                        COUNTDOWNS.INTERACTION_LOOP_COOLDOWN_MIN,
+                        COUNTDOWNS.INTERACTION_LOOP_COOLDOWN_MAX))
+                    return
+                self.interaction_loop_cooldown -= 1
                 next(self.character)
                 return
-            if self.release_time == 0:
-                self.character.release_duel()
+
+            case CHARACTER_STATUSES.AUTOPILOT:
+                if self.test_duels():
+                    return
                 next(self.character)
                 return
-            self.release_time -= 1
-            return
+
+            case CHARACTER_STATUSES.FREE:
+                self.evaluate_free()
+
+            case CHARACTER_STATUSES.DUEL_ORIGIN:
+                if not self.character.spritesheet.animation_is_done:
+                    next(self.character)
+                    return
+                if self.release_time == 0:
+                    self.character.release_duel()
+                    next(self.character)
+                    return
+                self.release_time -= 1
+                return
 
         next(self.character)
 
@@ -395,6 +398,7 @@ class Character:
                     self.spritesheet.animation_is_done and
                     self.buffer_animation)
                 if conditions:
+                    self.spritesheet.index = 0
                     self.spritesheet.animation = self.buffer_animation
                     self.buffer_animation = None
                     next(self.spritesheet)

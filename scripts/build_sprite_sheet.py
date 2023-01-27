@@ -18,6 +18,7 @@ gamedata_output_path = f'{repo_root}/drunkparanoia/resources/animdata/{char}.jso
 
 ORDER = [
     'bet',
+    'balcony',
     'bully',
     'call',
     'coma',
@@ -26,7 +27,6 @@ ORDER = [
     'gunshot',
     'idle',
     'order',
-    'piano',
     'poker',
     'smoke',
     'suspicious',

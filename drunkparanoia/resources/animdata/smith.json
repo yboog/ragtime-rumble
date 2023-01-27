@@ -485,53 +485,6 @@
       ]
     },
     {
-      "name": "holister",
-      "origins": [
-        [
-          138,
-          25,
-          0
-        ]
-      ],
-      "variants": [
-        [
-          [
-            140,
-            25,
-            0
-          ]
-        ],
-        [
-          [
-            65,
-            0,
-            0
-          ]
-        ],
-        [
-          [
-            0,
-            0,
-            0
-          ]
-        ],
-        [
-          [
-            125,
-            235,
-            150
-          ]
-        ],
-        [
-          [
-            125,
-            235,
-            151
-          ]
-        ]
-      ]
-    },
-    {
       "name": "gun",
       "origins": [
         [
@@ -569,26 +522,38 @@
       ],
       "startframe": 0
     },
-    "bully": {
+    "balcony": {
       "durations": [
         6
       ],
       "startframe": 1
+    },
+    "bully": {
+      "durations": [
+        6
+      ],
+      "startframe": 2
     },
     "call": {
       "durations": [
         6,
         6,
         6,
-        35
+        6
       ],
-      "startframe": 2
+      "startframe": 3
     },
     "coma": {
       "durations": [
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
         6
       ],
-      "startframe": 6
+      "startframe": 7
     },
     "death": {
       "durations": [
@@ -611,7 +576,7 @@
         6,
         6
       ],
-      "startframe": 7
+      "startframe": 14
     },
     "drink": {
       "durations": [
@@ -636,7 +601,7 @@
         6,
         6
       ],
-      "startframe": 25
+      "startframe": 32
     },
     "gunshot": {
       "durations": [
@@ -657,7 +622,7 @@
         6,
         6
       ],
-      "startframe": 45
+      "startframe": 52
     },
     "idle": {
       "durations": [
@@ -670,7 +635,7 @@
         6,
         6
       ],
-      "startframe": 61
+      "startframe": 68
     },
     "order": {
       "durations": [
@@ -688,13 +653,7 @@
         6,
         6
       ],
-      "startframe": 69
-    },
-    "piano": {
-      "durations": [
-        6
-      ],
-      "startframe": 82
+      "startframe": 76
     },
     "poker": {
       "durations": [
@@ -732,7 +691,7 @@
         6,
         6
       ],
-      "startframe": 83
+      "startframe": 89
     },
     "smoke": {
       "durations": [
@@ -761,13 +720,13 @@
         6,
         6
       ],
-      "startframe": 116
+      "startframe": 122
     },
     "suspicious": {
       "durations": [
         6
       ],
-      "startframe": 140
+      "startframe": 146
     },
     "vomit": {
       "durations": [
@@ -789,9 +748,10 @@
         6,
         6,
         6,
+        6,
         6
       ],
-      "startframe": 141
+      "startframe": 147
     },
     "walk": {
       "durations": [
@@ -804,7 +764,7 @@
         6,
         6
       ],
-      "startframe": 160
+      "startframe": 167
     }
   }
 }
