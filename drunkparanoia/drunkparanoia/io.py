@@ -13,6 +13,7 @@ _image_store = {}
 _name_generators = {}
 _death_sentences_generators = {}
 _kill_sentences_generators = {}
+_variants = {}
 
 
 def choice_random_name(gender):
@@ -30,6 +31,22 @@ def choice_random_name(gender):
         random.shuffle(woman)
         _name_generators['woman'] = itertools.cycle(woman)
     return next(_name_generators[gender])
+
+
+def build_random_variant(variants):
+    indexes = list(range(len(variants)))
+    random.shuffle(indexes)
+    length = random.randrange(1, len(variants))
+    variants = [variants[i] for i in indexes[:length]]
+    palette_source = [c for v in variants for c in v['origins']]
+    palette_dest = []
+    ids = []
+    for variant in variants:
+        index = random.randrange(0, len(variant['variants']))
+        ids.append([variant['name'], index])
+        palette_dest.extend(variant['variants'][index])
+    id_ = '-'.join(f'{id_[0]}.{id_[1]}' for id_ in ids)
+    return id_, palette_source, palette_dest
 
 
 def choice_death_sentence(language):
@@ -121,6 +138,16 @@ def get_font(filename):
     return f'{GAMEROOT}/resources/fonts/{filename}'
 
 
+def get_character_variant_ids(data):
+    result = _variants.setdefault(data["name"], [])
+    if result:
+        return result
+    for _ in range(15):
+        result.append(build_random_variant(data['variants']))
+    _variants[data["name"]] = result
+    return result
+
+
 def load_skin(data):
     size = data['framesize']
     sheets = data["sheets"]
@@ -129,14 +156,13 @@ def load_skin(data):
         side: load_frames(sheets[side], size, (0, 255, 0))
         for side in ('face', 'back')}]
     # Build color variants
-    for i, variation in enumerate(data['variants']):
-        palette1 = [colors[0] for colors in variation]
-        palette2 = [colors[1] for colors in variation]
+    variants = get_character_variant_ids(data)
+    for id_, palette1, palette2 in variants:
         skin = {}
         for side in ('face', 'back'):
-            image = load_frames(
-                sheets[side], size, (0, 255, 0), palette1, palette2, i + 1)
-            skin[side] = image
+            images = load_frames(
+                sheets[side], size, (0, 255, 0), palette1, palette2, id_)
+            skin[side] = images
         result.append(skin)
     return result
 

@@ -68,6 +68,7 @@ with open(variation_path, 'rb') as f:
 
 
 data = {
+    'name': char,
     'framesize': (64, 64),
     'center': (32, 56),
     'box': (-10, -8, 20, 10),

@@ -12,7 +12,7 @@ class SpriteSheet:
 
     @property
     def variation_count(self):
-        return len(self.data['variations']) + 1
+        return 15
 
     @property
     def durations(self):
@@ -22,6 +22,8 @@ class SpriteSheet:
         index = image_index_from_durations(self.index, self.durations)
         index += self.data['animations'][self.animation]['startframe']
         side = DIRECTION_TO_SIDE[direction]
+        self.images[variation]
+        self.images[variation][side]
         image = self.images[variation][side][index]
         flipped = direction in DIRECTIONS.FLIPPED
         return image_mirror(image, horizontal=True) if flipped else image
