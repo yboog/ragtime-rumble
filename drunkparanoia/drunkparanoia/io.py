@@ -103,18 +103,18 @@ def list_joysticks():
 
 def swap_colors(surface, palette1, palette2):
     """ THX Chat GPT:"""
-    swapped_surface = pygame.Surface(surface.get_size())
+    swapped_surface = pygame.Surface(surface.get_size(), pygame.SRCALPHA)
     original_pixels = pygame.PixelArray(surface)
     swapped_pixels = pygame.PixelArray(swapped_surface)
     for x in range(original_pixels.shape[0]):
         for y in range(original_pixels.shape[1]):
             color = original_pixels[x, y]
             # Transform a bit pixel into a list comparable with palette data.
-            check = [color >> 16, color >> 8 & 0xff, color & 0xff]
-            if check in palette1:
-                index = palette1.index(check)
+            check = [color >> 24, color >> 16 & 0xff, color >> 8 & 0xff, color & 0xff]
+            if check[-3:] in palette1:
+                index = palette1.index(check[-3:])
                 color = palette2[index]
-                swapped_color = color[0] << 16 | color[1] << 8 | color[2]
+                swapped_color = check[0] << 24 | color[0] << 16 | color[1] << 8 | color[2]
             else:
                 swapped_color = color
             swapped_pixels[x, y] = swapped_color
@@ -156,7 +156,7 @@ def load_skin(data):
         side: load_frames(sheets[side], size, (0, 255, 0))
         for side in ('face', 'back')}]
     # Build color variants
-    variants = get_character_variant_ids(data)
+    variants = get_character_variant_ids(data) if data.get('variants') else []
     for id_, palette1, palette2 in variants:
         skin = {}
         for side in ('face', 'back'):
@@ -178,7 +178,7 @@ def load_frames(
     if _animation_store.get(filename_id):
         return _animation_store.get(filename_id, [])
 
-    sheet = pygame.image.load(filepath).convert()
+    sheet = pygame.image.load(filepath).convert_alpha()
     if palette1 and palette2:
         sheet = swap_colors(sheet, palette1, palette2)
     width, height = frame_size
@@ -192,10 +192,10 @@ def load_frames(
     ids = []
 
     for j, i in itertools.product(range(int(row)), range(int(col))):
-        image = pygame.Surface([width, height]).convert()
+        image = pygame.Surface([width, height], pygame.SRCALPHA)
         x, y = i * width, j * height
         image.blit(sheet, (0, 0), (x, y, width, height))
-        image.set_colorkey(key_color)
+        # image.set_colorkey((0, 0, 0, 0))
         id_ = f'{filename_id}[{i}.{j}]'
         _image_store[id_] = image
         ids.append(id_)

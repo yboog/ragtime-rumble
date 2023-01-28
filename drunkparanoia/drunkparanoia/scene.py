@@ -6,7 +6,7 @@ import itertools
 from copy import deepcopy
 
 from drunkparanoia.background import Prop, Background, Overlay
-from drunkparanoia.character import Character, Player, Npc
+from drunkparanoia.character import Character
 from drunkparanoia.coordinates import (
     box_hit_box, point_in_rectangle, box_hit_polygon, path_cross_polygon,
     path_cross_rect)
@@ -18,6 +18,8 @@ from drunkparanoia.io import (
     load_image, load_data, quit_event, list_joysticks, image_mirror,
     choice_kill_sentence, choice_random_name)
 from drunkparanoia.joystick import get_current_commands
+from drunkparanoia.npc import Npc, Pianist, Barman
+from drunkparanoia.player import Player
 from drunkparanoia.sprite import SpriteSheet
 
 
@@ -50,6 +52,11 @@ VIRGIN_SCORES = {
         'civilians': 0,
         'victory': 0
     }
+}
+
+NPC_TYPES = {
+    'pianist': Pianist,
+    'barman': Barman
 }
 
 
@@ -126,6 +133,9 @@ def load_scene(filename):
         visible_at_dispatch = prop['visible_at_dispatch']
         prop = Prop(image, position, center, box, visible_at_dispatch, scene)
         scene.props.append(prop)
+
+    for npc in data['npcs']:
+        scene.secondary_npcs.append(NPC_TYPES[npc['type']](**npc))
 
     for interaction_zone in data['interactions']:
         zone = InteractionZone(interaction_zone)
@@ -315,6 +325,7 @@ class Scene:
         self.players = []
         self.possible_duels = []
         self.props = []
+        self.secondary_npcs = []
         self.smooth_paths = []
         self.stairs = []
         self.targets = []
@@ -356,7 +367,7 @@ class Scene:
             position = next(self.popspot_generator)
             direction = direction or random.choice(DIRECTIONS.ALL)
         char = next(self.character_generator)
-        spritesheet = SpriteSheet(load_data(char['file']))
+        spritesheet = SpriteSheet(load_data(char))
         variation = random.choice(list(range(spritesheet.variation_count)))
         char = Character(position, spritesheet, variation, self)
         if group:
@@ -387,7 +398,7 @@ class Scene:
 
     @property
     def elements(self):
-        return self.characters + self.props + self.overlays
+        return self.characters + self.props + self.overlays + self.secondary_npcs
 
     def inclination_at(self, point):
         for stair in self.stairs:
@@ -436,7 +447,7 @@ class Scene:
 
     def __next__(self):
         next(self.messenger)
-        for evaluable in self.npcs + self.players:
+        for evaluable in self.npcs + self.players + self.secondary_npcs:
             next(evaluable)
 
         if self.black_screen_countdown or self.white_screen_countdown:

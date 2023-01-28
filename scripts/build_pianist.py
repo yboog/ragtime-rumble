@@ -48,9 +48,13 @@ def get_canvas_size(frame_count, column_lenght, frame_width, frame_height):
 
 
 data = {
-    'npctype': 'pianist',
+    'name': 'jerome',
+    'type': 'pianist',
+    'y': -1000,
     'framesize': (62, 64),
-    'sheet': 'resources/skins/pianist.png',
+    'sheets': {
+        "face": "resources/skins/pianist.png",
+        "back": "resources/skins/pianist.png"},
     'animations': {}
 }
 

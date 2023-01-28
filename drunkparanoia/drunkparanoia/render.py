@@ -226,8 +226,12 @@ def draw_possible_duel(screen, char1, char2):
 
 
 def render_element(screen, element):
-    img = element.image
-    screen.blit(get_image(img), element.render_position)
+    try:
+        img = element.image
+        screen.blit(get_image(img), element.render_position)
+    except TypeError:
+        print(img, get_image(img))
+        raise
     ### RENDER PATHS
     # if isinstance(element, Character):
     #     if element.path:

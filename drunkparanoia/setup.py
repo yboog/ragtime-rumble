@@ -10,7 +10,7 @@ build_exe_options = {
     "excludes": [
         "tkinter", "unittest", "email", "pkg_resources", "xml", "pydoc_data", "PySide6",
         "PyQt5", "PySide2", "PyQt6", "pyexpat", "ctypes", "pandas", "shiboken2",
-        "sip", "sip2", "shiboken6", "sip6", "numpy"]}
+        "sip", "sip2", "shiboken6", "sip6"]}
 
 setup(
     name="Drunk-o-Therapia",

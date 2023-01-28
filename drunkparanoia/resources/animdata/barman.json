@@ -1,0 +1,85 @@
+{
+  "name": "eustache",
+  "type": "barman",
+  "y": 30,
+  "framesize": [
+    64,
+    64
+  ],
+  "sheets": {
+    "face": "resources/skins/barman.png",
+    "back": "resources/skins/barman.png"
+  },
+  "animations": {
+    "idle": {
+      "durations": [
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        6
+      ],
+      "startframe": 0
+    },
+    "towel": {
+      "durations": [
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        6
+      ],
+      "startframe": 29
+    },
+    "towel-end": {
+      "durations": [
+        6
+      ],
+      "startframe": 37
+    },
+    "towel-start": {
+      "durations": [
+        6
+      ],
+      "startframe": 38
+    },
+    "walk": {
+      "durations": [
+        6,
+        6,
+        6,
+        6,
+        6,
+        6
+      ],
+      "startframe": 39
+    }
+  }
+}

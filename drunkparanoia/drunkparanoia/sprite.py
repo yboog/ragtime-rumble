@@ -4,9 +4,9 @@ from drunkparanoia.io import load_skin, image_mirror
 
 
 class SpriteSheet:
-    def __init__(self, data):
+    def __init__(self, data, start_animation='idle'):
         self.data = data
-        self.animation = 'idle'
+        self.animation = start_animation
         self.index = random.randrange(0, self.animation_length() - 1)
         self.images = load_skin(data)
 
@@ -18,7 +18,7 @@ class SpriteSheet:
     def durations(self):
         return self.data['animations'][self.animation]['durations']
 
-    def image(self, direction, variation=0):
+    def image(self, direction=DIRECTIONS.RIGHT, variation=0):
         index = image_index_from_durations(self.index, self.durations)
         index += self.data['animations'][self.animation]['startframe']
         side = DIRECTION_TO_SIDE[direction]
