@@ -16,6 +16,9 @@ output = f'{repo_root}/drunkparanoia/{relative_output}'
 gamedata_output_path = f'{repo_root}/drunkparanoia/resources/animdata/{char}.json'
 
 
+MALES = "smith"
+
+
 ORDER = [
     'bet',
     'balcony',
@@ -68,6 +71,7 @@ with open(variation_path, 'rb') as f:
 
 data = {
     'name': char,
+    'gender': 'man' if char in MALES else 'woman',
     'framesize': (64, 64),
     'center': (32, 56),
     'box': (-10, -8, 20, 10),

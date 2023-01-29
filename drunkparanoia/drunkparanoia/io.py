@@ -4,7 +4,7 @@ import json
 import pygame
 import random
 import itertools
-from drunkparanoia.config import GAMEROOT
+from drunkparanoia.config import GAMEROOT, VARIANTS_COUNT
 from drunkparanoia.joystick import get_current_commands
 
 
@@ -142,7 +142,7 @@ def get_character_variant_ids(data):
     result = _variants.setdefault(data["name"], [])
     if result:
         return result
-    for _ in range(15):
+    for _ in range(VARIANTS_COUNT):
         result.append(build_random_variant(data['variants']))
     _variants[data["name"]] = result
     return result

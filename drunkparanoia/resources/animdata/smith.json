@@ -1,5 +1,6 @@
 {
   "name": "smith",
+  "gender": "man",
   "framesize": [
     64,
     64
@@ -528,20 +529,14 @@
       ],
       "startframe": 1
     },
-    "bully": {
-      "durations": [
-        6
-      ],
-      "startframe": 2
-    },
     "call": {
       "durations": [
         6,
         6,
         6,
-        6
+        35
       ],
-      "startframe": 3
+      "startframe": 2
     },
     "coma": {
       "durations": [
@@ -553,7 +548,7 @@
         6,
         6
       ],
-      "startframe": 7
+      "startframe": 6
     },
     "death": {
       "durations": [
@@ -576,7 +571,7 @@
         6,
         6
       ],
-      "startframe": 14
+      "startframe": 13
     },
     "drink": {
       "durations": [
@@ -601,7 +596,7 @@
         6,
         6
       ],
-      "startframe": 32
+      "startframe": 31
     },
     "gunshot": {
       "durations": [
@@ -622,7 +617,7 @@
         6,
         6
       ],
-      "startframe": 52
+      "startframe": 51
     },
     "idle": {
       "durations": [
@@ -635,7 +630,7 @@
         6,
         6
       ],
-      "startframe": 68
+      "startframe": 67
     },
     "order": {
       "durations": [
@@ -653,7 +648,7 @@
         6,
         6
       ],
-      "startframe": 76
+      "startframe": 75
     },
     "poker": {
       "durations": [
@@ -691,7 +686,7 @@
         6,
         6
       ],
-      "startframe": 89
+      "startframe": 88
     },
     "smoke": {
       "durations": [
@@ -720,13 +715,13 @@
         6,
         6
       ],
-      "startframe": 122
+      "startframe": 121
     },
     "suspicious": {
       "durations": [
         6
       ],
-      "startframe": 146
+      "startframe": 145
     },
     "vomit": {
       "durations": [
@@ -751,7 +746,7 @@
         6,
         6
       ],
-      "startframe": 147
+      "startframe": 146
     },
     "walk": {
       "durations": [
@@ -764,7 +759,7 @@
         6,
         6
       ],
-      "startframe": 167
+      "startframe": 166
     }
   }
 }

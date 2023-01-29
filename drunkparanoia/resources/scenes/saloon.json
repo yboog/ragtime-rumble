@@ -1,5 +1,5 @@
 {
-  "character_number": 24,
+  "character_number": 4,
   "name": "saloon",
   "paths": [
     {
@@ -2341,9 +2341,9 @@
     ],
     [
       220,
-      87,
+      89,
       202,
-      58
+      56
     ],
     [
       0,
@@ -2434,6 +2434,12 @@
       -10,
       238,
       380
+    ],
+    [
+      30,
+      42,
+      65,
+      21
     ]
   ],
   "walls": [
@@ -2482,7 +2488,7 @@
     [
       [
         422,
-        87
+        89
       ],
       [
         479,
@@ -2550,8 +2556,8 @@
         40
       ],
       "target": [
-        369,
-        158
+        375,
+        162
       ],
       "attraction": [
         320,
@@ -2597,10 +2603,10 @@
         234
       ],
       "attraction": [
-        530,
-        210,
-        45,
-        33
+        520,
+        180,
+        65,
+        63
       ],
       "id": "poker-4-up"
     },
@@ -2614,14 +2620,14 @@
         36
       ],
       "target": [
-        514,
+        511,
         254
       ],
       "attraction": [
-        497,
-        237,
-        35,
-        36
+        467,
+        227,
+        65,
+        56
       ],
       "id": "poker-4-left"
     },
@@ -2635,14 +2641,14 @@
         35
       ],
       "target": [
-        585,
-        254
+        590,
+        255
       ],
       "attraction": [
         575,
-        237,
-        35,
-        35
+        227,
+        65,
+        55
       ],
       "id": "poker-4-right"
     },
@@ -2660,10 +2666,10 @@
         285
       ],
       "attraction": [
-        530,
+        520,
         265,
-        45,
-        35
+        65,
+        55
       ],
       "id": "poker-4-down"
     },
@@ -3726,13 +3732,29 @@
   "npcs": [
     {
       "file": "resources/animdata/pianist.json",
-      "startposition": [30, 5],
+      "startposition": [
+        30,
+        5
+      ],
       "type": "pianist"
     },
     {
       "file": "resources/animdata/barman.json",
-      "startposition": [225, 110],
-      "type": "barman"
+      "startposition": [
+        225,
+        110
+      ],
+      "type": "barman",
+      "path": [
+        [
+          225,
+          110
+        ],
+        [
+          225,
+          180
+        ]
+      ]
     }
   ],
   "characters": [

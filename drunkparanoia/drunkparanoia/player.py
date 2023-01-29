@@ -20,11 +20,14 @@ class Player:
     @property
     def dying(self):
         return (
-            self.life == 0 and self.character.status != CHARACTER_STATUSES.OUT)
+            self.character.status == CHARACTER_STATUSES.OUT and
+            not self.character.spritesheet.animation_is_done)
 
     @property
     def dead(self):
-        return self.character.status == CHARACTER_STATUSES.OUT
+        return (
+            self.character.status == CHARACTER_STATUSES.OUT and
+            self.character.spritesheet.animation_is_done)
 
     def kill(self, target, black_screen=False):
         self.character.kill(target, black_screen)
@@ -81,7 +84,7 @@ class Player:
     def evaluate_interacting(self):
         is_looping = self.character.spritesheet.animation in LOOPING_ANIMATIONS
         commands = get_current_commands(self.joystick)
-        if not is_looping or not commands.get('X') or self.action_cooldown:
+        if not is_looping or not commands.get('Y') or self.action_cooldown:
             next(self.character)
             return
         self.action_cooldown = COUNTDOWNS.ACTION_COOLDOWN
@@ -114,15 +117,20 @@ class Player:
             self.character.stop()
             self.character.request_duel()
             return True
-        if commands.get('X'):
-            if not self.bullet_cooldown:
-                for character1, character2 in self.scene.possible_duels:
-                    if character1 == self.character:
-                        self.kill(character2)
-                        self.scene.apply_white_screen(self.character)
-                        return True
+
+        if commands.get('X') and not self.bullet_cooldown:
+            for character1, character2 in self.scene.possible_duels:
+                if character1 == self.character:
+                    self.kill(character2)
+                    self.scene.apply_white_screen(self.character)
+                    return True
+
+        if commands.get('Y'):
             if self.action_cooldown != 0:
-                return
+                return False
             interact = self.character.request_interaction()
             if interact:
                 self.action_cooldown = COUNTDOWNS.ACTION_COOLDOWN
+                return True
+
+        return False

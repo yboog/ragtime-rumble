@@ -13,6 +13,7 @@ class Character:
         self.coordinates = Coordinates(position)
         self.direction = DIRECTIONS.DOWN
         self.variation = variation
+        self.gender = 'man'
         self.speed = 0
         self.scene = scene
         self.vomit_count_down = random.randrange(
@@ -233,7 +234,7 @@ class Character:
         self.spritesheet.index = 0
         target.stop()
         target.aim(self)
-        target.status = CHARACTER_STATUSES.INTERACTING
+        target.status = CHARACTER_STATUSES.OUT
         target.spritesheet.animation = 'death'
         target.spritesheet.index = 0
         if self.duel_target:

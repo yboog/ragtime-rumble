@@ -93,9 +93,3 @@ class TestWidget(QtWidgets.QWidget):
             start = point
 
         painter.end()
-
-
-app = QtWidgets.QApplication([])
-wid = TestWidget()
-wid.show()
-app.exec()

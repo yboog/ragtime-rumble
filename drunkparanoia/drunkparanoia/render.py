@@ -5,6 +5,7 @@ from drunkparanoia.io import get_image, get_font
 from drunkparanoia.config import LOOP_STATUSES
 from drunkparanoia.scene import column_to_group, get_score_data
 from drunkparanoia.character import Character
+from drunkparanoia.pathfinding import distance
 
 
 KILL_MESSAGE_SCREEN_PADDING = 10
@@ -184,8 +185,11 @@ def render_scene(screen, scene):
     # Possible duel.
     duel_surface = pygame.Surface(screen.get_size(), pygame.SRCALPHA)
     duel_surface.set_alpha(50)
+    done = []
     for character1, character2 in scene.possible_duels:
-        draw_possible_duel(duel_surface, character1, character2)
+        draw_line = [character2, character1] not in done
+        draw_possible_duel(duel_surface, character1, character2, draw_line)
+        done.append([character1, character2])
     screen.blit(duel_surface, (0, 0))
     # Scores.
     render_players_ol_score(screen, scene)
@@ -219,10 +223,25 @@ def render_death_screen(screen, scene):
         render_element(screen, character)
 
 
-def draw_possible_duel(screen, char1, char2):
+def point_on_segment(segment, distance_from_p1):
+    x1, y1 = segment[0]
+    x2, y2 = segment[1]
+    segment_length = math.sqrt((x2 - x1)**2 + (y2 - y1)**2)
+    ratio = distance_from_p1 / segment_length
+    x = x1 + ratio * (x2 - x1)
+    y = y1 + ratio * (y2 - y1)
+    return (x, y)
+
+
+def draw_possible_duel(screen, char1, char2, line=True):
     p1 = char1.coordinates.x, char1.coordinates.y - 30
     p2 = char2.coordinates.x, char2.coordinates.y - 30
-    draw_dashed_line(screen, 'white', p1, p2)
+    pp1 = point_on_segment((p1, p2), 13)
+    pp2 = point_on_segment((p2, p1), 13)
+    # pygame.draw.line(screen, (255, 255, 255), p1, p2, width=2)
+    draw_arrow(screen, 'white', pp1, pp2, headwidth=5)
+    if line:
+        draw_dashed_line(screen, 'white', pp1, pp2)
 
 
 def render_element(screen, element):
@@ -254,47 +273,57 @@ def draw_rect(surface, box, alpha=255):
     surface.blit(temp, (x, y))
 
 
-def draw_dashed_line(surf, color, start_pos, end_pos, width=1, dash_length=4):
-    """
-    https://codereview.stackexchange.com/questions/70143/drawing-a-dashed-line-with-pygame
-    """
-    x1, y1 = (int(n) for n in start_pos)
-    x2, y2 = (int(n) for n in end_pos)
-    dl = dash_length
+def draw_arrow(surface, color, p1, p2, headwidth=2):
+    dx = p2[0] - p1[0]
+    dy = p2[1] - p1[1]
 
-    if x1 == x2:
-        ycoords = list(range(y1, y2, dl if y1 < y2 else -dl))
-        xcoords = [x1] * len(ycoords)
-    elif y1 == y2:
-        try:
-            xcoords = list(range(x1, x2, dl if x1 < x2 else -dl))
-            ycoords = [y1] * len(xcoords)
-        except TypeError as e:
-            raise TypeError from e
-    else:
-        a = abs(x2 - x1)
-        b = abs(y2 - y1)
-        c = round(math.sqrt(a**2 + b**2))
-        dx = dl * a / c
-        dy = dl * b / c
+    length = math.sqrt(dx**2 + dy**2)
+    if length == 0:
+        return
 
-        xcoords = list(arange(x1, x2, dx if x1 < x2 else -dx))
-        ycoords = list(arange(y1, y2, dy if y1 < y2 else -dy))
+    theta = math.acos(dx / length)
+    if dy < 0:
+        theta = 2 * math.pi - theta
 
-    next_coords = list(zip(xcoords[1::2], ycoords[1::2]))
-    last_coords = list(zip(xcoords[::2], ycoords[::2]))
-    for (x1, y1), (x2, y2) in zip(next_coords, last_coords):
-        start = (round(x1), round(y1))
-        end = (round(x2), round(y2))
-        pygame.draw.line(surf, color, start, end, width)
+    angle1 = theta + math.pi / 6
+    angle2 = theta - math.pi / 6
+    x1 = p2[0] - headwidth * math.cos(angle1)
+    y1 = p2[1] - headwidth * math.sin(angle1)
+    x2 = p2[0] - headwidth * math.cos(angle2)
+    y2 = p2[1] - headwidth * math.sin(angle2)
+
+    pygame.draw.polygon(surface, color, [(p2[0], p2[1]), (x1, y1), (x2, y2)])
 
 
-def arange(start, stop, step):
-    result = [start]
-    value = start
-    while (value := value + step) < stop:
-        result.append(value)
-    return result
+def seg_to_vector(p1, p2):
+    vector = p1[0] - p2[0], p1[1] - p2[1]
+    divisor = max([abs(vector[0]), abs(vector[1])])
+    return vector[0] / divisor, vector[1] / divisor
+
+
+def get_segment_length(p1, p2):
+    x1, y1 = p1
+    x2, y2 = p2
+    return math.sqrt((x2 - x1) ** 2 + (y2 - y1) ** 2)
+
+
+def draw_dashed_line(surface, color, p1, p2, width=1, dash_length=4):
+    dist = distance(p1, p2)
+    if get_segment_length(p1, p2) < dist:
+        pygame.draw.line(surface, color, p1, p2, width)
+        return
+
+    vector = [-n * dash_length for n in seg_to_vector(p1, p2)]
+    start_point = p1
+    draw = True
+    while True:
+        end_point = start_point[0] + vector[0], start_point[1] + vector[1]
+        if distance(p1, end_point) > dist:
+            return
+        if draw:
+            pygame.draw.line(surface, color, start_point, end_point, width)
+        draw = not draw
+        start_point = end_point
 
 
 def render_messages(screen, scene):

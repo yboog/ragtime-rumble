@@ -25,7 +25,6 @@ def find_possible_duels(scene):
             x2 = char2.coordinates.x
             path = char1.coordinates.position, char2.coordinates.position
             conditions = (
-                char1.direction in (DIRECTIONS.UP, DIRECTIONS.DOWN) or
                 char1.direction in DIRECTIONS.RIGHTS and (x1 - x2) > 0 or
                 char1.direction in DIRECTIONS.LEFTS and (x2 - x1) > 0 or
                 not (DUEL.RANGE[0] <= abs(x1 - x2) <= DUEL.RANGE[1]) or

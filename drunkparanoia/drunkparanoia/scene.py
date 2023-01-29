@@ -12,7 +12,7 @@ from drunkparanoia.coordinates import (
     path_cross_rect)
 from drunkparanoia.config import (
     DIRECTIONS, GAMEROOT, COUNTDOWNS, LOOP_STATUSES, CHARACTER_STATUSES,
-    MAX_MESSAGES)
+    MAX_MESSAGES, VARIANTS_COUNT)
 from drunkparanoia.duel import find_possible_duels
 from drunkparanoia.io import (
     load_image, load_data, quit_event, list_joysticks, image_mirror,
@@ -167,7 +167,6 @@ class GameLoop:
         self.done = self.done or quit_event()
         if self.done:
             return
-
         match self.status:
             case LOOP_STATUSES.BATTLE:
                 next(self.scene)
@@ -367,9 +366,11 @@ class Scene:
             position = next(self.popspot_generator)
             direction = direction or random.choice(DIRECTIONS.ALL)
         char = next(self.character_generator)
-        spritesheet = SpriteSheet(load_data(char))
-        variation = random.choice(list(range(spritesheet.variation_count)))
+        data = load_data(char)
+        spritesheet = SpriteSheet(data)
+        variation = random.choice(list(range(VARIANTS_COUNT)))
         char = Character(position, spritesheet, variation, self)
+        char.gender = data['gender']
         if group:
             zone = self.get_interaction(group['interactions'][direction])
             zone.busy = zone
@@ -466,9 +467,9 @@ class Scene:
 
     def kill_message(self, killer, victim):
         pl = self.find_player(killer)
-        name1 = f'Player {pl.index + 1}' if pl else choice_random_name('man')
+        name1 = f'Player {pl.index + 1}' if pl else choice_random_name(killer.gender)
         pl = self.find_player(victim)
-        name2 = f'Player {pl.index + 1}' if pl else choice_random_name('man')
+        name2 = f'Player {pl.index + 1}' if pl else choice_random_name(victim.gender)
         msg = choice_kill_sentence('french')
         self.messenger.add_message(f'{name1} {msg} {name2}')
 
