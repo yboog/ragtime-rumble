@@ -4,6 +4,7 @@ from drunkparanoia.config import (
     DIRECTIONS, SPEED, COUNTDOWNS, HOLDABLE_ANIMATIONS)
 from drunkparanoia.config import LOOPING_ANIMATIONS, CHARACTER_STATUSES
 from drunkparanoia.coordinates import Coordinates, get_box, distance
+from drunkparanoia.io import play_sound
 from drunkparanoia.pathfinding import shortest_path, points_to_direction
 
 
@@ -94,7 +95,9 @@ class Character:
 
     def vomit(self):
         self.stop()
+        play_sound('resources/sounds/vomit.wav')
         self.spritesheet.animation = 'vomit'
+
         self.spritesheet.index = 0
         self.vomit_count_down = random.randrange(
             COUNTDOWNS.VOMIT_MIN, COUNTDOWNS.VOMIT_MAX)
@@ -225,6 +228,7 @@ class Character:
         black_screen = black_screen and self.scene.apply_black_screen(
             self, target)
         self.stop()
+        play_sound('resources/sounds/colt.wav')
         if black_screen:
             self.status = CHARACTER_STATUSES.FREE
             self.spritesheet.animation = 'idle'
@@ -270,6 +274,7 @@ class Character:
             target.aim(self)
             target.duel_target = self
             target.path = None
+            play_sound('resources/sounds/woosh.wav')
             return
 
     def request_interaction(self):

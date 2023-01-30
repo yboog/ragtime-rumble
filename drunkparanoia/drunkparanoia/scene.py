@@ -16,7 +16,9 @@ from drunkparanoia.config import (
 from drunkparanoia.duel import find_possible_duels
 from drunkparanoia.io import (
     load_image, load_data, quit_event, list_joysticks, image_mirror,
-    choice_kill_sentence, choice_random_name)
+    choice_kill_sentence, choice_random_name, play_music, stop_music,
+    play_sound, stop_sound,
+    play_ambiance, stop_ambiance)
 from drunkparanoia.joystick import get_current_commands
 from drunkparanoia.npc import Npc, Pianist, Barman
 from drunkparanoia.player import Player
@@ -83,6 +85,8 @@ def load_scene(filename):
     with open(filepath, 'r') as f:
         data = json.load(f)
     scene = Scene()
+    scene.ambiance = data['ambiance']
+    scene.music = data['music']
     scene.character_number = data['character_number']
     scene.name = data['name']
     scene.vfx = data['vfx']
@@ -162,6 +166,8 @@ class GameLoop:
         self.scene = load_scene(self.scene_path)
         self.status = LOOP_STATUSES.DISPATCHING
         self.dispatcher = PlayerDispatcher(self.scene, self.joysticks)
+        stop_ambiance()
+        play_sound('resources/sounds/dispatcher_sound.ogg')
 
     def __next__(self):
         self.done = self.done or quit_event()
@@ -172,12 +178,15 @@ class GameLoop:
                 next(self.scene)
                 self.clock.tick(60)
                 if self.scene.ultime_showdown:
+                    stop_sound(self.scene.ambiance)
+                    stop_sound(self.scene.music)
                     self.status = LOOP_STATUSES.LAST_KILL
 
             case LOOP_STATUSES.DISPATCHING:
                 next(self.dispatcher)
                 self.clock.tick(60)
                 if self.dispatcher.done:
+                    stop_sound('resources/sounds/dispatcher_sound.ogg')
                     self.start_game()
 
             case LOOP_STATUSES.LAST_KILL:
@@ -213,6 +222,10 @@ class GameLoop:
             self.scene.build_character()
         self.scene.create_npcs()
         self.status = LOOP_STATUSES.BATTLE
+        import time
+        time.sleep(0.1)
+        play_sound(self.scene.ambiance)
+        play_sound(self.scene.music)
 
 
 class PlayerDispatcher:

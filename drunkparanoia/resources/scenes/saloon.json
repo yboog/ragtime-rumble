@@ -1,6 +1,8 @@
 {
   "character_number": 24,
   "name": "saloon",
+  "music": "resources/sounds/ragtime.ogg",
+  "ambiance": "resources/sounds/ambiance_saloon.ogg",
   "paths": [
     {
       "points": [

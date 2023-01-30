@@ -2,6 +2,7 @@
 from drunkparanoia.joystick import get_pressed_direction, get_current_commands
 from drunkparanoia.config import (
     LOOPING_ANIMATIONS, CHARACTER_STATUSES, COUNTDOWNS)
+from drunkparanoia.io import play_sound
 
 
 class Player:
@@ -47,6 +48,9 @@ class Player:
 
         if self.bullet_cooldown > 0:
             self.bullet_cooldown -= 1
+
+        if self.bullet_cooldown == 1:
+            play_sound('resources/sounds/coltclick.wav')
 
         if self.action_cooldown > 0:
             self.action_cooldown -= 1

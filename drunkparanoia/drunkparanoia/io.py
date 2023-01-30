@@ -8,12 +8,15 @@ from drunkparanoia.config import GAMEROOT, VARIANTS_COUNT
 from drunkparanoia.joystick import get_current_commands
 
 
+
+_ambiance_channel = None
 _animation_store = {}
 _image_store = {}
 _name_generators = {}
 _death_sentences_generators = {}
 _kill_sentences_generators = {}
 _variants = {}
+_sounds = {}
 
 
 def choice_random_name(gender):
@@ -222,6 +225,54 @@ def load_data(filename):
     filepath = f'{GAMEROOT}/{filename}'
     with open(filepath, 'r') as f:
         return json.load(f)
+
+
+def load_sound(filename):
+    if sound := _sounds.get(filename):
+        return sound
+    try:
+        filepath = f'{GAMEROOT}/{filename}'
+        _sounds[filename] = pygame.mixer.Sound(filepath)
+        return _sounds[filename]
+    except FileNotFoundError as e:
+        msg = f"No such file or directory: {filepath}"
+        raise FileNotFoundError(msg) from e
+
+
+def play_music(filename):
+    pygame.mixer.music.load(f'{GAMEROOT}/{filename}')
+    pygame.mixer.music.play()
+
+
+def stop_music():
+    pygame.mixer.music.stop()
+    pygame.mixer.music.unload()
+
+
+def play_ambiance(filename):
+    global _ambiance_channel
+    if not _ambiance_channel:
+        _ambiance_channel = pygame.mixer.find_channel()
+    _ambiance_channel.play(load_sound(filename))
+
+
+def stop_ambiance():
+    if not _ambiance_channel:
+        return
+    _ambiance_channel.stop()
+
+
+def play_sound(filename):
+    load_sound(filename).play()
+
+
+def stop_sound(filename):
+    if (sound := _sounds.get(filename)):
+        sound.stop()
+        sound.stop()
+        sound.stop()
+        sound.stop()
+        sound.stop()
 
 
 def image_mirror(id_, horizontal=True, vertical=False):

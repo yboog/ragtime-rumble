@@ -301,15 +301,9 @@ def seg_to_vector(p1, p2):
     return vector[0] / divisor, vector[1] / divisor
 
 
-def get_segment_length(p1, p2):
-    x1, y1 = p1
-    x2, y2 = p2
-    return math.sqrt((x2 - x1) ** 2 + (y2 - y1) ** 2)
-
-
 def draw_dashed_line(surface, color, p1, p2, width=1, dash_length=4):
     dist = distance(p1, p2)
-    if get_segment_length(p1, p2) < dist:
+    if dist < dash_length:
         pygame.draw.line(surface, color, p1, p2, width)
         return
 
