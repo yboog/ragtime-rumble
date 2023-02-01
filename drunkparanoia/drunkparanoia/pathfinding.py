@@ -1,6 +1,6 @@
 import random
 from drunkparanoia.config import HAT_TO_DIRECTION
-from drunkparanoia.coordinates import distance
+from drunkparanoia.coordinates import distance, get_box, point_in_rectangle
 
 
 def points_to_direction(p1, p2):
@@ -72,3 +72,43 @@ def shortest_path(orig, dst):
     if reverse:
         orig, dst = dst, orig
     return [intermediate, dst]
+
+
+def choice_destination(scene, position, box):
+    limit = 0
+    while True:
+        dst = scene.choice_destination_from(position)
+        if dst is None:
+            break
+        if not scene.collide(get_box(dst, box)):
+            return dst
+        limit += 1
+
+    x, y = [int(n) for n in position]
+    x = random.randrange(x - 75, x + 75)
+    y = random.randrange(y - 75, y + 75)
+    pos = x, y
+    while scene.collide(get_box(pos, box)):
+        x, y = [int(n) for n in position]
+        x = random.randrange(x - 75, x + 75)
+        y = random.randrange(y - 75, y + 75)
+        pos = x, y
+    return pos
+
+
+def choce_destination_from(targets, point):
+    targets = [
+        t for t in targets if point_in_rectangle(point, *t['origin'])]
+
+    if not targets:
+        return
+
+    destinations = [
+        d for t in targets
+        for _ in range(t['weight'])
+        for d in t['destinations']]
+
+    destination = random.choice(destinations)
+    x = random.randrange(destination[0], destination[0] + destination[2])
+    y = random.randrange(destination[1], destination[1] + destination[3])
+    return x, y

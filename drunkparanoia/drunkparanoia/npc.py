@@ -2,13 +2,15 @@
 import random
 import itertools
 from drunkparanoia.config import (
-    COUNTDOWNS, SMOOTH_PATH_SELECTION_RADIUS, SMOOTH_PATH_USAGE_PROBABILITY)
-from drunkparanoia.io import choice_death_sentence, choice_random_name, load_data
-from drunkparanoia.config import CHARACTER_STATUSES, DIRECTIONS, SPEED
+    COUNTDOWNS, SMOOTH_PATH_SELECTION_RADIUS, SMOOTH_PATH_USAGE_PROBABILITY,
+    HARD_PATH_SELECTION_RADIUS)
+from drunkparanoia.io import (
+    choice_death_sentence, choice_random_name, load_data)
+from drunkparanoia.config import CHARACTER_STATUSES, SPEED
 from drunkparanoia.coordinates import Coordinates
 from drunkparanoia.pathfinding import (
     shortest_path, smooth_path_to_path, equilateral_path, filter_close_paths,
-    points_to_direction, distance)
+    points_to_direction, distance, choice_destination)
 from drunkparanoia.sprite import SpriteSheet
 
 
@@ -87,6 +89,7 @@ class Npc:
             do_pause = random.randrange(0, proba) == 0
             if do_pause:
                 self.character.path = None
+                self.character.hardpath = None
                 self.character.ghost = None
                 self.is_cooling_down = True
                 self.cool_down = random.randrange(
@@ -107,7 +110,12 @@ class Npc:
             self.is_cooling_down = False
             self.character.status = CHARACTER_STATUSES.AUTOPILOT
             self.character.ghost = None
-            self.character.path = self.build_path()
+            result = self.look_for_hard_path()
+            if result[0]:
+                self.character.path = result[0]
+                self.character.hardpath = result[1]
+            else:
+                self.character.path = self.build_path()
             self.character.autopilot()
             next(self.character)
             return
@@ -117,8 +125,25 @@ class Npc:
         self.cool_down -= 1
         next(self.character)
 
+    def look_for_hard_path(self):
+        if not random.choice((False, True)):
+            return False, None
+        position = self.character.coordinates.position
+        paths = filter_close_paths(
+            position, self.scene.smooth_paths,
+            HARD_PATH_SELECTION_RADIUS)
+        if not paths:
+            return False, None
+        hard_path = random.choice(paths)
+
+        functions = [shortest_path] * 2 + [equilateral_path]
+        func = random.choice(functions)
+        path = func(position, hard_path[0])
+        return path, hard_path
+
     def build_path(self):
         position = self.character.coordinates.position
+
         if random.choice(range(SMOOTH_PATH_USAGE_PROBABILITY)) == 0:
             paths = filter_close_paths(
                 position, self.scene.smooth_paths,
@@ -128,7 +153,8 @@ class Npc:
 
         functions = [shortest_path] * 2 + [equilateral_path]
         func = random.choice(functions)
-        destination = self.character.choice_destination()
+        box = self.character.box
+        destination = choice_destination(self.scene, position, box)
         return func(position, destination)
 
     def __next__(self):

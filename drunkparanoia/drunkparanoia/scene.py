@@ -16,9 +16,8 @@ from drunkparanoia.config import (
 from drunkparanoia.duel import find_possible_duels
 from drunkparanoia.io import (
     load_image, load_data, quit_event, list_joysticks, image_mirror,
-    choice_kill_sentence, choice_random_name, play_music, stop_music,
-    play_sound, stop_sound,
-    play_ambiance, stop_ambiance)
+    choice_kill_sentence, choice_random_name, play_sound, stop_sound,
+    stop_ambiance)
 from drunkparanoia.joystick import get_current_commands
 from drunkparanoia.npc import Npc, Pianist, Barman
 from drunkparanoia.player import Player
