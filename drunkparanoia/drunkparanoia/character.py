@@ -9,6 +9,7 @@ from drunkparanoia.pathfinding import shortest_path, points_to_direction
 
 
 class Character:
+
     def __init__(self, position, spritesheet, variation, scene):
         self.spritesheet = spritesheet
         self.coordinates = Coordinates(position)
@@ -23,30 +24,10 @@ class Character:
         self.duel_target = None
         self.ghost = None
         self.path = None
+        self.hardpath = None
         self.buffer_interaction_zone = None
         self.buffer_animation = None
         self.interacting_zone = None
-
-    def choice_destination(self):
-        limit = 0
-        while True:
-            dst = self.scene.choice_destination_from(self.coordinates.position)
-            if dst is None:
-                break
-            if not self.scene.collide(get_box(dst, self.box)):
-                return dst
-            limit += 1
-
-        x, y = [int(n) for n in self.coordinates.position]
-        x = random.randrange(x - 75, x + 75)
-        y = random.randrange(y - 75, y + 75)
-        pos = x, y
-        while self.scene.collide(get_box(pos, self.box)):
-            x, y = [int(n) for n in self.coordinates.position]
-            x = random.randrange(x - 75, x + 75)
-            y = random.randrange(y - 75, y + 75)
-            pos = x, y
-        return pos
 
     @property
     def box(self):
@@ -267,6 +248,7 @@ class Character:
             self.spritesheet.index = 0
             self.duel_target = target
             self.path = None
+            self.hardpath = None
             target.stop()
             target.status = CHARACTER_STATUSES.DUEL_TARGET
             target.spritesheet.animation = 'suspicious'
@@ -274,6 +256,7 @@ class Character:
             target.aim(self)
             target.duel_target = self
             target.path = None
+            target.hardpath = None
             play_sound('resources/sounds/woosh.wav')
             return
 
@@ -313,8 +296,7 @@ class Character:
         return
 
     def autopilot(self):
-
-        if not self.path:
+        if not self.path: # and not self.hardpath:
             self.end_autopilot()
             return
 
@@ -333,6 +315,7 @@ class Character:
         elif self.ghost == self.coordinates.position:
             self.end_autopilot()
             self.path = None
+            self.hardpath = None
             return
 
         dist1 = distance(self.ghost, self.path[0])
