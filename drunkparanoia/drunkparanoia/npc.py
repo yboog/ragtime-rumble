@@ -48,17 +48,23 @@ class Npc:
             COUNTDOWNS.DUEL_RELEASE_TIME_MAX)
         return True
 
+    def release_target(self):
+        target = self.character.duel_target
+        target.duel_target = None
+        target.spritesheet.animation = 'idle'
+        target.spritesheet.index = 0
+        target.status = (
+            CHARACTER_STATUSES.AUTOPILOT if target.pilot else
+            CHARACTER_STATUSES.FREE)
+        self.character.duel_target = None
+
     def fall_to_coma(self):
         if self.character.status == CHARACTER_STATUSES.OUT:
             next(self.character)
             return
 
         if self.character.duel_target:
-            self.character.duel_target.duel_target = None
-            self.character.duel_target.spritesheet.animation = 'idle'
-            self.character.duel_target.spritesheet.index = 0
-            self.character.duel_target.status = CHARACTER_STATUSES.FREE
-            self.character.duel_target = None
+            self.release_target()
 
         self.character.status = CHARACTER_STATUSES.OUT
         self.character.spritesheet.animation = 'vomit'
