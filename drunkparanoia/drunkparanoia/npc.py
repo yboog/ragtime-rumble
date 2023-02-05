@@ -206,6 +206,31 @@ class Npc:
         next(self.character)
 
 
+class Sniper:
+    def __init__(self, file, startposition, **_):
+        self.data = load_data(file)
+        self.spritesheet = SpriteSheet(self.data, 'idle')
+        self.coordinates = Coordinates((startposition))
+
+    @property
+    def render_position(self):
+        return self.coordinates.position
+
+    @property
+    def switch(self):
+        return 1000
+
+    def __next__(self):
+        if self.spritesheet.animation_is_done:
+            self.spritesheet.index = 0
+            return
+        next(self.spritesheet)
+
+    @property
+    def image(self):
+        return self.spritesheet.image()
+
+
 class Pianist:
     def __init__(self, file, startposition, **_):
         self.data = load_data(file)

@@ -19,7 +19,7 @@ from drunkparanoia.io import (
     choice_kill_sentence, choice_random_name, play_sound, stop_sound,
     stop_ambiance)
 from drunkparanoia.joystick import get_current_commands
-from drunkparanoia.npc import Npc, Pianist, Barman
+from drunkparanoia.npc import Npc, Pianist, Barman, Sniper
 from drunkparanoia.player import Player
 from drunkparanoia.sprite import SpriteSheet
 
@@ -57,7 +57,8 @@ VIRGIN_SCORES = {
 
 NPC_TYPES = {
     'pianist': Pianist,
-    'barman': Barman
+    'barman': Barman,
+    'sniper': Sniper
 }
 
 

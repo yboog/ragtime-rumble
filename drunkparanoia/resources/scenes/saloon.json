@@ -3733,6 +3733,15 @@
   ],
   "npcs": [
     {
+      "file": "resources/animdata/sniper.json",
+      "startposition": [
+        212,
+        30
+      ],
+      "y": 2000,
+      "type": "sniper"
+    },
+    {
       "file": "resources/animdata/pianist.json",
       "startposition": [
         30,

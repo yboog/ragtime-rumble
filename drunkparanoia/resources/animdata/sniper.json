@@ -1,0 +1,108 @@
+{
+  "name": "jo-l-indien",
+  "type": "sniper",
+  "y": 30,
+  "framesize": [
+    64,
+    64
+  ],
+  "sheets": {
+    "face": "resources/skins/sniper.png",
+    "back": "resources/skins/sniper.png"
+  },
+  "animations": {
+    "aim-idle": {
+      "durations": [
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        6
+      ],
+      "startframe": 0
+    },
+    "go-aim": {
+      "durations": [
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        6
+      ],
+      "startframe": 17
+    },
+    "gunshot-goback": {
+      "durations": [
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        6
+      ],
+      "startframe": 24
+    },
+    "idle": {
+      "durations": [
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        6
+      ],
+      "startframe": 56
+    }
+  }
+}
