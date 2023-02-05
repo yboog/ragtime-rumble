@@ -4,11 +4,11 @@ import itertools
 from drunkparanoia.config import (
     COUNTDOWNS, SMOOTH_PATH_SELECTION_RADIUS, SMOOTH_PATH_USAGE_PROBABILITY,
     HARD_PATH_SELECTION_RADIUS)
-from drunkparanoia.io import (
-    choice_death_sentence, choice_random_name, load_data)
 from drunkparanoia.config import (
     CHARACTER_STATUSES, SPEED, HARD_PATH_USAGE_PROBABILITY)
-from drunkparanoia.coordinates import Coordinates
+from drunkparanoia.coordinates import Coordinates, path_cross_rect
+from drunkparanoia.io import (
+    choice_death_sentence, choice_random_name, load_data)
 from drunkparanoia.pathfinding import (
     shortest_path, smooth_path_to_path, equilateral_path, filter_close_paths,
     points_to_direction, distance, choice_destination)
@@ -138,7 +138,7 @@ class Npc:
         pre_path = shortest_path(self.character.coordinates.position, path[0])
         return pre_path + path
 
-    def build_path(self):
+    def build_path(self, i=0):
         position = self.character.coordinates.position
 
         if random.choice(range(SMOOTH_PATH_USAGE_PROBABILITY)) == 0:
@@ -152,6 +152,11 @@ class Npc:
         func = random.choice(functions)
         box = self.character.box
         destination = choice_destination(self.scene, position, box)
+        path = func(position, destination)
+        for stair in self.scene.stairs:
+            if path_cross_rect(path, stair['zone']):
+                print('found stair and rebuilt', i)
+                return self.build_path(i=i+1)
         return func(position, destination)
 
     def __next__(self):
