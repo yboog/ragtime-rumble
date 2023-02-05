@@ -17,12 +17,8 @@ class Coordinates:
 
     def shift(self, direction, speed, inclination):
         vector = list(DIRECTION_TO_VECTOR[direction])
-        if vector[0] != 0 and vector[1] != 0:
-            # This is the vector(1, 1) lenght to ensure the character doesn't
-            # go faster in diagonal than straight directions.
-            speed /= 1.41421
         vector[1] = vector[1] + (inclination * vector[0])
-        return self.x + vector[0] * speed, self.y + vector[1] * speed
+        return offset_point((self.x, self.y), vector, speed)
 
     def distance_to(self, coordinates):
         return distance(self.position, coordinates.position)
@@ -78,3 +74,12 @@ def path_cross_rect(path, rect):
     path = Path(path)
     path2 = Path([tl, tr, bl, br])
     return path.intersects_path(path2)
+
+
+def norm(vector):
+    return [n / math.sqrt(vector[0]**2 + vector[1]**2) for n in vector]
+
+
+def offset_point(point, vector, distance):
+    v_norm = norm(vector)
+    return [point[0] + distance * v_norm[0], point[1] + distance * v_norm[1]]

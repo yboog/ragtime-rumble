@@ -1,6 +1,14 @@
 import random
-from drunkparanoia.config import HAT_TO_DIRECTION
-from drunkparanoia.coordinates import distance, get_box, point_in_rectangle
+from drunkparanoia.config import HAT_TO_DIRECTION, DIRECTIONS
+from drunkparanoia.coordinates import (
+    distance, get_box, point_in_rectangle, norm)
+
+
+def vector_to_direction(vector):
+    x, y = norm(vector)
+    x = round(x)
+    y = round(y)
+    return HAT_TO_DIRECTION.get((x, y), DIRECTIONS.RIGHT)
 
 
 def points_to_direction(p1, p2):
@@ -8,7 +16,7 @@ def points_to_direction(p1, p2):
     x = -1 if x > 0 else 1 if x < 0 else 0
     y = round(p1[1] - p2[1], 1)
     y = -1 if y > 0 else 1 if y < 0 else 0
-    return HAT_TO_DIRECTION.get((x, y))
+    return HAT_TO_DIRECTION.get((x, y), DIRECTIONS.RIGHT)
 
 
 def equilateral_path(origin, dst):
@@ -74,6 +82,12 @@ def shortest_path(orig, dst):
     return [intermediate, dst]
 
 
+def seg_to_vector(p1, p2):
+    vector = p2[0] - p1[0], p2[1] - p1[1]
+    divisor = max([abs(vector[0]), abs(vector[1])])
+    return vector[0] / divisor, vector[1] / divisor
+
+
 def choice_destination(scene, position, box):
     limit = 0
     while True:
@@ -96,7 +110,7 @@ def choice_destination(scene, position, box):
     return pos
 
 
-def choce_destination_from(targets, point):
+def choice_destination_from(targets, point):
     targets = [
         t for t in targets if point_in_rectangle(point, *t['origin'])]
 

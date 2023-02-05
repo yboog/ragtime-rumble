@@ -5,7 +5,8 @@ from drunkparanoia.io import get_image, get_font
 from drunkparanoia.config import LOOP_STATUSES
 from drunkparanoia.scene import column_to_group, get_score_data
 from drunkparanoia.character import Character
-from drunkparanoia.pathfinding import distance
+from drunkparanoia.pathfinding import distance, seg_to_vector
+from drunkparanoia.pilot import SmoothPathPilot
 
 
 KILL_MESSAGE_SCREEN_PADDING = 10
@@ -252,15 +253,23 @@ def render_element(screen, element):
         print(img, get_image(img))
         raise
     ### RENDER PATHS
-    # if isinstance(element, Character):
-    #     if element.path:
-    #         last = None
-    #         for point in [element.coordinates.position] + element.path:
-    #             draw_rect(screen, (point[0], point[1], 2, 2))
-    #             if last:
-    #                 pygame.draw.line(screen, (255, 255, 0), last, point, 2)
-    #             last = point
-
+    # condition = (
+    #     isinstance(element, Character) and
+    #     element.pilot and
+    #     element.pilot.path)
+    # if condition:
+    #     if isinstance(element.pilot, SmoothPathPilot):
+    #         color = (255, 255, 0)
+    #     else:
+    #         color = (0, 0, 255)
+    #     last = None
+    #     for point in [element.coordinates.position] + element.pilot.path:
+    #         draw_rect(screen, (point[0], point[1], 2, 2))
+    #         if last:
+    #             pygame.draw.line(screen, color, last, point, 2)
+    #         last = point
+    #  COLLIDER
+    # if hasattr(element, 'screen_box'):
     #     draw_rect(screen, element.screen_box, alpha=125)
 
 
@@ -295,19 +304,13 @@ def draw_arrow(surface, color, p1, p2, headwidth=2):
     pygame.draw.polygon(surface, color, [(p2[0], p2[1]), (x1, y1), (x2, y2)])
 
 
-def seg_to_vector(p1, p2):
-    vector = p1[0] - p2[0], p1[1] - p2[1]
-    divisor = max([abs(vector[0]), abs(vector[1])])
-    return vector[0] / divisor, vector[1] / divisor
-
-
 def draw_dashed_line(surface, color, p1, p2, width=1, dash_length=4):
     dist = distance(p1, p2)
     if dist < dash_length:
         pygame.draw.line(surface, color, p1, p2, width)
         return
 
-    vector = [-n * dash_length for n in seg_to_vector(p1, p2)]
+    vector = [n * dash_length for n in seg_to_vector(p1, p2)]
     start_point = p1
     draw = True
     while True:

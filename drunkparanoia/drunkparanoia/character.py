@@ -3,9 +3,10 @@ import random
 from drunkparanoia.config import (
     DIRECTIONS, SPEED, COUNTDOWNS, HOLDABLE_ANIMATIONS)
 from drunkparanoia.config import LOOPING_ANIMATIONS, CHARACTER_STATUSES
-from drunkparanoia.coordinates import Coordinates, get_box, distance
+from drunkparanoia.coordinates import Coordinates, get_box
 from drunkparanoia.io import play_sound
-from drunkparanoia.pathfinding import shortest_path, points_to_direction
+from drunkparanoia.pathfinding import shortest_path
+from drunkparanoia.pilot import SmoothPathPilot, HardPathPilot
 
 
 class Character:
@@ -22,9 +23,7 @@ class Character:
             COUNTDOWNS.VOMIT_MIN, COUNTDOWNS.VOMIT_MAX)
         self.status = CHARACTER_STATUSES.FREE
         self.duel_target = None
-        self.ghost = None
-        self.path = None
-        self.hardpath = None
+        self.pilot = None
         self.buffer_interaction_zone = None
         self.buffer_animation = None
         self.interacting_zone = None
@@ -84,6 +83,52 @@ class Character:
             COUNTDOWNS.VOMIT_MIN, COUNTDOWNS.VOMIT_MAX)
         self.status = CHARACTER_STATUSES.STUCK
 
+    def evaluate_out(self):
+        conditions = (
+            self.spritesheet.animation_is_done and
+            self.buffer_animation)
+        if conditions:
+            self.spritesheet.index = 0
+            self.spritesheet.animation = self.buffer_animation
+            self.buffer_animation = None
+            next(self.spritesheet)
+            return
+        conditions = (
+            self.spritesheet.animation_is_done and
+            self.spritesheet.animation in HOLDABLE_ANIMATIONS)
+        if conditions:
+            return
+        next(self.spritesheet)
+
+    def evaluate_stuck(self):
+        if self.spritesheet.animation_is_done:
+            if self.spritesheet.animation == 'vomit':
+                pos = self.render_position
+                flipped = self.direction in DIRECTIONS.FLIPPED
+                self.scene.create_vfx('vomit', pos, flipped)
+            if self.pilot and self.scene.inclination_at(self.coordinates.position):
+                self.status = CHARACTER_STATUSES.AUTOPILOT
+            else:
+                self.status = CHARACTER_STATUSES.FREE
+            self.stop()
+        next(self.spritesheet)
+        return
+
+    def evaluate_interacting(self):
+        if self.spritesheet.animation_is_done:
+            match self.spritesheet.animation:
+                case 'call':
+                    self.spritesheet.animation = 'smoke'
+                case 'death':
+                    self.spritesheet.animation = 'coma'
+                    self.status = CHARACTER_STATUSES.OUT
+                case _:
+                    if self.spritesheet.animation not in LOOPING_ANIMATIONS:
+                        self.set_free()
+            self.spritesheet.index = 0
+            return
+        next(self.spritesheet)
+
     def __next__(self):
         if self.vomit_count_down <= 0:
             self.vomit()
@@ -95,50 +140,13 @@ class Character:
                 return self.autopilot()
 
             case CHARACTER_STATUSES.OUT:
-                conditions = (
-                    self.spritesheet.animation_is_done and
-                    self.buffer_animation)
-                if conditions:
-                    self.spritesheet.index = 0
-                    self.spritesheet.animation = self.buffer_animation
-                    self.buffer_animation = None
-                    next(self.spritesheet)
-                    return
-                conditions = (
-                    self.spritesheet.animation_is_done and
-                    self.spritesheet.animation in HOLDABLE_ANIMATIONS)
-                if conditions:
-                    return
-                next(self.spritesheet)
-                return
+                return self.evaluate_out()
 
             case CHARACTER_STATUSES.STUCK:
-                if self.spritesheet.animation_is_done:
-                    if self.spritesheet.animation == 'vomit':
-                        pos = self.render_position
-                        flipped = self.direction in DIRECTIONS.FLIPPED
-                        self.scene.create_vfx('vomit', pos, flipped)
-                    self.status = CHARACTER_STATUSES.FREE
-                    self.stop()
-                next(self.spritesheet)
-                return
+                return self.evaluate_stuck()
 
             case CHARACTER_STATUSES.INTERACTING:
-                if self.spritesheet.animation_is_done:
-                    match self.spritesheet.animation:
-                        case 'call':
-                            self.spritesheet.animation = 'smoke'
-                        case 'death':
-                            self.spritesheet.animation = 'coma'
-                            self.status = CHARACTER_STATUSES.OUT
-                        case _:
-                            looping = LOOPING_ANIMATIONS
-                            if self.spritesheet.animation not in looping:
-                                self.set_free()
-                    self.spritesheet.index = 0
-                    return
-                next(self.spritesheet)
-                return
+                return self.evaluate_interacting()
 
             case CHARACTER_STATUSES.DUEL_ORIGIN:
                 if self.spritesheet.animation_is_done:
@@ -160,7 +168,11 @@ class Character:
         self.eval_animation()
 
     def set_free(self):
-        self.status = CHARACTER_STATUSES.FREE
+        inclination = self.scene.inclination_at(self.coordinates.position)
+        if self.pilot and inclination:
+            self.status = CHARACTER_STATUSES.AUTOPILOT
+        else:
+            self.status = CHARACTER_STATUSES.FREE
         self.spritesheet.animation = 'idle'
         self.spritesheet.index = 0
         if self.interacting_zone:
@@ -228,12 +240,17 @@ class Character:
         self.scene.kill_message(self, target)
 
     def release_duel(self):
-        if self.duel_target:
-            self.duel_target.spritesheet.animation = 'idle'
-            self.duel_target.spritesheet.index = 0
-            self.duel_target.status = CHARACTER_STATUSES.FREE
-            self.duel_target.duel_target = None
-            self.duel_target = None
+        target = self.duel_target
+        if target:
+            target.spritesheet.animation = 'idle'
+            target.spritesheet.index = 0
+            status = (
+                CHARACTER_STATUSES.AUTOPILOT if target.pilot
+                else CHARACTER_STATUSES.FREE)
+            target.status = status
+            target.duel_target = None
+            target = None
+        self.duel_target = None
         self.status = CHARACTER_STATUSES.INTERACTING
         self.spritesheet.animation = 'smoke'
         self.spritesheet.index = 0
@@ -247,15 +264,20 @@ class Character:
             self.spritesheet.animation = 'call'
             self.spritesheet.index = 0
             self.duel_target = target
-            self.path = None
-            self.hardpath = None
+            position = self.coordinates.position
+            inclination = self.scene.inclination_at(position)
+            if not inclination:
+                self.pilot = None
             target.stop()
             target.status = CHARACTER_STATUSES.DUEL_TARGET
             target.spritesheet.animation = 'suspicious'
             target.spritesheet.index = 0
             target.aim(self)
             target.duel_target = self
-            target.path = None
+            position = target.coordinates.position
+            inclination = self.scene.inclination_at(position)
+            if not inclination:
+                target.pilot = None
             target.hardpath = None
             play_sound('resources/sounds/woosh.wav')
             return
@@ -274,13 +296,13 @@ class Character:
 
     def go_to(self, position, zone=None):
         self.status = CHARACTER_STATUSES.AUTOPILOT
-        self.ghost = None
-        self.path = shortest_path(self.coordinates.position, position.copy())
+        path = shortest_path(self.coordinates.position, position.copy())
+        self.pilot = HardPathPilot(self, path)
         self.buffer_interaction_zone = zone
 
     def end_autopilot(self):
         self.stop()
-        self.ghost = None
+        self.pilot = None
         zone = self.buffer_interaction_zone
         if zone and not zone.busy:
             self.spritesheet.animation = zone.action
@@ -292,38 +314,11 @@ class Character:
         else:
             self.status = CHARACTER_STATUSES.FREE
         self.buffer_interaction_zone = None
-        self.eval_animation()
         return
 
     def autopilot(self):
-        if not self.path: # and not self.hardpath:
+        try:
+            next(self.pilot)
+        except StopIteration:
             self.end_autopilot()
-            return
-
-        current = self.coordinates.position
-        direction = points_to_direction(current, self.path[0])
-        self.direction = direction or self.direction
-        self.accelerate()
-        self.offset()
-
-        if not self.ghost:
-            if self.speed == 0:
-                self.path.pop(0)
-            self.ghost = self.coordinates.position
-            self.eval_animation()
-            return
-        elif self.ghost == self.coordinates.position:
-            self.end_autopilot()
-            self.path = None
-            self.hardpath = None
-            return
-
-        dist1 = distance(self.ghost, self.path[0])
-        dist2 = distance(self.coordinates.position, self.path[0])
-        if dist1 < dist2:
-            self.coordinates.position = self.path.pop(0)[:]
-            self.ghost = self.coordinates.position
-            self.eval_animation()
-            return
-        self.ghost = self.coordinates.position
         self.eval_animation()
