@@ -1,6 +1,5 @@
 from drunkparanoia.pathfinding import (
-    distance, points_to_direction, shortest_path, seg_to_vector,
-    vector_to_direction)
+    distance, points_to_direction, seg_to_vector, vector_to_direction)
 from drunkparanoia.coordinates import offset_point
 
 

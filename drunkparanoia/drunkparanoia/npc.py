@@ -49,27 +49,29 @@ class Npc:
         return True
 
     def fall_to_coma(self):
-        if self.character.status != CHARACTER_STATUSES.OUT:
-            if self.character.duel_target:
-                self.character.duel_target.duel_target = None
-                self.character.duel_target.spritesheet.animation = 'idle'
-                self.character.duel_target.spritesheet.index = 0
-                self.character.duel_target.status = CHARACTER_STATUSES.FREE
-                self.character.duel_target = None
-
-            self.character.status = CHARACTER_STATUSES.OUT
-            self.character.spritesheet.animation = 'vomit'
-            self.character.spritesheet.index = 0
-            self.character.buffer_animation = 'coma'
-            player = self.scene.find_player(self)
-            name = (
-                f'Player {player.index + 1}'
-                if player else choice_random_name(self.character.gender))
-            messenger = self.scene.messenger
-            sentence = choice_death_sentence('french')
-            messenger.add_message(sentence.format(name=name))
+        if self.character.status == CHARACTER_STATUSES.OUT:
+            next(self.character)
             return
-        next(self.character)
+
+        if self.character.duel_target:
+            self.character.duel_target.duel_target = None
+            self.character.duel_target.spritesheet.animation = 'idle'
+            self.character.duel_target.spritesheet.index = 0
+            self.character.duel_target.status = CHARACTER_STATUSES.FREE
+            self.character.duel_target = None
+
+        self.character.status = CHARACTER_STATUSES.OUT
+        self.character.spritesheet.animation = 'vomit'
+        self.character.spritesheet.index = 0
+        self.character.buffer_animation = 'coma'
+        player = self.scene.find_player(self)
+        name = (
+            f'Player {player.index + 1}'
+            if player else choice_random_name(self.character.gender))
+        messenger = self.scene.messenger
+        sentence = choice_death_sentence('french')
+        messenger.add_message(sentence.format(name=name))
+        return
 
     def interaction_zone(self):
         condition = (
@@ -138,7 +140,7 @@ class Npc:
         pre_path = shortest_path(self.character.coordinates.position, path[0])
         return pre_path + path
 
-    def build_path(self, i=0):
+    def build_path(self):
         position = self.character.coordinates.position
 
         if random.choice(range(SMOOTH_PATH_USAGE_PROBABILITY)) == 0:
@@ -153,10 +155,9 @@ class Npc:
         box = self.character.box
         destination = choice_destination(self.scene, position, box)
         path = func(position, destination)
-        for stair in self.scene.stairs:
+        for stair in self.scene.stairs: # Avoid smooth path in stairs.
             if path_cross_rect(path, stair['zone']):
-                print('found stair and rebuilt', i)
-                return self.build_path(i=i+1)
+                return self.build_path()
         return func(position, destination)
 
     def __next__(self):
