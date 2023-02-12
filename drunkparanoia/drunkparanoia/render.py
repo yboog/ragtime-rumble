@@ -198,6 +198,9 @@ def render_scene(screen, scene):
     #     draw_rect(screen, rect, 125)
     # for interaction_zone in scene.interaction_zones:
     #     draw_rect(screen, interaction_zone.zone, 15)
+    # for zone in scene.interactive_props:
+    #     draw_rect(screen, zone.zone, 50)
+    #     draw_rect(screen, zone.attraction, 25)
 
 
 def render_players_ol_score(screen, scene):

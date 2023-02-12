@@ -86,11 +86,22 @@ class Player:
         next(self.character)
 
     def evaluate_interacting(self):
+        condition = (
+            self.character.spritesheet.animation_is_done and
+            self.character.spritesheet.animation == 'order')
+
+        if condition:
+            position = self.character.coordinates.position[:]
+            self.scene.create_interactive_prop(position, 'bottle')
+            self.character.set_free()
+            return
+
         is_looping = self.character.spritesheet.animation in LOOPING_ANIMATIONS
         commands = get_current_commands(self.joystick)
         if not is_looping or not commands.get('Y') or self.action_cooldown:
             next(self.character)
             return
+
         self.action_cooldown = COUNTDOWNS.ACTION_COOLDOWN
         self.character.set_free()
 

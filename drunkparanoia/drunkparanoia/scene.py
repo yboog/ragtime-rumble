@@ -1,4 +1,5 @@
 import sys
+import uuid
 import json
 import random
 import pygame
@@ -63,6 +64,7 @@ NPC_TYPES = {
 
 
 def get_score_data(scores, row, col):
+
     row_keys = list(VIRGIN_SCORES)
     col_keys = (
         'player 1',
@@ -84,7 +86,7 @@ def load_scene(filename):
     filepath = f'{GAMEROOT}/{filename}'
     with open(filepath, 'r') as f:
         data = json.load(f)
-    scene = Scene()
+    scene = Scene(data)
     scene.ambiance = data['ambiance']
     scene.music = data['music']
     scene.character_number = data['character_number']
@@ -148,6 +150,13 @@ def load_scene(filename):
     return scene
 
 
+def find_prop(data, name):
+    for prop in data['interactive_props']:
+        if name == prop['name']:
+            return prop
+    raise ValueError(f'No prop found for type "{name}".')
+
+
 class GameLoop:
     def __init__(self):
         self.status = LOOP_STATUSES.AWAITING
@@ -167,12 +176,13 @@ class GameLoop:
         self.status = LOOP_STATUSES.DISPATCHING
         self.dispatcher = PlayerDispatcher(self.scene, self.joysticks)
         stop_ambiance()
-        play_sound('resources/sounds/dispatcher_sound.ogg')
+        play_sound('resources/sounds/dispatcher_sound.ogg', -1)
 
     def __next__(self):
         self.done = self.done or quit_event()
         if self.done:
             return
+
         match self.status:
             case LOOP_STATUSES.BATTLE:
                 next(self.scene)
@@ -224,8 +234,8 @@ class GameLoop:
         self.status = LOOP_STATUSES.BATTLE
         import time
         time.sleep(0.1)
-        play_sound(self.scene.ambiance)
-        play_sound(self.scene.music)
+        play_sound(self.scene.ambiance, -1)
+        play_sound(self.scene.music, -1)
 
 
 class PlayerDispatcher:
@@ -317,7 +327,8 @@ def column_to_group(column):
 
 class Scene:
 
-    def __init__(self):
+    def __init__(self, data):
+        self.data = data
         self.name = ""
         # Score
         self.bullet_positions = []
@@ -337,6 +348,7 @@ class Scene:
         self.players = []
         self.possible_duels = []
         self.props = []
+        self.interactive_props = []
         self.secondary_npcs = []
         self.smooth_paths = []
         self.stairs = []
@@ -378,19 +390,18 @@ class Scene:
         else:
             position = next(self.popspot_generator)
             direction = direction or random.choice(DIRECTIONS.ALL)
+
         char = next(self.character_generator)
         data = load_data(char)
         spritesheet = SpriteSheet(data)
         variation = random.choice(list(range(VARIANTS_COUNT)))
         char = Character(position, spritesheet, variation, self)
         char.gender = data['gender']
+
         if group:
             zone = self.get_interaction(group['interactions'][direction])
-            zone.busy = zone
-            char.interacting_zone = zone
-            char.spritesheet.animation = zone.action
-            char.current_interaction = zone.id
-            char.status = CHARACTER_STATUSES.INTERACTING
+            apply_zone_to_character(zone, char)
+
         char.direction = direction
         self.characters.append(char)
         return char
@@ -412,13 +423,16 @@ class Scene:
 
     @property
     def elements(self):
-        return self.characters + self.props + self.overlays + self.secondary_npcs
+        return (
+            self.characters + self.props + self.overlays +
+            self.secondary_npcs + self.interactive_props)
 
     def inclination_at(self, point):
-        for stair in self.stairs:
-            if point_in_rectangle(point, *stair['zone']):
-                return stair['inclination']
-        return 0
+        return next((
+            stair['inclination']
+            for stair in self.stairs
+            if point_in_rectangle(point, *stair['zone'])),
+            0)
 
     def choice_destination_from(self, point):
         targets = [
@@ -480,9 +494,13 @@ class Scene:
 
     def kill_message(self, killer, victim):
         pl = self.find_player(killer)
-        name1 = f'Player {pl.index + 1}' if pl else choice_random_name(killer.gender)
+        name1 = (
+            f'Player {pl.index + 1}' if pl
+            else choice_random_name(killer.gender))
         pl = self.find_player(victim)
-        name2 = f'Player {pl.index + 1}' if pl else choice_random_name(victim.gender)
+        name2 = (
+            f'Player {pl.index + 1}' if pl
+            else choice_random_name(victim.gender))
         msg = choice_kill_sentence('french')
         self.messenger.add_message(f'{name1} {msg} {name2}')
 
@@ -493,6 +511,11 @@ class Scene:
             if character in assigned_characters:
                 continue
             self.npcs.append(Npc(character, self))
+
+    def create_interactive_prop(self, position, name):
+        prop = find_prop(self.data, name)
+        zone = create_interactive_prop(prop, position)
+        self.interactive_props.append(zone)
 
     def apply_black_screen(self, origin, target):
         self.white_screen_countdown = COUNTDOWNS.WHITE_SCREEN
@@ -512,6 +535,22 @@ class Scene:
     def dying_characters(self):
         return [
             c for c in self.characters if c.spritesheet.animation == 'death']
+
+    def destroy(self, id_):
+        for i, zone in enumerate(self.interactive_props):
+            if zone.id == id_:
+                break
+        else:
+            return
+        del self.interactive_props[i]
+
+
+def apply_zone_to_character(zone, character):
+    zone.busy = zone
+    character.interacting_zone = zone
+    character.spritesheet.animation = zone.action
+    character.current_interaction = zone.id
+    character.status = CHARACTER_STATUSES.INTERACTING
 
 
 class Messenger:
@@ -544,6 +583,27 @@ class Messenger:
         return int((countdown / COUNTDOWNS.MESSAGE_FADEOFF_DURATION) * 255)
 
 
+def create_interactive_prop(prop, position):
+    prop = deepcopy(prop)
+    position = list(position)
+    position[0] += prop['offset'][0]
+    position[1] += prop['offset'][1]
+    prop['zone'][0] += position[0]
+    prop['zone'][1] += position[1]
+    prop['target'][0] += position[0]
+    prop['target'][1] += position[1]
+    prop['id'] = uuid.uuid1()
+    prop['busy'] = False
+    zone = InteractionZone(prop)
+    zone.switch = prop['switch'] + position[1]
+    zone.image = load_image(prop['image'])
+    zone.render_position = position
+    zone.attraction[0] += position[0]
+    zone.attraction[1] += position[1]
+    zone.destroyable = True
+    return zone
+
+
 class InteractionZone:
     def __init__(self, data):
         self.id = data['id']
@@ -553,6 +613,7 @@ class InteractionZone:
         self.attraction = data["attraction"]
         self.direction = data["direction"]
         self.busy = False
+        self.destroyable = False
 
     def contains(self, position):
         return point_in_rectangle(position, *self.zone)

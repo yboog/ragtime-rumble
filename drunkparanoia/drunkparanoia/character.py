@@ -6,7 +6,7 @@ from drunkparanoia.config import LOOPING_ANIMATIONS, CHARACTER_STATUSES
 from drunkparanoia.coordinates import Coordinates, get_box
 from drunkparanoia.io import play_sound
 from drunkparanoia.pathfinding import shortest_path
-from drunkparanoia.pilot import SmoothPathPilot, HardPathPilot
+from drunkparanoia.pilot import HardPathPilot
 
 
 class Character:
@@ -283,15 +283,17 @@ class Character:
             return
 
     def request_interaction(self):
-        for zone in self.scene.interaction_zones:
+        zones = self.scene.interactive_props + self.scene.interaction_zones
+        for zone in zones:
             if zone.contains(self.coordinates.position) and not zone.busy:
                 self.go_to(zone.target, zone)
                 return True
         return False
 
     def attraction_zone(self):
+        zones = self.scene.interactive_props + self.scene.interaction_zones
         return next((
-            zone for zone in self.scene.interaction_zones if
+            zone for zone in zones if
             zone.attract(self.coordinates.position)), None)
 
     def go_to(self, position, zone=None):
@@ -304,17 +306,19 @@ class Character:
         self.stop()
         self.pilot = None
         zone = self.buffer_interaction_zone
-        if zone and not zone.busy:
-            self.spritesheet.animation = zone.action
-            self.spritesheet.index = 0
-            self.direction = zone.direction
-            self.interacting_zone = zone
-            self.interacting_zone.busy = True
-            self.status = CHARACTER_STATUSES.INTERACTING
-        else:
+        if not zone or zone.busy:
             self.status = CHARACTER_STATUSES.FREE
+            self.buffer_interaction_zone = None
+            return
+        self.spritesheet.animation = zone.action
+        self.spritesheet.index = 0
+        self.direction = zone.direction
+        self.interacting_zone = zone
+        self.interacting_zone.busy = True
+        self.status = CHARACTER_STATUSES.INTERACTING
         self.buffer_interaction_zone = None
-        return
+        if zone.destroyable:
+            self.scene.destroy(zone.id)
 
     def autopilot(self):
         try:

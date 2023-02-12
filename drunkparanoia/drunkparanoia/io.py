@@ -8,7 +8,6 @@ from drunkparanoia.config import GAMEROOT, VARIANTS_COUNT
 from drunkparanoia.joystick import get_current_commands
 
 
-
 _ambiance_channel = None
 _animation_store = {}
 _image_store = {}
@@ -262,8 +261,8 @@ def stop_ambiance():
     _ambiance_channel.stop()
 
 
-def play_sound(filename):
-    load_sound(filename).play()
+def play_sound(filename, loop=1):
+    load_sound(filename).play(loop)
 
 
 def stop_sound(filename):
