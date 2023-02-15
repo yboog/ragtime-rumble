@@ -83,3 +83,10 @@ def norm(vector):
 def offset_point(point, vector, distance):
     v_norm = norm(vector)
     return [point[0] + distance * v_norm[0], point[1] + distance * v_norm[1]]
+
+
+def clamp_to_zone(position, zone):
+    x = min(max(position[0], zone[0]), zone[0] + zone[2])
+    y = min(max(position[1], zone[1]), zone[1] + zone[3])
+    return x, y
+

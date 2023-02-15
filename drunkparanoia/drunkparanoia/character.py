@@ -33,6 +33,11 @@ class Character:
         return self.spritesheet.data['box'][:]
 
     @property
+    def hitbox(self):
+        box = list(self.spritesheet.data['hitbox'])
+        return get_box(self.coordinates.position, box)
+
+    @property
     def screen_box(self):
         box = self.box
         box[0] += self.coordinates.x
@@ -106,7 +111,8 @@ class Character:
                 pos = self.render_position
                 flipped = self.direction in DIRECTIONS.FLIPPED
                 self.scene.create_vfx('vomit', pos, flipped)
-            if self.pilot and self.scene.inclination_at(self.coordinates.position):
+            pos = self.coordinates.position
+            if self.pilot and self.scene.inclination_at(pos):
                 self.status = CHARACTER_STATUSES.AUTOPILOT
             else:
                 self.status = CHARACTER_STATUSES.FREE
@@ -217,20 +223,21 @@ class Character:
         self.spritesheet.animation = 'idle'
         self.spritesheet.index = 0
 
-    def kill(self, target, black_screen=False):
+    def kill(self, target, black_screen=False, silently=False):
         black_screen = black_screen and self.scene.apply_black_screen(
             self, target)
         self.stop()
         play_sound('resources/sounds/colt.wav')
+        target.stop()
         if black_screen:
             self.status = CHARACTER_STATUSES.FREE
             self.spritesheet.animation = 'idle'
-        else:
+            target.aim(self)
+        elif not silently:
             self.status = CHARACTER_STATUSES.INTERACTING
             self.spritesheet.animation = 'gunshot'
+            target.aim(self)
         self.spritesheet.index = 0
-        target.stop()
-        target.aim(self)
         target.status = CHARACTER_STATUSES.OUT
         target.spritesheet.animation = 'death'
         target.spritesheet.index = 0
@@ -288,7 +295,6 @@ class Character:
             if zone.contains(self.coordinates.position) and not zone.busy:
                 self.go_to(zone.target, zone)
                 return True
-        return False
 
     def attraction_zone(self):
         zones = self.scene.interactive_props + self.scene.interaction_zones

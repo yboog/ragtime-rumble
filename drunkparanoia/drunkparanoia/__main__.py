@@ -10,7 +10,7 @@ from drunkparanoia import debug
 
 pygame.init()
 screen = pygame.display.set_mode((640, 360), pygame.SCALED | pygame.FULLSCREEN)
-screen = pygame.display.set_mode((640, 360), pygame.SCALED)
+# screen = pygame.display.set_mode((640, 360), pygame.SCALED)
 # screen = pygame.display.set_mode((640, 360))
 pygame.joystick.init()
 load_skins()
@@ -25,7 +25,7 @@ while not loop.done:
     # replay.append(pickle.dumps(scene))
     render_game(screen, loop)
     pygame.display.update()
-    if debug.active:
+    if debug.log_coordinates:
         debug.log_npc_coordinates(loop.scene)
 
 debug.close()

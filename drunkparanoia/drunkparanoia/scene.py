@@ -141,7 +141,7 @@ def load_scene(filename):
         scene.props.append(prop)
 
     for npc in data['npcs']:
-        scene.secondary_npcs.append(NPC_TYPES[npc['type']](**npc))
+        scene.secondary_npcs.append(NPC_TYPES[npc['type']](scene=scene, **npc))
 
     for interaction_zone in data['interactions']:
         zone = InteractionZone(interaction_zone)
@@ -355,6 +355,7 @@ class Scene:
         self.targets = []
         self.vfx = []
         self.walls = []
+        self.sniperreticles = []
         # Runtime
         self.black_screen_countdown = 0
         self.white_screen_countdown = 0
@@ -415,7 +416,9 @@ class Scene:
             f'{[it.id for it in self.interaction_zones]}')
 
     def life_image(self, player_n, score):
-        index = int(round((score / COUNTDOWNS.MAX_LIFE) * 3))
+        from math import ceil
+        index = int(ceil((score / COUNTDOWNS.MAX_LIFE) * 3))
+        index = min((index, 3))
         return self.life_images[player_n][index]
 
     def bullet_image(self, player_n, on=True):
@@ -486,6 +489,10 @@ class Scene:
             self.possible_duels = []
             return
         self.possible_duels = find_possible_duels(self)
+
+    @property
+    def snipers(self):
+        return [npc for npc in self.secondary_npcs if isinstance(npc, Sniper)]
 
     def find_player(self, character):
         for player in self.players:

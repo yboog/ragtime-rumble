@@ -3,6 +3,8 @@ import json
 from drunkparanoia.config import CHARACTER_STATUSES
 
 active = False
+render_path = False
+log_coordinates = False
 
 coordinates_log = []
 

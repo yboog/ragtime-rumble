@@ -10,10 +10,11 @@ from drunkparanoia.coordinates import Coordinates, path_cross_rect
 from drunkparanoia.io import (
     choice_death_sentence, choice_random_name, load_data)
 from drunkparanoia.pathfinding import (
-    shortest_path, smooth_path_to_path, equilateral_path, filter_close_paths,
-    points_to_direction, distance, choice_destination)
+    point_in_rectangle, shortest_path, smooth_path_to_path, equilateral_path,
+    filter_close_paths, points_to_direction, distance, choice_destination)
 from drunkparanoia.pilot import SmoothPathPilot, HardPathPilot
 from drunkparanoia.sprite import SpriteSheet
+from drunkparanoia.sniperreticle import SniperReticle
 
 
 class Npc:
@@ -161,7 +162,7 @@ class Npc:
         box = self.character.box
         destination = choice_destination(self.scene, position, box)
         path = func(position, destination)
-        for stair in self.scene.stairs: # Avoid smooth path in stairs.
+        for stair in self.scene.stairs:  # Avoid smooth path in stairs.
             if path_cross_rect(path, stair['zone']):
                 return self.build_path()
         return func(position, destination)
@@ -207,10 +208,31 @@ class Npc:
 
 
 class Sniper:
-    def __init__(self, file, startposition, **_):
+    def __init__(
+            self, scene=None, file=None,
+            startposition=None, zone=None,
+            interaction_zone=None, **_):
         self.data = load_data(file)
         self.spritesheet = SpriteSheet(self.data, 'idle')
         self.coordinates = Coordinates((startposition))
+        self.reticle = SniperReticle(zone, scene)
+        self.interaction_zone = interaction_zone
+        self.scene = scene
+        self.zone = zone
+        scene.sniperreticles.append(self.reticle)
+
+    def corruption_attempt(self, player):
+        if player == self.reticle.player:
+            return True
+        if self.spritesheet.animation != 'idle':
+            return False
+        self.spritesheet.animation = 'go-aim'
+        self.spritesheet.index = 0
+        self.reticle.player = player
+        return True
+
+    def meet(self, position):
+        return point_in_rectangle(position, *self.interaction_zone)
 
     @property
     def render_position(self):
@@ -218,13 +240,30 @@ class Sniper:
 
     @property
     def switch(self):
-        return 1000
+        return 2000
 
     def __next__(self):
-        if self.spritesheet.animation_is_done:
-            self.spritesheet.index = 0
+        next(self.reticle)
+        if not self.spritesheet.animation_is_done:
+            next(self.spritesheet)
             return
-        next(self.spritesheet)
+
+        match self.spritesheet.animation:
+            case 'idle':
+                self.spritesheet.index = 0
+            case 'aim-idle':
+                self.spritesheet.index = 0
+            case 'go-aim':
+                self.spritesheet.animation = 'aim-idle'
+                self.spritesheet.index = 0
+            case 'gunshot-goback':
+                self.spritesheet.animation = 'idle'
+                self.spritesheet.index = 0
+
+    def shoot(self):
+        self.reticle.shoot()
+        self.spritesheet.animation = 'gunshot-goback'
+        self.spritesheet.index = 0
 
     @property
     def image(self):
@@ -232,7 +271,7 @@ class Sniper:
 
 
 class Pianist:
-    def __init__(self, file, startposition, **_):
+    def __init__(self, file='', startposition=None, **_):
         self.data = load_data(file)
         self.spritesheet = SpriteSheet(self.data, 'slow1')
         self.coordinates = Coordinates((startposition))
@@ -260,7 +299,7 @@ class Pianist:
 
 class Barman():
 
-    def __init__(self, file, startposition, path, **_):
+    def __init__(self, file=None, startposition=None, path=None, **_):
         self.data = load_data(file)
         self.spritesheet = SpriteSheet(self.data, 'idle')
         self.coordinates = Coordinates((startposition))

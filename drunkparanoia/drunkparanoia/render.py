@@ -1,7 +1,8 @@
 
 import math
 import pygame
-from drunkparanoia.io import get_image, get_font
+from drunkparanoia import debug
+from drunkparanoia.io import get_image, get_font, load_image
 from drunkparanoia.config import LOOP_STATUSES
 from drunkparanoia.scene import column_to_group, get_score_data
 from drunkparanoia.character import Character
@@ -114,7 +115,7 @@ def render_last_kill(screen, loop):
         draw_text(screen, f'player {player.index + 1}', (x, y))
 
 
-def draw_text(surface, text, pos, color=None):
+def draw_text(surface, text, pos, size=None, color=None):
     color = color or (255, 255, 255)
     font = pygame.font.SysFont('Consolas', 15)
     text = font.render(text, True, color)
@@ -149,13 +150,13 @@ def render_dispatching(screen, loop):
         screen.blit(gamepad_image, (x, y))
         x = position[0] + gamepad_image.get_size()[0]
         y = position[1]
-        draw_text(screen, str(i + 1), (x, y))
+        draw_text(screen, str(i + 1), (x, y), size=6)
         column_counts[column] += 1
 
 
 def render_no_player(screen):
     color = 255, 255, 255
-    font = pygame.font.SysFont('Consolas', 30)
+    font = pygame.font.Font(get_font(MESSAGE_FONT_FILE), 30)
     text = font.render('no pad detected', True, color)
     x, y = screen.get_size()
     text_rect = text.get_rect(center=(x / 2, y / 2))
@@ -192,15 +193,37 @@ def render_scene(screen, scene):
         draw_possible_duel(duel_surface, character1, character2, draw_line)
         done.append([character1, character2])
     screen.blit(duel_surface, (0, 0))
+    # Sniper
+    render_sniper_reticles(screen, scene)
+    chatacters = {
+        character for reticle in scene.sniperreticles
+        for character in reticle.target_characters}
+    for character in chatacters:
+        image = get_image(character.image).copy()
+        image.fill((255, 255, 255), special_flags=pygame.BLEND_ADD)
+        image.set_alpha(50)
+        screen.blit(image, character.render_position)
     # Scores.
     render_players_ol_score(screen, scene)
-    # for rect in scene.no_go_zones:
-    #     draw_rect(screen, rect, 125)
-    # for interaction_zone in scene.interaction_zones:
-    #     draw_rect(screen, interaction_zone.zone, 15)
-    # for zone in scene.interactive_props:
-    #     draw_rect(screen, zone.zone, 50)
-    #     draw_rect(screen, zone.attraction, 25)
+
+    if not debug.active:
+        return
+
+    # RENDER ZONE
+    for rect in scene.no_go_zones:
+        draw_rect(screen, rect, 125)
+    for interaction_zone in scene.interaction_zones:
+        draw_rect(screen, interaction_zone.zone, 15)
+    for zone in scene.interactive_props:
+        draw_rect(screen, zone.zone, 50)
+        draw_rect(screen, zone.attraction, 25)
+
+    # TEST FOR HIGHLIGHT RENDER CHARACER
+    for character in scene.characters:
+        image = get_image(character.image).copy()
+        image.fill((255, 255, 255), special_flags=pygame.BLEND_ADD)
+        image.set_alpha(50)
+        screen.blit(image, character.render_position)
 
 
 def render_players_ol_score(screen, scene):
@@ -255,30 +278,43 @@ def render_element(screen, element):
     except TypeError:
         print(img, get_image(img))
         raise
-    ### RENDER PATHS
-    # condition = (
-    #     isinstance(element, Character) and
-    #     element.pilot and
-    #     element.pilot.path)
-    # if condition:
-    #     if isinstance(element.pilot, SmoothPathPilot):
-    #         color = (255, 255, 0)
-    #     else:
-    #         color = (0, 0, 255)
-    #     last = None
-    #     for point in [element.coordinates.position] + element.pilot.path:
-    #         draw_rect(screen, (point[0], point[1], 2, 2))
-    #         if last:
-    #             pygame.draw.line(screen, color, last, point, 2)
-    #         last = point
-    #  COLLIDER
-    # if hasattr(element, 'screen_box'):
-    #     draw_rect(screen, element.screen_box, alpha=125)
+
+    if debug.render_path:
+        condition = (
+            isinstance(element, Character) and
+            element.pilot and
+            element.pilot.path)
+        if condition:
+            if isinstance(element.pilot, SmoothPathPilot):
+                color = (255, 255, 0)
+            else:
+                color = (0, 0, 255)
+            last = None
+            for point in [element.coordinates.position] + element.pilot.path:
+                draw_rect(screen, (point[0], point[1], 2, 2))
+                if last:
+                    pygame.draw.line(screen, color, last, point, 2)
+                last = point
+
+    if debug.active:
+        # COLLIDER
+        if hasattr(element, 'screen_box'):
+            draw_rect(screen, element.screen_box, alpha=125)
+        # HITBOX
+        if hasattr(element, 'hitbox'):
+            draw_rect(screen, element.hitbox, alpha=125)
+        if hasattr(element, 'zone'):
+            print(element.zone)
+            draw_rect(screen, element.zone, color='blue', alpha=125)
+        if hasattr(element, 'interaction_zone'):
+            print(element.interaction_zone)
+            draw_rect(
+                screen, element.interaction_zone, color='green', alpha=125)
 
 
-def draw_rect(surface, box, alpha=255):
+def draw_rect(surface, box, color=None, alpha=255):
+    color = color or [255, 0, 0]
     x, y, width, height = box
-    color = 'red'
     temp = pygame.Surface((width, height), pygame.SRCALPHA)
     pygame.draw.rect(temp, color, [0, 0, width, height])
     temp.set_alpha(alpha)
@@ -350,3 +386,17 @@ def render_messages(screen, scene):
         bg_rect.left = text_rect.left - KILL_MESSAGE_MARGIN
         screen.blit(bg_surface, bg_rect)
         screen.blit(text_surface, text_rect)
+
+
+def render_sniper_reticles(screen, scene):
+    for reticle in scene.sniperreticles:
+        if reticle.player is None:
+            continue
+        img = get_image(load_image('resources/ui/sniper_reticle.png'))
+        position = list(reticle.coordinates.position)
+        position[0] -= img.get_size()[0] / 2
+        position[1] -= img.get_size()[1] / 2
+        surface = pygame.Surface(img.get_size(), pygame.SRCALPHA)
+        surface.blit(img, (0, 0))
+        surface.set_alpha(100)
+        screen.blit(surface, position)

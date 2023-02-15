@@ -31,9 +31,17 @@ class HardPathPilot:
         self.character.direction = direction
         dist1 = distance(origin, self.path[0])
         dist2 = distance(self.character.coordinates.position, self.path[0])
-        if dist1 < dist2:
-            self.character.coordinates.position = self.path.pop(0)[:]
+        if dist1 > dist2 or not self.path:
             return
+        # Character reached a path node and we have to ensure the direction is
+        # up to date to avoid a strange pop.
+        destination = self.path[0]
+        origin = self.character.coordinates.position[:]
+        self.character.coordinates.position = self.path.pop(0)[:]
+        vector = seg_to_vector(origin, destination)
+        inclination = self.character.scene.inclination_at(step)
+        direction_vector = vector[0] - inclination, vector[1]
+        self.character.direction = vector_to_direction(direction_vector)
 
 
 class SmoothPathPilot:

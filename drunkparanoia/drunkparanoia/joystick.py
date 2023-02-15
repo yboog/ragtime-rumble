@@ -91,6 +91,10 @@ def get_x_input_keystate(key_name, joystick):
             return joystick.get_axis(2) < -.5
         case 'RS_RIGHT':
             return joystick.get_axis(2) > .5
+        case 'RS_UP':
+            return joystick.get_axis(3) < -.5
+        case 'RS_DOWN':
+            return joystick.get_axis(3) > .5
     raise KeyError(f'Unknown key {key_name}')
 
 
@@ -113,15 +117,17 @@ def get_current_commands(joystick):
         'LEFT': get_keystate('LEFT', joystick),
         'RIGHT': get_keystate('RIGHT', joystick),
         'RS_LEFT': get_keystate('RS_LEFT', joystick),
-        'RS_RIGHT': get_keystate('RS_RIGHT', joystick)
+        'RS_RIGHT': get_keystate('RS_RIGHT', joystick),
+        'RS_UP': get_keystate('RS_UP', joystick),
+        'RS_DOWN': get_keystate('RS_DOWN', joystick)
     }
 
 
-def get_pressed_direction(joystick):
-    left = get_keystate('LEFT', joystick)
-    right = get_keystate('RIGHT', joystick)
-    up = get_keystate('UP', joystick)
-    down = get_keystate('DOWN', joystick)
+def get_pressed_direction(joystick, rs=False):
+    left = get_keystate('RS_LEFT' if rs else 'LEFT', joystick)
+    right = get_keystate('RS_RIGHT' if rs else 'RIGHT', joystick)
+    up = get_keystate('RS_UP' if rs else 'UP', joystick)
+    down = get_keystate('RS_DOWN' if rs else 'DOWN', joystick)
     if left and down:
         return DIRECTIONS.DOWN_LEFT
     elif left and up:

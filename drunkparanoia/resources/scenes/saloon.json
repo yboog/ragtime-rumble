@@ -1,5 +1,5 @@
 {
-  "character_number": 24,
+  "character_number": 35,
   "name": "saloon",
   "music": "resources/sounds/ragtime.ogg",
   "ambiance": "resources/sounds/ambiance_saloon.ogg",
@@ -3085,9 +3085,9 @@
       "busy": false,
       "direction": "down",
       "zone": [
-        230,
+        270,
         69,
-        180,
+        150,
         30
       ],
       "target": [
@@ -4364,7 +4364,19 @@
         30
       ],
       "y": 2000,
-      "type": "sniper"
+      "type": "sniper",
+      "zone": [
+        240,
+        105,
+        400,
+        255
+      ],
+      "interaction_zone": [
+        217,
+        40,
+        30,
+        40
+      ]
     },
     {
       "file": "resources/animdata/pianist.json",

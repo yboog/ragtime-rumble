@@ -261,16 +261,12 @@ def stop_ambiance():
     _ambiance_channel.stop()
 
 
-def play_sound(filename, loop=1):
+def play_sound(filename, loop=0):
     load_sound(filename).play(loop)
 
 
 def stop_sound(filename):
     if (sound := _sounds.get(filename)):
-        sound.stop()
-        sound.stop()
-        sound.stop()
-        sound.stop()
         sound.stop()
 
 
