@@ -1,0 +1,23 @@
+{
+  "name": "coin-alert",
+  "type": "vfx",
+  "framesize": [
+    7,
+    22
+  ],
+  "sheet": "resources/vfx/coin-alert.png",
+  "durations": [
+    6,
+    6,
+    6,
+    6,
+    6,
+    6,
+    6,
+    6,
+    6,
+    6,
+    6,
+    6
+  ]
+}

@@ -368,6 +368,27 @@
     },
     "drink": {
       "durations": [
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
         6
       ],
       "startframe": 31
@@ -392,7 +413,7 @@
         6,
         6
       ],
-      "startframe": 32
+      "startframe": 53
     },
     "idle": {
       "durations": [
@@ -413,19 +434,29 @@
         6,
         6
       ],
-      "startframe": 49
+      "startframe": 70
     },
     "order": {
       "durations": [
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
         6
       ],
-      "startframe": 65
+      "startframe": 86
     },
     "poker": {
       "durations": [
         6
       ],
-      "startframe": 66
+      "startframe": 97
     },
     "smoke": {
       "durations": [
@@ -445,13 +476,13 @@
         6,
         6
       ],
-      "startframe": 67
+      "startframe": 98
     },
     "suspicious": {
       "durations": [
         6
       ],
-      "startframe": 82
+      "startframe": 113
     },
     "vomit": {
       "durations": [
@@ -474,7 +505,7 @@
         6,
         6
       ],
-      "startframe": 83
+      "startframe": 114
     },
     "walk": {
       "durations": [
@@ -487,7 +518,7 @@
         6,
         6
       ],
-      "startframe": 101
+      "startframe": 132
     }
   }
 }

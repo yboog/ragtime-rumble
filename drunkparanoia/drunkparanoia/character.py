@@ -244,6 +244,9 @@ class Character:
         if self.duel_target:
             self.duel_target.duel_target = None
             self.duel_target = None
+        if self.interacting_zone:
+            self.interacting_zone.busy = False
+            self.interacting_zone = None
         self.scene.kill_message(self, target)
 
     def release_duel(self):

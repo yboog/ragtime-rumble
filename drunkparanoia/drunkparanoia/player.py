@@ -15,6 +15,7 @@ class Player:
         self.life = COUNTDOWNS.MAX_LIFE
         self.bullet_cooldown = 0
         self.action_cooldown = 0
+        self.coins = 3
         self.index = index
         self.killer = None
         self.npc_killed = 0
@@ -122,7 +123,9 @@ class Player:
         if self.character.spritesheet.animation_is_done:
             if self.character.spritesheet.animation == 'order':
                 position = self.character.coordinates.position[:]
-                self.scene.create_interactive_prop(position, 'bottle')
+                if self.coins:
+                    self.scene.create_interactive_prop(position, 'bottle')
+                    self.coins -= 1
                 self.character.set_free()
                 return
             if self.character.spritesheet.animation == 'drink':
@@ -188,7 +191,8 @@ class Player:
         return False
 
     def check_snipers(self):
-        for sniper in self.scene.snipers:
-            if sniper.meet(self.character.coordinates.position):
-                return sniper.corruption_attempt(self)
-        return False
+        return next((
+            sniper.corruption_attempt(self)
+            for sniper in self.scene.snipers
+            if sniper.meet(self.character.coordinates.position)),
+            False)

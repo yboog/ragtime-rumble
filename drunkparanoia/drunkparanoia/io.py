@@ -18,21 +18,26 @@ _variants = {}
 _sounds = {}
 
 
+def get_coin_stack(n):
+    path = f'resources/ui/coin-stack/coin-stack-{n:02}.png'
+    return get_image(load_image(path))
+
+
 def choice_random_name(gender):
-    global _name_generators
     if not _name_generators:
         filepath = f'{GAMEROOT}/resources/texts/names.json'
         with open(filepath, 'rb') as f:
             data = json.load(f)
 
-        man = data['man']
-        random.shuffle(man)
-        _name_generators['man'] = itertools.cycle(man)
-
-        woman = data['woman']
-        random.shuffle(woman)
-        _name_generators['woman'] = itertools.cycle(woman)
+        _populate_name_generators(data, 'man', _name_generators)
+        _populate_name_generators(data, 'woman', _name_generators)
     return next(_name_generators[gender])
+
+
+def _populate_name_generators(data, gender, _name_generators):
+    names = data[gender]
+    random.shuffle(names)
+    _name_generators[gender] = itertools.cycle(names)
 
 
 def build_random_variant(variants):

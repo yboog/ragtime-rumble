@@ -10,7 +10,7 @@ from drunkparanoia.background import Prop, Background, Overlay
 from drunkparanoia.character import Character
 from drunkparanoia.coordinates import (
     box_hit_box, point_in_rectangle, box_hit_polygon, path_cross_polygon,
-    path_cross_rect)
+    path_cross_rect, Coordinates)
 from drunkparanoia.config import (
     DIRECTIONS, GAMEROOT, COUNTDOWNS, LOOP_STATUSES, CHARACTER_STATUSES,
     MAX_MESSAGES, VARIANTS_COUNT)
@@ -18,11 +18,11 @@ from drunkparanoia.duel import find_possible_duels
 from drunkparanoia.io import (
     load_image, load_data, quit_event, list_joysticks, image_mirror,
     choice_kill_sentence, choice_random_name, play_sound, stop_sound,
-    stop_ambiance)
+    stop_ambiance, load_frames)
 from drunkparanoia.joystick import get_current_commands
 from drunkparanoia.npc import Npc, Pianist, Barman, Sniper
 from drunkparanoia.player import Player
-from drunkparanoia.sprite import SpriteSheet
+from drunkparanoia.sprite import SpriteSheet, image_index_from_durations
 
 
 VIRGIN_SCORES = {
@@ -354,6 +354,7 @@ class Scene:
         self.stairs = []
         self.targets = []
         self.vfx = []
+        self.animated_vfx = []
         self.walls = []
         self.sniperreticles = []
         # Runtime
@@ -364,15 +365,21 @@ class Scene:
         self.character_generator = None
         self.messenger = Messenger()
 
+    def coins_position(self, index):
+        return self.data['score'][f'player{index + 1}']['coins_position']
+
     def create_vfx(self, name, position, flipped=True):
         for vfx in self.vfx:
-            if vfx.get('type') != 'static' or vfx.get('name') != name:
-                continue
-            image = load_image(vfx['file'])
-            if flipped:
-                image = image_mirror(image, horizontal=True)
-            self.overlays.append(Overlay(image, position, vfx['y']))
-            return
+            if vfx.get('type') == 'static' and vfx.get('name') == name:
+                image = load_image(vfx['file'])
+                if flipped:
+                    image = image_mirror(image, horizontal=True)
+                self.overlays.append(Overlay(image, position, vfx['y']))
+                return
+            if vfx.get('type') == 'animated' and vfx.get('name') == name:
+                data = load_data(vfx['file'])
+                self.animated_vfx.append(Vfx(data, position))
+                return
 
     @property
     def done(self):
@@ -428,7 +435,8 @@ class Scene:
     def elements(self):
         return (
             self.characters + self.props + self.overlays +
-            self.secondary_npcs + self.interactive_props)
+            self.secondary_npcs + self.interactive_props +
+            self.animated_vfx)
 
     def inclination_at(self, point):
         return next((
@@ -489,6 +497,16 @@ class Scene:
             self.possible_duels = []
             return
         self.possible_duels = find_possible_duels(self)
+        to_delete = []
+        for vfx in self.animated_vfx:
+            if vfx.type == 'static':
+                continue
+            if vfx.animation_is_done:
+                to_delete.append(vfx)
+                continue
+            next(vfx)
+        for vfx in to_delete:
+            self.animated_vfx.remove(vfx)
 
     @property
     def snipers(self):
@@ -627,3 +645,34 @@ class InteractionZone:
 
     def attract(self, position):
         return point_in_rectangle(position, *self.attraction)
+
+
+class Vfx:
+    def __init__(self, data, position):
+        print("create coin", data)
+        self.id = uuid.uuid1()
+        self.index = 0
+        self.type = data['type']
+        self.images = load_frames(data['sheet'], data['framesize'], None)
+        self.coordinates = Coordinates(position)
+        self.durations = data['durations']
+        self.switch = 2000
+
+    @property
+    def render_position(self):
+        return self.coordinates.position
+
+    def __next__(self):
+        print("next vfx")
+        if self.animation_is_done:
+            return
+        self.index += 1
+
+    @property
+    def image(self):
+        index = image_index_from_durations(self.index, self.durations)
+        return self.images[index]
+
+    @property
+    def animation_is_done(self):
+        return self.index >= sum(self.durations) - 1

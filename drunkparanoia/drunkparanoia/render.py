@@ -2,9 +2,9 @@
 import math
 import pygame
 from drunkparanoia import debug
-from drunkparanoia.io import get_image, get_font, load_image
+from drunkparanoia.io import get_image, get_font, load_image, get_coin_stack
 from drunkparanoia.config import LOOP_STATUSES
-from drunkparanoia.scene import column_to_group, get_score_data
+from drunkparanoia.scene import column_to_group, get_score_data, Vfx
 from drunkparanoia.character import Character
 from drunkparanoia.pathfinding import distance, seg_to_vector
 from drunkparanoia.pilot import SmoothPathPilot
@@ -195,10 +195,10 @@ def render_scene(screen, scene):
     screen.blit(duel_surface, (0, 0))
     # Sniper
     render_sniper_reticles(screen, scene)
-    chatacters = {
+    characters = {
         character for reticle in scene.sniperreticles
         for character in reticle.target_characters}
-    for character in chatacters:
+    for character in characters:
         image = get_image(character.image).copy()
         image.fill((255, 255, 255), special_flags=pygame.BLEND_ADD)
         image.set_alpha(50)
@@ -233,9 +233,13 @@ def render_players_ol_score(screen, scene):
         image = get_image(scene.life_image(player.index, player.life))
         position = scene.life_positions[player.index]
         screen.blit(image, position)
+    for player in scene.players:
         on = player.bullet_cooldown == 0
         image = get_image(scene.bullet_image(player.index, on))
         position = scene.bullet_positions[player.index]
+        screen.blit(image, position)
+        position = scene.coins_position(player.index)
+        image = get_coin_stack(player.coins)
         screen.blit(image, position)
 
 
@@ -278,7 +282,8 @@ def render_element(screen, element):
     except TypeError:
         print(img, get_image(img))
         raise
-
+    if isinstance(element, Vfx):
+        print("VFX")
     if debug.render_path:
         condition = (
             isinstance(element, Character) and

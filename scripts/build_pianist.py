@@ -65,6 +65,7 @@ animations = {
 images = [image for images in animations.values() for image in images]
 width, height = PIL.Image.open(images[0]).size
 images = [QtGui.QImage(image) for image in images]
+print(images[0].format())
 column_lenght = math.ceil(math.sqrt(len(images)))
 
 start = 0

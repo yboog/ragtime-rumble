@@ -1,13 +1,15 @@
 {
   "name": "jerome",
-  "y": -100,
+  "type": "pianist",
+  "y": -1000,
   "framesize": [
     62,
     64
   ],
   "sheets": {
     "face": "resources/skins/pianist.png",
-    "back": "resources/skins/pianist.png"},
+    "back": "resources/skins/pianist.png"
+  },
   "animations": {
     "fast1": {
       "durations": [

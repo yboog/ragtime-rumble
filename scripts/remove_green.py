@@ -15,7 +15,8 @@ files = (
     f"{repo_root}/drunkparanoia/resources/skins/janet_face.png",
     f"{repo_root}/drunkparanoia/resources/skins/janet_back.png",
     f"{repo_root}/drunkparanoia/resources/skins/sniper.png",
-    f"{repo_root}/drunkparanoia/resources/skins/barman.png",)
+    f"{repo_root}/drunkparanoia/resources/skins/barman.png",
+    f"{repo_root}/drunkparanoia/resources/vfx/coin-alert.png")
 for file in files:
     img = Image.open(file)
     img = img.convert("RGBA")

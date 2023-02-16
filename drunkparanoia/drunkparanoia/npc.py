@@ -218,17 +218,29 @@ class Sniper:
         self.reticle = SniperReticle(zone, scene)
         self.interaction_zone = interaction_zone
         self.scene = scene
+        self.price = 1
         self.zone = zone
         scene.sniperreticles.append(self.reticle)
 
+    def create_coin_vfx(self):
+        position = list(self.coordinates.position)
+        position[0] += 25
+        self.scene.create_vfx('coin-alert', position)
+
     def corruption_attempt(self, player):
-        if player == self.reticle.player:
-            return True
-        if self.spritesheet.animation != 'idle':
+        if self.spritesheet.animation == 'gunshot-goback':
             return False
-        self.spritesheet.animation = 'go-aim'
-        self.spritesheet.index = 0
+        if self.price > player.coins:
+            return False
+        if player == self.reticle.player:
+            return False
+        player.coins -= self.price
+        self.price += 1
+        if self.spritesheet.animation == 'idle':
+            self.spritesheet.animation = 'go-aim'
+            self.spritesheet.index = 0
         self.reticle.player = player
+        self.create_coin_vfx()
         return True
 
     def meet(self, position):
@@ -261,6 +273,7 @@ class Sniper:
                 self.spritesheet.index = 0
 
     def shoot(self):
+        self.price = 1
         self.reticle.shoot()
         self.spritesheet.animation = 'gunshot-goback'
         self.spritesheet.index = 0
