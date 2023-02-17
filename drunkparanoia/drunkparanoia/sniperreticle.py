@@ -1,7 +1,8 @@
 
 from drunkparanoia.coordinates import (
     Coordinates, clamp_to_zone, point_in_rectangle)
-from drunkparanoia.config import SPEED, CHARACTER_STATUSES
+from drunkparanoia.config import (
+    SPEED, CHARACTER_STATUSES, COUNTDOWNS)
 from drunkparanoia.joystick import get_pressed_direction
 from drunkparanoia.io import play_sound
 
@@ -66,7 +67,8 @@ class SniperReticle:
     def shoot(self):
         play_sound('resources/sounds/colt.wav')
         for character in self.target_characters:
-            self.player.kill(character, silently=True)
+            self.player.kill(character, silently=True, getcoin=False)
+            self.player.bullet_cooldown = COUNTDOWNS.SNIPER_BULLET_COOLDOWN
         self.player = None
 
 

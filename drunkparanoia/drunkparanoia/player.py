@@ -1,7 +1,9 @@
 
+import random
 from drunkparanoia.joystick import get_pressed_direction, get_current_commands
 from drunkparanoia.config import (
-    LOOPING_ANIMATIONS, CHARACTER_STATUSES, COUNTDOWNS)
+    LOOPING_ANIMATIONS, CHARACTER_STATUSES, COUNTDOWNS,
+    WIN_OR_LOOSE_AT_POKER_PROBABILITY)
 from drunkparanoia.io import (
     play_sound, choice_death_sentence, choice_random_name)
 
@@ -15,10 +17,19 @@ class Player:
         self.life = COUNTDOWNS.MAX_LIFE
         self.bullet_cooldown = 0
         self.action_cooldown = 0
-        self.coins = 3
+        self._coins = 3
         self.index = index
         self.killer = None
         self.npc_killed = 0
+        self.poker_iterator = PokerIterator(self)
+
+    @property
+    def coins(self):
+        return self._coins
+
+    @coins.setter
+    def coins(self, n):
+        self._coins = min((n, max((0, 5))))
 
     @property
     def dying(self):
@@ -53,14 +64,16 @@ class Player:
             self.character.status == CHARACTER_STATUSES.OUT and
             self.character.spritesheet.animation_is_done)
 
-    def kill(self, target, black_screen=False, silently=False):
+    def kill(self, target, black_screen=False, silently=False, getcoin=True):
         self.character.kill(target, black_screen, silently)
         player = self.scene.find_player(target)
         if player:
             player.killer = self.index
             player.life = 0
+            self.coins += 2 if getcoin else 0
         else:
             self.npc_killed += 1
+            self.coins += 1 if getcoin else 0
         self.bullet_cooldown = COUNTDOWNS.BULLET_COOLDOWN
 
     def __next__(self):
@@ -122,13 +135,12 @@ class Player:
     def evaluate_interacting(self):
         if self.character.spritesheet.animation_is_done:
             if self.character.spritesheet.animation == 'order':
-                position = self.character.coordinates.position[:]
                 if self.coins:
+                    position = self.character.coordinates.position[:]
                     self.scene.create_interactive_prop(position, 'bottle')
                     self.coins -= 1
                 self.character.set_free()
-                return
-            if self.character.spritesheet.animation == 'drink':
+            elif self.character.spritesheet.animation == 'drink':
                 life = self.life + COUNTDOWNS.BOTTLE_ADD
                 self.life = min((COUNTDOWNS.MAX_LIFE, life))
                 self.character.set_free()
@@ -137,6 +149,8 @@ class Player:
         is_looping = self.character.spritesheet.animation in LOOPING_ANIMATIONS
         commands = get_current_commands(self.joystick)
         if not is_looping or not commands.get('Y') or self.action_cooldown:
+            if self.character.spritesheet.animation == 'poker':
+                next(self.poker_iterator)
             next(self.character)
             return
 
@@ -196,3 +210,25 @@ class Player:
             for sniper in self.scene.snipers
             if sniper.meet(self.character.coordinates.position)),
             False)
+
+
+class PokerIterator:
+
+    def __init__(self, player):
+        self.player = player
+        self.cooldown = COUNTDOWNS.POKER_BET_TIME_COOLDOWN
+
+    def __next__(self):
+        if self.cooldown > 0:
+            self.cooldown -= 1
+            return
+
+        self.cooldown = COUNTDOWNS.POKER_BET_TIME_COOLDOWN
+        if self.player.coins:
+            self.bet()
+        return
+
+    def bet(self):
+        win, loose = WIN_OR_LOOSE_AT_POKER_PROBABILITY
+        victory = random.choice([True] * win + [False] * loose)
+        self.player.coins += 2 if victory else -1
