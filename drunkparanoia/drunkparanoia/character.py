@@ -3,7 +3,7 @@ import random
 from drunkparanoia.config import (
     DIRECTIONS, SPEED, COUNTDOWNS, HOLDABLE_ANIMATIONS)
 from drunkparanoia.config import LOOPING_ANIMATIONS, CHARACTER_STATUSES
-from drunkparanoia.coordinates import Coordinates, get_box
+from drunkparanoia.coordinates import Coordinates, get_box, box_hit_box
 from drunkparanoia.io import play_sound
 from drunkparanoia.pathfinding import shortest_path
 from drunkparanoia.pilot import HardPathPilot
@@ -27,6 +27,7 @@ class Character:
         self.buffer_interaction_zone = None
         self.buffer_animation = None
         self.interacting_zone = None
+        self.shorn = False
 
     @property
     def box(self):
@@ -298,6 +299,15 @@ class Character:
             if zone.contains(self.coordinates.position) and not zone.busy:
                 self.go_to(zone.target, zone)
                 return True
+
+    def request_stripping(self):
+        solvent = [
+            character for character in self.scene.characters if
+            character.status == CHARACTER_STATUSES.OUT and
+            character.shorn is False]
+        for character in solvent:
+            if box_hit_box(character.screen_box, self.screen_box):
+                return character
 
     def attraction_zone(self):
         zones = self.scene.interactive_props + self.scene.interaction_zones

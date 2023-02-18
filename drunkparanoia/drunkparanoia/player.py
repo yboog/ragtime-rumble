@@ -70,10 +70,8 @@ class Player:
         if player:
             player.killer = self.index
             player.life = 0
-            self.coins += 2 if getcoin else 0
         else:
             self.npc_killed += 1
-            self.coins += 1 if getcoin else 0
         self.bullet_cooldown = COUNTDOWNS.BULLET_COOLDOWN
 
     def __next__(self):
@@ -202,7 +200,18 @@ class Player:
             if interact:
                 self.action_cooldown = COUNTDOWNS.ACTION_COOLDOWN
                 return True
+            character = self.character.request_stripping()
+            if character is not None and self.coins < 5:
+                character.shorn = True
+                self.coins += 1
+                self.create_coin_vfx()
         return False
+
+    def create_coin_vfx(self):
+        position = list(self.character.coordinates.position)
+        position[1] -= 10
+        position[1] -= 50
+        self.scene.create_vfx('coin-alert', position)
 
     def check_snipers(self):
         return next((

@@ -279,11 +279,14 @@ def render_element(screen, element):
     try:
         img = element.image
         screen.blit(get_image(img), element.render_position)
+        if hasattr(element, 'shorn') and element.shorn:
+            image = get_image(element.image).copy()
+            image.fill((0, 0, 0), special_flags=pygame.BLEND_MULT)
+            image.set_alpha(150)
+            screen.blit(image, element.render_position)
     except TypeError:
         print(img, get_image(img))
         raise
-    if isinstance(element, Vfx):
-        print("VFX")
     if debug.render_path:
         condition = (
             isinstance(element, Character) and
@@ -309,10 +312,8 @@ def render_element(screen, element):
         if hasattr(element, 'hitbox'):
             draw_rect(screen, element.hitbox, alpha=125)
         if hasattr(element, 'zone'):
-            print(element.zone)
             draw_rect(screen, element.zone, color='blue', alpha=125)
         if hasattr(element, 'interaction_zone'):
-            print(element.interaction_zone)
             draw_rect(
                 screen, element.interaction_zone, color='green', alpha=125)
 

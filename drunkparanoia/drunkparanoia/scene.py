@@ -649,7 +649,6 @@ class InteractionZone:
 
 class Vfx:
     def __init__(self, data, position):
-        print("create coin", data)
         self.id = uuid.uuid1()
         self.index = 0
         self.type = data['type']
@@ -663,7 +662,6 @@ class Vfx:
         return self.coordinates.position
 
     def __next__(self):
-        print("next vfx")
         if self.animation_is_done:
             return
         self.index += 1
