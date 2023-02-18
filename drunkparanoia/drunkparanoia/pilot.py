@@ -8,6 +8,7 @@ class HardPathPilot:
     def __init__(self, character, path):
         self.path = path
         self.character = character
+        self.need_change_direction = True
 
     def __next__(self):
         if not self.path:
@@ -25,10 +26,12 @@ class HardPathPilot:
         step = offset_point(self.character.coordinates.position, vector, speed)
         self.character.coordinates.position = step
 
-        inclination = self.character.scene.inclination_at(step)
-        direction_vector = vector[0] - inclination, vector[1]
-        direction = vector_to_direction(direction_vector)
-        self.character.direction = direction
+        if self.need_change_direction:
+            inclination = self.character.scene.inclination_at(step)
+            direction_vector = vector[0] - inclination, vector[1]
+            direction = vector_to_direction(direction_vector)
+            self.character.direction = direction
+            self.need_change_direction = False
         dist1 = distance(origin, self.path[0])
         dist2 = distance(self.character.coordinates.position, self.path[0])
         if dist1 > dist2 or not self.path:
@@ -38,10 +41,7 @@ class HardPathPilot:
         destination = self.path[0]
         origin = self.character.coordinates.position[:]
         self.character.coordinates.position = self.path.pop(0)[:]
-        vector = seg_to_vector(origin, destination)
-        inclination = self.character.scene.inclination_at(step)
-        direction_vector = vector[0] - inclination, vector[1]
-        self.character.direction = vector_to_direction(direction_vector)
+        self.need_change_direction = True
 
 
 class SmoothPathPilot:

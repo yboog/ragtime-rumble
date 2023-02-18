@@ -11,7 +11,7 @@ from drunkparanoia import debug
 pygame.init()
 screen = pygame.display.set_mode((640, 360), pygame.SCALED | pygame.FULLSCREEN)
 # screen = pygame.display.set_mode((640, 360), pygame.SCALED)
-screen = pygame.display.set_mode((640, 360))
+# screen = pygame.display.set_mode((640, 360))
 pygame.joystick.init()
 load_skins()
 load_main_resources()
