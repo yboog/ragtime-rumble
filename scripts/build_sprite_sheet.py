@@ -75,7 +75,7 @@ data = {
     'framesize': (64, 64),
     'center': (32, 56),
     'box': (-10, -8, 20, 10),
-    'hitbox': (-10, -35, 20, 45),
+    'hitbox': (-10, -40, 20, 40),
     'variants': variants,
     'sheets': {
         'face': f'resources/skins/{char}_face.png',
