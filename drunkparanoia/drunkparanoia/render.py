@@ -14,7 +14,7 @@ KILL_MESSAGE_SCREEN_PADDING = 10
 KILL_MESSAGE_PADDING = 1
 KILL_MESSAGE_MARGIN = 2
 MESSAGE_FONT_SIZE = 8
-MESSAGE_FONT_FILE = 'pixel-western-v4.otf'
+MESSAGE_FONT_FILE = 'Pixel-Western.otf'
 
 
 def render_game(screen, loop):

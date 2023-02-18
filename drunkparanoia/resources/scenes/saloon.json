@@ -3055,6 +3055,7 @@
         null
       ],
       "busy": false,
+      "lockable": false,
       "zone": [
         280,
         120,
@@ -3078,6 +3079,7 @@
       "action": "bet",
       "direction": "up",
       "busy": false,
+      "lockable": true,
       "zone": [
         340,
         140,
@@ -3099,6 +3101,7 @@
     {
       "action": "balcony",
       "busy": false,
+      "lockable": false,
       "direction": "down",
       "zone": [
         270,
@@ -3120,6 +3123,8 @@
     },
     {
       "action": "poker",
+      "busy": false,
+      "lockable": true,
       "direction": "down",
       "zone": [
         530,
@@ -3141,6 +3146,8 @@
     },
     {
       "action": "poker",
+      "busy": false,
+      "lockable": true,
       "direction": "right",
       "zone": [
         497,
@@ -3163,6 +3170,8 @@
     {
       "action": "poker",
       "direction": "left",
+      "busy": false,
+      "lockable": true,
       "zone": [
         575,
         237,
@@ -3183,6 +3192,8 @@
     },
     {
       "action": "poker",
+      "busy": false,
+      "lockable": true,
       "direction": "up",
       "zone": [
         530,
@@ -3204,6 +3215,8 @@
     },
     {
       "action": "poker",
+      "busy": false,
+      "lockable": true,
       "direction": "right",
       "zone": [
         383,
@@ -3225,6 +3238,8 @@
     },
     {
       "action": "poker",
+      "busy": false,
+      "lockable": true,
       "direction": "down",
       "zone": [
         420,
@@ -3246,6 +3261,8 @@
     },
     {
       "action": "poker",
+      "busy": false,
+      "lockable": true,
       "direction": "left",
       "zone": [
         479,
@@ -3267,6 +3284,8 @@
     },
     {
       "action": "poker",
+      "busy": false,
+      "lockable": true,
       "direction": "left",
       "zone": [
         420,
@@ -3288,6 +3307,8 @@
     },
     {
       "action": "poker",
+      "busy": false,
+      "lockable": true,
       "direction": "left",
       "zone": [
         31,
@@ -3309,6 +3330,8 @@
     },
     {
       "action": "poker",
+      "busy": false,
+      "lockable": true,
       "direction": "left",
       "zone": [
         86,
@@ -3330,6 +3353,8 @@
     },
     {
       "action": "poker",
+      "busy": false,
+      "lockable": true,
       "direction": "right",
       "zone": [
         1,
@@ -3351,6 +3376,8 @@
     },
     {
       "action": "poker",
+      "busy": false,
+      "lockable": true,
       "direction": "down",
       "zone": [
         35,
@@ -3372,6 +3399,8 @@
     },
     {
       "action": "poker",
+      "busy": false,
+      "lockable": true,
       "direction": "left",
       "zone": [
         104,
@@ -3393,6 +3422,8 @@
     },
     {
       "action": "poker",
+      "busy": false,
+      "lockable": true,
       "direction": "left",
       "zone": [
         159,
@@ -3414,6 +3445,8 @@
     },
     {
       "action": "poker",
+      "busy": false,
+      "lockable": true,
       "direction": "right",
       "zone": [
         73,
@@ -3435,6 +3468,8 @@
     },
     {
       "action": "poker",
+      "busy": false,
+      "lockable": true,
       "direction": "down",
       "zone": [
         102,
@@ -4506,7 +4541,8 @@
         100,
         100
       ],
-      "direction": "left"
+      "direction": "left",
+      "lockable": false
     }
   ],
   "props": [

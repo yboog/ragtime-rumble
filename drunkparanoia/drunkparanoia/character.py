@@ -333,7 +333,7 @@ class Character:
         self.spritesheet.index = 0
         self.direction = zone.direction
         self.interacting_zone = zone
-        self.interacting_zone.busy = True
+        self.interacting_zone.busy = zone.lockable
         self.status = CHARACTER_STATUSES.INTERACTING
         self.buffer_interaction_zone = None
         if zone.destroyable:

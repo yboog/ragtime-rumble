@@ -631,6 +631,7 @@ def create_interactive_prop(prop, position):
 
 class InteractionZone:
     def __init__(self, data):
+        self.data = data
         self.id = data['id']
         self.target = data["target"]
         self.action = data["action"]
@@ -639,6 +640,10 @@ class InteractionZone:
         self.direction = data["direction"]
         self.busy = False
         self.destroyable = False
+
+    @property
+    def lockable(self):
+        return self.data['lockable']
 
     def contains(self, position):
         return point_in_rectangle(position, *self.zone)

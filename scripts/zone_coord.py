@@ -473,6 +473,13 @@ class InteractionModel(QtCore.QAbstractTableModel):
             return True
 
         elif col == 6:
+            if value.lower() not in ["0", "1", "true", "false"]:
+                return False
+            value = value.lower() in ["1", "true"]
+            self.model.data['interactions'][row]['lockable'] = value
+            return True
+
+        elif col == 7:
             existing_ids = [
                 self.model.data['interactions'][r]["id"]
                 for r in range(self.rowCount()) if r != row]
@@ -486,7 +493,7 @@ class InteractionModel(QtCore.QAbstractTableModel):
             return
         h = [
             "Action", "Target", "Direction",
-            "Zone", "Attraction", "Busy", "id"]
+            "Zone", "Attraction", "Busy", "Lockable", "Id"]
         return h[section]
 
     def data(self, index, role):
@@ -499,8 +506,8 @@ class InteractionModel(QtCore.QAbstractTableModel):
         interaction = self.model.data['interactions'][index.row()]
         col = index.column()
         keys = [
-            "action", "target", "direction",
-            "zone", "attraction", "busy", "id"]
+            "action", "target", "direction", "zone",
+            "attraction", "busy", "lockable", "id"]
         return str(interaction.get(keys[col]))
 
 

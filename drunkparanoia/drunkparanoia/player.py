@@ -58,6 +58,16 @@ class Player:
         messenger.add_message(sentence.format(name=name))
         return
 
+    def release_target(self):
+        target = self.character.duel_target
+        target.duel_target = None
+        target.spritesheet.animation = 'idle'
+        target.spritesheet.index = 0
+        target.status = (
+            CHARACTER_STATUSES.AUTOPILOT if target.pilot else
+            CHARACTER_STATUSES.FREE)
+        self.character.duel_target = None
+
     @property
     def dead(self):
         return (
