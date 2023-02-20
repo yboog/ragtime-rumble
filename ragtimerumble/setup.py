@@ -13,7 +13,7 @@ build_exe_options = {
         "sip", "sip2", "shiboken6", "sip6", "PIL"]}
 
 setup(
-    name="Drunk-o-Therapia",
+    name="Ragtime Rumble",
     author="Jean-Loup Comby & Lionel Brouyère",
     options={"build_exe": build_exe_options},
     executables=[Executable('drunkparanoia/__main__.py')])
@@ -21,7 +21,7 @@ setup(
 
 current = os.path.dirname(__file__)
 desktop = os.path.expanduser("~/Desktop")
-gameroot = os.path.join(desktop, "drunkotherapie")
+gameroot = os.path.join(desktop, "ragtimerumble")
 src = os.path.join(current, "build/exe.win-amd64-3.10")
 os.makedirs(gameroot)
 file_names = os.listdir(src)
@@ -30,7 +30,7 @@ for file_name in file_names:
 
 os.rename(
     os.path.join(gameroot, "__main__.exe"),
-    os.path.join(gameroot, "game.exe"))
+    os.path.join(gameroot, "ragtime.exe"))
 
 shutil.copytree(
     src=os.path.join(current, "resources"),

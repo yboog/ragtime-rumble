@@ -3,10 +3,10 @@ import sys
 # import pickle
 import pygame
 
-from drunkparanoia.io import load_skins, load_main_resources
-from drunkparanoia.render import render_game
-from drunkparanoia.scene import GameLoop
-from drunkparanoia import debug
+from ragtimerumble.io import load_skins, load_main_resources
+from ragtimerumble.render import render_game
+from ragtimerumble.scene import GameLoop
+from ragtimerumble import debug
 
 pygame.init()
 screen = pygame.display.set_mode((640, 360), pygame.SCALED | pygame.FULLSCREEN)

@@ -1,4 +1,4 @@
-from drunkparanoia.coordinates import Coordinates
+from ragtimerumble.coordinates import Coordinates
 
 
 class Background:

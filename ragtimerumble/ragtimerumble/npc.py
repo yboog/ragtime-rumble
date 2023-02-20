@@ -1,20 +1,20 @@
 
 import random
 import itertools
-from drunkparanoia.config import (
+from ragtimerumble.config import (
     COUNTDOWNS, SMOOTH_PATH_SELECTION_RADIUS, SMOOTH_PATH_USAGE_PROBABILITY,
     HARD_PATH_SELECTION_RADIUS)
-from drunkparanoia.config import (
+from ragtimerumble.config import (
     CHARACTER_STATUSES, SPEED, HARD_PATH_USAGE_PROBABILITY)
-from drunkparanoia.coordinates import Coordinates, path_cross_rect
-from drunkparanoia.io import (
+from ragtimerumble.coordinates import Coordinates, path_cross_rect
+from ragtimerumble.io import (
     choice_death_sentence, choice_random_name, load_data)
-from drunkparanoia.pathfinding import (
+from ragtimerumble.pathfinding import (
     point_in_rectangle, shortest_path, smooth_path_to_path, equilateral_path,
     filter_close_paths, points_to_direction, distance, choice_destination)
-from drunkparanoia.pilot import SmoothPathPilot, HardPathPilot
-from drunkparanoia.sprite import SpriteSheet
-from drunkparanoia.sniperreticle import SniperReticle
+from ragtimerumble.pilot import SmoothPathPilot, HardPathPilot
+from ragtimerumble.sprite import SpriteSheet
+from ragtimerumble.sniperreticle import SniperReticle
 
 
 class Npc:

@@ -1,6 +1,6 @@
 import random
-from drunkparanoia.config import HAT_TO_DIRECTION, DIRECTIONS
-from drunkparanoia.coordinates import (
+from ragtimerumble.config import HAT_TO_DIRECTION, DIRECTIONS
+from ragtimerumble.coordinates import (
     distance, get_box, point_in_rectangle, norm)
 
 

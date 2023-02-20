@@ -1,6 +1,6 @@
 import random
-from drunkparanoia.config import DIRECTION_TO_SIDE, DIRECTIONS
-from drunkparanoia.io import load_skin, image_mirror
+from ragtimerumble.config import DIRECTION_TO_SIDE, DIRECTIONS
+from ragtimerumble.io import load_skin, image_mirror
 
 
 class SpriteSheet:

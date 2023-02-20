@@ -1,6 +1,6 @@
-from drunkparanoia.pathfinding import (
+from ragtimerumble.pathfinding import (
     distance, points_to_direction, seg_to_vector, vector_to_direction)
-from drunkparanoia.coordinates import offset_point
+from ragtimerumble.coordinates import offset_point
 
 
 class HardPathPilot:

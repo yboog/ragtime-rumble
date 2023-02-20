@@ -1,4 +1,4 @@
-from drunkparanoia.config import DIRECTIONS
+from ragtimerumble.config import DIRECTIONS
 
 
 def get_keystate(key_name, joystick):

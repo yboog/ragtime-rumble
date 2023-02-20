@@ -6,23 +6,23 @@ import pygame
 import itertools
 from copy import deepcopy
 
-from drunkparanoia.background import Prop, Background, Overlay
-from drunkparanoia.character import Character
-from drunkparanoia.coordinates import (
+from ragtimerumble.background import Prop, Background, Overlay
+from ragtimerumble.character import Character
+from ragtimerumble.coordinates import (
     box_hit_box, point_in_rectangle, box_hit_polygon, path_cross_polygon,
     path_cross_rect, Coordinates)
-from drunkparanoia.config import (
+from ragtimerumble.config import (
     DIRECTIONS, GAMEROOT, COUNTDOWNS, LOOP_STATUSES, CHARACTER_STATUSES,
     MAX_MESSAGES, VARIANTS_COUNT)
-from drunkparanoia.duel import find_possible_duels
-from drunkparanoia.io import (
+from ragtimerumble.duel import find_possible_duels
+from ragtimerumble.io import (
     load_image, load_data, quit_event, list_joysticks, image_mirror,
     choice_kill_sentence, choice_random_name, play_sound, stop_sound,
     stop_ambiance, load_frames)
-from drunkparanoia.joystick import get_current_commands
-from drunkparanoia.npc import Npc, Pianist, Barman, Sniper
-from drunkparanoia.player import Player
-from drunkparanoia.sprite import SpriteSheet, image_index_from_exposures
+from ragtimerumble.joystick import get_current_commands
+from ragtimerumble.npc import Npc, Pianist, Barman, Sniper
+from ragtimerumble.player import Player
+from ragtimerumble.sprite import SpriteSheet, image_index_from_exposures
 
 
 VIRGIN_SCORES = {

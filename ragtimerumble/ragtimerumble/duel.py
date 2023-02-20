@@ -1,5 +1,5 @@
-from drunkparanoia.config import DIRECTIONS, CHARACTER_STATUSES, DUEL
-from drunkparanoia.coordinates import path_cross_rect
+from ragtimerumble.config import DIRECTIONS, CHARACTER_STATUSES, DUEL
+from ragtimerumble.coordinates import path_cross_rect
 
 
 def find_possible_duels(scene):

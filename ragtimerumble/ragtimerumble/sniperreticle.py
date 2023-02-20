@@ -1,10 +1,10 @@
 
-from drunkparanoia.coordinates import (
+from ragtimerumble.coordinates import (
     Coordinates, clamp_to_zone, point_in_rectangle)
-from drunkparanoia.config import (
+from ragtimerumble.config import (
     SPEED, CHARACTER_STATUSES, COUNTDOWNS)
-from drunkparanoia.joystick import get_pressed_direction
-from drunkparanoia.io import play_sound
+from ragtimerumble.joystick import get_pressed_direction
+from ragtimerumble.io import play_sound
 
 
 class SniperReticle:

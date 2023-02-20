@@ -4,8 +4,8 @@ import json
 import pygame
 import random
 import itertools
-from drunkparanoia.config import GAMEROOT, VARIANTS_COUNT
-from drunkparanoia.joystick import get_current_commands
+from ragtimerumble.config import GAMEROOT, VARIANTS_COUNT
+from ragtimerumble.joystick import get_current_commands
 
 
 _ambiance_channel = None

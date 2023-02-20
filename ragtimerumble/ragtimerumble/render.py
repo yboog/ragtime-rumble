@@ -1,13 +1,13 @@
 
 import math
 import pygame
-from drunkparanoia import debug
-from drunkparanoia.io import get_image, get_font, load_image, get_coin_stack
-from drunkparanoia.config import LOOP_STATUSES
-from drunkparanoia.scene import column_to_group, get_score_data, Vfx
-from drunkparanoia.character import Character
-from drunkparanoia.pathfinding import distance, seg_to_vector
-from drunkparanoia.pilot import SmoothPathPilot
+from ragtimerumble import debug
+from ragtimerumble.io import get_image, get_font, load_image, get_coin_stack
+from ragtimerumble.config import LOOP_STATUSES
+from ragtimerumble.scene import column_to_group, get_score_data, Vfx
+from ragtimerumble.character import Character
+from ragtimerumble.pathfinding import distance, seg_to_vector
+from ragtimerumble.pilot import SmoothPathPilot
 
 
 KILL_MESSAGE_SCREEN_PADDING = 10

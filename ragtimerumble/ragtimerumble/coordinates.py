@@ -1,6 +1,6 @@
 import math
 from matplotlib.path import Path
-from drunkparanoia.config import DIRECTION_TO_VECTOR
+from ragtimerumble.config import DIRECTION_TO_VECTOR
 
 
 class Coordinates:

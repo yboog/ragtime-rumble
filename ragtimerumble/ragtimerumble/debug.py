@@ -1,6 +1,6 @@
 import os
 import json
-from drunkparanoia.config import CHARACTER_STATUSES
+from ragtimerumble.config import CHARACTER_STATUSES
 
 active = False
 render_path = False

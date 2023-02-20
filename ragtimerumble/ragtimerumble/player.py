@@ -1,10 +1,10 @@
 
 import random
-from drunkparanoia.joystick import get_pressed_direction, get_current_commands
-from drunkparanoia.config import (
+from ragtimerumble.joystick import get_pressed_direction, get_current_commands
+from ragtimerumble.config import (
     LOOPING_ANIMATIONS, CHARACTER_STATUSES, COUNTDOWNS,
     WIN_OR_LOOSE_AT_POKER_PROBABILITY)
-from drunkparanoia.io import (
+from ragtimerumble.io import (
     play_sound, choice_death_sentence, choice_random_name)
 
 

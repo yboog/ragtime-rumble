@@ -1,12 +1,12 @@
 
 import random
-from drunkparanoia.config import (
+from ragtimerumble.config import (
     DIRECTIONS, SPEED, COUNTDOWNS, HOLDABLE_ANIMATIONS)
-from drunkparanoia.config import LOOPING_ANIMATIONS, CHARACTER_STATUSES
-from drunkparanoia.coordinates import Coordinates, get_box, box_hit_box
-from drunkparanoia.io import play_sound
-from drunkparanoia.pathfinding import shortest_path
-from drunkparanoia.pilot import HardPathPilot
+from ragtimerumble.config import LOOPING_ANIMATIONS, CHARACTER_STATUSES
+from ragtimerumble.coordinates import Coordinates, get_box, box_hit_box
+from ragtimerumble.io import play_sound
+from ragtimerumble.pathfinding import shortest_path
+from ragtimerumble.pilot import HardPathPilot
 
 
 class Character:
