@@ -11,11 +11,11 @@ class SpriteSheet:
         self.images = load_skin(data)
 
     @property
-    def durations(self):
-        return self.data['animations'][self.animation]['durations']
+    def exposures(self):
+        return self.data['animations'][self.animation]['exposures']
 
     def image(self, direction=DIRECTIONS.RIGHT, variation=0):
-        index = image_index_from_durations(self.index, self.durations)
+        index = image_index_from_exposures(self.index, self.exposures)
         index += self.data['animations'][self.animation]['startframe']
         side = DIRECTION_TO_SIDE[direction]
         self.images[variation]
@@ -25,11 +25,11 @@ class SpriteSheet:
         return image_mirror(image, horizontal=True) if flipped else image
 
     def animation_length(self):
-        return sum(self.durations)
+        return sum(self.exposures)
 
     @property
     def animation_is_done(self):
-        return self.index >= sum(self.durations) - 1
+        return self.index >= sum(self.exposures) - 1
 
     def restart(self):
         self.index = 0
@@ -39,7 +39,7 @@ class SpriteSheet:
             self.index += 1
 
 
-def image_index_from_durations(index, durations):
+def image_index_from_exposures(index, exposures):
     """Data indexes:
     0       1   2           3           4
     Animation indexes:
@@ -50,7 +50,7 @@ def image_index_from_durations(index, durations):
         index = 8 -> 3
     """
     loop = 0
-    for i, d in enumerate(durations):
+    for i, d in enumerate(exposures):
         for _ in range(d):
             if index == loop:
                 return i

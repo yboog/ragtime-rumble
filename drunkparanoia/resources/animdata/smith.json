@@ -524,19 +524,19 @@
   },
   "animations": {
     "bet": {
-      "durations": [
+      "exposures": [
         6
       ],
       "startframe": 0
     },
     "balcony": {
-      "durations": [
+      "exposures": [
         6
       ],
       "startframe": 1
     },
     "call": {
-      "durations": [
+      "exposures": [
         6,
         6,
         6,
@@ -545,7 +545,7 @@
       "startframe": 2
     },
     "coma": {
-      "durations": [
+      "exposures": [
         6,
         6,
         6,
@@ -557,7 +557,7 @@
       "startframe": 6
     },
     "death": {
-      "durations": [
+      "exposures": [
         6,
         6,
         6,
@@ -580,7 +580,7 @@
       "startframe": 13
     },
     "drink": {
-      "durations": [
+      "exposures": [
         6,
         6,
         6,
@@ -605,7 +605,7 @@
       "startframe": 31
     },
     "gunshot": {
-      "durations": [
+      "exposures": [
         6,
         6,
         6,
@@ -626,7 +626,7 @@
       "startframe": 51
     },
     "idle": {
-      "durations": [
+      "exposures": [
         6,
         6,
         6,
@@ -639,7 +639,7 @@
       "startframe": 67
     },
     "order": {
-      "durations": [
+      "exposures": [
         6,
         6,
         6,
@@ -657,7 +657,7 @@
       "startframe": 75
     },
     "poker": {
-      "durations": [
+      "exposures": [
         6,
         6,
         6,
@@ -695,7 +695,7 @@
       "startframe": 88
     },
     "smoke": {
-      "durations": [
+      "exposures": [
         6,
         6,
         6,
@@ -724,13 +724,13 @@
       "startframe": 121
     },
     "suspicious": {
-      "durations": [
+      "exposures": [
         6
       ],
       "startframe": 145
     },
     "vomit": {
-      "durations": [
+      "exposures": [
         6,
         6,
         6,
@@ -755,7 +755,7 @@
       "startframe": 146
     },
     "walk": {
-      "durations": [
+      "exposures": [
         6,
         6,
         6,

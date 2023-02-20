@@ -12,7 +12,7 @@
   },
   "animations": {
     "idle": {
-      "durations": [
+      "exposures": [
         6,
         6,
         6,
@@ -46,7 +46,7 @@
       "startframe": 0
     },
     "towel": {
-      "durations": [
+      "exposures": [
         6,
         6,
         6,
@@ -59,19 +59,19 @@
       "startframe": 29
     },
     "towel-end": {
-      "durations": [
+      "exposures": [
         6
       ],
       "startframe": 37
     },
     "towel-start": {
-      "durations": [
+      "exposures": [
         6
       ],
       "startframe": 38
     },
     "walk": {
-      "durations": [
+      "exposures": [
         6,
         6,
         6,

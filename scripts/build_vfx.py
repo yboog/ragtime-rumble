@@ -48,7 +48,7 @@ data = {
     'type': 'vfx',
     'framesize': (width, height),
     'sheet': relative_output,
-    'durations': [6 for _ in range(len(frames))]
+    'exposures': [6 for _ in range(len(frames))]
 }
 
 

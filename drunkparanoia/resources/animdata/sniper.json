@@ -12,7 +12,7 @@
   },
   "animations": {
     "aim-idle": {
-      "durations": [
+      "exposures": [
         6,
         6,
         6,
@@ -34,7 +34,7 @@
       "startframe": 0
     },
     "go-aim": {
-      "durations": [
+      "exposures": [
         6,
         6,
         6,
@@ -46,7 +46,7 @@
       "startframe": 17
     },
     "gunshot-goback": {
-      "durations": [
+      "exposures": [
         6,
         6,
         6,
@@ -83,7 +83,7 @@
       "startframe": 24
     },
     "idle": {
-      "durations": [
+      "exposures": [
         6,
         6,
         6,

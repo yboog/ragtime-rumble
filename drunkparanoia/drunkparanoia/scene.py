@@ -22,7 +22,7 @@ from drunkparanoia.io import (
 from drunkparanoia.joystick import get_current_commands
 from drunkparanoia.npc import Npc, Pianist, Barman, Sniper
 from drunkparanoia.player import Player
-from drunkparanoia.sprite import SpriteSheet, image_index_from_durations
+from drunkparanoia.sprite import SpriteSheet, image_index_from_exposures
 
 
 VIRGIN_SCORES = {
@@ -603,9 +603,9 @@ class Messenger:
             for text, countdown in self.messages]
 
     def get_opacity(self, countdown):
-        if countdown > COUNTDOWNS.MESSAGE_FADEOFF_DURATION:
+        if countdown > COUNTDOWNS.MESSAGE_FADEOFF_EXPOSURE:
             return 255
-        return int((countdown / COUNTDOWNS.MESSAGE_FADEOFF_DURATION) * 255)
+        return int((countdown / COUNTDOWNS.MESSAGE_FADEOFF_EXPOSURE) * 255)
 
 
 def create_interactive_prop(prop, position):
@@ -659,7 +659,7 @@ class Vfx:
         self.type = data['type']
         self.images = load_frames(data['sheet'], data['framesize'], None)
         self.coordinates = Coordinates(position)
-        self.durations = data['durations']
+        self.exposures = data['exposures']
         self.switch = 2000
 
     @property
@@ -673,9 +673,9 @@ class Vfx:
 
     @property
     def image(self):
-        index = image_index_from_durations(self.index, self.durations)
+        index = image_index_from_exposures(self.index, self.exposures)
         return self.images[index]
 
     @property
     def animation_is_done(self):
-        return self.index >= sum(self.durations) - 1
+        return self.index >= sum(self.exposures) - 1

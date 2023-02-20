@@ -71,7 +71,7 @@ column_lenght = math.ceil(math.sqrt(len(images)))
 start = 0
 for anim in ORDER:
     data['animations'][anim] = {
-        'durations': [6 for _ in range(len(animations[anim]))],
+        'exposures': [6 for _ in range(len(animations[anim]))],
         'startframe': start}
     print(anim, len(animations[anim]), start)
     start += len(animations[anim])
