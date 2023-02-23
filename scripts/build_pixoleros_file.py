@@ -2,6 +2,8 @@
 import os
 import sys
 import json
+import uuid
+import random
 import msgpack
 from PySide6 import QtGui, QtCore
 
@@ -80,6 +82,13 @@ def qimage_to_bytes(image):
     return ba.data()
 
 
+pixo = {
+    'library': {},
+    'animation': 'idle',
+    'side': 'face',
+    'index': 0
+}
+
 for anim in ORDER:
     for side in ['face', 'back']:
         root = f'{ref_root}/{side}/{anim}'
@@ -89,18 +98,13 @@ for anim in ORDER:
                 'image': qimage_to_bytes(QtGui.QImage(filepath)),
                 'path': filepath,
                 'ctime': os.path.getctime(filepath)}
-            data['animations'][anim]['images'][side].append(image)
+            id_ = str(uuid.uuid1())
+            pixo['library'][id_] = image
+            data['animations'][anim]['images'][side].append(id_)
     lenght = len(data['animations'][anim]['images'][side])
     data['animations'][anim]['exposures'] = [6] * lenght
 
-
-pixo = {
-    'data': data,
-    'library': [],
-    'animation': 'idle',
-    'side': 'face',
-    'index': 0
-}
+pixo['data'] = data
 
 
 with open(output, 'wb') as f:

@@ -25,3 +25,5 @@ EMPTY_ANIMDATA = {
         'walk': {'images': {'face': [], 'back': []}, 'exposures': []},
     }
 }
+
+ANIMATIONS = list(EMPTY_ANIMDATA['animations'])
