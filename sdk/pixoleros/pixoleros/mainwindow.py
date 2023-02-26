@@ -4,9 +4,10 @@ from PySide6 import QtWidgets, QtGui, QtCore
 from pixoleros.io import get_icon
 from pixoleros.navigator import Navigator
 from pixoleros.viewport import ViewportMapper, zoom
-from pixoleros.model import UiModel
+from pixoleros.model import Document
 from pixoleros.dopesheet import DopeSheet
 from pixoleros.library import LibraryTableView
+from pixoleros.palette import Palette
 
 
 class Pixoleros(QtWidgets.QMainWindow):
@@ -24,6 +25,7 @@ class Pixoleros(QtWidgets.QMainWindow):
         self.toolbar.open.triggered.connect(self.open)
 
         areas = (
+            QtCore.Qt.TopDockWidgetArea |
             QtCore.Qt.BottomDockWidgetArea |
             QtCore.Qt.LeftDockWidgetArea |
             QtCore.Qt.RightDockWidgetArea)
@@ -35,28 +37,25 @@ class Pixoleros(QtWidgets.QMainWindow):
 
         self.dopesheet = DopeSheet()
         self.dopesheet.updated.connect(self.update)
-        self.dopesheet_scroll = QtWidgets.QScrollArea()
-        self.dopesheet_scroll.setWidget(self.dopesheet)
-        self.dopesheet_scroll.setWidgetResizable(True)
-        self.dopesheet_toolbar = DopeSheetToolbar()
-        self.dopesheet_widget = QtWidgets.QWidget()
-        self.dopesheet_layout = QtWidgets.QVBoxLayout(self.dopesheet_widget)
-        self.dopesheet_layout.setSpacing(0)
-        self.dopesheet_layout.setContentsMargins(0, 0, 0, 0)
-        self.dopesheet_layout.addWidget(self.dopesheet_toolbar)
-        self.dopesheet_layout.addWidget(self.dopesheet_scroll)
         self.dopesheet_dock = QtWidgets.QDockWidget('Dopesheet', self)
         self.dopesheet_dock.setAllowedAreas(areas)
-        self.dopesheet_dock.setWidget(self.dopesheet_widget)
+        self.dopesheet_dock.setWidget(self.dopesheet)
+
+        self.palette = Palette()
+        self.palette_dock = QtWidgets.QDockWidget('Palette', self)
+        self.palette_dock.setAllowedAreas(areas)
+        self.palette_dock.setWidget(self.palette)
 
         self.addDockWidget(
             QtCore.Qt.BottomDockWidgetArea, self.dopesheet_dock)
         self.addDockWidget(
             QtCore.Qt.BottomDockWidgetArea, self.library_dock)
+        self.addDockWidget(
+            QtCore.Qt.LeftDockWidgetArea, self.palette_dock)
 
         self.setCorner(
             QtCore.Qt.BottomLeftCorner,
-            QtCore.Qt.LeftDockWidgetArea)
+            QtCore.Qt.BottomDockWidgetArea)
 
         self.setCorner(
             QtCore.Qt.BottomRightCorner,
@@ -82,35 +81,36 @@ class Pixoleros(QtWidgets.QMainWindow):
         with open(filepath, 'rb') as f:
             data = msgpack.load(f)
 
-        model = UiModel.load(data)
-        canvas = Canvas(model)
+        document = Document.load(data)
+        canvas = Canvas(document)
         canvas.updated.connect(self.update)
         window = self.mdi.addSubWindow(canvas)
         window.setWindowTitle(filepath)
         window.show()
 
     def sub_window_changed(self, window):
-        model = window.widget().model if window else None
-        self.dopesheet.set_model(model)
-        self.library.set_model(model)
+        document = window.widget().document if window else None
+        self.dopesheet.set_document(document)
+        self.palette.set_document(document)
+        self.library.set_document(document)
 
 
-class DopeSheetToolbar(QtWidgets.QToolBar):
+class PlayerToolbar(QtWidgets.QToolBar):
     def __init__(self):
         super().__init__()
         self.setIconSize(QtCore.QSize(16, 16))
         self.previous = QtGui.QAction(get_icon('previous.png'), '', self)
+        self.stop = QtGui.QAction(get_icon('stop.png'), '', self)
         self.play = QtGui.QAction(get_icon('play.png'), '', self)
         self.pause = QtGui.QAction(get_icon('pause.png'), '', self)
-        self.stop = QtGui.QAction(get_icon('stop.png'), '', self)
         self.next = QtGui.QAction(get_icon('next.png'), '', self)
         spacer = QtWidgets.QWidget()
         spacer.setSizePolicy(*[QtWidgets.QSizePolicy.Expanding] * 2)
         self.addWidget(spacer)
         self.addAction(self.previous)
+        self.addAction(self.stop)
         self.addAction(self.play)
         self.addAction(self.pause)
-        self.addAction(self.stop)
         self.addAction(self.next)
         spacer = QtWidgets.QWidget()
         spacer.setSizePolicy(*[QtWidgets.QSizePolicy.Expanding] * 2)
@@ -129,11 +129,26 @@ class MainToolbar(QtWidgets.QToolBar):
 
 
 class Canvas(QtWidgets.QWidget):
+
+    def __init__(self, document):
+        super().__init__()
+        self.document = document
+        self.canvas = CanvasView(document)
+        self.updated = self.canvas.updated
+        self.toolbar = PlayerToolbar()
+        layout = QtWidgets.QVBoxLayout(self)
+        layout.setContentsMargins(0, 0, 0, 0)
+        layout.setSpacing(0)
+        layout.addWidget(self.canvas)
+        layout.addWidget(self.toolbar)
+
+
+class CanvasView(QtWidgets.QWidget):
     updated = QtCore.Signal()
 
-    def __init__(self, model):
+    def __init__(self, document):
         super().__init__()
-        self.model = model
+        self.document = document
         self.viewportmapper = ViewportMapper()
         self.navigator = Navigator()
 
@@ -142,7 +157,7 @@ class Canvas(QtWidgets.QWidget):
         painter.setPen(QtCore.Qt.NoPen)
         painter.setBrush(QtGui.QColor(25, 25, 25))
         painter.drawRect(event.rect())
-        image = self.model.current_image.image
+        image = self.document.current_image.image
         rect = QtCore.QRectF(0, 0, image.size().width(), image.size().height())
         rect = self.viewportmapper.to_viewport_rect(rect)
         image = image.scaled(
@@ -184,10 +199,10 @@ class Canvas(QtWidgets.QWidget):
         elif self.navigator.left_pressed:
             offset = self.navigator.mouse_offset(event.pos())
             if offset and offset.x() > 0.5:
-                self.model.index += 1
+                self.document.index += 1
                 self.updated.emit()
             elif offset and offset.x() < -0.5:
-                self.model.index -= 1
+                self.document.index -= 1
                 self.updated.emit()
         self.repaint()
 

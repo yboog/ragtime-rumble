@@ -3,30 +3,37 @@ import msgpack
 from copy import deepcopy
 from PySide6 import QtGui
 from pixoleros.template import EMPTY_ANIMDATA
-from pixoleros.io import serialize_model, bytes_to_qimage
+from pixoleros.io import serialize_document, bytes_to_qimage
 
 
-class UiModel:
+class Document:
     def __init__(self):
         self.data = deepcopy(EMPTY_ANIMDATA)
         self.library = {}
         self.animation = 'idle'
         self.side = 'face'
+        self.hzoom = 1
         self._index = 0
+        self.display_palettes = {}
+        self.selected_palette = None
 
     @staticmethod
     def load(data):
-        model = UiModel()
-        model.data = data['data']
-        model.library = {k: Image.load(v) for k, v in data['library'].items()}
-        model.animation = data['animation']
-        model.side = data['side']
-        model.index = data['index']
+        document = Document()
+        document.data = data['data']
+        document.library = {k: Image.load(v) for k, v in data['library'].items()}
+        document.animation = data['animation']
+        document.side = data['side']
+        document.index = data['index']
         for animation in data['data']['animations']:
             for side in ('face', 'back'):
-                images = model.data['animations'][animation]['images'][side]
-                model.data['animations'][animation]['images'][side] = images
-        return model
+                images = document.data['animations'][animation]['images'][side]
+                document.data['animations'][animation]['images'][side] = images
+        return document
+
+    @property
+    def palettes(self):
+        return self.data['palettes']
 
     @property
     def index(self):
@@ -57,6 +64,9 @@ class UiModel:
             print(i, 'error')
             return None
 
+    def get_display_palette(self, name):
+        return self.display_palettes.get(name)
+
     def image(self, animation, frame, side=None):
         return self.library[self.image_id(animation, frame, side)]
 
@@ -64,12 +74,14 @@ class UiModel:
         animation = self.data['animations'][animation]
         return animation['images'][side or self.side][frame]
 
+    def animation_exposures(self, animation):
+        return self.data['animations'][animation]['exposures']
+
     def exposure(self, animation, frame):
-        animation = self.data['animations'][animation]
-        return animation['exposures'][frame]
+        return self.animation_exposures(animation)[frame]
 
     def save(self, filepath):
-        data = serialize_model(self)
+        data = serialize_document(self)
         with open(filepath, 'wb') as f:
             msgpack.dump(data, f)
 

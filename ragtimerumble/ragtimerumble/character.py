@@ -11,11 +11,11 @@ from ragtimerumble.pilot import HardPathPilot
 
 class Character:
 
-    def __init__(self, position, spritesheet, variation, scene):
+    def __init__(self, position, spritesheet, palette, scene):
         self.spritesheet = spritesheet
         self.coordinates = Coordinates(position)
         self.direction = DIRECTIONS.DOWN
-        self.variation = variation
+        self.palette = palette
         self.gender = 'man'
         self.speed = 0
         self.scene = scene
@@ -56,7 +56,7 @@ class Character:
 
     @property
     def image(self):
-        return self.spritesheet.image(self.direction, self.variation)
+        return self.spritesheet.image(self.direction, self.palette)
 
     def offset(self):
         inclination = self.scene.inclination_at(self.coordinates.position)

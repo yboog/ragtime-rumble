@@ -21,7 +21,7 @@
     20,
     40
   ],
-  "variants": [
+  "palettes": [
     {
       "name": "skin",
       "origins": [
@@ -36,7 +36,7 @@
           141
         ]
       ],
-      "variants": [
+      "palettes": [
         [
           [
             250,
@@ -89,7 +89,7 @@
           29
         ]
       ],
-      "variants": [
+      "palettes": [
         [
           [
             150,
@@ -149,7 +149,7 @@
           2
         ]
       ],
-      "variants": [
+      "palettes": [
         [
           [
             60,
@@ -189,7 +189,7 @@
           5
         ]
       ],
-      "variants": [
+      "palettes": [
         [
           [
             200,
@@ -241,7 +241,7 @@
           82
         ]
       ],
-      "variants": [
+      "palettes": [
         [
           [
             95,
@@ -323,7 +323,7 @@
           116
         ]
       ],
-      "variants": [
+      "palettes": [
         [
           [
             60,
@@ -420,7 +420,7 @@
           0
         ]
       ],
-      "variants": [
+      "palettes": [
         [
           [
             140,
@@ -460,7 +460,7 @@
           5
         ]
       ],
-      "variants": [
+      "palettes": [
         [
           [
             255,
@@ -500,7 +500,7 @@
           72
         ]
       ],
-      "variants": [
+      "palettes": [
         [
           [
             70,

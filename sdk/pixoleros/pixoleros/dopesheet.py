@@ -4,7 +4,7 @@ from PySide6 import QtWidgets, QtGui, QtCore
 from pixoleros.template import ANIMATIONS
 
 
-TOP_MARGIN = 15
+TOP_MARGIN = 0
 LEFT_MARGIN = 10
 SEPARATION_SPACE = 5
 COLLAPSED_ROW_HEIGHT = 24
@@ -14,21 +14,160 @@ FRAME_SPACING = 6
 FRAME_VPADDING = 3
 LEFT_COLUMN_WIDTH = 85
 DROP_RECT_WIDTH = 2
+HEADER_HIGHT = 40
 
-FRAME_COLOR = (75, 100, 220)
-FRAME_OUT_DATE_COLOR = (200, 100, 0)
-FRAME_NOT_FOUND_COLOR = (200, 50, 50)
+HEADER_COLOR = (25, 25, 25)
+FRAME_COLOR = (75, 125, 145)
 
 
 class DopeSheet(QtWidgets.QWidget):
     updated = QtCore.Signal()
 
-    def __init__(self, model=None, parent=None):
+    def __init__(self, parent=None):
+        super().__init__(parent=parent)
+        self.document = None
+        self.header = DopeSheetHeader()
+        self.header.setFixedHeight(HEADER_HIGHT)
+        self.header.updated.connect(self.updated.emit)
+        self.exposures = DopeSheetExposures()
+        self.exposures.updated.connect(self.updated.emit)
+
+        self.header_scroll = QtWidgets.QScrollArea()
+        self.header_scroll.setStyleSheet('border-width : 0')
+        self.header_scroll.setFixedHeight(HEADER_HIGHT)
+        self.header_scroll.setWidgetResizable(True)
+        self.header_scroll.setWidget(self.header)
+        policy = QtCore.Qt.ScrollBarAlwaysOff
+        self.header_scroll.setHorizontalScrollBarPolicy(policy)
+        self.header_scroll.setVerticalScrollBarPolicy(policy)
+        scrollbar1 = self.header_scroll.horizontalScrollBar()
+        self.exposures_scroll = QtWidgets.QScrollArea()
+        self.exposures_scroll.setStyleSheet('border-width : 0')
+        self.exposures_scroll.setWidgetResizable(True)
+        self.exposures_scroll.setWidget(self.exposures)
+        scrollbar2 = self.exposures_scroll.horizontalScrollBar()
+        scrollbar2.valueChanged.connect(scrollbar1.setValue)
+
+        layout = QtWidgets.QVBoxLayout(self)
+        layout.setContentsMargins(0, 0, 0, 0)
+        layout.setSpacing(0)
+        layout.addWidget(self.header_scroll)
+        layout.addWidget(self.exposures_scroll)
+
+    def wheelEvent(self, event):
+        factor = .1 if event.angleDelta().y() > 0 else -.1
+        offset = self.document.hzoom * abs(factor)
+        offset = offset if factor < 0 else -offset
+        zoom = self.document.hzoom + offset
+        self.document.hzoom = max((0.33, min((10, zoom))))
+        self.repaint()
+
+    def set_document(self, document):
+        self.document = document
+        self.exposures.set_document(document)
+        self.header.set_document(document)
+
+    def repaint(self):
+        super().repaint()
+
+
+class DopeSheetHeader(QtWidgets.QWidget):
+    updated = QtCore.Signal()
+
+    def __init__(self, parent=None):
+        super().__init__(parent)
+        self.document = None
+        self.setFixedHeight(HEADER_HIGHT)
+
+    def set_document(self, document):
+        self.document = document
+        self.repaint()
+
+    def mousePressEvent(self, event):
+        if event.button() != QtCore.Qt.LeftButton:
+            return
+        self.left_clicked = True
+        self.set_index_from_point(event.pos())
+        self.updated.emit()
+        self.repaint()
+
+    def mouseMoveEvent(self, event):
+        if self.left_clicked:
+            self.set_index_from_point(event.pos())
+            self.updated.emit()
+            self.repaint()
+
+    def mouseReleaseEvent(self, event):
+        if event.button() == QtCore.Qt.LeftButton:
+            self.left_clicked = False
+
+    def set_index_from_point(self, pos):
+        left = LEFT_COLUMN_WIDTH
+        if pos.x() < left:
+            return
+        i = 0
+        width = dopesheet_width(self.document)
+        offset = FRAME_WIDTH * self.document.hzoom
+        while left < width:
+            if left <= pos.x() <= left + offset:
+                self.document.index = i
+                return
+            i += 1
+            left += offset
+
+    def get_frame_rect(self):
+        left = LEFT_COLUMN_WIDTH
+        left += (FRAME_WIDTH * self.document.index) * self.document.hzoom
+        width = FRAME_WIDTH * self.document.hzoom
+        return QtCore.QRectF(left, 0, width, self.rect().height())
+
+    def paintEvent(self, event):
+        painter = QtGui.QPainter(self)
+        if not self.document:
+            painter.setBrush(QtGui.QColor(35, 35, 35))
+            painter.setPen(QtCore.Qt.NoPen)
+            painter.drawRect(event.rect())
+            return
+        painter.setBrush(QtGui.QColor(*HEADER_COLOR))
+        pen = painter.pen()
+        painter.setPen(QtCore.Qt.NoPen)
+        painter.drawRect(event.rect())
+        painter.setPen(pen)
+        left = LEFT_COLUMN_WIDTH
+        width = dopesheet_width(self.document)
+        i = 0
+        self.setFixedWidth(width)
+        offset = FRAME_WIDTH * self.document.hzoom
+
+        while left < width:
+            top = HEADER_HIGHT / 2
+            top += 0 if i % 5 == 0 else top / 3
+            p1 = QtCore.QPoint(left, top)
+            p2 = QtCore.QPoint(left, event.rect().height())
+            painter.drawLine(p1, p2)
+            if i % 5 == 0:
+                painter.drawText(left - offset / 2, top / 1.4, str(i + 1))
+            left += offset
+            i += 1
+
+        painter.setBrush(QtCore.Qt.yellow)
+        painter.setPen(QtCore.Qt.NoPen)
+        radius = (FRAME_WIDTH / 2) * 0.95
+        x = self.get_frame_rect().center().x()
+        y = HEADER_HIGHT * 0.75
+        painter.drawEllipse(QtCore.QPoint(x, y), radius, radius)
+
+        painter.end()
+
+
+class DopeSheetExposures(QtWidgets.QWidget):
+    updated = QtCore.Signal()
+
+    def __init__(self, document=None, parent=None):
         super().__init__(parent)
         self.setAcceptDrops(True)
         self.setMouseTracking(True)
-        self.model = model
-        self.hzoom = 1
+        self.document = document
         self.hovered_handler = None
         self.hovered_frame = None
         self.clicked_frame = None
@@ -72,7 +211,7 @@ class DopeSheet(QtWidgets.QWidget):
             row, frame = self.clicked_frame
             rect = row.frame_rects[frame]
             self.handler = DragAndDropFrameHandler(
-                rect, self.model, row, frame)
+                rect, self.document, row, frame)
             self.dropping = True
             mime = QtCore.QMimeData()
             frame = json.dumps(frame).encode()
@@ -83,7 +222,6 @@ class DopeSheet(QtWidgets.QWidget):
             drag.setMimeData(mime)
             drag.exec_(QtCore.Qt.MoveAction)
             self.clicked_frame = None
-            print('create mime data')
             return self.clear_hovered_items()
 
         self.hovered_handler = self.check_hovered_handler(event)
@@ -99,8 +237,7 @@ class DopeSheet(QtWidgets.QWidget):
                     anchor = row.frame_rects[i].topLeft()
                     anchor.setX(anchor.x() - (FRAME_SPACING / 2))
                     self.handler = ExposureHandler(
-                        self.model, anchor, row, i,
-                        self.hzoom)
+                        self.document, anchor, row, i)
                     return self.clear_hovered_items()
             for i, rect in enumerate(row.frame_rects):
                 if rect.contains(event.pos()):
@@ -146,7 +283,7 @@ class DopeSheet(QtWidgets.QWidget):
             data = bytes(event.mimeData().data('animation'))
             animation = codecs.decode(data)
             origin = (animation, index)
-            selection = self.model.internal_move(
+            selection = self.document.internal_move(
                 self.selection.items or [origin], destination, action='move')
             self.selection.set(selection)
         self.repaint()
@@ -170,7 +307,7 @@ class DopeSheet(QtWidgets.QWidget):
         if event.button() == QtCore.Qt.LeftButton:
             for row in self.rows:
                 if row.text_rect.contains(event.pos()):
-                    self.model.animation = row.animation
+                    self.document.animation = row.animation
                     self.updated.emit()
                     self.repaint()
                     return
@@ -179,8 +316,8 @@ class DopeSheet(QtWidgets.QWidget):
     def sizeHint(self):
         return QtCore.QSize(300, 300)
 
-    def set_model(self, model):
-        self.model = model
+    def set_document(self, document):
+        self.document = document
         self.repaint()
 
     def get_full_height(self):
@@ -188,10 +325,7 @@ class DopeSheet(QtWidgets.QWidget):
             COLLAPSED_ROW_HEIGHT * len(ANIMATIONS) - 1) + EXPANDED_ROW_HEIGHT
 
     def get_full_width(self):
-        width = (
-            LEFT_COLUMN_WIDTH +
-            SEPARATION_SPACE +
-            (self.model.length * (FRAME_WIDTH * self.hzoom)))
+        width = dopesheet_width(self.document)
         if width != self.width():
             self.setFixedWidth(width)
         return width
@@ -204,7 +338,7 @@ class DopeSheet(QtWidgets.QWidget):
         for animation in ANIMATIONS:
             height = (
                 COLLAPSED_ROW_HEIGHT
-                if animation != self.model.animation
+                if animation != self.document.animation
                 else EXPANDED_ROW_HEIGHT)
             rects.append(QtCore.QRectF(left, t, width, height))
             t += height
@@ -213,35 +347,37 @@ class DopeSheet(QtWidgets.QWidget):
 
     def get_frame_rect(self):
         left = LEFT_COLUMN_WIDTH
-        left = left + (FRAME_WIDTH * self.model.index)
-        return QtCore.QRectF(left, 0, FRAME_WIDTH, self.rect().height())
+        left += (FRAME_WIDTH * self.document.index) * self.document.hzoom
+        width = FRAME_WIDTH * self.document.hzoom
+        return QtCore.QRectF(left, 0, width, self.rect().height())
 
     @property
     def rows(self):
-        if self.model is None:
+        if self.document is None:
             return []
         return [
-            Row(self.model, anim, rect, self.hzoom)
+            _Row(self.document, anim, rect, self.document.hzoom)
             for anim, rect in zip(ANIMATIONS, self.get_rows_rect())]
 
     def get_frame_color(self, animation, frame):
-        image = self.model.image(animation, frame)
         if self.selected(animation, frame):
             return QtGui.QColor('white')
-        if not image.reference_exists:
-            return QtGui.QColor(*FRAME_NOT_FOUND_COLOR)
-        if image.file_modified:
-            return QtGui.QColor(*FRAME_OUT_DATE_COLOR)
         return QtGui.QColor(*FRAME_COLOR)
 
     def paintEvent(self, event):
         painter = QtGui.QPainter(self)
         painter.setRenderHint(QtGui.QPainter.Antialiasing)
 
-        if self.model is None:
+        if self.document is None:
             painter.setBrush(QtCore.Qt.darkGray)
             painter.drawRect(event.rect())
             return
+
+        painter.setPen(QtCore.Qt.NoPen)
+        color = QtGui.QColor(*HEADER_COLOR)
+        color.setAlpha(150)
+        painter.setBrush(color)
+        painter.drawRect(0, 0, LEFT_COLUMN_WIDTH, event.rect().height())
 
         for i, row in enumerate(self.rows):
             if not i % 2:
@@ -303,36 +439,47 @@ class DopeSheet(QtWidgets.QWidget):
         painter.end()
 
 
-class Row:
-    def __init__(self, model, animation, rect, hzoom):
-        self.model = model
+def dopesheet_width(document):
+    return (
+        LEFT_COLUMN_WIDTH +
+        SEPARATION_SPACE +
+        (document.length * (FRAME_WIDTH * document.hzoom)))
+
+
+class _Row:
+    def __init__(self, document, animation, rect, hzoom):
+        self.document = document
         self.animation = animation
         self.rect = rect
-        self.hzoom = hzoom
+        self.document.hzoom = hzoom
 
     @property
     def expanded(self):
-        return self.animation == self.model.animation
+        return self.animation == self.document.animation
 
     @property
     def text_rect(self):
         return QtCore.QRectF(
             LEFT_MARGIN,
             self.rect.top(),
-            self.rect.left() - LEFT_MARGIN,
+            self.rect.left() - (LEFT_MARGIN * 2),
             self.rect.height()).toRect()
 
     @property
     def handlers(self):
         left = self.rect.left()
         rects = []
-        exposures = self.model.data['animations'][self.animation]['exposures']
+        exposures = self.document.animation_exposures(self.animation)
         for exposure in exposures:
-            width = (FRAME_WIDTH * self.hzoom * exposure)
+            width = (FRAME_WIDTH * self.document.hzoom * exposure)
+            hleft = (
+                (left + width) -
+                (FRAME_SPACING / 2) -
+                (FRAME_WIDTH * self.document.hzoom))
             rect = QtCore.QRectF(
-                left + width - (FRAME_SPACING / 2) - (FRAME_WIDTH * self.hzoom),
+                hleft,
                 self.rect.top() + (FRAME_VPADDING * 2),
-                FRAME_SPACING + (FRAME_WIDTH * self.hzoom),
+                FRAME_SPACING + (FRAME_WIDTH * self.document.hzoom),
                 self.rect.height() - (FRAME_VPADDING * 4))
             left += width
             rects.append(rect)
@@ -342,9 +489,9 @@ class Row:
     def frame_rects(self):
         left = self.rect.left()
         rects = []
-        exposures = self.model.data['animations'][self.animation]['exposures']
+        exposures = self.document.animation_exposures(self.animation)
         for exposure in exposures:
-            width = (FRAME_WIDTH * self.hzoom * exposure)
+            width = (FRAME_WIDTH * self.document.hzoom * exposure)
             rect = QtCore.QRectF(
                 (FRAME_SPACING / 2) + left,
                 self.rect.top() + FRAME_VPADDING,
@@ -357,10 +504,10 @@ class Row:
     def drop_rect(self, pos):
         if not self.rect.contains(pos):
             return None
-        exposures = self.model.data['animations'][self.animation]['exposures']
+        exposures = self.document.animation_exposures(self.animation)
         left = self.rect.left()
         for exposure in exposures:
-            width = (FRAME_WIDTH * self.hzoom * exposure)
+            width = (FRAME_WIDTH * self.document.hzoom * exposure)
             rect = QtCore.QRectF(
                 left, self.rect.top(), width, self.rect.height())
             if rect.contains(pos):
@@ -376,10 +523,10 @@ class Row:
     def drop_index(self, pos):
         if not self.rect.contains(pos):
             return None
-        exposures = self.model.data['animations'][self.animation]['exposures']
+        exposures = self.document.animation_exposures(self.animation)
         left = self.rect.left()
         for i, exposure in enumerate(exposures):
-            width = (FRAME_WIDTH * self.hzoom * exposure)
+            width = (FRAME_WIDTH * self.document.hzoom * exposure)
             rect = QtCore.QRectF(
                 left, self.rect.top(), width, self.rect.height())
             if rect.contains(pos):
@@ -388,8 +535,8 @@ class Row:
 
 
 class DragAndDropFrameHandler:
-    def __init__(self, rect, model, row, frame):
-        self.model = model
+    def __init__(self, rect, document, row, frame):
+        self.document = document
         self.row = row
         self.rect = rect
 
@@ -398,17 +545,17 @@ class DragAndDropFrameHandler:
 
 
 class ExposureHandler:
-    def __init__(self, model, anchor, row, frame, zoom):
-        self.model = model
+    def __init__(self, document, anchor, row, frame, zoom):
+        self.document = document
         self.anchor = anchor
         self.row = row
         self.frame = frame
-        self.zoom = zoom
 
     def mouse_move(self, pos):
-        exposure = (pos.x() - self.anchor.x()) / (FRAME_WIDTH * self.zoom)
+        exposure = (pos.x() - self.anchor.x())
+        exposure = exposure / (FRAME_WIDTH * self.document.hzoom)
         exposure = max((1, round(exposure)))
-        animation = self.model.data['animations'][self.row.animation]
+        animation = self.document.data['animations'][self.row.animation]
         animation['exposures'][self.frame] = exposure
 
     @property

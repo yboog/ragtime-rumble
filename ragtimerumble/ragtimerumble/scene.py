@@ -13,7 +13,7 @@ from ragtimerumble.coordinates import (
     path_cross_rect, Coordinates)
 from ragtimerumble.config import (
     DIRECTIONS, GAMEROOT, COUNTDOWNS, LOOP_STATUSES, CHARACTER_STATUSES,
-    MAX_MESSAGES, VARIANTS_COUNT)
+    MAX_MESSAGES, PALLETTES_COUNT)
 from ragtimerumble.duel import find_possible_duels
 from ragtimerumble.io import (
     load_image, load_data, quit_event, list_joysticks, image_mirror,
@@ -402,8 +402,8 @@ class Scene:
         char = next(self.character_generator)
         data = load_data(char)
         spritesheet = SpriteSheet(data)
-        variation = random.choice(list(range(VARIANTS_COUNT)))
-        char = Character(position, spritesheet, variation, self)
+        palette = random.choice(list(range(PALLETTES_COUNT)))
+        char = Character(position, spritesheet, palette, self)
         char.gender = data['gender']
 
         if group:

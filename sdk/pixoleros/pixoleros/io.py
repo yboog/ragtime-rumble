@@ -40,7 +40,7 @@ def serialize_animdata(data):
     return data
 
 
-def serialize_model(model):
+def serialize_document(model):
     return {
         'data': serialize_animdata(model.data),
         'library': [serialize_image(img) for img in model.library],

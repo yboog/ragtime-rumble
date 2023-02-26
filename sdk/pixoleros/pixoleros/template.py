@@ -7,7 +7,7 @@ EMPTY_ANIMDATA = {
     'center': [32, 56],
     'box': [-10, -8, 20, 10],
     'hitbox': [-10, -40, 20, 40],
-    'variants': [],
+    'palettes': [],
     'animations': {
         'bet': {'images': {'face': [], 'back': []}, 'exposures': []},
         'balcony': {'images': {'face': [], 'back': []}, 'exposures': []},

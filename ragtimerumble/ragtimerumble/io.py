@@ -4,7 +4,7 @@ import json
 import pygame
 import random
 import itertools
-from ragtimerumble.config import GAMEROOT, VARIANTS_COUNT
+from ragtimerumble.config import GAMEROOT, PALLETTES_COUNT
 from ragtimerumble.joystick import get_current_commands
 
 
@@ -14,7 +14,7 @@ _image_store = {}
 _name_generators = {}
 _death_sentences_generators = {}
 _kill_sentences_generators = {}
-_variants = {}
+_palettes = {}
 _sounds = {}
 
 
@@ -40,18 +40,18 @@ def _populate_name_generators(data, gender, _name_generators):
     _name_generators[gender] = itertools.cycle(names)
 
 
-def build_random_variant(variants):
-    indexes = list(range(len(variants)))
+def build_random_palette(palettes):
+    indexes = list(range(len(palettes)))
     random.shuffle(indexes)
-    length = random.randrange(1, len(variants))
-    variants = [variants[i] for i in indexes[:length]]
-    palette_source = [c for v in variants for c in v['origins']]
+    length = random.randrange(1, len(palettes))
+    palettes = [palettes[i] for i in indexes[:length]]
+    palette_source = [c for v in palettes for c in v['origins']]
     palette_dest = []
     ids = []
-    for variant in variants:
-        index = random.randrange(0, len(variant['variants']))
-        ids.append([variant['name'], index])
-        palette_dest.extend(variant['variants'][index])
+    for palette in palettes:
+        index = random.randrange(0, len(palette['palettes']))
+        ids.append([palette['name'], index])
+        palette_dest.extend(palette['palettes'][index])
     id_ = '-'.join(f'{id_[0]}.{id_[1]}' for id_ in ids)
     return id_, palette_source, palette_dest
 
@@ -145,13 +145,13 @@ def get_font(filename):
     return f'{GAMEROOT}/resources/fonts/{filename}'
 
 
-def get_character_variant_ids(data):
-    result = _variants.setdefault(data["name"], [])
+def get_character_palette_ids(data):
+    result = _palettes.setdefault(data["name"], [])
     if result:
         return result
-    for _ in range(VARIANTS_COUNT):
-        result.append(build_random_variant(data['variants']))
-    _variants[data["name"]] = result
+    for _ in range(PALLETTES_COUNT):
+        result.append(build_random_palette(data['palettes']))
+    _palettes[data["name"]] = result
     return result
 
 
@@ -162,9 +162,9 @@ def load_skin(data):
     result = [{
         side: load_frames(sheets[side], size, (0, 255, 0))
         for side in ('face', 'back')}]
-    # Build color variants
-    variants = get_character_variant_ids(data) if data.get('variants') else []
-    for id_, palette1, palette2 in variants:
+    # Build color palettes
+    palettes = get_character_palette_ids(data) if data.get('palettes') else []
+    for id_, palette1, palette2 in palettes:
         skin = {}
         for side in ('face', 'back'):
             images = load_frames(
@@ -176,12 +176,12 @@ def load_skin(data):
 
 def load_frames(
         filepath, frame_size, key_color,
-        palette1=None, palette2=None, variation=0):
+        palette1=None, palette2=None, palette=0):
     """
     Split a huge sheet in memory.
     """
     filepath = f'{GAMEROOT}/{filepath}'
-    filename_id = f'{GAMEROOT}/{filepath}.{variation}'
+    filename_id = f'{GAMEROOT}/{filepath}.{palette}'
     if _animation_store.get(filename_id):
         return _animation_store.get(filename_id, [])
 

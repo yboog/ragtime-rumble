@@ -11,7 +11,7 @@ from PySide6 import QtGui, QtCore
 *_, char = sys.argv
 repo_root = os.path.dirname(os.path.dirname(__file__))
 ref_root = f'{repo_root}/refs/frames/{char}/'
-variation_path = f'{repo_root}/refs/variants/{char}.json'
+palette_path = f'{repo_root}/refs/palettes/{char}.json'
 output = f'{repo_root}/refs/pixoleros/{char}.pixo'
 
 
@@ -43,8 +43,8 @@ def get_canvas_size(frame_count, column_lenght, frame_width, frame_height):
     return QtCore.QSize(frame_width * column_lenght, frame_height * row)
 
 
-with open(variation_path, 'r') as f:
-    variants = json.load(f)
+with open(palette_path, 'r') as f:
+    palettes = json.load(f)
 
 
 data = {
@@ -54,7 +54,7 @@ data = {
     'center': [32, 56],
     'box': [-10, -8, 20, 10],
     'hitbox': [-10, -40, 20, 40],
-    'variants': variants,
+    'palettes': palettes,
     'animations': {
         'bet': {'images': {'face': [], 'back': []}, 'exposures': []},
         'balcony': {'images': {'face': [], 'back': []}, 'exposures': []},
