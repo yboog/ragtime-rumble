@@ -1,11 +1,11 @@
-
+import io
 import os
 import sys
 import json
 import uuid
-import random
 import msgpack
-from PySide6 import QtGui, QtCore
+import numpy as np
+from PIL import Image
 
 
 *_, char = sys.argv
@@ -31,16 +31,6 @@ ORDER = [
     'vomit',
     'walk',
 ]
-
-
-def get_canvas_size(frame_count, column_lenght, frame_width, frame_height):
-    row, column = 1, 0
-    for _ in range(frame_count):
-        column += 1
-        if column >= column_lenght:
-            column = 0
-            row += 1
-    return QtCore.QSize(frame_width * column_lenght, frame_height * row)
 
 
 with open(palette_path, 'r') as f:
@@ -74,14 +64,6 @@ data = {
 }
 
 
-def qimage_to_bytes(image):
-    ba = QtCore.QByteArray()
-    buff = QtCore.QBuffer(ba)
-    buff.open(QtCore.QIODevice.WriteOnly)
-    image.save(buff, 'PNG')
-    return ba.data()
-
-
 pixo = {
     'library': {},
     'animation': 'idle',
@@ -89,13 +71,29 @@ pixo = {
     'index': 0
 }
 
+
+def remove_key_color(filename):
+    orig_color = 0, 255, 0, 255
+    replacement_color = 0, 0, 0, 0
+    image = Image.open(filename).convert('RGBA')
+    data = np.array(image)
+    data[(data == orig_color).all(axis=-1)] = replacement_color
+    return Image.fromarray(data, mode='RGBA')
+
+
+def image_to_byte(image):
+    img_byte_arr = io.BytesIO()
+    image.save(img_byte_arr, format='PNG')
+    return img_byte_arr.getvalue()
+
+
 for anim in ORDER:
     for side in ['face', 'back']:
         root = f'{ref_root}/{side}/{anim}'
         for file in os.listdir(root):
             filepath = f'{root}/{file}'
             image = {
-                'image': qimage_to_bytes(QtGui.QImage(filepath)),
+                'image': image_to_byte(remove_key_color(filepath)),
                 'path': filepath,
                 'ctime': os.path.getctime(filepath)}
             id_ = str(uuid.uuid1())

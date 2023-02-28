@@ -1,9 +1,11 @@
 from PySide6 import QtWidgets, QtGui, QtCore
 from pixoleros.colorwheel import ColorWheel
+from pixoleros.imgutils import list_rgb_colors
 
-ROW_HEIGHT = 22
+
+HEADER_HEIGHT = 22
 CELL_WIDTH = 22
-VERTICAL_HEADER_WIDTH = 120
+HEADER_TEXT_WIDTH = 120
 PALETTE_NAME_LEFT_MARGIN = 5
 CELL_MARGIN = 2
 
@@ -22,286 +24,459 @@ def grow_rect(rect, value):
         rect.height() + (value * 2))
 
 
-class Palette(QtWidgets.QWidget):
+class Palettes(QtWidgets.QWidget):
+    palette_changed = QtCore.Signal()
+
     def __init__(self, parent=None):
         super().__init__(parent=parent)
         self.document = None
-        self.palette_table = PaletteDisplayTable()
-        self.palette = PaletteColors()
-        self.palette_table.updated.connect(self.palette.update_size)
-        self.color_wheel = ColorWheel()
+        self.palettetable = PaletteTable()
+        self.palettetable.display_changed.connect(self.send_update_signal)
+        self.palettetable.color_selected.connect(self.color_index_changed)
+        self.colorwheel = ColorWheel()
+        self.colorwheel.currentColorChanged.connect(self.set_color)
+        self.colorwheel.currentColorChanged.connect(self.send_update_signal)
+
+        scroll = QtWidgets.QScrollArea()
+        scroll.setHorizontalScrollBarPolicy(QtCore.Qt.ScrollBarAlwaysOff)
+        scroll.setWidgetResizable(True)
+        scroll.setWidget(self.palettetable)
+
         splitter = QtWidgets.QSplitter(QtCore.Qt.Vertical)
-        splitter.setContentsMargins(0, 0, 0, 0)
-        splitter.addWidget(self.palette_table)
-        splitter.addWidget(self.palette)
-        splitter.addWidget(self.color_wheel)
+        splitter.addWidget(scroll)
+        splitter.addWidget(self.colorwheel)
+
         layout = QtWidgets.QVBoxLayout(self)
         layout.setContentsMargins(0, 0, 0, 0)
         layout.addWidget(splitter)
 
+    def send_update_signal(self, *_):
+        self.palette_changed.emit()
+
+    def color_index_changed(self):
+        name, i, j = self.document.editing_color_index
+        for palette in self.document.palettes:
+            if palette['name'] != name:
+                continue
+            color = palette['palettes'][i][j]
+            self.colorwheel.set_rgb255(*color)
+            return
+
+    def set_color(self, rgb):
+        name, i, j = self.document.editing_color_index
+        for palette in self.document.palettes:
+            if palette['name'] != name:
+                continue
+            rgb = [int(round(n * 255)) for n in rgb]
+            palette['palettes'][i][j] = rgb
+            self.palettetable.repaint()
+            return
+
+    def sizeHint(self):
+        return QtCore.QSize(300, 600)
+
     def set_document(self, document):
         self.document = document
-        self.palette_table.set_document(document)
-        self.palette.set_document(document)
+        self.palettetable.set_document(document)
         self.repaint()
 
 
-class PaletteListToolBar(QtWidgets.QToolBar):
-    def __init__(self, parent=None):
-        super().__init__(parent=parent)
-        self.addAction('+')
-        self.addAction('-')
-
-
-class PaletteDisplayTable(QtWidgets.QWidget):
-    def __init__(self, parent=None):
-        super().__init__(parent=parent)
-        self.rows = PaletteDisplayRow()
-        self.rows.resized.connect(self.row_resized)
-        self.updated = self.rows.updated
-        self.set_document = self.rows.set_document
-        self.scroll = QtWidgets.QScrollArea()
-        self.scroll.setWidgetResizable(True)
-        self.scroll.setWidget(self.rows)
-        self.scroll.sizeHint = lambda: QtCore.QSize(300, 400)
-        self.scroll.setHorizontalScrollBarPolicy(QtCore.Qt.ScrollBarAlwaysOff)
-        self.scroll.setVerticalScrollBarPolicy(QtCore.Qt.ScrollBarAlwaysOn)
-        layout = QtWidgets.QVBoxLayout(self)
-        layout.setSpacing(0)
-        layout.setContentsMargins(0, 0, 0, 0)
-        layout.addWidget(self.scroll)
-        layout.addWidget(PaletteListToolBar())
-
-    def row_resized(self, size):
-        width = size.width() + self.scroll.verticalScrollBar().width() + 2
-        self.scroll.setMinimumWidth(width)
-
-
-class PaletteDisplayRow(QtWidgets.QWidget):
-    resized = QtCore.Signal(QtCore.QSize)
-    updated = QtCore.Signal()
+class PaletteTable(QtWidgets.QWidget):
+    color_selected = QtCore.Signal()
+    display_changed = QtCore.Signal()
 
     def __init__(self, parent=None):
         super().__init__(parent=parent)
         self.document = None
 
-    def mouseReleaseEvent(self, event):
-        if event.button() != QtCore.Qt.LeftButton:
-            return
-        for row in self.rows:
-            palette = self.document.palettes[row.index]['name']
-            for i, rect in enumerate(row.palettes_rects):
-                if rect.contains(event.pos()):
-                    self.document.display_palettes[palette] = i
-                    self.repaint()
-                    self.updated.emit()
-                    return
-            if row.rect(self.width()).contains(event.pos()):
-                self.document.selected_palette = palette
-                self.repaint()
-                self.updated.emit()
-                return
-
-    @property
-    def rows(self):
-        return [
-            _Row(self.document, index=i)
-            for i in range(len(self.document.palettes))]
-
-    def paintEvent(self, event):
-        if self.document is None:
-            return
-
-        painter = QtGui.QPainter(self)
-        painter.setRenderHint(QtGui.QPainter.Antialiasing)
-        color = QtGui.QColor(QtCore.Qt.black)
-        color.setAlpha(20)
-        painter.setBrush(color)
-        painter.setPen(QtCore.Qt.NoPen)
-        painter.drawRect(0, 0, VERTICAL_HEADER_WIDTH, event.rect().height())
-
-        for row in self.rows:
-            top = ROW_HEIGHT * row.index
-            palette = self.document.palettes[row.index]
-            if palette['name'] == self.document.selected_palette:
-                color = QtGui.QColor(QtCore.Qt.yellow)
-                color.setAlpha(20)
-                painter.setPen(QtCore.Qt.NoPen)
-                painter.setBrush(color)
-                rect = QtCore.QRect(0, top, event.rect().width(), ROW_HEIGHT)
-                painter.drawRect(rect)
-            elif row.index % 2 == 0:
-                color = QtGui.QColor(QtCore.Qt.black)
-                color.setAlpha(20)
-                painter.setPen(QtCore.Qt.NoPen)
-                painter.setBrush(color)
-                rect = QtCore.QRect(0, top, event.rect().width(), ROW_HEIGHT)
-                painter.drawRect(rect)
-            painter.setPen(QtGui.QColor(200, 200, 200))
-            y = top - (ROW_HEIGHT / 4)
-            painter.drawText(PALETTE_NAME_LEFT_MARGIN, y, palette['name'])
-            painter.setBrush(QtCore.Qt.NoBrush)
-
-            for i, rect in enumerate(row.palettes_rects):
-                painter.setPen(QtGui.QColor(25, 25, 25))
-                painter.setBrush(QtCore.Qt.NoBrush)
-                painter.drawRoundedRect(grow_rect(rect, -CELL_MARGIN), 3, 3)
-                if self.document.get_display_palette(palette['name']) == i:
-                    painter.setPen(QtCore.Qt.NoPen)
-                    painter.setBrush(QtGui.QColor(25, 25, 25))
-                    painter.drawEllipse(grow_rect(rect, -CELL_MARGIN * 3))
-
-    def update_size(self):
-        if not self.document:
-            self.resize(VERTICAL_HEADER_WIDTH, 50)
-            self.repaint()
-            return
-        palettes = self.document.palettes
-        cell_number = max(len(p['palettes']) for p in palettes)
-        width = VERTICAL_HEADER_WIDTH + (CELL_WIDTH * cell_number)
-        height = ROW_HEIGHT * (len(palettes) - 1)
-        self.setMinimumWidth(width)
-        self.setFixedHeight(height)
-        self.resized.emit(QtCore.QSize(width, height))
-        self.repaint()
+    def sizeHint(self):
+        return QtCore.QSize(300, 600)
 
     def set_document(self, document):
         self.document = document
-        self.update_size()
         self.repaint()
 
+    def draw_header(self, painter, header, extended):
+        brush = painter.brush()
+        pen = painter.pen()
+        painter.setBrush(QtGui.QColor(0, 0, 0, 150))
+        painter.setPen(QtCore.Qt.NoPen)
+        painter.drawRect(header.rect(self.width()))
+        painter.setBrush(brush)
+        painter.setPen(pen)
+        f = QtCore.Qt.AlignVCenter
+        painter.drawText(header.text_rect, f, f'   {header.palette_name}')
+        rect = grow_rect(header.expand_rect, -4)
+        painter.setPen(QtCore.Qt.NoPen)
+        painter.setBrush(pen.color())
+        painter.drawRoundedRect(rect, 2, 2)
+        font = QtGui.QFont()
+        font.setBold(True)
+        painter.setFont(font)
+        f = QtCore.Qt.AlignCenter
+        painter.setBrush(QtCore.Qt.NoBrush)
+        painter.setPen(QtGui.QColor(25, 25, 25))
+        painter.drawText(rect, f, '-' if extended else '+')
+        painter.setPen(QtCore.Qt.NoPen)
+        painter.setBrush(pen.color())
+        rect = header.delete_rect(self.width())
+        painter.setRenderHint(QtGui.QPainter.Antialiasing)
+        painter.drawEllipse(rect.center(), 8, 8)
+        painter.setRenderHint(QtGui.QPainter.Antialiasing, False)
+        painter.setBrush(QtCore.Qt.NoBrush)
+        painter.setPen(QtGui.QColor(25, 25, 25))
+        painter.drawText(rect, f, 'X')
+        painter.setFont(QtGui.QFont())
+        rects = header.variants_rects
+        painter.setPen(pen)
+        painter.setBrush(brush)
+        for i, rect in enumerate(rects):
+            painter.drawRect(grow_rect(rect, -2))
+            v = self.document.displayed_variants.get(header.palette_name, 0)
+            if i == v:
+                brush = painter.brush()
+                color = painter.pen().color()
+                painter.setBrush(color)
+                painter.drawEllipse(rect.center(), 6, 6)
+                painter.setBrush(brush)
 
-class _Row:
-    def __init__(self, document, index):
+        painter.drawText(rects[-1], QtCore.Qt.AlignCenter, '+')
+
+    @property
+    def rows(self):
+        if not self.document:
+            return
+        top = 0
+        for i, palette in enumerate(self.document.palettes):
+            expanded = palette['name'] in self.document.displayed_palettes
+            header = _Header(self.document, palette['name'], i, top)
+            top += HEADER_HEIGHT
+            if not expanded:
+                yield header, None, top
+                continue
+            colors = _Colors(self.document, palette['name'], i, top)
+            top += colors.height
+            yield header, colors, top
+
+    def mouseReleaseEvent(self, event):
+        for header, colors, bottom in self.rows:
+            palette = self.document.palettes[header.index]
+            if colors:
+                column = colors.column(0)
+                if column[-1].contains(event.pos()):
+                    rgbs = list_rgb_colors(self.document.current_image.image)
+                    dialog = ColorSelection(rgbs)
+                    point = self.mapToGlobal(column[-1].topLeft())
+                    result = dialog.exec(point)
+                    if result == QtWidgets.QDialog.Accepted:
+                        self.document.add_palette_origins(
+                            colors.index, dialog.color)
+                        self.repaint()
+                    return
+                i = 0
+                for i in range(len(palette['palettes'])):
+                    column = colors.column(i + 1)
+                    for j, rect in enumerate(column[:-1]):
+                        if rect.contains(event.pos()):
+                            infos = header.palette_name, i, j
+                            self.document.editing_color_index = infos
+                            self.repaint()
+                            self.color_selected.emit()
+                            return
+                    if column[-1].contains(event.pos()):
+                        del palette['palettes'][i]
+                        infos = palette['name'], i
+                        infos2 = self.document.editing_color_index[:2]
+                        if infos2 == infos:
+                            self.document.editing_color_index = ('', -1, -1)
+                        self.display_changed.emit()
+                        self.repaint()
+                        return
+                column = colors.column(i + 2)
+                for j, rect in enumerate(column[:-1]):
+                    if rect.contains(event.pos()):
+                        infos = self.document.editing_color_index[0]
+                        if infos == palette['name']:
+                            self.document.editing_color_index = ('', -1, -1)
+                        del palette['origins'][j]
+                        for p in palette['palettes']:
+                            del p[j]
+                        self.display_changed.emit()
+                        self.repaint()
+                        return
+
+            if not header.rect(self.width()).contains(event.pos()):
+                continue
+
+            if header.text_rect.contains(event.pos()):
+                self.rename(header)
+                return
+
+            if header.delete_rect(self.width()).contains(event.pos()):
+                del self.document.palettes[header.index]
+                if palette['name'] == self.document.editing_color_index[0]:
+                    self.document.editing_color_index = ('', -1, -1)
+                self.repaint()
+                return
+
+            if header.expand_rect.contains(event.pos()):
+                self.document.switch_palette(header.palette_name)
+                self.repaint()
+                return
+
+            else:
+                rects = header.variants_rects
+                for i, rect in enumerate(rects[:-1]):
+                    if rect.contains(event.pos()):
+                        self.document.displayed_variants[header.palette_name] = i
+                        self.display_changed.emit()
+                        self.repaint()
+                        return
+                if rects[-1].contains(event.pos()):
+                    palette['palettes'].append(palette['origins'][:])
+                    self.repaint()
+                    return
+        rect = self.plus_rect(bottom)
+        if rect.contains(event.pos()):
+            self.document.add_palette()
+            self.repaint()
+
+    def rename(self, header):
+        dialog = RenameDialog(header, self)
+        rect = header.text_rect
+        point = self.mapToGlobal(rect.topLeft())
+        dialog.exec_(point, rect.size())
+
+    def draw_colors(self, painter, colors):
+        palette = self.document.palettes[colors.index]
+        pen = painter.pen()
+        painter.setPen(QtCore.Qt.NoPen)
+        selected = self.document.editing_color_index
+        i = 0
+        for i, rgbs in enumerate(palette['palettes']):
+            column = colors.column(i + 1)
+            font = QtGui.QFont()
+            font.setBold(True)
+            painter.setFont(font)
+            for j, (rect, rgb) in enumerate(zip(column[:-1], rgbs)):
+                if selected == (colors.palette_name, i, j):
+                    painter.setPen(QtCore.Qt.yellow)
+                else:
+                    painter.setPen(QtCore.Qt.NoPen)
+                painter.setBrush(QtGui.QColor(*rgb))
+                painter.drawRect(grow_rect(rect, -2))
+            painter.setBrush(QtGui.QColor(255, 255, 255, 20))
+            painter.setPen(QtCore.Qt.NoPen)
+            painter.drawRect(grow_rect(column[-1], -2))
+            painter.setPen(pen)
+            painter.drawText(column[-1], QtCore.Qt.AlignCenter, '-')
+
+        column = colors.column(i + 2)
+        for rect in column[:-1]:
+            painter.setBrush(QtGui.QColor(255, 255, 255, 20))
+            painter.setPen(QtCore.Qt.NoPen)
+            painter.drawRect(grow_rect(rect, -2))
+            painter.setPen(pen)
+            painter.drawText(rect, QtCore.Qt.AlignCenter, '-')
+
+        painter.setFont(QtGui.QFont())
+        column = colors.column(0)
+        painter.setPen(QtCore.Qt.NoPen)
+        for rect, rgb in zip(column[:-1], palette['origins']):
+            painter.setBrush(QtGui.QColor(*rgb))
+            painter.drawRect(grow_rect(rect, -2))
+        painter.setBrush(QtCore.Qt.NoBrush)
+        painter.setPen(pen)
+        painter.drawText(grow_rect(column[-1], -2), QtCore.Qt.AlignCenter, '+')
+        painter.drawRect(grow_rect(column[-1], -2))
+
+    def plus_rect(self, top):
+        top = max((
+            top + CELL_MARGIN * 2,
+             self.parent().rect().bottom() - HEADER_HEIGHT * 1.5))
+        return QtCore.QRect(0, top, self.width(), HEADER_HEIGHT * 1.5)
+
+    def paintEvent(self, _):
+        if not self.document:
+            return
+        painter = QtGui.QPainter(self)
+        pen = painter.pen()
+        brush = painter.brush()
+        painter.setPen(QtCore.Qt.NoPen)
+        color = QtGui.QColor('black')
+        color.setAlpha(100)
+        painter.setBrush(color)
+        painter.drawRect(
+            0, 0,
+            HEADER_HEIGHT + HEADER_TEXT_WIDTH + CELL_WIDTH + (CELL_MARGIN / 2),
+            self.rect().height())
+        painter.setPen(pen)
+        painter.setBrush(brush)
+        bottom = 0
+        for header, colors, bottom in self.rows:
+            self.draw_header(painter, header, bool(colors))
+            if not colors:
+                continue
+            self.draw_colors(painter, colors)
+        rect = self.plus_rect(bottom)
+        painter.setRenderHint(QtGui.QPainter.Antialiasing)
+        painter.setBrush(QtGui.QColor(15, 15, 15))
+        painter.setPen(QtCore.Qt.NoPen)
+        painter.drawRoundedRect(grow_rect(rect, -4), 4, 4)
+        painter.setBrush(QtCore.Qt.NoBrush)
+        painter.setPen(pen)
+        font = QtGui.QFont()
+        font.setBold(True)
+        font.setPixelSize(25)
+        painter.setFont(font)
+        painter.drawText(rect, QtCore.Qt.AlignCenter, '+')
+        painter.end()
+        self.setFixedHeight(rect.bottom())
+        return
+
+
+class _Header:
+    def __init__(self, document, palette_name, index, top):
         self.document = document
+        self.palette_name = palette_name
+        self.top = top
         self.index = index
 
     def rect(self, width):
-        return QtCore.QRect(0, self.top, width, ROW_HEIGHT)
+        return QtCore.QRect(0, self.top, width, HEADER_HEIGHT)
 
     @property
-    def top(self):
-        return ROW_HEIGHT * self.index
-
-    @property
-    def palettes_rects(self):
+    def variants_rects(self):
         return [
             QtCore.QRect(
-                VERTICAL_HEADER_WIDTH + (CELL_WIDTH * i),
+                (
+                    HEADER_HEIGHT + HEADER_TEXT_WIDTH +
+                    ((CELL_WIDTH + CELL_MARGIN) * i)
+                ),
                 self.top,
                 CELL_WIDTH,
                 CELL_WIDTH)
             for i in range(
-                len(self.document.palettes[self.index]['palettes']))]
-
-
-class PaletteColors(QtWidgets.QWidget):
-    def __init__(self, parent=None):
-        super().__init__(parent=parent)
-        self.document = None
+                len(self.document.palettes[self.index]['palettes']) + 2)]
 
     @property
-    def palette(self):
-        if self.document is None:
-            return None
-        return next((
-            p for p in self.document.palettes
-            if p['name'] == self.document.selected_palette), None)
+    def expand_rect(self):
+        return QtCore.QRect(0, self.top, HEADER_HEIGHT, HEADER_HEIGHT)
 
-    def set_document(self, document):
+    def delete_rect(self, width):
+        return QtCore.QRect(
+            width - HEADER_HEIGHT, self.top, HEADER_HEIGHT, HEADER_HEIGHT)
+
+    @property
+    def text_rect(self):
+        return QtCore.QRect(
+            HEADER_HEIGHT, self.top, HEADER_TEXT_WIDTH, HEADER_HEIGHT)
+
+
+class _Colors:
+    def __init__(self, document, palette_name, index, top):
         self.document = document
-        self.update_size()
-        self.repaint()
+        self.palette_name = palette_name
+        self.index = index
+        self.top = top
 
-    def update_size(self):
-        if not self.palette:
-            return
-        self.setMinimumHeight(self.column(0).height)
-        column_count = len(self.palette['palettes']) + 3
-        width = PALETTE_MARGINS * 2
-        width += (COLOR_RECT_SIZE + COLOR_RECT_SPACING) * column_count
-        self.setMinimumWidth(width)
-        self.repaint()
-
-    def column(self, index):
-        left = PALETTE_MARGINS
-        left += (COLOR_RECT_SIZE + COLOR_RECT_SPACING) * index
-        return _Column(self.document, left)
-
-    def paintEvent(self, event):
-        palette = self.palette
-        if self.document is None or palette is None:
-            return
-        painter = QtGui.QPainter(self)
-        column = self.column(0)
-        pen = QtGui.QPen(QtGui.QColor(35, 35, 35))
-        pen.setWidth(2)
-        painter.setPen(pen)
-        for color, rect in zip(palette['origins'], column.rects):
-            painter.setBrush(QtGui.QColor(*color))
-            painter.drawRoundedRect(rect, 3, 3)
-        for rect in self.column(1).rects:
-            painter.drawText(rect.center(), '-')
-        for rect in self.column(2).rects:
-            painter.drawText(rect.center(), '>')
-        for i, overrive in enumerate(palette['palettes']):
-            column = self.column(i + 3)
-            if i == self.document.get_display_palette(palette['name']):
-                color = QtGui.QColor(QtCore.Qt.yellow)
-                color.setAlpha(25)
-                painter.setBrush(color)
-                painter.setPen(QtCore.Qt.NoPen)
-                rect = column.rect
-                rect.setHeight(event.rect().height())
-                painter.drawRect(rect)
-            pen = QtGui.QPen(QtGui.QColor(35, 35, 35))
-            pen.setWidth(2)
-            painter.setPen(pen)
-            for color, rect in zip(overrive, column.rects):
-                painter.setBrush(QtGui.QColor(*color))
-                painter.drawRoundedRect(rect, 3, 3)
-
-
-class _Column:
-    def __init__(self, document, left):
-        self.document = document
-        self.left = left
+    def column(self, i):
+        left = HEADER_HEIGHT + HEADER_TEXT_WIDTH
+        left += i * (CELL_WIDTH + CELL_MARGIN)
+        top = self.top
+        cells = []
+        it = len(self.document.palettes[self.index]['origins']) + 1
+        for _ in range(it):
+            cells.append(QtCore.QRect(left, top, CELL_WIDTH, CELL_WIDTH))
+            top += CELL_WIDTH + CELL_MARGIN
+        return cells
 
     @property
     def height(self):
-        palette = self.palette
-        if not palette:
-            return 150
-        height = PALETTE_MARGINS * 2
-        height += COLOR_RECT_SIZE * len(palette['origins'])
-        height += COLOR_RECT_SPACING * len(palette['origins'])
-        return height
+        return self.column(0)[-1].bottom() - self.top + (CELL_MARGIN * 2)
 
-    @property
-    def rect(self):
-        return QtCore.QRectF(
-            self.left - (COLOR_RECT_SPACING / 2), 0,
-            COLOR_RECT_SIZE + COLOR_RECT_SPACING, self.height)
 
-    @property
-    def palette(self):
-        if self.document is None:
+class RenameDialog(QtWidgets.QWidget):
+    def __init__(self, header, parent=None):
+        super().__init__(parent)
+        self.header = header
+        self.setWindowFlag(QtCore.Qt.FramelessWindowHint)
+        self.setWindowFlag(QtCore.Qt.Popup)
+        self.text = QtWidgets.QLineEdit(header.palette_name)
+        self.text.focusOutEvent = self.focusOutEvent
+        layout = QtWidgets.QHBoxLayout(self)
+        layout.setContentsMargins(0, 0, 0, 0)
+        layout.addWidget(self.text)
+        self.text.returnPressed.connect(self.close)
+
+    def closeEvent(self, _):
+        text = self.text.text()
+        if self.header.palette_name == text:
             return
-        return next((
-            p for p in self.document.palettes
-            if p['name'] == self.document.selected_palette), None)
+        self.header.document.rename_palette(self.header.index, text)
+        self.parent().repaint()
 
-    @property
-    def rects(self):
-        palette = self.palette
-        if not palette:
-            return []
+    def exec_(self, point, size):
+        self.move(point)
+        self.resize(size)
+        self.show()
+        self.text.setFocus(QtCore.Qt.MouseFocusReason)
+        self.text.selectAll()
 
-        rects = []
-        top = PALETTE_MARGINS
-        for _ in palette['origins']:
-            rect = QtCore.QRect(
-                self.left, top, COLOR_RECT_SIZE, COLOR_RECT_SIZE)
-            rects.append(rect)
-            top += COLOR_RECT_SIZE + COLOR_RECT_SPACING
-        return rects
+
+class ColorSelection(QtWidgets.QDialog):
+    COLORSIZE = 30
+    COLCOUNT = 5
+
+    def __init__(self, colors, parent=None):
+        super().__init__(parent=parent)
+        self.setMouseTracking(True)
+        self.colors = colors
+        self.color = None
+        self.setModal(True)
+        self.setWindowFlags(QtCore.Qt.FramelessWindowHint)
+        width = self.COLORSIZE * self.COLCOUNT
+        height = self.COLORSIZE * (len(self.colors) // self.COLCOUNT)
+        self.resize(width, height)
+
+    def mouseMoveEvent(self, _):
+        self.repaint()
+
+    def exec(self, point):
+        self.move(point)
+        return super().exec()
+
+    def mouseReleaseEvent(self, event):
+        if event.button() != QtCore.Qt.LeftButton:
+            return
+        row = event.pos().y() // self.COLORSIZE
+        col = event.pos().x() // self.COLORSIZE
+        index = (row * self.COLCOUNT) + col
+        try:
+            self.color = self.colors[index]
+            self.accept()
+        except IndexError:
+            ...
+
+    def paintEvent(self, event):
+        painter = QtGui.QPainter(self)
+        painter.setRenderHint(QtGui.QPainter.Antialiasing)
+        left, top = 0, 0
+        pen = QtGui.QPen()
+        pen.setWidth(3)
+        for color in self.colors:
+            if left >= self.rect().width():
+                left = 0
+                top += self.COLORSIZE
+            rect = QtCore.QRect(left, top, self.COLORSIZE, self.COLORSIZE)
+            if color == self.color:
+                pencolor = QtCore.Qt.red
+            elif rect.contains(self.mapFromGlobal(QtGui.QCursor.pos())):
+                pencolor = QtCore.Qt.white
+            else:
+                pencolor = QtCore.Qt.transparent
+            pen.setColor(pencolor)
+            painter.setPen(pen)
+            painter.setBrush(QtGui.QColor(*color))
+            painter.drawRect(rect)
+            left += self.COLORSIZE

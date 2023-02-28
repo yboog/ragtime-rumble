@@ -1,4 +1,6 @@
 import os
+import io
+from PIL import Image
 from copy import deepcopy
 from PySide6 import QtCore, QtGui
 
@@ -21,6 +23,10 @@ def bytes_to_qimage(image_bytes):
     image = QtGui.QImage()
     image.loadFromData(ba, 'PNG')
     return image
+
+
+def bytes_to_image(image_bytes):
+    return Image.open(io.BytesIO(image_bytes))
 
 
 def serialize_image(image):

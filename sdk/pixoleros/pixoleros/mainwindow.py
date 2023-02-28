@@ -1,13 +1,15 @@
 
 import msgpack
+from PIL import ImageQt
 from PySide6 import QtWidgets, QtGui, QtCore
-from pixoleros.io import get_icon
-from pixoleros.navigator import Navigator
-from pixoleros.viewport import ViewportMapper, zoom
-from pixoleros.model import Document
 from pixoleros.dopesheet import DopeSheet
+from pixoleros.io import get_icon
+from pixoleros.imgutils import switch_colors
 from pixoleros.library import LibraryTableView
-from pixoleros.palette import Palette
+from pixoleros.model import Document
+from pixoleros.navigator import Navigator
+from pixoleros.palette import Palettes
+from pixoleros.viewport import ViewportMapper, zoom
 
 
 class Pixoleros(QtWidgets.QMainWindow):
@@ -22,6 +24,7 @@ class Pixoleros(QtWidgets.QMainWindow):
         self.mdi.setTabsClosable(True)
 
         self.toolbar = MainToolbar()
+        self.toolbar.new.triggered.connect(self.new)
         self.toolbar.open.triggered.connect(self.open)
 
         areas = (
@@ -41,7 +44,8 @@ class Pixoleros(QtWidgets.QMainWindow):
         self.dopesheet_dock.setAllowedAreas(areas)
         self.dopesheet_dock.setWidget(self.dopesheet)
 
-        self.palette = Palette()
+        self.palette = Palettes()
+        self.palette.palette_changed.connect(self.repaint_canvas)
         self.palette_dock = QtWidgets.QDockWidget('Palette', self)
         self.palette_dock.setAllowedAreas(areas)
         self.palette_dock.setWidget(self.palette)
@@ -67,6 +71,10 @@ class Pixoleros(QtWidgets.QMainWindow):
         self.mdi.currentSubWindow().repaint()
         self.dopesheet.repaint()
 
+    def new(self):
+        document = Document()
+        self.add_document(document, 'New character')
+
     def open(self):
         filepath, _ = QtWidgets.QFileDialog.getOpenFileName(
             parent=self,
@@ -82,10 +90,13 @@ class Pixoleros(QtWidgets.QMainWindow):
             data = msgpack.load(f)
 
         document = Document.load(data)
+        self.add_document(document, filepath)
+
+    def add_document(self, document, name):
         canvas = Canvas(document)
         canvas.updated.connect(self.update)
         window = self.mdi.addSubWindow(canvas)
-        window.setWindowTitle(filepath)
+        window.setWindowTitle(name)
         window.show()
 
     def sub_window_changed(self, window):
@@ -93,6 +104,10 @@ class Pixoleros(QtWidgets.QMainWindow):
         self.dopesheet.set_document(document)
         self.palette.set_document(document)
         self.library.set_document(document)
+
+    def repaint_canvas(self):
+        if (widget := self.mdi.currentSubWindow().widget()):
+            widget.repaint()
 
 
 class PlayerToolbar(QtWidgets.QToolBar):
@@ -157,14 +172,21 @@ class CanvasView(QtWidgets.QWidget):
         painter.setPen(QtCore.Qt.NoPen)
         painter.setBrush(QtGui.QColor(25, 25, 25))
         painter.drawRect(event.rect())
-        image = self.document.current_image.image
-        rect = QtCore.QRectF(0, 0, image.size().width(), image.size().height())
-        rect = self.viewportmapper.to_viewport_rect(rect)
-        image = image.scaled(
-            rect.size().toSize(),
-            QtCore.Qt.KeepAspectRatio,
-            QtCore.Qt.FastTransformation)
-        painter.drawImage(rect, image)
+        if self.document.current_image:
+            image = self.document.current_image.image
+            origins, overrides = self.document.palette_override
+            if origins:
+                image = switch_colors(image, origins, overrides)
+            qimage = ImageQt.ImageQt(image)
+            rect = QtCore.QRectF(
+                0, 0, qimage.size().width(), qimage.size().height())
+            rect = self.viewportmapper.to_viewport_rect(rect)
+            qimage = qimage.scaled(
+                rect.size().toSize(),
+                QtCore.Qt.KeepAspectRatio,
+                QtCore.Qt.FastTransformation)
+            painter.drawImage(rect, qimage)
+        painter.end()
 
     def mouseReleaseEvent(self, event):
         self.navigator.update(event, pressed=False)

@@ -4,9 +4,10 @@ https://github.com/vincentgires/qtutils/blob/master/qtutils/widgets/color.py
 Author: Vincent Gires
 """
 
-from PySide6 import QtWidgets, QtCore, QtGui
-from math import atan2, sin, cos, radians, pi, sqrt
+import re
 import colorsys
+from math import atan2, sin, cos, radians, pi, sqrt
+from PySide6 import QtWidgets, QtCore, QtGui
 
 
 def distance2d(point1, point2):
@@ -21,7 +22,7 @@ class ColorWheel(QtWidgets.QWidget):
     def __init__(self, parent=None):
         super().__init__(parent)
         self.widget = QtWidgets.QWidget()
-        self.widget.setFixedSize(196, 232)
+        self.widget.setFixedSize(196, 265)
         self.hue = 1.0
         self.saturation = 0.0
         self.value = 1.0
@@ -30,13 +31,15 @@ class ColorWheel(QtWidgets.QWidget):
         self.value_slider = ValueSlider()
         self.value_slider.sliderMoved.connect(self.on_value_changed)
         self.color_square = ColorSquare(self.rgb())
-        self.color_square.setFixedSize(173, 20)
+        self.color_square.setFixedSize(196, 20)
         self.rgb_edits = [QtWidgets.QLineEdit() for _ in range(3)]
         validator = QtGui.QIntValidator()
         validator.setRange(0, 255)
         for edit in self.rgb_edits:
             edit.textEdited.connect(self.set_rgb_from_edit)
             edit.setValidator(validator)
+        self.color_name = QtWidgets.QLineEdit()
+        self.color_name.textEdited.connect(self.set_hexadecimal_color)
         self.update_rgb()
 
         colorwheel_layout = QtWidgets.QHBoxLayout()
@@ -51,6 +54,7 @@ class ColorWheel(QtWidgets.QWidget):
         vbox.addLayout(colorwheel_layout)
         vbox.addWidget(self.color_square)
         vbox.addLayout(rgb_layout)
+        vbox.addWidget(self.color_name)
 
         hbox = QtWidgets.QHBoxLayout()
         hbox.setContentsMargins(0, 0, 0, 0)
@@ -107,6 +111,17 @@ class ColorWheel(QtWidgets.QWidget):
         self.currentColorChanged.emit(self.rgb())
         for widget, color in zip(self.rgb_edits, self.rgb()):
             widget.setText(f'{round(color * 255)}')
+        self.color_name.setText(QtGui.QColor(*self.rgb255()).name())
+
+    def set_hexadecimal_color(self, text):
+        match = re.search(r'^#(?:[0-9a-fA-F]{3}){1,2}$', text)
+        if not match:
+            return
+        color = QtGui.QColor(text)
+        r = color.redF()
+        g = color.greenF()
+        b = color.blueF()
+        self.set_rgb(r, g, b)
 
     def set_rgb_from_edit(self):
         r, g, b = [float(edit.text() or "0.0") / 255 for edit in self.rgb_edits]
@@ -300,6 +315,7 @@ class HueSatWheel(QtWidgets.QWidget):
         return x, y
 
     def _paint_colorwheel(self, painter):
+        painter.setRenderHint(QtGui.QPainter.Antialiasing)
         center = self.rect().center()
         radius = ((self.width() + self.height()) / 4) - 1.5
         for x in range(self.width()):
@@ -325,8 +341,8 @@ class HueSatWheel(QtWidgets.QWidget):
         brush = QtGui.QBrush()
         brush.setColor(QtCore.Qt.red)
         painter = QtGui.QPainter(image)
-        painter.setBrush(brush)
         painter.setRenderHint(QtGui.QPainter.Antialiasing, True)
+        painter.setBrush(brush)
         self._paint_colorwheel(painter)
         painter.end()
         return image

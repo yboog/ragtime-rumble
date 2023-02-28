@@ -55,6 +55,8 @@ class DopeSheet(QtWidgets.QWidget):
         layout.addWidget(self.exposures_scroll)
 
     def wheelEvent(self, event):
+        if not self.document:
+            return
         factor = .1 if event.angleDelta().y() > 0 else -.1
         offset = self.document.hzoom * abs(factor)
         offset = offset if factor < 0 else -offset
@@ -545,7 +547,7 @@ class DragAndDropFrameHandler:
 
 
 class ExposureHandler:
-    def __init__(self, document, anchor, row, frame, zoom):
+    def __init__(self, document, anchor, row, frame):
         self.document = document
         self.anchor = anchor
         self.row = row

@@ -1,9 +1,8 @@
 import os
 import msgpack
 from copy import deepcopy
-from PySide6 import QtGui
 from pixoleros.template import EMPTY_ANIMDATA
-from pixoleros.io import serialize_document, bytes_to_qimage
+from pixoleros.io import serialize_document, bytes_to_image
 
 
 class Document:
@@ -14,14 +13,15 @@ class Document:
         self.side = 'face'
         self.hzoom = 1
         self._index = 0
-        self.display_palettes = {}
-        self.selected_palette = None
+        self.displayed_variants = {}
+        self.displayed_palettes = []
+        self.editing_color_index = ('', -1, -1)
 
     @staticmethod
     def load(data):
         document = Document()
         document.data = data['data']
-        document.library = {k: Image.load(v) for k, v in data['library'].items()}
+        document.library = {k: PixoImage.load(v) for k, v in data['library'].items()}
         document.animation = data['animation']
         document.side = data['side']
         document.index = data['index']
@@ -34,6 +34,34 @@ class Document:
     @property
     def palettes(self):
         return self.data['palettes']
+
+    def add_palette(self):
+        self.data['palettes'].append({
+            'name': f'palette-{len(self.palettes)}',
+            'origins': [],
+            'palettes': []})
+
+    def add_palette_origins(self, index, color):
+        self.data['palettes'][index]['origins'].append(color)
+        for palette in self.data['palettes'][index]['palettes']:
+            palette.append(color)
+
+    def rename_palette(self, index, name):
+        tmp = '{name}-{i}'
+        basename = name
+        i = 2
+        while name in [p['name'] for p in self.palettes]:
+            name = tmp.format(name=basename, i=i)
+            i += 1
+        palette = self.palettes[index]
+        if palette['name'] in self.displayed_palettes:
+            self.displayed_palettes.remove(palette['name'])
+            self.displayed_palettes.append(name)
+        if palette['name'] in self.displayed_variants:
+            variant = self.displayed_variants[palette['name']]
+            self.displayed_variants[name] = variant
+            del(self.displayed_variants[palette['name']])
+        palette['name'] = name
 
     @property
     def index(self):
@@ -65,7 +93,7 @@ class Document:
             return None
 
     def get_display_palette(self, name):
-        return self.display_palettes.get(name)
+        return self.display_palettes.get(name, 0)
 
     def image(self, animation, frame, side=None):
         return self.library[self.image_id(animation, frame, side)]
@@ -84,6 +112,12 @@ class Document:
         data = serialize_document(self)
         with open(filepath, 'wb') as f:
             msgpack.dump(data, f)
+
+    def switch_palette(self, palette_name):
+        if palette_name in self.displayed_palettes:
+            self.displayed_palettes.remove(palette_name)
+        else:
+            self.displayed_palettes.append(palette_name)
 
     def remove_sources(self, sources, destination=None):
         """
@@ -137,6 +171,19 @@ class Document:
             (destination[0], destination[1] + i)
             for i in range(len(items_to_insert))]
 
+    @property
+    def palette_override(self):
+        palettes = [
+            p for p in self.palettes
+            if self.displayed_variants.get(p['name'])]
+        origins = []
+        variants = []
+        for palette in palettes:
+            origins.extend(palette['origins'])
+            index = self.displayed_variants[palette['name']] - 1
+            variants.extend(palette['palettes'][index])
+        return origins, variants
+
 
 def frame_index_from_exposures(index, exposures):
     """
@@ -158,9 +205,9 @@ def frame_index_from_exposures(index, exposures):
     return 0
 
 
-class Image:
-    def __init__(self, qimage, path, ctime):
-        self.image = qimage
+class PixoImage:
+    def __init__(self, image, path, ctime):
+        self.image = image
         self.path = path
         self.ctime = ctime
         self._reference_exists = None
@@ -168,8 +215,8 @@ class Image:
 
     @staticmethod
     def load(data):
-        qimage = bytes_to_qimage(data['image'])
-        return Image(qimage, data['path'], data['ctime'])
+        image = bytes_to_image(data['image'])
+        return PixoImage(image, data['path'], data['ctime'])
 
     @property
     def reference_exists(self):
