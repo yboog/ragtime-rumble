@@ -72,12 +72,17 @@ class DopeSheet(QtWidgets.QWidget):
     def repaint(self):
         super().repaint()
 
+    @property
+    def selection(self):
+        return self.exposures.selection
+
 
 class DopeSheetHeader(QtWidgets.QWidget):
     updated = QtCore.Signal()
 
     def __init__(self, parent=None):
         super().__init__(parent)
+        self.setFocusPolicy(QtCore.Qt.NoFocus)
         self.document = None
         self.setFixedHeight(HEADER_HIGHT)
 
@@ -128,15 +133,16 @@ class DopeSheetHeader(QtWidgets.QWidget):
         if not self.document:
             painter.setBrush(QtGui.QColor(35, 35, 35))
             painter.setPen(QtCore.Qt.NoPen)
-            painter.drawRect(event.rect())
+            painter.drawRect(self.rect())
             return
         painter.setBrush(QtGui.QColor(*HEADER_COLOR))
         pen = painter.pen()
         painter.setPen(QtCore.Qt.NoPen)
-        painter.drawRect(event.rect())
+        painter.drawRect(self.rect())
         painter.setPen(pen)
         left = LEFT_COLUMN_WIDTH
         width = dopesheet_width(self.document)
+        width = max((width, self.parent().width()))
         i = 0
         self.setFixedWidth(width)
         offset = FRAME_WIDTH * self.document.hzoom
@@ -212,13 +218,13 @@ class DopeSheetExposures(QtWidgets.QWidget):
         if self.clicked_frame:
             row, frame = self.clicked_frame
             rect = row.frame_rects[frame]
-            self.handler = DragAndDropFrameHandler(
-                rect, self.document, row, frame)
+            self.handler = DragAndDropFrameHandler(rect, self.document, row)
             self.dropping = True
             mime = QtCore.QMimeData()
             frame = json.dumps(frame).encode()
             mime.setData('frame', QtCore.QByteArray(frame))
             mime.setData('animation', QtCore.QByteArray(row.animation))
+            mime.setData('internal_move', b'1')
             mime.setParent(self)
             drag = QtGui.QDrag(self)
             drag.setMimeData(mime)
@@ -246,7 +252,17 @@ class DopeSheetExposures(QtWidgets.QWidget):
                     self.clicked_frame = (row, i)
 
     def dragEnterEvent(self, event):
-        if event.mimeData().parent() == self:
+        # Cannot rely on event.mimeData().parent() because this call provoke a
+        # crash in case of data coming from external parent (WIN11)
+        if event.mimeData().data('internal_move').toInt()[0] == 1:
+            return event.accept()
+
+        if event.mimeData().hasUrls():
+            for url in event.mimeData().urls():
+                if not url.path().endswith('.png'):
+                    return
+            self.dropping = True
+            self.handler = DragAndDropImportHandler()
             return event.accept()
 
     def dragLeaveEvent(self, _):
@@ -272,6 +288,7 @@ class DopeSheetExposures(QtWidgets.QWidget):
         for row in self.rows:
             index = row.drop_index(pos)
             if index is not None:
+                print(index, row.animation)
                 return row.animation, index
 
     def dropEvent(self, event):
@@ -280,7 +297,9 @@ class DopeSheetExposures(QtWidgets.QWidget):
         destination = self.get_drop_infos(event.pos())
         if not destination:
             return
-        if event.mimeData().parent() == self:
+        # Cannot rely on event.mimeData().parent() because this call provoke a
+        # crash in case of data coming from external parent (WIN11)
+        if event.mimeData().data('internal_move').toInt()[0] == 1:
             index = event.mimeData().data('frame').toInt()[0]
             data = bytes(event.mimeData().data('animation'))
             animation = codecs.decode(data)
@@ -288,6 +307,9 @@ class DopeSheetExposures(QtWidgets.QWidget):
             selection = self.document.internal_move(
                 self.selection.items or [origin], destination, action='move')
             self.selection.set(selection)
+        else:
+            paths = [url.path() for url in event.mimeData().urls()]
+            self.document.import_images_at(paths, destination)
         self.repaint()
 
     def mouseReleaseEvent(self, event):
@@ -328,6 +350,7 @@ class DopeSheetExposures(QtWidgets.QWidget):
 
     def get_full_width(self):
         width = dopesheet_width(self.document)
+        width = max((width, self.parent().rect().width()))
         if width != self.width():
             self.setFixedWidth(width)
         return width
@@ -372,14 +395,14 @@ class DopeSheetExposures(QtWidgets.QWidget):
 
         if self.document is None:
             painter.setBrush(QtCore.Qt.darkGray)
-            painter.drawRect(event.rect())
+            painter.drawRect(self.rect())
             return
 
         painter.setPen(QtCore.Qt.NoPen)
         color = QtGui.QColor(*HEADER_COLOR)
         color.setAlpha(150)
         painter.setBrush(color)
-        painter.drawRect(0, 0, LEFT_COLUMN_WIDTH, event.rect().height())
+        painter.drawRect(0, 0, LEFT_COLUMN_WIDTH, self.rect().height())
 
         for i, row in enumerate(self.rows):
             if not i % 2:
@@ -419,7 +442,7 @@ class DopeSheetExposures(QtWidgets.QWidget):
             painter.setBrush(color)
             painter.drawEllipse(self.hovered_handler.center(), 5, 5)
 
-        if self.handler:
+        if self.handler and self.handler.rect:
             painter.setPen(QtCore.Qt.NoPen)
             color = QtGui.QColor('white')
             painter.setBrush(color)
@@ -507,6 +530,9 @@ class _Row:
         if not self.rect.contains(pos):
             return None
         exposures = self.document.animation_exposures(self.animation)
+        if not exposures:
+            return QtCore.QRectF(
+                0, self.rect.top(), DROP_RECT_WIDTH / 2, self.rect.height())
         left = self.rect.left()
         for exposure in exposures:
             width = (FRAME_WIDTH * self.document.hzoom * exposure)
@@ -521,6 +547,9 @@ class _Row:
                     rect.right() - (DROP_RECT_WIDTH / 2),
                     rect.top(), DROP_RECT_WIDTH, rect.height())
             left += width
+        return QtCore.QRectF(
+            rect.right() - (DROP_RECT_WIDTH / 2),
+            rect.top(), DROP_RECT_WIDTH, rect.height())
 
     def drop_index(self, pos):
         if not self.rect.contains(pos):
@@ -534,13 +563,22 @@ class _Row:
             if rect.contains(pos):
                 return i if pos.x() < rect.center().x() else i + 1
             left += width
+        return len(exposures)
 
 
 class DragAndDropFrameHandler:
-    def __init__(self, rect, document, row, frame):
+    def __init__(self, rect, document, row):
         self.document = document
         self.row = row
         self.rect = rect
+
+    def mouse_move(self, pos):
+        ...
+
+
+class DragAndDropImportHandler:
+    def __init__(self):
+        self.rect = None
 
     def mouse_move(self, pos):
         ...

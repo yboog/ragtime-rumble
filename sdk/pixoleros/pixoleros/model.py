@@ -1,8 +1,11 @@
 import os
 import msgpack
+import platform
+import uuid
 from copy import deepcopy
-from pixoleros.template import EMPTY_ANIMDATA
 from pixoleros.io import serialize_document, bytes_to_image
+from pixoleros.imgutils import remove_key_color
+from pixoleros.template import EMPTY_ANIMDATA
 
 
 class Document:
@@ -10,7 +13,6 @@ class Document:
         self.data = deepcopy(EMPTY_ANIMDATA)
         self.library = {}
         self.animation = 'idle'
-        self.side = 'face'
         self.hzoom = 1
         self._index = 0
         self.displayed_variants = {}
@@ -21,14 +23,13 @@ class Document:
     def load(data):
         document = Document()
         document.data = data['data']
-        document.library = {k: PixoImage.load(v) for k, v in data['library'].items()}
+        document.library = {
+            k: PixoImage.load(v) for k, v in data['library'].items()}
         document.animation = data['animation']
-        document.side = data['side']
         document.index = data['index']
         for animation in data['data']['animations']:
-            for side in ('face', 'back'):
-                images = document.data['animations'][animation]['images'][side]
-                document.data['animations'][animation]['images'][side] = images
+            images = document.data['animations'][animation]['images']
+            document.data['animations'][animation]['images'] = images
         return document
 
     @property
@@ -86,21 +87,21 @@ class Document:
         try:
             i = frame_index_from_exposures(self.index, self.exposures)
             animation = self.animation
-            id_ = self.data['animations'][animation]['images'][self.side][i]
+            id_ = self.data['animations'][animation]['images'][i]
             return self.library[id_]
         except IndexError:
-            print(i, 'error')
+            # No imported images yet for current animation.
             return None
 
     def get_display_palette(self, name):
         return self.display_palettes.get(name, 0)
 
-    def image(self, animation, frame, side=None):
-        return self.library[self.image_id(animation, frame, side)]
+    def image(self, animation, frame):
+        return self.library[self.image_id(animation, frame)]
 
-    def image_id(self, animation, frame, side=None):
+    def image_id(self, animation, frame):
         animation = self.data['animations'][animation]
-        return animation['images'][side or self.side][frame]
+        return animation['images'][frame]
 
     def animation_exposures(self, animation):
         return self.data['animations'][animation]['exposures']
@@ -136,11 +137,49 @@ class Document:
 
         for source in sorted(sources, key=lambda x: x[1], reverse=True):
             animation = self.data['animations'][source[0]]
-            del animation['images']['face'][source[1]]
-            del animation['images']['back'][source[1]]
+            del animation['images'][source[1]]
             del animation['exposures'][source[1]]
 
         return destination
+
+    def delete_frames(self, frames):
+        frames = sorted(frames, key=lambda x: x[1], reverse=True)
+        ids = []
+        for frame in frames:
+            animation = self.data['animations'][frame[0]]
+            ids.append(animation['images'][frame[1]])
+            del animation['images'][frame[1]]
+            del animation['exposures'][frame[1]]
+
+        used_images = {
+            img for animation in self.data['animations'].values()
+            for img in animation['images']}
+        for id_ in ids:
+            if id_ in used_images:
+                continue
+            del self.library[id_]
+
+    def import_images_at(self, paths, destination):
+        if platform.platform().startswith('Win'):
+            paths = [path.lstrip('/') for path in paths]
+        images = [remove_key_color(path) for path in paths]
+        for image in images:
+            if image.size != (64, 64):
+                raise ValueError('Image size must be 64px on 64px')
+        images = [
+            PixoImage(img, path, os.path.getctime(path))
+            for img, path in zip(images, paths)]
+        ids = [self.add_to_library(img) for img in images]
+        anim = self.data['animations'][destination[0]]
+        for id_ in reversed(ids):
+            anim['images'].insert(destination[1], id_)
+            anim['exposures'].insert(destination[1], 6)
+
+    def add_to_library(self, image):
+        while (id_ := str(uuid.uuid1())) in self.library:
+            continue
+        self.library[id_] = image
+        return id_
 
     def internal_move(self, sources, destination, action='move'):
         similare = (destination[0], destination[1] - 1)
@@ -148,8 +187,7 @@ class Document:
             return sources
 
         items_to_insert = [{
-            'face': self.image_id(src[0], src[1], 'face'),
-            'back': self.image_id(src[0], src[1], 'back'),
+            'image': self.image_id(src[0], src[1]),
             'exposure': self.exposure(src[0], src[1]),
         } for src in sorted(sources, key=lambda x: x[1], reverse=True)]
 
@@ -159,12 +197,10 @@ class Document:
         anim = self.data['animations'][destination[0]]
         for item in items_to_insert:
             try:
-                anim['images']['face'].insert(destination[1], item['face'])
-                anim['images']['back'].insert(destination[1], item['back'])
+                anim['images'].insert(destination[1], item['image'])
                 anim['exposures'].insert(destination[1], item['exposure'])
             except IndexError:  # at the end of the list.
-                anim['images']['face'].append(item['face'])
-                anim['images']['back'].append(item['back'])
+                anim['images'].append(item['image'])
                 anim['exposures'].append(item['exposure'])
         # return new items infos
         return [

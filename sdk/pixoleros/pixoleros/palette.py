@@ -159,11 +159,14 @@ class PaletteTable(QtWidgets.QWidget):
             yield header, colors, top
 
     def mouseReleaseEvent(self, event):
+        bottom = 0
         for header, colors, bottom in self.rows:
             palette = self.document.palettes[header.index]
             if colors:
                 column = colors.column(0)
                 if column[-1].contains(event.pos()):
+                    if not self.document.current_image:
+                        return
                     rgbs = list_rgb_colors(self.document.current_image.image)
                     dialog = ColorSelection(rgbs)
                     point = self.mapToGlobal(column[-1].topLeft())
@@ -293,7 +296,7 @@ class PaletteTable(QtWidgets.QWidget):
     def plus_rect(self, top):
         top = max((
             top + CELL_MARGIN * 2,
-             self.parent().rect().bottom() - HEADER_HEIGHT * 1.5))
+            self.parent().rect().bottom() - HEADER_HEIGHT * 1.5))
         return QtCore.QRect(0, top, self.width(), HEADER_HEIGHT * 1.5)
 
     def paintEvent(self, _):

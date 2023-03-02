@@ -1,15 +1,20 @@
-
+import os
 import msgpack
 from PIL import ImageQt
 from PySide6 import QtWidgets, QtGui, QtCore
 from pixoleros.dopesheet import DopeSheet
-from pixoleros.io import get_icon
+from pixoleros.io import get_icon, serialize_document
 from pixoleros.imgutils import switch_colors
 from pixoleros.library import LibraryTableView
 from pixoleros.model import Document
 from pixoleros.navigator import Navigator
 from pixoleros.palette import Palettes
 from pixoleros.viewport import ViewportMapper, zoom
+
+
+def set_shortcut(keysequence, parent, method):
+    shortcut = QtGui.QShortcut(QtGui.QKeySequence(keysequence), parent)
+    shortcut.activated.connect(method)
 
 
 class Pixoleros(QtWidgets.QMainWindow):
@@ -26,6 +31,7 @@ class Pixoleros(QtWidgets.QMainWindow):
         self.toolbar = MainToolbar()
         self.toolbar.new.triggered.connect(self.new)
         self.toolbar.open.triggered.connect(self.open)
+        self.toolbar.save.triggered.connect(self.save)
 
         areas = (
             QtCore.Qt.TopDockWidgetArea |
@@ -37,6 +43,12 @@ class Pixoleros(QtWidgets.QMainWindow):
         self.library_dock = QtWidgets.QDockWidget('Library', self)
         self.library_dock.setAllowedAreas(areas)
         self.library_dock.setWidget(self.library)
+
+        self.parameters = CharacterParameters()
+        title = 'Character parameters'
+        self.parameters_dock = QtWidgets.QDockWidget(title, self)
+        self.parameters_dock.setAllowedAreas(areas)
+        self.parameters_dock.setWidget(self.parameters)
 
         self.dopesheet = DopeSheet()
         self.dopesheet.updated.connect(self.update)
@@ -53,13 +65,16 @@ class Pixoleros(QtWidgets.QMainWindow):
         self.addDockWidget(
             QtCore.Qt.BottomDockWidgetArea, self.dopesheet_dock)
         self.addDockWidget(
-            QtCore.Qt.BottomDockWidgetArea, self.library_dock)
+            QtCore.Qt.LeftDockWidgetArea, self.parameters_dock)
         self.addDockWidget(
             QtCore.Qt.LeftDockWidgetArea, self.palette_dock)
+        self.addDockWidget(
+            QtCore.Qt.LeftDockWidgetArea, self.library_dock)
+        self.tabifyDockWidget(self.palette_dock, self.library_dock)
 
         self.setCorner(
             QtCore.Qt.BottomLeftCorner,
-            QtCore.Qt.BottomDockWidgetArea)
+            QtCore.Qt.LeftDockWidgetArea)
 
         self.setCorner(
             QtCore.Qt.BottomRightCorner,
@@ -67,9 +82,77 @@ class Pixoleros(QtWidgets.QMainWindow):
 
         self.addToolBar(QtCore.Qt.TopToolBarArea, self.toolbar)
 
+        set_shortcut('CTRL+N', self, self.new)
+        set_shortcut('CTRL+O', self, self.open)
+        set_shortcut('CTRL+S', self, self.save)
+        set_shortcut('RIGHT', self, self.next)
+        set_shortcut('LEFT', self, self.prev)
+        set_shortcut('F', self, self.focus)
+        set_shortcut('DEL', self, self.delete)
+
+    def save(self):
+        if not self.current_document:
+            return
+        document = self.current_document
+        if document.library:
+            path = list(document.library.values())[0].path
+            directory = os.path.dirname(os.path.dirname(path))
+        else:
+            directory = os.path.expanduser('~')
+        path, result = QtWidgets.QFileDialog.getSaveFileName(
+            self, 'Save as', directory, 'Pixoleros (*.pixo)')
+        if not result:
+            return
+        with open(path, 'wb') as f:
+            msgpack.dump(serialize_document(self.current_document), f)
+
+    def delete(self):
+        if not (document := self.current_document):
+            return
+        self.library.model().layoutAboutToBeChanged.emit()
+        document.delete_frames(list(self.dopesheet.selection))
+        self.library.model().layoutChanged.emit()
+        self.repaint_canvas()
+        self.dopesheet.repaint()
+
+    @property
+    def current_document(self):
+        if not (window := self.mdi.currentSubWindow()):
+            return
+        if not (widget := window.widget()):
+            return
+        return widget.document
+
+    def offset(self, value=1):
+        window = self.mdi.currentSubWindow()
+        if not window:
+            return
+        widget = window.widget()
+        if not widget:
+            return
+        document = widget.document
+        document.index += value
+        self.dopesheet.repaint()
+        widget.repaint()
+
+    def next(self):
+        self.offset()
+
+    def prev(self):
+        self.offset(-1)
+
     def update(self):
         self.mdi.currentSubWindow().repaint()
         self.dopesheet.repaint()
+
+    def focus(self):
+        window = self.mdi.currentSubWindow()
+        if not window:
+            return
+        widget = window.widget()
+        if not widget:
+            return
+        widget.focus()
 
     def new(self):
         document = Document()
@@ -104,6 +187,7 @@ class Pixoleros(QtWidgets.QMainWindow):
         self.dopesheet.set_document(document)
         self.palette.set_document(document)
         self.library.set_document(document)
+        self.parameters.set_document(document)
 
     def repaint_canvas(self):
         if (widget := self.mdi.currentSubWindow().widget()):
@@ -149,6 +233,7 @@ class Canvas(QtWidgets.QWidget):
         super().__init__()
         self.document = document
         self.canvas = CanvasView(document)
+        self.focus = self.canvas.focus
         self.updated = self.canvas.updated
         self.toolbar = PlayerToolbar()
         layout = QtWidgets.QVBoxLayout(self)
@@ -186,6 +271,9 @@ class CanvasView(QtWidgets.QWidget):
                 QtCore.Qt.KeepAspectRatio,
                 QtCore.Qt.FastTransformation)
             painter.drawImage(rect, qimage)
+            painter.setBrush(QtCore.Qt.NoBrush)
+            painter.setPen(QtCore.Qt.black)
+            painter.drawRect(rect)
         painter.end()
 
     def mouseReleaseEvent(self, event):
@@ -229,13 +317,54 @@ class CanvasView(QtWidgets.QWidget):
         self.repaint()
 
     def resizeEvent(self, event):
+        check = (
+            event.size().width(), event.size().height(),
+            event.oldSize().height(), event.oldSize().width())
+        if 0 in check or -1 in check:
+            return
         self.viewportmapper.viewsize = event.size()
         size = (event.size() - event.oldSize()) / 2
         offset = QtCore.QPointF(size.width(), size.height())
         self.viewportmapper.origin -= offset
         self.repaint()
 
+    def focus(self):
+        if not self.document.current_image:
+            return
+        self.viewportmapper.viewsize = self.size()
+        size = self.document.current_image.image.size
+        rect = QtCore.QRect(0, 0, size[0], size[1])
+        self.viewportmapper.focus(rect)
+        self.repaint()
+
     def wheelEvent(self, event):
         factor = .25 if event.angleDelta().y() > 0 else -.25
         zoom(self.viewportmapper, factor, event.position())
         self.repaint()
+
+
+class CharacterParameters(QtWidgets.QWidget):
+    def __init__(self, parent=None):
+        super().__init__(parent=parent)
+        self.document = None
+        self.gender = QtWidgets.QComboBox()
+        self.gender.addItems(['male', 'female', 'undefined'])
+        self.gender.currentIndexChanged.connect(self.update)
+        self.name = QtWidgets.QLineEdit()
+        self.name.textEdited.connect(self.update)
+        layout = QtWidgets.QFormLayout(self)
+        layout.addRow('Name', self.name)
+        layout.addRow('Gender', self.gender)
+
+    def set_document(self, document):
+        if not document:
+            return
+        self.document = document
+        self.gender.setCurrentText(self.document.data['gender'])
+        self.name.setText(self.document.data['name'])
+
+    def update(self):
+        if not self.document:
+            return
+        self.document.data['name'] = self.name.text()
+        self.document.data['gender'] = self.gender.currentText()

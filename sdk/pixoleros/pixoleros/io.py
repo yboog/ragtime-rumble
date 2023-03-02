@@ -1,5 +1,5 @@
-import os
 import io
+import os
 from PIL import Image
 from copy import deepcopy
 from PySide6 import QtCore, QtGui
@@ -36,21 +36,11 @@ def serialize_image(image):
         'image': qimage_to_bytes(image.image)}
 
 
-def serialize_animdata(data):
-    data = deepcopy(data)
-    for animation in data['animation']:
-        for side in ('face', 'back'):
-            images = data[animation]['images'][side]
-            data[animation]['images'][side] = [
-                serialize_image(img) for img in images]
-    return data
-
-
-def serialize_document(model):
+def serialize_document(document):
+    library = {k: serialize_image(img) for k, img in document.library.items()}
     return {
-        'data': serialize_animdata(model.data),
-        'library': [serialize_image(img) for img in model.library],
-        'animation': model.animation,
-        'side': model.side,
-        'index': model.index
+        'data': deepcopy(document.data),
+        'library': library,
+        'animation': document.animation,
+        'index': document.index
     }

@@ -45,7 +45,7 @@ class ViewportMapper():
 
     def zoomin(self, factor=10.0):
         self.zoom += self.zoom * factor
-        self.zoom = min(self.zoom, 5.0)
+        self.zoom = min(self.zoom, 30)
 
     def zoomout(self, factor=10.0):
         self.zoom -= self.zoom * factor
@@ -61,8 +61,6 @@ class ViewportMapper():
         self.zoom = min([
             float(self.viewsize.width()) / units_rect.width(),
             float(self.viewsize.height()) / units_rect.height()])
-        if self.zoom > 1:
-            self.zoom *= 0.7  # lower zoom to add some breathing space
         self.zoom = max(self.zoom, .1)
         self.center_on_point(units_rect.center())
 

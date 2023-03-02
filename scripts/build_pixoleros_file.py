@@ -39,27 +39,28 @@ with open(palette_path, 'r') as f:
 
 data = {
     'name': 'character',
-    'genre': 'woman',
+    'gender': 'male',
     'framesize': [64, 64],
     'center': [32, 56],
     'box': [-10, -8, 20, 10],
     'hitbox': [-10, -40, 20, 40],
     'palettes': palettes,
     'animations': {
-        'bet': {'images': {'face': [], 'back': []}, 'exposures': []},
-        'balcony': {'images': {'face': [], 'back': []}, 'exposures': []},
-        'call': {'images': {'face': [], 'back': []}, 'exposures': []},
-        'coma': {'images': {'face': [], 'back': []}, 'exposures': []},
-        'death': {'images': {'face': [], 'back': []}, 'exposures': []},
-        'drink': {'images': {'face': [], 'back': []}, 'exposures': []},
-        'gunshot': {'images': {'face': [], 'back': []}, 'exposures': []},
-        'idle': {'images': {'face': [], 'back': []}, 'exposures': []},
-        'order': {'images': {'face': [], 'back': []}, 'exposures': []},
-        'poker': {'images': {'face': [], 'back': []}, 'exposures': []},
-        'smoke': {'images': {'face': [], 'back': []}, 'exposures': []},
-        'suspicious': {'images': {'face': [], 'back': []}, 'exposures': []},
-        'vomit': {'images': {'face': [], 'back': []}, 'exposures': []},
-        'walk': {'images': {'face': [], 'back': []}, 'exposures': []},
+        'bet': {'images': [], 'exposures': []},
+        'balcony': {'images': [], 'exposures': []},
+        'call': {'images': [], 'exposures': []},
+        'coma': {'images': [], 'exposures': []},
+        'death': {'images': [], 'exposures': []},
+        'drink': {'images': [], 'exposures': []},
+        'gunshot': {'images': [], 'exposures': []},
+        'idle': {'images': [], 'exposures': []},
+        'order': {'images': [], 'exposures': []},
+        'poker': {'images': [], 'exposures': []},
+        'smoke': {'images': [], 'exposures': []},
+        'suspicious': {'images': [], 'exposures': []},
+        'vomit': {'images': [], 'exposures': []},
+        'walk': {'images': [], 'exposures': []},
+        'walk-back': {'images': [], 'exposures': []},
     }
 }
 
@@ -88,18 +89,17 @@ def image_to_byte(image):
 
 
 for anim in ORDER:
-    for side in ['face', 'back']:
-        root = f'{ref_root}/{side}/{anim}'
-        for file in os.listdir(root):
-            filepath = f'{root}/{file}'
-            image = {
-                'image': image_to_byte(remove_key_color(filepath)),
-                'path': filepath,
-                'ctime': os.path.getctime(filepath)}
-            id_ = str(uuid.uuid1())
-            pixo['library'][id_] = image
-            data['animations'][anim]['images'][side].append(id_)
-    lenght = len(data['animations'][anim]['images'][side])
+    root = f'{ref_root}/{anim}'
+    for file in os.listdir(root):
+        filepath = f'{root}/{file}'
+        image = {
+            'image': image_to_byte(remove_key_color(filepath)),
+            'path': filepath,
+            'ctime': os.path.getctime(filepath)}
+        id_ = str(uuid.uuid1())
+        pixo['library'][id_] = image
+        data['animations'][anim]['images'].append(id_)
+    lenght = len(data['animations'][anim]['images'])
     data['animations'][anim]['exposures'] = [6] * lenght
 
 pixo['data'] = data
