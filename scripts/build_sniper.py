@@ -48,9 +48,7 @@ data = {
     'type': 'sniper',
     'y': 30,
     'framesize': (64, 64),
-    'sheets': {
-        "face": "resources/skins/sniper.png",
-        "back": "resources/skins/sniper.png"},
+    'filepath': "resources/skins/sniper.png",
     'animations': {}
 }
 

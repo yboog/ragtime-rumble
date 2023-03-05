@@ -17,9 +17,9 @@
   ],
   "hitbox": [
     -10,
-    -35,
+    -40,
     20,
-    45
+    40
   ],
   "palettes": [
     {
@@ -305,10 +305,7 @@
       ]
     }
   ],
-  "sheets": {
-    "face": "resources/skins/janet_face.png",
-    "back": "resources/skins/janet_back.png"
-  },
+  "filepath": "resources/skins/janet.png",
   "animations": {
     "bet": {
       "exposures": [
@@ -332,7 +329,7 @@
         6,
         6,
         6,
-        20
+        6
       ],
       "startframe": 2
     },
@@ -519,6 +516,19 @@
         6
       ],
       "startframe": 132
+    },
+    "walk-back": {
+      "exposures": [
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        6
+      ],
+      "startframe": 140
     }
   }
 }

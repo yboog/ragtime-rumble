@@ -4,6 +4,7 @@ import json
 import pygame
 import random
 import itertools
+import numpy as np
 from ragtimerumble.config import GAMEROOT, PALLETTES_COUNT
 from ragtimerumble.joystick import get_current_commands
 
@@ -109,27 +110,17 @@ def list_joysticks():
 
 
 def swap_colors(surface, palette1, palette2):
-    """ THX Chat GPT:"""
-    swapped_surface = pygame.Surface(surface.get_size(), pygame.SRCALPHA)
-    original_pixels = pygame.PixelArray(surface)
-    swapped_pixels = pygame.PixelArray(swapped_surface)
-    for x in range(original_pixels.shape[0]):
-        for y in range(original_pixels.shape[1]):
-            color = original_pixels[x, y]
-            # Transform a bit pixel into a list comparable with palette data.
-            check = [color >> 24, color >> 16 & 0xff, color >> 8 & 0xff, color & 0xff]
-            if check[-3:] in palette1:
-                index = palette1.index(check[-3:])
-                color = palette2[index]
-                swapped_color = check[0] << 24 | color[0] << 16 | color[1] << 8 | color[2]
-            else:
-                swapped_color = color
-            swapped_pixels[x, y] = swapped_color
-    # PixelArray is expensive for memory, then we force an immediate delete.
-    # In case of the garbage collector would delay the memory clear to later.
-    del original_pixels
-    del swapped_pixels
-    return swapped_surface
+    arr = pygame.surfarray.pixels3d(surface)
+    red, green, blue = arr.T
+    for color1, color2 in zip(palette1, palette2):
+        if color1 == color2:
+            continue
+        areas = (red == color1[0]) & (blue == color1[2]) & (green == color1[1])
+        arr[...,][areas.T] = color2
+    new_surface = pygame.surfarray.make_surface(arr).convert_alpha()
+    alpha_array = pygame.surfarray.pixels_alpha(surface)
+    pygame.surfarray.pixels_alpha(new_surface)[:] = alpha_array[:]
+    return new_surface
 
 
 def load_skins():
@@ -157,20 +148,16 @@ def get_character_palette_ids(data):
 
 def load_skin(data):
     size = data['framesize']
-    sheets = data["sheets"]
-    # Build original colors skin.
-    result = [{
-        side: load_frames(sheets[side], size, (0, 255, 0))
-        for side in ('face', 'back')}]
+    path = data["filepath"]
+    if not data.get('palettes'):
+        # Build original colors skin.
+        return [load_frames(path, size, (0, 255, 0))]
     # Build color palettes
+    result = []
     palettes = get_character_palette_ids(data) if data.get('palettes') else []
     for id_, palette1, palette2 in palettes:
-        skin = {}
-        for side in ('face', 'back'):
-            images = load_frames(
-                sheets[side], size, (0, 255, 0), palette1, palette2, id_)
-            skin[side] = images
-        result.append(skin)
+        variant = load_frames(path, size, (0, 255, 0), palette1, palette2, id_)
+        result.append(variant)
     return result
 
 

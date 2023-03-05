@@ -7,13 +7,13 @@ import math
 import os
 
 
-*_, char, side = sys.argv
+*_, char = sys.argv
 repo_root = os.path.dirname(os.path.dirname(__file__))
-ref_root = f'{repo_root}/refs/frames/{char}/{side}'
-relative_output = f'resources/skins/{char}_{side}.png'
+ref_root = f'{repo_root}/refs/frames/{char}'
+relative_output = f'resources/skins/{char}.png'
 palette_path = f'{repo_root}/refs/palettes/{char}.json'
-output = f'{repo_root}/drunkparanoia/{relative_output}'
-gamedata_output_path = f'{repo_root}/drunkparanoia/resources/animdata/{char}.json'
+output = f'{repo_root}/ragtimerumble/{relative_output}'
+gamedata_output_path = f'{repo_root}/ragtimerumble/resources/animdata/{char}.json'
 
 
 MALES = "smith"
@@ -34,6 +34,7 @@ ORDER = [
     'suspicious',
     'vomit',
     'walk',
+    'walk-back',
 ]
 
 
@@ -77,9 +78,7 @@ data = {
     'box': (-10, -8, 20, 10),
     'hitbox': (-10, -40, 20, 40),
     'palettes': palettes,
-    'sheets': {
-        'face': f'resources/skins/{char}_face.png',
-        'back': f'resources/skins/{char}_back.png'},
+    'filepath': f'resources/skins/{char}.png',
     'animations': {}
 }
 

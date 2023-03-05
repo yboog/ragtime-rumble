@@ -377,23 +377,6 @@
         ],
         [
           [
-            125,
-            235,
-            150
-          ],
-          [
-            125,
-            252,
-            150
-          ],
-          [
-            125,
-            145,
-            150
-          ]
-        ],
-        [
-          [
             95,
             95,
             95
@@ -518,10 +501,7 @@
       ]
     }
   ],
-  "sheets": {
-    "face": "resources/skins/smith_face.png",
-    "back": "resources/skins/smith_back.png"
-  },
+  "filepath": "resources/skins/smith.png",
   "animations": {
     "bet": {
       "exposures": [
@@ -540,7 +520,7 @@
         6,
         6,
         6,
-        35
+        6
       ],
       "startframe": 2
     },
@@ -766,6 +746,19 @@
         6
       ],
       "startframe": 166
+    },
+    "walk-back": {
+      "exposures": [
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        6
+      ],
+      "startframe": 174
     }
   }
 }

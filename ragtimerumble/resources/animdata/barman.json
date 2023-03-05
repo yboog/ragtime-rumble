@@ -6,10 +6,7 @@
     64,
     64
   ],
-  "sheets": {
-    "face": "resources/skins/barman.png",
-    "back": "resources/skins/barman.png"
-  },
+  "filepath": "resources/skins/barman.png",
   "animations": {
     "idle": {
       "exposures": [

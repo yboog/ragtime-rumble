@@ -1,10 +1,11 @@
 import os
 import msgpack
+import time
 from PIL import ImageQt
 from PySide6 import QtWidgets, QtGui, QtCore
 from pixoleros.dopesheet import DopeSheet
 from pixoleros.io import get_icon, serialize_document
-from pixoleros.imgutils import switch_colors
+from pixoleros.imgutils import switch_colors, build_sprite_sheet
 from pixoleros.library import LibraryTableView
 from pixoleros.model import Document
 from pixoleros.navigator import Navigator
@@ -20,6 +21,9 @@ def set_shortcut(keysequence, parent, method):
 class Pixoleros(QtWidgets.QMainWindow):
     def __init__(self):
         super().__init__()
+
+        self.play_state = False
+
         self.setWindowTitle('Pixoleros')
         self.mdi = QtWidgets.QMdiArea()
         self.setCentralWidget(self.mdi)
@@ -89,6 +93,44 @@ class Pixoleros(QtWidgets.QMainWindow):
         set_shortcut('LEFT', self, self.prev)
         set_shortcut('F', self, self.focus)
         set_shortcut('DEL', self, self.delete)
+        set_shortcut('CTRL+E', self, self.export)
+        set_shortcut('SPACE', self, self.switch_play)
+        self.timer = QtCore.QBasicTimer()
+        self.time = time.time()
+
+    def timerEvent(self, event):
+        if not (document := self.current_document):
+            return
+        index = document.index
+        document.index += 2
+        if document.index == index:
+            document.index = 0
+        self.repaint_canvas()
+        self.dopesheet.repaint()
+
+    def switch_play(self):
+        if self.play_state:
+            return self.pause()
+        self.play()
+
+    def play(self):
+        self.set_play_state(True)
+
+    def set_play_state(self, state):
+        self.play_state = state
+        self.dopesheet_dock.setEnabled(not state)
+        self.library_dock.setEnabled(not state)
+        self.parameters_dock.setEnabled(not state)
+        self.palette_dock.setEnabled(not state)
+
+    def pause(self):
+        self.set_play_state(False)
+
+    def stop(self):
+        self.set_play_state(False)
+        self.current_document.index = 0
+        self.repaint_canvas()
+        self.dopesheet.repaint()
 
     def save(self):
         if not self.current_document:
@@ -105,6 +147,13 @@ class Pixoleros(QtWidgets.QMainWindow):
             return
         with open(path, 'wb') as f:
             msgpack.dump(serialize_document(self.current_document), f)
+
+    def export(self):
+        if not self.current_document:
+            return
+        images = build_sprite_sheet(self.current_document)
+        dialog = Exported(images)
+        dialog.exec()
 
     def delete(self):
         if not (document := self.current_document):
@@ -177,6 +226,11 @@ class Pixoleros(QtWidgets.QMainWindow):
 
     def add_document(self, document, name):
         canvas = Canvas(document)
+        canvas.toolbar.previous.triggered.connect(self.prev)
+        canvas.toolbar.next.triggered.connect(self.next)
+        canvas.toolbar.play.triggered.connect(self.play)
+        canvas.toolbar.pause.triggered.connect(self.pause)
+        canvas.toolbar.stop.triggered.connect(self.stop)
         canvas.updated.connect(self.update)
         window = self.mdi.addSubWindow(canvas)
         window.setWindowTitle(name)
@@ -251,6 +305,7 @@ class CanvasView(QtWidgets.QWidget):
         self.document = document
         self.viewportmapper = ViewportMapper()
         self.navigator = Navigator()
+        self.palette_override = False
 
     def paintEvent(self, event):
         painter = QtGui.QPainter(self)
@@ -259,9 +314,10 @@ class CanvasView(QtWidgets.QWidget):
         painter.drawRect(event.rect())
         if self.document.current_image:
             image = self.document.current_image.image
-            origins, overrides = self.document.palette_override
-            if origins:
-                image = switch_colors(image, origins, overrides)
+            if self.palette_override:
+                origins, overrides = self.document.palette_override
+                if origins:
+                    image = switch_colors(image, origins, overrides)
             qimage = ImageQt.ImageQt(image)
             rect = QtCore.QRectF(
                 0, 0, qimage.size().width(), qimage.size().height())
@@ -368,3 +424,21 @@ class CharacterParameters(QtWidgets.QWidget):
             return
         self.document.data['name'] = self.name.text()
         self.document.data['gender'] = self.gender.currentText()
+
+
+class Exported(QtWidgets.QDialog):
+    def __init__(self, images, parent=None):
+        super().__init__(parent=parent)
+        self.images = [ImageQt.ImageQt(img) for img in images]
+        self.label = QtWidgets.QLabel()
+        self.label.setPixmap(QtGui.QPixmap.fromImage(self.images[0]))
+        self.label.setFixedSize(self.images[0].size())
+        self.combo = QtWidgets.QComboBox()
+        self.combo.addItems([str(i) for i in range(len(images))])
+        self.combo.currentIndexChanged.connect(self.change_image)
+        self.layout = QtWidgets.QVBoxLayout(self)
+        self.layout.addWidget(self.combo)
+        self.layout.addWidget(self.label)
+
+    def change_image(self, index):
+        self.label.setPixmap(QtGui.QPixmap.fromImage(self.images[index]))

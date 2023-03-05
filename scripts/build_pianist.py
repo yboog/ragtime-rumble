@@ -52,9 +52,7 @@ data = {
     'type': 'pianist',
     'y': -1000,
     'framesize': (62, 64),
-    'sheets': {
-        "face": "resources/skins/pianist.png",
-        "back": "resources/skins/pianist.png"},
+    'filepath': "resources/skins/pianist.png",
     'animations': {}
 }
 

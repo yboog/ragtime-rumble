@@ -49,9 +49,7 @@ data = {
     'type': 'barman',
     'y': 30,
     'framesize': (64, 64),
-    'sheets': {
-        "face": "resources/skins/barman.png",
-        "back": "resources/skins/barman.png"},
+    'filepath': "resources/skins/barman.png",
     'animations': {}
 }
 

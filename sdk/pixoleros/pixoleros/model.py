@@ -1,7 +1,9 @@
 import os
+import uuid
 import msgpack
 import platform
-import uuid
+import itertools
+from PySide6 import QtGui, QtCore
 from copy import deepcopy
 from pixoleros.io import serialize_document, bytes_to_image
 from pixoleros.imgutils import remove_key_color
@@ -220,6 +222,10 @@ class Document:
             variants.extend(palette['palettes'][index])
         return origins, variants
 
+    def iter_all_possible_overrides(self):
+        ranges = [range(len(p['palettes'])) for p in self.palettes]
+        return itertools.product(*ranges)
+
 
 def frame_index_from_exposures(index, exposures):
     """
@@ -254,17 +260,27 @@ class PixoImage:
         image = bytes_to_image(data['image'])
         return PixoImage(image, data['path'], data['ctime'])
 
+    def reload(self):
+        if not self.reference_exists:
+            return
+        check_ = QtGui.QImage(self.path)
+        if check_.size() != QtCore.QSize(64, 64):
+            raise ValueError(
+                'Image size is changed and do not correspond to (64, 64)')
+        self.image = remove_key_color(self.path)
+        self.ctime = os.path.getctime(self.path)
+
     @property
     def reference_exists(self):
-        if not self._reference_exists:
+        if self._reference_exists is None:
             self._reference_exists = os.path.exists(self.path)
         return self._reference_exists
 
     @property
     def file_modified(self):
-        if not self.reference_exists:
+        if self.reference_exists is None:
             return False
-        if not self._file_modified:
+        if self._file_modified is None:
             self._file_modified = os.path.getctime(self.path) != self.ctime
         return self._file_modified
 

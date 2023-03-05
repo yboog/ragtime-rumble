@@ -10,13 +10,11 @@ BG = (0, 0, 0, 0)
 
 repo_root = os.path.dirname(os.path.dirname(__file__))
 files = (
-    f"{repo_root}/drunkparanoia/resources/skins/smith_face.png",
-    f"{repo_root}/drunkparanoia/resources/skins/smith_back.png",
-    f"{repo_root}/drunkparanoia/resources/skins/janet_face.png",
-    f"{repo_root}/drunkparanoia/resources/skins/janet_back.png",
-    f"{repo_root}/drunkparanoia/resources/skins/sniper.png",
-    f"{repo_root}/drunkparanoia/resources/skins/barman.png",
-    f"{repo_root}/drunkparanoia/resources/vfx/coin-alert.png")
+    f"{repo_root}/ragtimerumble/resources/skins/smith.png",
+    f"{repo_root}/ragtimerumble/resources/skins/janet.png",
+    f"{repo_root}/ragtimerumble/resources/skins/sniper.png",
+    f"{repo_root}/ragtimerumble/resources/skins/barman.png",
+    f"{repo_root}/ragtimerumble/resources/vfx/coin-alert.png")
 for file in files:
     img = Image.open(file)
     img = img.convert("RGBA")

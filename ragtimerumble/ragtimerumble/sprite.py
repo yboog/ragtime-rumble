@@ -14,13 +14,19 @@ class SpriteSheet:
     def exposures(self):
         return self.data['animations'][self.animation]['exposures']
 
+    def math_animation(self, direction):
+        side = DIRECTION_TO_SIDE[direction]
+        possible_match = f'{self.animation}-{side}'
+        if possible_match in self.data['animations']:
+            return possible_match
+        return self.animation
+
     def image(self, direction=DIRECTIONS.RIGHT, palette=0):
         index = image_index_from_exposures(self.index, self.exposures)
-        index += self.data['animations'][self.animation]['startframe']
-        side = DIRECTION_TO_SIDE[direction]
+        animation = self.math_animation(direction)
+        index += self.data['animations'][animation]['startframe']
         self.images[palette]
-        self.images[palette][side]
-        image = self.images[palette][side][index]
+        image = self.images[palette][index]
         flipped = direction in DIRECTIONS.FLIPPED
         return image_mirror(image, horizontal=True) if flipped else image
 
