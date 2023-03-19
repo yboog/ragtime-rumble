@@ -1,6 +1,7 @@
 import os
 import json
 import msgpack
+import subprocess
 
 from PIL import ImageQt
 from PySide6 import QtWidgets, QtGui, QtCore
@@ -40,6 +41,7 @@ class Pixoleros(QtWidgets.QMainWindow):
         self.toolbar.save.triggered.connect(self.save)
         self.toolbar.export.triggered.connect(self.export)
         self.toolbar.assign.triggered.connect(self.assign)
+        self.toolbar.play.triggered.connect(self.play)
 
         areas = (
             QtCore.Qt.TopDockWidgetArea |
@@ -107,7 +109,9 @@ class Pixoleros(QtWidgets.QMainWindow):
         if not self.current_document:
             return
         document = self.current_document
-        if document.library:
+        if document.filepath:
+            directory = os.path.dirname(document.filepath)
+        elif document.library:
             path = list(document.library.values())[0].path
             directory = os.path.dirname(os.path.dirname(path))
         else:
@@ -116,6 +120,7 @@ class Pixoleros(QtWidgets.QMainWindow):
             self, 'Save as', directory, 'Pixoleros (*.pixo)')
         if not result:
             return
+        document.filepath = path
         with open(path, 'wb') as f:
             msgpack.dump(serialize_document(self.current_document), f)
 
@@ -124,7 +129,7 @@ class Pixoleros(QtWidgets.QMainWindow):
             return
         images = build_sprite_sheet(self.current_document)
         data = export_anim_data(self.current_document)
-        dialog = Exported(images, data)
+        dialog = Exporter(images, data, self.current_document)
         dialog.exec()
 
     def delete(self):
@@ -180,10 +185,13 @@ class Pixoleros(QtWidgets.QMainWindow):
         self.add_document(document, 'New character')
 
     def open(self):
+        directory = os.path.expanduser('~')
+        if self.current_document and self.current_document.filepath:
+            directory = os.path.dirname(self.current_document.filepath)
         filepath, _ = QtWidgets.QFileDialog.getOpenFileName(
             parent=self,
             caption='Open file',
-            dir='~',
+            dir=directory,
             filter='Pixo file (*.pixo)')
         if not filepath:
             return
@@ -213,6 +221,24 @@ class Pixoleros(QtWidgets.QMainWindow):
     def repaint_canvas(self):
         if (widget := self.mdi.currentSubWindow().widget()):
             widget.repaint()
+
+    def play(self):
+        if not self.current_document:
+            return
+        if not self.current_document.gamedirectory:
+            directory = QtWidgets.QFileDialog.getExistingDirectory(
+                parent=self,
+                caption='Select output folder',
+                dir=os.path.expanduser('~'))
+            if not directory:
+                return
+            self.current_document.gamedirectory = directory
+        gamepath = f'{self.current_document.gamedirectory}/ragtime.exe'
+        try:
+            subprocess.call(gamepath)
+        except BaseException as e:
+            print(e)
+            self.current_document.gamedirectory = None
 
 
 class PlayerToolbar(QtWidgets.QToolBar):
@@ -245,12 +271,15 @@ class MainToolbar(QtWidgets.QToolBar):
         self.save = QtGui.QAction(get_icon('save.png'), '', self)
         self.export = QtGui.QAction(get_icon('export.png'), '', self)
         self.assign = QtGui.QAction(get_icon('assign.png'), '', self)
+        self.play = QtGui.QAction(get_icon('play.png'), '', self)
         self.addAction(self.new)
         self.addAction(self.open)
         self.addAction(self.save)
         self.addSeparator()
         self.addAction(self.export)
         self.addAction(self.assign)
+        self.addSeparator()
+        self.addAction(self.play)
 
 
 class Canvas(QtWidgets.QWidget):
@@ -491,10 +520,11 @@ class CharacterAssignment(QtWidgets.QDialog):
                 item.setCheckState(QtCore.Qt.Unchecked)
 
 
-class Exported(QtWidgets.QDialog):
-    def __init__(self, image, data, parent=None):
+class Exporter(QtWidgets.QDialog):
+    def __init__(self, image, data, document, parent=None):
         super().__init__(parent=parent)
         self.image = image
+        self.document = document
         self.data = data
         self.label = QtWidgets.QLabel()
         self.label.setPixmap(QtGui.QPixmap.fromImage(self.image))
@@ -515,7 +545,7 @@ class Exported(QtWidgets.QDialog):
         directory = QtWidgets.QFileDialog.getExistingDirectory(
             parent=self,
             caption='Select output folder',
-            dir='~')
+            dir=os.path.expanduser('~'))
         if not directory:
             return
 
@@ -547,9 +577,10 @@ class Exported(QtWidgets.QDialog):
         directory = QtWidgets.QFileDialog.getExistingDirectory(
             parent=self,
             caption='Select output folder',
-            dir='~')
+            dir=self.document.gamedirectory or '')
         if not directory:
             return
+        self.document.gamedirectory = directory
         ressources_directory = f'{directory}/lib/resources'
         skins_directory = f'{ressources_directory}/skins'
         data_directory = f'{ressources_directory}/animdata'

@@ -40,6 +40,8 @@ def serialize_document(document):
     library = {k: serialize_image(img) for k, img in document.library.items()}
     return {
         'data': deepcopy(document.data),
+        'filepath': document.filepath,
+        'gamedirectory': document.gamedirectory,
         'library': library,
         'animation': document.animation,
         'index': document.index}

@@ -39,6 +39,7 @@ with open(palette_path, 'r') as f:
 
 data = {
     'name': 'character',
+    'gamelocation': '',
     'type': 'playable',
     'gender': 'man',
     'framesize': [64, 64],

@@ -114,6 +114,8 @@ class ColorWheel(QtWidgets.QWidget):
         self.color_name.setText(QtGui.QColor(*self.rgb255()).name())
 
     def set_hexadecimal_color(self, text):
+        if len(text) != 7:
+            return
         match = re.search(r'^#(?:[0-9a-fA-F]{3}){1,2}$', text)
         if not match:
             return
@@ -122,10 +124,12 @@ class ColorWheel(QtWidgets.QWidget):
         g = color.greenF()
         b = color.blueF()
         self.set_rgb(r, g, b)
+        self.currentColorChanged.emit((r, g, b))
 
     def set_rgb_from_edit(self):
         r, g, b = [float(edit.text() or "0.0") / 255 for edit in self.rgb_edits]
         self.set_rgb(r, g, b, update_rgb_edits=False)
+        self.currentColorChanged.emit((r, g, b))
 
 
 class ColorSquare(QtWidgets.QWidget):

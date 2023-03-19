@@ -53,7 +53,11 @@ class Palettes(QtWidgets.QWidget):
     def send_update_signal(self, *_):
         self.palette_changed.emit()
 
-    def color_index_changed(self):
+    def color_index_changed(self, rgb):
+        if rgb is not None:
+            self.colorwheel.set_rgb255(*rgb)
+            return
+
         name, i, j = self.document.editing_color_index
         for palette in self.document.palettes:
             if palette['name'] != name:
@@ -82,7 +86,7 @@ class Palettes(QtWidgets.QWidget):
 
 
 class PaletteTable(QtWidgets.QWidget):
-    color_selected = QtCore.Signal()
+    color_selected = QtCore.Signal(object)
     display_changed = QtCore.Signal()
 
     def __init__(self, parent=None):
@@ -164,6 +168,15 @@ class PaletteTable(QtWidgets.QWidget):
             palette = self.document.palettes[header.index]
             if colors:
                 column = colors.column(0)
+                if len(column) > 1:
+                    for i, rect in enumerate(column):
+                        if rect.contains(event.pos()):
+                            self.document.editing_color_index = ('', -1, -1)
+                            c = self.document.palettes[colors.index]['origins']
+                            self.color_selected.emit(c[i])
+                            self.repaint()
+                            return
+                # Add Origins color.
                 if column[-1].contains(event.pos()):
                     if not self.document.current_image:
                         return
@@ -184,7 +197,7 @@ class PaletteTable(QtWidgets.QWidget):
                             infos = header.palette_name, i, j
                             self.document.editing_color_index = infos
                             self.repaint()
-                            self.color_selected.emit()
+                            self.color_selected.emit(None)
                             return
                     if column[-1].contains(event.pos()):
                         del palette['palettes'][i]
