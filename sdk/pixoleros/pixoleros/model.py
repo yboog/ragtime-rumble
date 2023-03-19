@@ -27,7 +27,6 @@ class Document:
     def load(data):
         document = Document()
         document.data = data['data']
-        document.filepath = data.get('filepath')
         document.gamedirectory = data.get('gamedirectory')
         document.library = {
             k: PixoImage.load(v) for k, v in data['library'].items()}

@@ -17,6 +17,46 @@ _death_sentences_generators = {}
 _kill_sentences_generators = {}
 _palettes = {}
 _sounds = {}
+_dispatcher_music = None
+_scene_music = None
+
+
+def play_scene_music(sounds):
+    sound = random.choice(sounds)
+    global _scene_music
+    if _scene_music:
+        stop_scene_music()
+    _scene_music = load_sound(sound)
+    _scene_music.play(-1)
+
+
+def stop_scene_music():
+    global _scene_music
+    if not _scene_music:
+        return
+    _scene_music.stop()
+    _scene_music = None
+
+
+def play_dispatcher_music():
+    sounds = (
+        'resources/sounds/dispatcher_1_sound.ogg',
+        'resources/sounds/dispatcher_2_ErikVargas_TonkyMyHonky.ogg',
+        'resources/sounds/dispatcher_3_JakeSchneider_HonkyTonkSaloon.ogg')
+    sound = random.choice(sounds)
+    global _dispatcher_music
+    if _dispatcher_music:
+        stop_dispatcher_music()
+    _dispatcher_music = load_sound(sound)
+    _dispatcher_music.play(-1)
+
+
+def stop_dispatcher_music():
+    global _dispatcher_music
+    if not _dispatcher_music:
+        return
+    _dispatcher_music.stop()
+    _dispatcher_music = None
 
 
 def get_coin_stack(n):

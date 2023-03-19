@@ -17,7 +17,7 @@ class Player:
         self.life = COUNTDOWNS.MAX_LIFE
         self.bullet_cooldown = 0
         self.action_cooldown = 0
-        self._coins = 3
+        self._coins = 1
         self.index = index
         self.killer = None
         self.npc_killed = 0
@@ -250,4 +250,4 @@ class PokerIterator:
     def bet(self):
         win, loose = WIN_OR_LOOSE_AT_POKER_PROBABILITY
         victory = random.choice([True] * win + [False] * loose)
-        self.player.coins += 2 if victory else -1
+        self.player.coins += 1 if victory else -1

@@ -185,7 +185,7 @@ class Pixoleros(QtWidgets.QMainWindow):
         self.add_document(document, 'New character')
 
     def open(self):
-        directory = os.path.expanduser('~')
+        directory = os.path.expanduser(os.path.expanduser('~'))
         if self.current_document and self.current_document.filepath:
             directory = os.path.dirname(self.current_document.filepath)
         filepath, _ = QtWidgets.QFileDialog.getOpenFileName(
@@ -202,6 +202,7 @@ class Pixoleros(QtWidgets.QMainWindow):
             data = msgpack.load(f)
 
         document = Document.load(data)
+        document.filepath = filepath
         self.add_document(document, filepath)
 
     def add_document(self, document, name):

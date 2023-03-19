@@ -6,6 +6,7 @@
         "triste fin pour {name}",
         "{name} ne tiends pas l'alcool",
         "{name} gît dans son vomit",
+        "{name} retrouva bien vite sa grand-mère",
         "pauvre {name}",
         "trois enfants attendent sans espoir {name}",
         "{name} ne s'en relèvera pas",
@@ -23,6 +24,7 @@
         "{name} à vu un éléphant rose de trop."
     ],
     "english": [
-        "{name} eats flowers by the root."
+        "{name} eats flowers by the root.",
+        "{name} has no more leggs."
     ]
 }

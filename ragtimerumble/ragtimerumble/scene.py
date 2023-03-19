@@ -18,7 +18,8 @@ from ragtimerumble.duel import find_possible_duels
 from ragtimerumble.io import (
     load_image, load_data, quit_event, list_joysticks, image_mirror,
     choice_kill_sentence, choice_random_name, play_sound, stop_sound,
-    stop_ambiance, load_frames)
+    play_dispatcher_music, stop_dispatcher_music, play_scene_music,
+    stop_scene_music, stop_ambiance, load_frames)
 from ragtimerumble.joystick import get_current_commands
 from ragtimerumble.npc import Npc, Pianist, Barman, Sniper
 from ragtimerumble.player import Player
@@ -88,7 +89,7 @@ def load_scene(filename):
         data = json.load(f)
     scene = Scene(data)
     scene.ambiance = data['ambiance']
-    scene.music = data['music']
+    scene.musics = data['musics']
     scene.character_number = data['character_number']
     scene.name = data['name']
     scene.vfx = data['vfx']
@@ -176,7 +177,7 @@ class GameLoop:
         self.status = LOOP_STATUSES.DISPATCHING
         self.dispatcher = PlayerDispatcher(self.scene, self.joysticks)
         stop_ambiance()
-        play_sound('resources/sounds/dispatcher_sound.ogg', -1)
+        play_dispatcher_music()
 
     def __next__(self):
         self.done = self.done or quit_event()
@@ -189,14 +190,14 @@ class GameLoop:
                 self.clock.tick(60)
                 if self.scene.ultime_showdown:
                     stop_sound(self.scene.ambiance)
-                    stop_sound(self.scene.music)
+                    stop_scene_music()
                     self.status = LOOP_STATUSES.LAST_KILL
 
             case LOOP_STATUSES.DISPATCHING:
                 next(self.dispatcher)
                 self.clock.tick(60)
                 if self.dispatcher.done:
-                    stop_sound('resources/sounds/dispatcher_sound.ogg')
+                    stop_dispatcher_music()
                     self.start_game()
 
             case LOOP_STATUSES.LAST_KILL:
@@ -235,7 +236,7 @@ class GameLoop:
         import time
         time.sleep(0.1)
         play_sound(self.scene.ambiance, -1)
-        play_sound(self.scene.music, -1)
+        play_scene_music(self.scene.musics)
 
 
 class PlayerDispatcher:
@@ -266,6 +267,7 @@ class PlayerDispatcher:
                         COUNTDOWNS.INTERACTION_LOOP_COOLDOWN_MIN,
                         COUNTDOWNS.INTERACTION_LOOP_COOLDOWN_MAX))
                     self.scene.npcs.append(npc)
+                    play_sound('resources/sounds/coltclick.wav')
                 return
 
     def __next__(self):
@@ -284,10 +286,12 @@ class PlayerDispatcher:
 
             if get_current_commands(joystick).get('LEFT'):
                 value = max((0, self.joysticks_column[i] - 1))
+                play_sound('resources/sounds/stroke_whoosh_02.ogg')
                 self.joysticks_column[i] = value
                 self.cooldowns[i] = 10
 
             elif get_current_commands(joystick).get('RIGHT'):
+                play_sound('resources/sounds/stroke_whoosh_02.ogg')
                 value = min((4, self.joysticks_column[i] + 1))
                 self.joysticks_column[i] = value
                 self.cooldowns[i] = 10
@@ -299,6 +303,7 @@ class PlayerDispatcher:
                 if self.assigned[column] is None:
                     self.assigned[column] = joystick
                     self.generate_characters(column)
+                play_sound('resources/sounds/woosh.wav')
 
         self.done = sum(bool(p) for p in self.players) == len(self.joysticks)
 
@@ -357,6 +362,7 @@ class Scene:
         self.animated_vfx = []
         self.walls = []
         self.sniperreticles = []
+        self.musics = []
         # Runtime
         self.black_screen_countdown = 0
         self.white_screen_countdown = 0

@@ -1,7 +1,11 @@
 {
   "character_number": 35,
   "name": "saloon",
-  "music": "resources/sounds/ragtime.ogg",
+  "musics": [
+    "resources/sounds/ragtime.ogg",
+    "resources/sounds/ragtime_2_Stuck In A Fine Mess.ogg",
+    "resources/sounds/ragtime_3_MA_EmilioMerone_JamNCheeseRag_Main.ogg"
+  ],
   "ambiance": "resources/sounds/ambiance_saloon.ogg",
   "paths": [
     {
