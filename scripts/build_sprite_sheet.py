@@ -72,6 +72,7 @@ with open(palette_path, 'rb') as f:
 
 data = {
     'name': char,
+    'type': 'playable',
     'gender': 'man' if char in MALES else 'woman',
     'framesize': (64, 64),
     'center': (32, 56),

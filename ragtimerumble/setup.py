@@ -10,13 +10,13 @@ build_exe_options = {
     "excludes": [
         "tkinter", "unittest", "email", "pkg_resources", "xml", "pydoc_data", "PySide6",
         "PyQt5", "PySide2", "PyQt6", "pyexpat", "ctypes", "pandas", "shiboken2",
-        "sip", "sip2", "shiboken6", "sip6", "PIL"]}
+        "sip", "sip2", "shiboken6", "sip6"]}
 
 setup(
     name="Ragtime Rumble",
     author="Jean-Loup Comby & Lionel Brouyère",
     options={"build_exe": build_exe_options},
-    executables=[Executable('drunkparanoia/__main__.py')])
+    executables=[Executable('ragtimerumble/__main__.py')])
 
 
 current = os.path.dirname(__file__)

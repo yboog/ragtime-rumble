@@ -1,10 +1,12 @@
 import os
+import json
 import msgpack
-import time
+
 from PIL import ImageQt
 from PySide6 import QtWidgets, QtGui, QtCore
+
 from pixoleros.dopesheet import DopeSheet
-from pixoleros.io import get_icon, serialize_document
+from pixoleros.io import get_icon, serialize_document, export_anim_data
 from pixoleros.imgutils import switch_colors, build_sprite_sheet
 from pixoleros.library import LibraryTableView
 from pixoleros.model import Document
@@ -36,6 +38,8 @@ class Pixoleros(QtWidgets.QMainWindow):
         self.toolbar.new.triggered.connect(self.new)
         self.toolbar.open.triggered.connect(self.open)
         self.toolbar.save.triggered.connect(self.save)
+        self.toolbar.export.triggered.connect(self.export)
+        self.toolbar.assign.triggered.connect(self.assign)
 
         areas = (
             QtCore.Qt.TopDockWidgetArea |
@@ -94,43 +98,10 @@ class Pixoleros(QtWidgets.QMainWindow):
         set_shortcut('F', self, self.focus)
         set_shortcut('DEL', self, self.delete)
         set_shortcut('CTRL+E', self, self.export)
-        set_shortcut('SPACE', self, self.switch_play)
-        self.timer = QtCore.QBasicTimer()
-        self.time = time.time()
+        set_shortcut('CTRL+A', self, self.assign)
 
-    def timerEvent(self, event):
-        if not (document := self.current_document):
-            return
-        index = document.index
-        document.index += 2
-        if document.index == index:
-            document.index = 0
-        self.repaint_canvas()
-        self.dopesheet.repaint()
-
-    def switch_play(self):
-        if self.play_state:
-            return self.pause()
-        self.play()
-
-    def play(self):
-        self.set_play_state(True)
-
-    def set_play_state(self, state):
-        self.play_state = state
-        self.dopesheet_dock.setEnabled(not state)
-        self.library_dock.setEnabled(not state)
-        self.parameters_dock.setEnabled(not state)
-        self.palette_dock.setEnabled(not state)
-
-    def pause(self):
-        self.set_play_state(False)
-
-    def stop(self):
-        self.set_play_state(False)
-        self.current_document.index = 0
-        self.repaint_canvas()
-        self.dopesheet.repaint()
+    def assign(self):
+        CharacterAssignment(self).exec()
 
     def save(self):
         if not self.current_document:
@@ -152,7 +123,8 @@ class Pixoleros(QtWidgets.QMainWindow):
         if not self.current_document:
             return
         images = build_sprite_sheet(self.current_document)
-        dialog = Exported(images)
+        data = export_anim_data(self.current_document)
+        dialog = Exported(images, data)
         dialog.exec()
 
     def delete(self):
@@ -226,11 +198,6 @@ class Pixoleros(QtWidgets.QMainWindow):
 
     def add_document(self, document, name):
         canvas = Canvas(document)
-        canvas.toolbar.previous.triggered.connect(self.prev)
-        canvas.toolbar.next.triggered.connect(self.next)
-        canvas.toolbar.play.triggered.connect(self.play)
-        canvas.toolbar.pause.triggered.connect(self.pause)
-        canvas.toolbar.stop.triggered.connect(self.stop)
         canvas.updated.connect(self.update)
         window = self.mdi.addSubWindow(canvas)
         window.setWindowTitle(name)
@@ -276,9 +243,14 @@ class MainToolbar(QtWidgets.QToolBar):
         self.new = QtGui.QAction(get_icon('new.png'), '', self)
         self.open = QtGui.QAction(get_icon('open.png'), '', self)
         self.save = QtGui.QAction(get_icon('save.png'), '', self)
+        self.export = QtGui.QAction(get_icon('export.png'), '', self)
+        self.assign = QtGui.QAction(get_icon('assign.png'), '', self)
         self.addAction(self.new)
         self.addAction(self.open)
         self.addAction(self.save)
+        self.addSeparator()
+        self.addAction(self.export)
+        self.addAction(self.assign)
 
 
 class Canvas(QtWidgets.QWidget):
@@ -289,12 +261,10 @@ class Canvas(QtWidgets.QWidget):
         self.canvas = CanvasView(document)
         self.focus = self.canvas.focus
         self.updated = self.canvas.updated
-        self.toolbar = PlayerToolbar()
         layout = QtWidgets.QVBoxLayout(self)
         layout.setContentsMargins(0, 0, 0, 0)
         layout.setSpacing(0)
         layout.addWidget(self.canvas)
-        layout.addWidget(self.toolbar)
 
 
 class CanvasView(QtWidgets.QWidget):
@@ -305,7 +275,6 @@ class CanvasView(QtWidgets.QWidget):
         self.document = document
         self.viewportmapper = ViewportMapper()
         self.navigator = Navigator()
-        self.palette_override = False
 
     def paintEvent(self, event):
         painter = QtGui.QPainter(self)
@@ -314,10 +283,9 @@ class CanvasView(QtWidgets.QWidget):
         painter.drawRect(event.rect())
         if self.document.current_image:
             image = self.document.current_image.image
-            if self.palette_override:
-                origins, overrides = self.document.palette_override
-                if origins:
-                    image = switch_colors(image, origins, overrides)
+            origins, overrides = self.document.palette_override
+            if origins:
+                image = switch_colors(image, origins, overrides)
             qimage = ImageQt.ImageQt(image)
             rect = QtCore.QRectF(
                 0, 0, qimage.size().width(), qimage.size().height())
@@ -404,9 +372,9 @@ class CharacterParameters(QtWidgets.QWidget):
         super().__init__(parent=parent)
         self.document = None
         self.gender = QtWidgets.QComboBox()
-        self.gender.addItems(['male', 'female', 'undefined'])
-        self.gender.currentIndexChanged.connect(self.update)
+        self.gender.addItems(['man', 'woman', 'undefined'])
         self.name = QtWidgets.QLineEdit()
+        self.gender.currentIndexChanged.connect(self.update)
         self.name.textEdited.connect(self.update)
         layout = QtWidgets.QFormLayout(self)
         layout.addRow('Name', self.name)
@@ -416,8 +384,12 @@ class CharacterParameters(QtWidgets.QWidget):
         if not document:
             return
         self.document = document
+        self.name.blockSignals(True)
+        self.gender.blockSignals(True)
         self.gender.setCurrentText(self.document.data['gender'])
         self.name.setText(self.document.data['name'])
+        self.name.blockSignals(False)
+        self.gender.blockSignals(False)
 
     def update(self):
         if not self.document:
@@ -426,19 +398,185 @@ class CharacterParameters(QtWidgets.QWidget):
         self.document.data['gender'] = self.gender.currentText()
 
 
-class Exported(QtWidgets.QDialog):
-    def __init__(self, images, parent=None):
+class CharacterAssignment(QtWidgets.QDialog):
+    def __init__(self, parent=None):
         super().__init__(parent=parent)
-        self.images = [ImageQt.ImageQt(img) for img in images]
-        self.label = QtWidgets.QLabel()
-        self.label.setPixmap(QtGui.QPixmap.fromImage(self.images[0]))
-        self.label.setFixedSize(self.images[0].size())
-        self.combo = QtWidgets.QComboBox()
-        self.combo.addItems([str(i) for i in range(len(images))])
-        self.combo.currentIndexChanged.connect(self.change_image)
-        self.layout = QtWidgets.QVBoxLayout(self)
-        self.layout.addWidget(self.combo)
-        self.layout.addWidget(self.label)
+        self.setWindowTitle('Assign to scenes')
+        self.directory = QtWidgets.QLineEdit()
+        self.directory.textEdited.connect(self.directory_set)
+        self.select_directory = QtWidgets.QPushButton('Browse')
+        self.select_directory.released.connect(self.call_select_directory)
 
-    def change_image(self, index):
-        self.label.setPixmap(QtGui.QPixmap.fromImage(self.images[index]))
+        directory_layout = QtWidgets.QHBoxLayout()
+        directory_layout.setContentsMargins(0, 0, 0, 0)
+        directory_layout.addWidget(self.directory)
+        directory_layout.addWidget(self.select_directory)
+
+        self.scenes = QtWidgets.QComboBox()
+        self.scenes.currentTextChanged.connect(self.update_scene)
+        self.characters = QtWidgets.QListWidget()
+        self.characters.itemChanged.connect(self.item_changed)
+
+        layout = QtWidgets.QVBoxLayout(self)
+        layout.addLayout(directory_layout)
+        layout.addWidget(self.scenes)
+        layout.addWidget(self.characters)
+        self.directory_set('')
+
+    def item_changed(self, item):
+        if not item:
+            return
+        characters = []
+        for row in range(self.characters.count()):
+            item = self.characters.item(row)
+            if item.checkState() == QtCore.Qt.Checked:
+                characters.append(f'resources/animdata/{item.text()}')
+        scene = self.scenes.currentText()
+        ressources_directory = f'{self.directory.text()}/lib/resources'
+        scene_directory = f'{ressources_directory}/scenes'
+        with open(f'{scene_directory}/{scene}', 'r') as f:
+            data = json.load(f)
+        data['characters'] = characters
+        with open(f'{scene_directory}/{scene}', 'w') as f:
+            json.dump(data, f, indent=2)
+
+    def call_select_directory(self):
+        directory = QtWidgets.QFileDialog.getExistingDirectory()
+        if not directory:
+            return
+        self.directory.setText(directory)
+        self.directory_set(directory)
+
+    def directory_set(self, directory):
+        ressources_directory = f'{directory}/lib/resources'
+        skins_directory = f'{ressources_directory}/skins'
+        data_directory = f'{ressources_directory}/animdata'
+        directories = skins_directory, data_directory
+        enabled = all(os.path.exists(d) for d in directories)
+        self.scenes.setEnabled(enabled)
+        self.characters.setEnabled(enabled)
+        if not enabled:
+            return
+        scene_directory = f'{ressources_directory}/scenes'
+        scenes = [
+            f for f in os.listdir(scene_directory)
+            if os.path.splitext(f)[-1].lower() == '.json']
+        self.scenes.clear()
+        self.scenes.addItems(scenes)
+        characters_directory = f'{ressources_directory}/animdata'
+        characters = list_playable_characters(characters_directory)
+        self.characters.clear()
+        for character in characters:
+            item = QtWidgets.QListWidgetItem()
+            item.setText(character)
+            item.setFlags(item.flags() | QtCore.Qt.ItemIsUserCheckable)
+            item.setCheckState(QtCore.Qt.Unchecked)
+            self.characters.addItem(item)
+        self.update_scene()
+
+    def update_scene(self, *_):
+        if not self.scenes.isEnabled():
+            return
+        scene = self.scenes.currentText()
+        ressources_directory = f'{self.directory.text()}/lib/resources'
+        scene_directory = f'{ressources_directory}/scenes'
+        with open(f'{scene_directory}/{scene}', 'r') as f:
+            data = json.load(f)
+        for row in range(self.characters.count()):
+            item = self.characters.item(row)
+            path_in_data = f'resources/animdata/{item.text()}'
+            if path_in_data in data['characters']:
+                item.setCheckState(QtCore.Qt.Checked)
+            else:
+                item.setCheckState(QtCore.Qt.Unchecked)
+
+
+class Exported(QtWidgets.QDialog):
+    def __init__(self, image, data, parent=None):
+        super().__init__(parent=parent)
+        self.image = image
+        self.data = data
+        self.label = QtWidgets.QLabel()
+        self.label.setPixmap(QtGui.QPixmap.fromImage(self.image))
+        self.label.setFixedSize(self.image.size())
+        self.package = QtWidgets.QPushButton('Export package')
+        self.package.released.connect(self.call_export_package)
+        self.togame = QtWidgets.QPushButton('Import in game')
+        self.togame.released.connect(self.call_import_in_game)
+        layout = QtWidgets.QHBoxLayout()
+        layout.addStretch()
+        layout.addWidget(self.package)
+        layout.addWidget(self.togame)
+        self.layout = QtWidgets.QVBoxLayout(self)
+        self.layout.addWidget(self.label)
+        self.layout.addLayout(layout)
+
+    def call_export_package(self):
+        directory = QtWidgets.QFileDialog.getExistingDirectory(
+            parent=self,
+            caption='Select output folder',
+            dir='~')
+        if not directory:
+            return
+
+        directory = f'{directory}/{self.data["name"]}'
+        data_filename = f'{directory}/{self.data["name"]}.json'
+        spritesheet_filename = f'{directory}/{self.data["name"]}.png'
+        filenames = (data_filename, spritesheet_filename)
+        if any(os.path.exists(f) for f in filenames):
+            result = QtWidgets.QMessageBox.question(
+                parent=self,
+                title='Overwrite files',
+                text=(
+                    f'{filenames} already exists.'
+                    'Would you like to overwrite them ?'),
+                button0=QtWidgets.QMessageBox.Yes,
+                button1=QtWidgets.QMessageBox.No,
+                defaultButton=QtWidgets.QMessageBox.No)
+            if result == QtWidgets.QMessageBox.No:
+                return
+
+        if not os.path.exists(directory):
+            os.makedirs(directory)
+        with open(data_filename, 'w') as f:
+            json.dump(self.data, f, indent=2)
+        self.image.save(spritesheet_filename, 'PNG')
+        self.accept()
+
+    def call_import_in_game(self):
+        directory = QtWidgets.QFileDialog.getExistingDirectory(
+            parent=self,
+            caption='Select output folder',
+            dir='~')
+        if not directory:
+            return
+        ressources_directory = f'{directory}/lib/resources'
+        skins_directory = f'{ressources_directory}/skins'
+        data_directory = f'{ressources_directory}/animdata'
+        directories = skins_directory, data_directory
+        if not all(os.path.exists(d) for d in directories):
+            m = f'"{directory}" is not a valid Ragtime-Rumble game directory'
+            return QtWidgets.QMessageBox.critical(
+                parent=self,
+                title='Wrong directory',
+                text=m)
+        data_filename = f'{data_directory}/{self.data["name"]}.json'
+        spritesheet_filename = f'{skins_directory}/{self.data["name"]}.png'
+        with open(data_filename, 'w') as f:
+            json.dump(self.data, f, indent=2)
+        self.image.save(spritesheet_filename, 'PNG')
+
+
+def list_playable_characters(directory):
+    result = []
+    for character in os.listdir(directory):
+        if os.path.splitext(character)[-1].lower() != '.json':
+            continue
+        try:
+            with open(f'{directory}/{character}', 'r') as f:
+                if json.load(f).get('type') == 'playable':
+                    result.append(character)
+        except Exception:
+            print('failed', character)
+            continue
+    return result

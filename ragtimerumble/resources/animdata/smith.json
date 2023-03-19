@@ -1,5 +1,6 @@
 {
   "name": "smith",
+  "type": "playable",
   "gender": "man",
   "framesize": [
     64,

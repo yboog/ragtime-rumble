@@ -288,7 +288,6 @@ class DopeSheetExposures(QtWidgets.QWidget):
         for row in self.rows:
             index = row.drop_index(pos)
             if index is not None:
-                print(index, row.animation)
                 return row.animation, index
 
     def dropEvent(self, event):
@@ -304,8 +303,9 @@ class DopeSheetExposures(QtWidgets.QWidget):
             data = bytes(event.mimeData().data('animation'))
             animation = codecs.decode(data)
             origin = (animation, index)
+            action = 'copy' if ctrl_pressed else 'move'
             selection = self.document.internal_move(
-                self.selection.items or [origin], destination, action='move')
+                self.selection.items or [origin], destination, action=action)
             self.selection.set(selection)
         else:
             paths = [url.path() for url in event.mimeData().urls()]

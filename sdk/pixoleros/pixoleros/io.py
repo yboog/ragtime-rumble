@@ -42,5 +42,31 @@ def serialize_document(document):
         'data': deepcopy(document.data),
         'library': library,
         'animation': document.animation,
-        'index': document.index
+        'index': document.index}
+
+
+def serialize_animations(document):
+    animations = {}
+    startframe = 0
+    for animation, data in document.data['animations'].items():
+        animations[animation] = {
+            'exposures': data['exposures'],
+            'startframe': startframe}
+        startframe += len(data['exposures'])
+    return animations
+
+
+def export_anim_data(document):
+    data = deepcopy(document.data)
+    return {
+        'name': data['name'],
+        'type': 'playable',
+        'gender': data['gender'],
+        'framesize': data['framesize'],
+        'center': data['center'],
+        'box': data['box'],
+        'hitbox': data['hitbox'],
+        'palettes': document.palettes,
+        'animations': serialize_animations(document),
+        'filepath': f'resources/skins/{data["name"]}.png'
     }

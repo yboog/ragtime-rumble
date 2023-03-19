@@ -60,18 +60,11 @@ def build_sprite_sheet(document):
     image_ids = [
         image for anim in document.data['animations'].values()
         for image in anim['images']]
-    images = [ImageQt.ImageQt(document.library[id_].image) for id_ in image_ids]
+    images = [
+        ImageQt.ImageQt(document.library[id_].image)
+        for id_ in image_ids]
     column_lenght = math.ceil(math.sqrt(len(images)))
     canvas_size = get_canvas_size(len(images), column_lenght, 64, 64)
-    base = QtGui.QImage(canvas_size, QtGui.QImage.Format_ARGB32)
-    fill_canvas(base, images, column_lenght, 64, 64)
-    image = Image.fromqimage(base)
-    images = []
-    for indexes in document.iter_all_possible_overrides():
-        origins = []
-        overrides = []
-        for i, j in enumerate(indexes):
-            origins.extend(document.palettes[i]['origins'])
-            overrides.extend(document.palettes[i]['palettes'][j])
-        images.append(switch_colors(image, origins, overrides))
-    return images
+    image = QtGui.QImage(canvas_size, QtGui.QImage.Format_ARGB32)
+    fill_canvas(image, images, column_lenght, 64, 64)
+    return image
