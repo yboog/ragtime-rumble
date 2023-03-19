@@ -2,7 +2,7 @@
   "character_number": 35,
   "name": "saloon",
   "musics": [
-    "resources/sounds/ragtime.ogg",
+    "resources/sounds/ragtime_1_MA_BrunoFreitas_OldWestSaloon_HonkyTonk.ogg",
     "resources/sounds/ragtime_2_Stuck In A Fine Mess.ogg",
     "resources/sounds/ragtime_3_MA_EmilioMerone_JamNCheeseRag_Main.ogg"
   ],
