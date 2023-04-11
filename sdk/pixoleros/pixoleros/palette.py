@@ -173,9 +173,10 @@ class PaletteTable(QtWidgets.QWidget):
                         if rect.contains(event.pos()):
                             self.document.editing_color_index = ('', -1, -1)
                             c = self.document.palettes[colors.index]['origins']
-                            self.color_selected.emit(c[i])
-                            self.repaint()
-                            return
+                            if i < len(c):
+                                self.color_selected.emit(c[i])
+                                self.repaint()
+                                return
                 # Add Origins color.
                 if column[-1].contains(event.pos()):
                     if not self.document.current_image:

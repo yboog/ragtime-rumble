@@ -2824,7 +2824,7 @@
       "life": {
         "position": [
           140,
-          345
+          325
         ],
         "file4": "/resources/ui/saloon/player-4/player-4-00.png",
         "file3": "/resources/ui/saloon/player-4/player-4-01.png",
@@ -3054,6 +3054,8 @@
   "interactions": [
     {
       "action": "order",
+      "insound": "resources/sounds/hittable.wav",
+      "outsound": null,
       "target": [
         310,
         null
@@ -3084,6 +3086,8 @@
       "direction": "up",
       "busy": false,
       "lockable": true,
+      "insound": null,
+      "outsound": null,
       "zone": [
         340,
         140,
@@ -3107,6 +3111,8 @@
       "busy": false,
       "lockable": false,
       "direction": "down",
+      "insound": null,
+      "outsound": null,
       "zone": [
         270,
         69,
@@ -3130,6 +3136,8 @@
       "busy": false,
       "lockable": true,
       "direction": "down",
+      "insound": null,
+      "outsound": null,
       "zone": [
         530,
         210,
@@ -3153,6 +3161,8 @@
       "busy": false,
       "lockable": true,
       "direction": "right",
+      "insound": null,
+      "outsound": null,
       "zone": [
         497,
         237,
@@ -3173,6 +3183,8 @@
     },
     {
       "action": "poker",
+      "insound": null,
+      "outsound": null,
       "direction": "left",
       "busy": false,
       "lockable": true,
@@ -3196,6 +3208,8 @@
     },
     {
       "action": "poker",
+      "insound": null,
+      "outsound": null,
       "busy": false,
       "lockable": true,
       "direction": "up",
@@ -3221,6 +3235,8 @@
       "action": "poker",
       "busy": false,
       "lockable": true,
+      "insound": null,
+      "outsound": null,
       "direction": "right",
       "zone": [
         383,
@@ -3243,6 +3259,8 @@
     {
       "action": "poker",
       "busy": false,
+      "insound": null,
+      "outsound": null,
       "lockable": true,
       "direction": "down",
       "zone": [
@@ -3265,6 +3283,8 @@
     },
     {
       "action": "poker",
+      "insound": null,
+      "outsound": null,
       "busy": false,
       "lockable": true,
       "direction": "left",
@@ -3289,6 +3309,8 @@
     {
       "action": "poker",
       "busy": false,
+      "insound": null,
+      "outsound": null,
       "lockable": true,
       "direction": "left",
       "zone": [
@@ -3311,6 +3333,8 @@
     },
     {
       "action": "poker",
+      "insound": null,
+      "outsound": null,
       "busy": false,
       "lockable": true,
       "direction": "left",
@@ -3334,6 +3358,8 @@
     },
     {
       "action": "poker",
+      "insound": null,
+      "outsound": null,
       "busy": false,
       "lockable": true,
       "direction": "left",
@@ -3357,6 +3383,8 @@
     },
     {
       "action": "poker",
+      "insound": null,
+      "outsound": null,
       "busy": false,
       "lockable": true,
       "direction": "right",
@@ -3380,6 +3408,8 @@
     },
     {
       "action": "poker",
+      "insound": null,
+      "outsound": null,
       "busy": false,
       "lockable": true,
       "direction": "down",
@@ -3403,6 +3433,8 @@
     },
     {
       "action": "poker",
+      "insound": null,
+      "outsound": null,
       "busy": false,
       "lockable": true,
       "direction": "left",
@@ -3426,6 +3458,8 @@
     },
     {
       "action": "poker",
+      "insound": null,
+      "outsound": null,
       "busy": false,
       "lockable": true,
       "direction": "left",
@@ -3449,6 +3483,8 @@
     },
     {
       "action": "poker",
+      "insound": null,
+      "outsound": null,
       "busy": false,
       "lockable": true,
       "direction": "right",
@@ -3472,6 +3508,8 @@
     },
     {
       "action": "poker",
+      "insound": null,
+      "outsound": null,
       "busy": false,
       "lockable": true,
       "direction": "down",
@@ -4434,6 +4472,36 @@
       ]
     },
     {
+      "file": "resources/animdata/diego.json",
+      "type": "dog",
+      "startposition":[
+        40,
+        107
+      ],
+      "direction": "right",
+      "path": [
+        [40, 107], [68, 79], [173, 79], [198, 55], [320, 55], [330, 63],
+        [321, 70], [255, 70], [235, 52], [156, 52], [73, 130], [24, 130],
+        [10, 144], [47, 181], [81, 182], [103, 203], [139, 203],
+        [170, 172], [201, 172], [212, 183], [199, 197], [163, 196],
+        [113, 245], [143, 277], [173, 248], [117, 193], [77, 193],
+        [41, 157], [13, 157], [60, 107]]
+    },
+    {
+      "file": "resources/animdata/diego.json",
+      "type": "dog",
+      "direction": "left",
+      "startposition":[
+        377,
+        210
+      ],
+      "path": [
+        [377, 210], [439, 210], [481, 252], [324, 252], [371, 299], [327, 344],
+        [507, 344], [526, 323], [581, 323], [614, 290], [510, 290], [468, 248],
+        [518, 197], [620, 197], [584, 162], [543, 202], [476, 202], [446, 171],
+        [413, 171], [377, 210]]
+    },
+    {
       "file": "resources/animdata/pianist.json",
       "startposition": [
         30,
@@ -4523,6 +4591,8 @@
     {
       "name": "bottle",
       "action": "drink",
+      "insound": "resources/sounds/glouglou.wav",
+      "outsound": null,
       "offset": [
         -20,
         -20

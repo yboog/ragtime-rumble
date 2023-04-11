@@ -67,8 +67,8 @@ class SniperReticle:
     def shoot(self):
         play_sound('resources/sounds/colt.wav')
         for character in self.target_characters:
-            self.player.kill(character, silently=True, getcoin=False)
-            self.player.bullet_cooldown = COUNTDOWNS.SNIPER_BULLET_COOLDOWN
+            self.player.kill(character, silently=True)
+        self.player.bullet_cooldown = COUNTDOWNS.SNIPER_BULLET_COOLDOWN
         self.player = None
 
 

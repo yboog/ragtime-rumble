@@ -183,6 +183,8 @@ class Character:
         self.spritesheet.animation = 'idle'
         self.spritesheet.index = 0
         if self.interacting_zone:
+            if self.interacting_zone.out_sound:
+                play_sound(self.interacting_zone.out_sound)
             self.interacting_zone.busy = False
             self.interacting_zone = None
 
@@ -242,7 +244,10 @@ class Character:
         target.status = CHARACTER_STATUSES.OUT
         target.spritesheet.animation = 'death'
         target.spritesheet.index = 0
-        if self.duel_target:
+        if self.duel_target and self.duel_target is target:
+            if not black_screen and silently:  # from sniper
+                self.status = CHARACTER_STATUSES.FREE
+                self.spritesheet.animation = 'idle'
             self.duel_target.duel_target = None
             self.duel_target = None
         if self.interacting_zone:
@@ -329,6 +334,8 @@ class Character:
             self.status = CHARACTER_STATUSES.FREE
             self.buffer_interaction_zone = None
             return
+        if zone.in_sound:
+            play_sound(zone.in_sound)
         self.spritesheet.animation = zone.action
         self.spritesheet.index = 0
         self.direction = zone.direction

@@ -19,8 +19,8 @@ ORDER = (
 repo_root = os.path.dirname(os.path.dirname(__file__))
 ref_root = f'{repo_root}/refs/frames/barman'
 relative_output = 'resources/skins/barman.png'
-output = f'{repo_root}/drunkparanoia/{relative_output}'
-gamedata_output_path = f'{repo_root}/drunkparanoia/resources/animdata/barman.json'
+output = f'{repo_root}/ragtimerumble/{relative_output}'
+gamedata_output_path = f'{repo_root}/ragtimerumble/resources/animdata/barman.json'
 
 
 def fill_canvas(canvas, images, column_lenght, frame_width, frame_height):

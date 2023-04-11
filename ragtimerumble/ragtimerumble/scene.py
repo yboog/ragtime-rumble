@@ -21,7 +21,7 @@ from ragtimerumble.io import (
     play_dispatcher_music, stop_dispatcher_music, play_scene_music,
     stop_scene_music, stop_ambiance, load_frames)
 from ragtimerumble.joystick import get_current_commands
-from ragtimerumble.npc import Npc, Pianist, Barman, Sniper
+from ragtimerumble.npc import Npc, Pianist, Barman, Sniper, Dog
 from ragtimerumble.player import Player
 from ragtimerumble.sprite import SpriteSheet, image_index_from_exposures
 
@@ -60,7 +60,8 @@ VIRGIN_SCORES = {
 NPC_TYPES = {
     'pianist': Pianist,
     'barman': Barman,
-    'sniper': Sniper
+    'sniper': Sniper,
+    'dog': Dog
 }
 
 
@@ -303,7 +304,7 @@ class PlayerDispatcher:
                 if self.assigned[column] is None:
                     self.assigned[column] = joystick
                     self.generate_characters(column)
-                play_sound('resources/sounds/woosh.wav')
+                play_sound('resources/sounds/card.wav')
 
         self.done = sum(bool(p) for p in self.players) == len(self.joysticks)
 
@@ -639,6 +640,8 @@ class InteractionZone:
     def __init__(self, data):
         self.data = data
         self.id = data['id']
+        self.in_sound = data['insound']
+        self.out_sound = data['outsound']
         self.target = data["target"]
         self.action = data["action"]
         self.zone = data["zone"]

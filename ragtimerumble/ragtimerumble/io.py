@@ -4,7 +4,6 @@ import json
 import pygame
 import random
 import itertools
-import numpy as np
 from ragtimerumble.config import GAMEROOT, PALLETTES_COUNT
 from ragtimerumble.joystick import get_current_commands
 
@@ -19,6 +18,13 @@ _palettes = {}
 _sounds = {}
 _dispatcher_music = None
 _scene_music = None
+
+
+def play_coin_sound():
+    play_sound(random.choice((
+        'resources/sounds/coins_3.wav',
+        'resources/sounds/coins_1.wav',
+        'resources/sounds/coins_2.wav')))
 
 
 def play_scene_music(sounds):
@@ -156,7 +162,7 @@ def swap_colors(surface, palette1, palette2):
         if color1 == color2:
             continue
         areas = (red == color1[0]) & (blue == color1[2]) & (green == color1[1])
-        arr[...,][areas.T] = color2
+        arr[..., ][areas.T] = color2
     new_surface = pygame.surfarray.make_surface(arr).convert_alpha()
     alpha_array = pygame.surfarray.pixels_alpha(surface)
     pygame.surfarray.pixels_alpha(new_surface)[:] = alpha_array[:]

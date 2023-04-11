@@ -5,7 +5,7 @@ from ragtimerumble.config import (
     LOOPING_ANIMATIONS, CHARACTER_STATUSES, COUNTDOWNS,
     WIN_OR_LOOSE_AT_POKER_PROBABILITY)
 from ragtimerumble.io import (
-    play_sound, choice_death_sentence, choice_random_name)
+    play_sound, choice_death_sentence, choice_random_name, play_coin_sound)
 
 
 class Player:
@@ -74,7 +74,7 @@ class Player:
             self.character.status == CHARACTER_STATUSES.OUT and
             self.character.spritesheet.animation_is_done)
 
-    def kill(self, target, black_screen=False, silently=False, getcoin=True):
+    def kill(self, target, black_screen=False, silently=False):
         self.character.kill(target, black_screen, silently)
         player = self.scene.find_player(target)
         if player:
@@ -203,18 +203,21 @@ class Player:
                     return True
 
         if commands.get('Y'):
-            if self.action_cooldown != 0:
-                return False
-            interact = self.character.request_interaction()
-            interact = interact or self.check_snipers()
-            if interact:
-                self.action_cooldown = COUNTDOWNS.ACTION_COOLDOWN
-                return True
             character = self.character.request_stripping()
             if character is not None and self.coins < 5:
+                play_coin_sound()
                 character.shorn = True
                 self.coins += 1
                 self.create_coin_vfx()
+                self.action_cooldown = COUNTDOWNS.ACTION_COOLDOWN
+                return True
+            if self.action_cooldown != 0:
+                return False
+            interact = self.check_snipers()
+            interact = interact or self.character.request_interaction()
+            if interact:
+                self.action_cooldown = COUNTDOWNS.ACTION_COOLDOWN
+                return True
         return False
 
     def create_coin_vfx(self):

@@ -14,6 +14,7 @@ files = (
     f"{repo_root}/ragtimerumble/resources/skins/janet.png",
     f"{repo_root}/ragtimerumble/resources/skins/sniper.png",
     f"{repo_root}/ragtimerumble/resources/skins/barman.png",
+    f"{repo_root}/ragtimerumble/resources/skins/diego.png",
     f"{repo_root}/ragtimerumble/resources/vfx/coin-alert.png")
 for file in files:
     img = Image.open(file)

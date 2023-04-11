@@ -1,0 +1,86 @@
+{
+  "name": "diego",
+  "type": "dog",
+  "center": [
+    40,
+    54
+  ],
+  "framesize": [
+    64,
+    64
+  ],
+  "filepath": "resources/skins/diego.png",
+  "animations": {
+    "bark": {
+      "exposures": [
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        6
+      ],
+      "startframe": 0
+    },
+    "growl": {
+      "exposures": [
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        6
+      ],
+      "startframe": 14
+    },
+    "idle": {
+      "exposures": [
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        6
+      ],
+      "startframe": 26
+    },
+    "siderun": {
+      "exposures": [
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        6
+      ],
+      "startframe": 38
+    },
+    "sit": {
+      "exposures": [
+        6
+      ],
+      "startframe": 45
+    }
+  }
+}

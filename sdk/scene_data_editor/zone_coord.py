@@ -1519,8 +1519,8 @@ class Visibilities(QtWidgets.QWidget):
 
 
 app = QtWidgets.QApplication([])
-gameroot = 'C:/perso/drunk-paranoia/drunkparanoia'
-scene = 'C:/perso/drunk-paranoia/drunkparanoia/resources/scenes/saloon.json'
+gameroot = 'C:/perso/ragtime-rumble/ragtimerumble'
+scene = 'C:/perso/ragtime-rumble/ragtimerumble/resources/scenes/saloon.json'
 editor = Editor(gameroot, scene)
 editor.show()
 app.exec()
