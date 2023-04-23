@@ -4,6 +4,7 @@ import json
 import pygame
 import random
 import itertools
+from ragtimerumble import preferences
 from ragtimerumble.config import GAMEROOT, PALLETTES_COUNT
 from ragtimerumble.joystick import get_current_commands
 
@@ -18,6 +19,7 @@ _palettes = {}
 _sounds = {}
 _dispatcher_music = None
 _scene_music = None
+_menu_texts = {}
 
 
 def play_coin_sound():
@@ -103,7 +105,16 @@ def build_random_palette(palettes):
     return id_, palette_source, palette_dest
 
 
-def choice_death_sentence(language):
+def get_menu_text(key):
+    language = preferences.get('language')
+    if not _menu_texts:
+        filepath = f'{GAMEROOT}/resources/texts/menu.json'
+        with open(filepath, 'rb') as f:
+            _menu_texts.update(json.load(f))
+    return _menu_texts[key][language]
+
+
+def choice_death_sentence():
     if not _death_sentences_generators:
         filepath = f'{GAMEROOT}/resources/texts/darwinaward.json'
         with open(filepath, 'rb') as f:
@@ -112,10 +123,11 @@ def choice_death_sentence(language):
             array = data[key]
             random.shuffle(array)
             _death_sentences_generators[key] = itertools.cycle(array)
+    language = preferences.get('language')
     return next(_death_sentences_generators[language])
 
 
-def choice_kill_sentence(language):
+def choice_kill_sentence():
     if not _kill_sentences_generators:
         filepath = f'{GAMEROOT}/resources/texts/kills.json'
         with open(filepath, 'rb') as f:
@@ -124,6 +136,7 @@ def choice_kill_sentence(language):
             array = data[key]
             random.shuffle(array)
             _kill_sentences_generators[key] = itertools.cycle(array)
+    language = preferences.get('language')
     return next(_kill_sentences_generators[language])
 
 

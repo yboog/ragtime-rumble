@@ -13,6 +13,7 @@ files = (
     f"{repo_root}/ragtimerumble/resources/skins/smith.png",
     f"{repo_root}/ragtimerumble/resources/skins/janet.png",
     f"{repo_root}/ragtimerumble/resources/skins/sniper.png",
+    f"{repo_root}/ragtimerumble/resources/skins/title.png",
     f"{repo_root}/ragtimerumble/resources/skins/barman.png",
     f"{repo_root}/ragtimerumble/resources/skins/diego.png",
     f"{repo_root}/ragtimerumble/resources/vfx/coin-alert.png")

@@ -21,6 +21,7 @@ from ragtimerumble.io import (
     play_dispatcher_music, stop_dispatcher_music, play_scene_music,
     stop_scene_music, stop_ambiance, load_frames)
 from ragtimerumble.joystick import get_current_commands
+from ragtimerumble.menu import Menu
 from ragtimerumble.npc import Npc, Pianist, Barman, Sniper, Dog
 from ragtimerumble.player import Player
 from ragtimerumble.sprite import SpriteSheet, image_index_from_exposures
@@ -161,7 +162,7 @@ def find_prop(data, name):
 
 class GameLoop:
     def __init__(self):
-        self.status = LOOP_STATUSES.AWAITING
+        self.status = LOOP_STATUSES.MENU
         self.scene_path = None
         self.scene = None
         self.dispatcher = None
@@ -169,6 +170,7 @@ class GameLoop:
         self.clock = pygame.time.Clock()
         self.scores = deepcopy(VIRGIN_SCORES)
         self.joysticks = list_joysticks()
+        self.menu = Menu(self.joysticks)
 
     def set_scene(self, path):
         self.scene_path = path
@@ -186,6 +188,15 @@ class GameLoop:
             return
 
         match self.status:
+            case LOOP_STATUSES.MENU:
+                next(self.menu)
+                if self.menu.done is True:
+                    self.done = True
+                    return
+                if self.menu.start is True:
+                    self.start_scene()
+                self.clock.tick(60)
+
             case LOOP_STATUSES.BATTLE:
                 next(self.scene)
                 self.clock.tick(60)
@@ -289,13 +300,13 @@ class PlayerDispatcher:
                 value = max((0, self.joysticks_column[i] - 1))
                 play_sound('resources/sounds/stroke_whoosh_02.ogg')
                 self.joysticks_column[i] = value
-                self.cooldowns[i] = 10
+                self.cooldowns[i] = COUNTDOWNS.MENU_SELECTION_COOLDOWN
 
             elif get_current_commands(joystick).get('RIGHT'):
                 play_sound('resources/sounds/stroke_whoosh_02.ogg')
                 value = min((4, self.joysticks_column[i] + 1))
                 self.joysticks_column[i] = value
-                self.cooldowns[i] = 10
+                self.cooldowns[i] = COUNTDOWNS.MENU_SELECTION_COOLDOWN
 
             elif get_current_commands(joystick).get('A'):
                 column = self.joysticks_column[i]
@@ -533,7 +544,7 @@ class Scene:
         name2 = (
             f'Player {pl.index + 1}' if pl
             else choice_random_name(victim.gender))
-        msg = choice_kill_sentence('french')
+        msg = choice_kill_sentence()
         self.messenger.add_message(f'{name1} {msg} {name2}')
 
     def create_npcs(self):

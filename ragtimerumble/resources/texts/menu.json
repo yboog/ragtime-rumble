@@ -1,0 +1,54 @@
+{
+    "new_game": {
+        "french": "Nouvelle partie",
+        "english": "New Game"
+    },
+    "advanced": {
+        "french": "Avancée",
+        "english": "Advanced"
+    },
+    "basic": {
+        "french": "Basique",
+        "english": "Basic"
+    },
+    "display": {
+        "french": "Affichage",
+        "english": "Display"
+    },
+    "fullscreen": {
+        "french": "Plein écran",
+        "english": "Full screen"
+    },
+    "wscaled": {
+        "french": "Fênetré agrandi",
+        "english": "Windowed scaled"
+    },
+    "windowed": {
+        "french": "Fênetré",
+        "english": "Windowed"
+    },
+    "controls": {
+        "french": "Controlles",
+        "english": "Controls"
+    },
+    "help": {
+        "french": "Comment jouer",
+        "english": "How to play"
+    },
+    "language": {
+        "french": "Langue",
+        "english": "Language"
+    },
+    "french": {
+        "french": "Français",
+        "english": "Français"
+    },
+    "english": {
+        "french": "English",
+        "english": "English"
+    },
+    "quit": {
+        "french": "Quitter le jeu",
+        "english": "Quit"
+    }
+}

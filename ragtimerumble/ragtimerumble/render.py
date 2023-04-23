@@ -15,9 +15,12 @@ KILL_MESSAGE_PADDING = 1
 KILL_MESSAGE_MARGIN = 2
 MESSAGE_FONT_SIZE = 8
 MESSAGE_FONT_FILE = 'Pixel-Western.otf'
+TEXT_FONT_FILE = 'Retro-Gaming.ttf'
 
 
 def render_game(screen, loop):
+    if loop.status == LOOP_STATUSES.MENU:
+        return render_menu(screen, loop.menu)
     if loop.status == LOOP_STATUSES.SCORE:
         return render_score(screen, loop)
     render_scene(screen, loop.scene)
@@ -28,6 +31,22 @@ def render_game(screen, loop):
         render_dispatching(screen, loop)
         render_players_ol_score(screen, loop.scene)
     render_messages(screen, loop.scene)
+
+
+def render_menu(screen, menu):
+    bg = get_image(menu.bg)
+    screen.blit(bg, (0, 0))
+    render_element(screen, menu.title)
+    font = pygame.font.Font(get_font(TEXT_FONT_FILE), 10)
+    for item in menu.items:
+        highlighted = item.index == menu.index
+        color = (255, 125, 0) if highlighted else (255, 255, 255)
+        draw_text(
+            surface=screen,
+            text=item.label,
+            pos=item.coordinates.position,
+            font=font,
+            color=color)
 
 
 CELL_WIDTH = 55
@@ -115,11 +134,12 @@ def render_last_kill(screen, loop):
         draw_text(screen, f'player {player.index + 1}', (x, y))
 
 
-def draw_text(surface, text, pos, size=None, color=None):
+def draw_text(surface, text, pos, size=15, font=None, color=None):
     color = color or (255, 255, 255)
-    font = pygame.font.SysFont('Consolas', 15)
+    font = font or pygame.font.SysFont('Consolas', size)
     text = font.render(text, True, color)
     text_rect = text.get_rect(center=pos)
+    text_rect.left += text_rect.width / 2
     surface.blit(text, text_rect)
 
 

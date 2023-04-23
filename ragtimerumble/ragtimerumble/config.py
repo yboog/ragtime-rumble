@@ -18,7 +18,8 @@ ANIMATIONS = [
     'vomit',
     'coma'
 ]
-
+AVAILABLE_LANGUAGES = ['english', 'french']
+RESOLUTION = 640, 360
 DEAD_ANIMATIONS = ['death', 'coma']
 LOOPING_ANIMATIONS = ['idle', 'walk', 'piano', 'poker', 'suspicious', 'balcony']
 HOLDABLE_ANIMATIONS = ['call', 'death', 'coma']
@@ -33,6 +34,12 @@ DOG_GROWL_DISTANCE = 70
 DOG_BARK_DISTANCE = 40
 
 
+class DISPLAY_MODES:
+    FULSCREEN = 0
+    SCALED = 1
+    WINDOWED = 2
+
+
 class DUEL:
     RANGE = (20, 120)
     TOLERENCE = 15
@@ -42,6 +49,7 @@ class LOOP_STATUSES:
     PAUSE = 'pause'
     AWAITING = 'awaiting'
     DISPATCHING = 'assignation'
+    MENU = 'menu'
     BATTLE = 'fight'
     LAST_KILL = 'lastkill'
     SCORE = 'score'
@@ -71,11 +79,13 @@ class COUNTDOWNS:
     INTERACTION_LOOP_COOLDOWN_MIN = 125
     INTERACTION_LOOP_COOLDOWN_MAX = 400
     MAX_LIFE = 6000
+    MENU_SELECTION_COOLDOWN = 10
     MESSAGE_DISPLAY_TIME = 200
     MESSAGE_FADEOFF_EXPOSURE = 35
     POKER_BET_TIME_COOLDOWN = 240
     START_LIFE = 4499
     SNIPER_BULLET_COOLDOWN = 60
+    TITLE_LOOP_COOLDOWN = 90
     VOMIT_MIN = 1000
     VOMIT_MAX = 5000
     WHITE_SCREEN = 8

@@ -79,7 +79,7 @@ class Npc:
             f'Player {player.index + 1}'
             if player else choice_random_name(self.character.gender))
         messenger = self.scene.messenger
-        sentence = choice_death_sentence('french')
+        sentence = choice_death_sentence()
         messenger.add_message(sentence.format(name=name))
         return
 
