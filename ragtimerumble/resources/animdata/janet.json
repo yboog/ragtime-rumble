@@ -1,7 +1,44 @@
 {
   "name": "janet",
   "type": "playable",
-  "gender": "woman",
+  "names": [
+    "Mallory Knockx",
+    "Belle Star",
+    "Calamity Jane",
+    "Elena Fuente",
+    "Molly stark",
+    "Vera Custer",
+    "Rose Doolan",
+    "Suzy Lafayette",
+    "Bossy Alice",
+    "Holy Mary",
+    "Clem and Tine",
+    "Nat Ginger",
+    "Joyce Burkle",
+    "Freaky gun Zoey",
+    "Frida Stabyourback",
+    "Tally Paris",
+    "Georgia Ofmimind",
+    "Mae Noman",
+    "Fatty Lucy",
+    "Ella Singzeblues",
+    "Betsy Pullman",
+    "Charlotte la crotte",
+    "Nora Norak",
+    "Pearl Beurkingsson",
+    "Hope la choppe",
+    "Carence Clarence",
+    "Claire qui blaire",
+    "Delilah Choke'O'La",
+    "Eleanor Mc Gregor",
+    "Cate Blood'Blade",
+    "Caroline the Whale",
+    "Maya Crapsoft",
+    "Maori Fluffy",
+    "Tora Jarmusch",
+    "Jesse Horseteeth",
+    "Tela Tientoala"
+  ],
   "framesize": [
     64,
     64
@@ -226,13 +263,6 @@
             120,
             160
           ]
-        ],
-        [
-          [
-            0,
-            71,
-            0
-          ]
         ]
       ]
     },
@@ -254,37 +284,37 @@
         [
           [
             55,
-            195,
-            250
+            85,
+            100
           ],
           [
-            190,
-            235,
-            255
+            97,
+            138,
+            160
           ]
         ],
         [
           [
-            175,
-            55,
-            180
+            220,
+            170,
+            100
           ],
           [
-            217,
-            153,
-            217
+            180,
+            140,
+            70
           ]
         ],
         [
           [
-            175,
+            140,
             25,
             0
           ],
           [
-            245,
-            90,
-            55
+            100,
+            20,
+            0
           ]
         ],
         [
@@ -301,14 +331,14 @@
         ],
         [
           [
-            121,
-            100,
-            183
+            203,
+            58,
+            17
           ],
           [
-            191,
-            179,
-            255
+            156,
+            48,
+            12
           ]
         ],
         [
@@ -325,14 +355,26 @@
         ],
         [
           [
-            60,
-            75,
-            150
+            57,
+            51,
+            80
           ],
           [
-            103,
-            144,
-            217
+            104,
+            93,
+            146
+          ]
+        ],
+        [
+          [
+            110,
+            145,
+            156
+          ],
+          [
+            165,
+            195,
+            203
           ]
         ]
       ]
@@ -432,17 +474,17 @@
     },
     "death": {
       "exposures": [
+        5,
+        5,
         6,
         6,
         6,
         6,
         6,
-        6,
-        6,
-        6,
-        6,
-        6,
-        6,
+        12,
+        5,
+        4,
+        5,
         6,
         6,
         6
@@ -478,6 +520,9 @@
     },
     "gunshot": {
       "exposures": [
+        3,
+        5,
+        7,
         6,
         6,
         6,
@@ -490,11 +535,8 @@
         6,
         6,
         6,
-        6,
-        6,
-        6,
-        6,
-        6
+        4,
+        4
       ],
       "startframe": 53
     },

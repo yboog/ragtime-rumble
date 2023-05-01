@@ -1,7 +1,8 @@
 
 
 preferences = {
-    'language': 'english'
+    'language': 'english',
+    'gametype': 'advanced'
 }
 
 

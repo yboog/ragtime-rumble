@@ -7,10 +7,6 @@
   ],
   "filepath": "resources/skins/title.png",
   "animations": {
-    "waiting": {
-      "exposures": [60],
-      "startframe": 0
-    },
     "splash": {
       "exposures": [
         6,
@@ -67,6 +63,12 @@
         6
       ],
       "startframe": 46
+    },
+    "waiting": {
+      "exposures": [
+        60
+      ],
+      "startframe": 0
     },
     "loop": {
       "exposures": [

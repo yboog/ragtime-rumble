@@ -397,35 +397,90 @@ class CanvasView(QtWidgets.QWidget):
         self.repaint()
 
 
+class NamesModel(QtCore.QAbstractListModel):
+    def __init__(self, parent=None):
+        super().__init__(parent)
+        self.document = None
+
+    def rowCount(self, *_):
+        if self.document is None:
+            return 0
+        return len(self.document.data.get('names', []))
+
+    def set_document(self, document):
+        self.layoutAboutToBeChanged.emit()
+        self.document = document
+        self.layoutChanged.emit()
+
+    def data(self, index, role):
+        if role == QtCore.Qt.DisplayRole:
+            return self.document.data.get('names', [])[index.row()]
+
+
 class CharacterParameters(QtWidgets.QWidget):
     def __init__(self, parent=None):
         super().__init__(parent=parent)
         self.document = None
-        self.gender = QtWidgets.QComboBox()
-        self.gender.addItems(['man', 'woman', 'undefined'])
         self.name = QtWidgets.QLineEdit()
-        self.gender.currentIndexChanged.connect(self.update)
         self.name.textEdited.connect(self.update)
+
+        self.names = QtWidgets.QListView()
+        mode = QtWidgets.QAbstractItemView.ExtendedSelection
+        self.names.setSelectionMode(mode)
+        self.names_model = NamesModel()
+        self.names.setModel(self.names_model)
+        add = QtWidgets.QPushButton('Add')
+        add.released.connect(self.add_names)
+        remove = QtWidgets.QPushButton('Remove')
+        remove.released.connect(self.remove_names)
+
+        names = QtWidgets.QWidget()
+        buttons = QtWidgets.QHBoxLayout()
+        buttons.setContentsMargins(0, 0, 0, 0)
+        buttons.addWidget(add)
+        buttons.addWidget(remove)
+        names_layout = QtWidgets.QVBoxLayout(names)
+        names_layout.setContentsMargins(0, 0, 0, 0)
+        names_layout.addWidget(self.names)
+        names_layout.addLayout(buttons)
+
         layout = QtWidgets.QFormLayout(self)
         layout.addRow('Name', self.name)
-        layout.addRow('Gender', self.gender)
+        layout.addRow('Diplay names', names)
 
     def set_document(self, document):
         if not document:
             return
         self.document = document
         self.name.blockSignals(True)
-        self.gender.blockSignals(True)
-        self.gender.setCurrentText(self.document.data['gender'])
         self.name.setText(self.document.data['name'])
         self.name.blockSignals(False)
-        self.gender.blockSignals(False)
+        self.names_model.set_document(document)
 
     def update(self):
         if not self.document:
             return
         self.document.data['name'] = self.name.text()
-        self.document.data['gender'] = self.gender.currentText()
+
+    def add_names(self):
+        names, _ = QtWidgets.QInputDialog.getText(
+            self, 'Names', 'Enter names, split names with a coma')
+        if not names:
+            return
+        names = [n.strip(' ') for n in names.split(',')]
+        self.names_model.layoutAboutToBeChanged.emit()
+        data = self.document.data.setdefault('names', [])
+        data.extend(names)
+        self.names_model.layoutChanged.emit()
+
+    def remove_names(self):
+        rows = self.names.selectionModel().selectedRows()
+        if not rows:
+            return
+        self.names_model.layoutAboutToBeChanged.emit()
+        for row in sorted(rows, reverse=True):
+            self.document.data['names'].pop(row.row())
+        self.names_model.layoutChanged.emit()
 
 
 class CharacterAssignment(QtWidgets.QDialog):

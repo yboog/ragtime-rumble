@@ -72,21 +72,12 @@ def get_coin_stack(n):
     return get_image(load_image(path))
 
 
-def choice_random_name(gender):
-    if not _name_generators:
-        filepath = f'{GAMEROOT}/resources/texts/names.json'
-        with open(filepath, 'rb') as f:
-            data = json.load(f)
-
-        _populate_name_generators(data, 'man', _name_generators)
-        _populate_name_generators(data, 'woman', _name_generators)
-    return next(_name_generators[gender])
-
-
-def _populate_name_generators(data, gender, _name_generators):
-    names = data[gender]
-    random.shuffle(names)
-    _name_generators[gender] = itertools.cycle(names)
+def choice_display_name(data):
+    if not _name_generators.get(data["name"]):
+        names = data["names"]
+        random.shuffle(names)
+        _name_generators[data["name"]] = itertools.cycle(names)
+    return next(_name_generators[data["name"]])
 
 
 def build_random_palette(palettes):

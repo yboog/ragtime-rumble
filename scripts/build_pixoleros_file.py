@@ -41,7 +41,7 @@ data = {
     'name': 'character',
     'gamelocation': '',
     'type': 'playable',
-    'gender': 'man',
+    'names': ['character1'],
     'framesize': [64, 64],
     'center': [32, 56],
     'box': [-10, -8, 20, 10],

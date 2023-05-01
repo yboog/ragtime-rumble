@@ -1,11 +1,12 @@
 
 import random
+from ragtimerumble import preferences
 from ragtimerumble.joystick import get_pressed_direction, get_current_commands
 from ragtimerumble.config import (
     LOOPING_ANIMATIONS, CHARACTER_STATUSES, COUNTDOWNS,
     WIN_OR_LOOSE_AT_POKER_PROBABILITY)
 from ragtimerumble.io import (
-    play_sound, choice_death_sentence, choice_random_name, play_coin_sound)
+    play_sound, choice_death_sentence, play_coin_sound)
 
 
 class Player:
@@ -49,10 +50,7 @@ class Player:
         self.character.spritesheet.animation = 'vomit'
         self.character.spritesheet.index = 0
         self.character.buffer_animation = 'coma'
-        player = self.scene.find_player(self)
-        name = (
-            f'Player {player.index + 1}'
-            if player else choice_random_name(self.character.gender))
+        name = self.display_name
         messenger = self.scene.messenger
         sentence = choice_death_sentence()
         messenger.add_message(sentence.format(name=name))
@@ -90,9 +88,10 @@ class Player:
             next(self.character)
             return
 
-        self.life -= 1
-        if self.life == 0:
-            return self.fall_to_coma()
+        if preferences.get('gametype') == 'advanced':
+            self.life -= 1
+            if self.life == 0:
+                return self.fall_to_coma()
 
         commands = get_current_commands(self.joystick)
         if commands.get('X'):
@@ -157,7 +156,10 @@ class Player:
         is_looping = self.character.spritesheet.animation in LOOPING_ANIMATIONS
         commands = get_current_commands(self.joystick)
         if not is_looping or not commands.get('Y') or self.action_cooldown:
-            if self.character.spritesheet.animation == 'poker':
+            condition = (
+                preferences.get('gametype') == 'advanced' and
+                self.character.spritesheet.animation == 'poker')
+            if condition:
                 next(self.poker_iterator)
             next(self.character)
             return
@@ -202,8 +204,9 @@ class Player:
                     self.scene.apply_white_screen(self.character)
                     return True
 
+        adv = preferences.get('gametype') == 'advanced'
         if commands.get('Y'):
-            character = self.character.request_stripping()
+            character = self.character.request_stripping() if adv else None
             if character is not None and self.coins < 5:
                 play_coin_sound()
                 character.shorn = True

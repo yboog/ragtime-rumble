@@ -2,12 +2,15 @@
 import math
 import pygame
 from ragtimerumble import debug
-from ragtimerumble.io import get_image, get_font, load_image, get_coin_stack
-from ragtimerumble.config import LOOP_STATUSES
-from ragtimerumble.scene import column_to_group, get_score_data, Vfx
+from ragtimerumble import preferences
 from ragtimerumble.character import Character
+from ragtimerumble.config import LOOP_STATUSES
+from ragtimerumble.gameloop import column_to_group, get_score_data
+from ragtimerumble.io import get_image, get_font, load_image, get_coin_stack
+from ragtimerumble.menu import ControlMenuScreen
 from ragtimerumble.pathfinding import distance, seg_to_vector
 from ragtimerumble.pilot import SmoothPathPilot
+from ragtimerumble.scene import Vfx
 
 
 KILL_MESSAGE_SCREEN_PADDING = 10
@@ -19,11 +22,11 @@ TEXT_FONT_FILE = 'Retro-Gaming.ttf'
 
 
 def render_game(screen, loop):
+    render_scene(screen, loop.scene)
     if loop.status == LOOP_STATUSES.MENU:
         return render_menu(screen, loop.menu)
     if loop.status == LOOP_STATUSES.SCORE:
         return render_score(screen, loop)
-    render_scene(screen, loop.scene)
     if loop.status == LOOP_STATUSES.LAST_KILL:
         render_last_kill(screen, loop)
         return
@@ -34,8 +37,11 @@ def render_game(screen, loop):
 
 
 def render_menu(screen, menu):
+    render_black_screen(screen, 180)
     bg = get_image(menu.bg)
     screen.blit(bg, (0, 0))
+    if menu.subscreen:
+        return SUBSCREEN_RENDERER[type(menu.subscreen)](screen, menu)
     render_element(screen, menu.title)
     font = pygame.font.Font(get_font(TEXT_FONT_FILE), 10)
     for item in menu.items:
@@ -49,6 +55,15 @@ def render_menu(screen, menu):
             color=color)
 
 
+def render_controls_screen(screen, menu):
+    image = get_image(menu.subscreen.image)
+    screen.blit(image, (0, 0))
+
+
+SUBSCREEN_RENDERER = {
+    ControlMenuScreen: render_controls_screen
+}
+
 CELL_WIDTH = 55
 CELL_HEIGHT = 35
 COL_COUNT = 7
@@ -60,7 +75,7 @@ def render_score(screen, loop):
     for row in range(ROW_COUNT):
         player = f'player {row + 1}'
         pos = get_player_pos(screen, row)
-        draw_text(screen, player, pos, (200, 200, 200))
+        draw_text(screen, player, pos, color=(200, 200, 200))
         for col in range(COL_COUNT):
             rect = get_cell_rect(screen, row, col)
             pygame.draw.rect(screen, (30, 30, 30), rect, width=1)
@@ -71,7 +86,7 @@ def render_score(screen, loop):
     for col in range(COL_COUNT):
         text = headers[col]
         rect = get_header_rect(screen, col)
-        draw_text(screen, text, rect.center, (200, 200, 200))
+        draw_text(screen, text, rect.center, color=(200, 200, 200))
 
     x = screen.get_size()[0] / 2
     y = get_cell_rect(screen, ROW_COUNT + 1, 0).centery
@@ -84,16 +99,16 @@ def draw_score_data(screen, rect, data):
         return
 
     if isinstance(data, int):
-        draw_text(screen, str(data), rect.center, (255, 255, 0))
+        draw_text(screen, str(data), rect.center, color=(255, 255, 0))
         return
 
     if isinstance(data, list):
         rect1 = pygame.Rect(
             rect.left, rect.top, rect.width / 2, rect.height / 2)
-        draw_text(screen, str(data[0]), rect1.center, (0, 255, 0))
+        draw_text(screen, str(data[0]), rect1.center, color=(0, 255, 0))
         rect2 = pygame.Rect(
             rect.centerx, rect.centery, rect.width / 2, rect.height / 2)
-        draw_text(screen, str(data[1]), rect2.center, (255, 0, 0))
+        draw_text(screen, str(data[1]), rect2.center, color=(255, 0, 0))
         pygame.draw.line(
             screen, (255, 255, 255), rect.topright, rect.bottomleft, 1)
 
@@ -143,11 +158,15 @@ def draw_text(surface, text, pos, size=15, font=None, color=None):
     surface.blit(text, text_rect)
 
 
-def render_dispatching(screen, loop):
-    temp = pygame.Surface(screen.get_size(), pygame.SRCALPHA)
+def render_black_screen(surface, alpha):
+    temp = pygame.Surface(surface.get_size(), pygame.SRCALPHA)
     temp.fill((0, 0, 0))
-    temp.set_alpha(180)
-    screen.blit(temp, (0, 0))
+    temp.set_alpha(alpha)
+    surface.blit(temp, (0, 0))
+
+
+def render_dispatching(screen, loop):
+    render_black_screen(screen, 180)
     elements = [p for p in loop.scene.props if p.visible_at_dispatch]
     elements += loop.scene.characters
     for element in sorted(elements, key=lambda elt: elt.switch):
@@ -259,8 +278,9 @@ def render_players_ol_score(screen, scene):
         position = scene.bullet_positions[player.index]
         screen.blit(image, position)
         position = scene.coins_position(player.index)
-        image = get_coin_stack(player.coins)
-        screen.blit(image, position)
+        if preferences.get('gametype') == 'advanced':
+            image = get_coin_stack(player.coins)
+            screen.blit(image, position)
 
 
 def render_death_screen(screen, scene):

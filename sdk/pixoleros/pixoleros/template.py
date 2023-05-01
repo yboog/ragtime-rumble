@@ -2,8 +2,8 @@
 
 EMPTY_ANIMDATA = {
     'name': 'character',
-    'gender': 'undefined',
     'type': 'playable',
+    'names': ['characher1'],
     'framesize': [64, 64],
     'center': [32, 56],
     'box': [-10, -8, 20, 10],

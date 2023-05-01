@@ -61,8 +61,8 @@ def export_anim_data(document):
     data = deepcopy(document.data)
     return {
         'name': data['name'],
+        'names': data['names'],
         'type': 'playable',
-        'gender': data['gender'],
         'framesize': data['framesize'],
         'center': data['center'],
         'box': data['box'],

@@ -5,8 +5,8 @@ import pygame
 from ragtimerumble.io import load_skins, load_main_resources
 from ragtimerumble.config import DISPLAY_MODES
 from ragtimerumble.display import set_screen_display_mode, get_screen
+from ragtimerumble.gameloop import GameLoop
 from ragtimerumble.render import render_game
-from ragtimerumble.scene import GameLoop
 from ragtimerumble import debug
 
 

@@ -11,12 +11,12 @@ from ragtimerumble.pilot import HardPathPilot
 
 class Character:
 
-    def __init__(self, position, spritesheet, palette, scene):
+    def __init__(self, position, spritesheet, palette, display_name, scene):
         self.spritesheet = spritesheet
         self.coordinates = Coordinates(position)
         self.direction = DIRECTIONS.DOWN
         self.palette = palette
-        self.gender = 'man'
+        self.display_name = display_name
         self.speed = 0
         self.scene = scene
         self.vomit_count_down = random.randrange(

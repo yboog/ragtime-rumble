@@ -1,9 +1,11 @@
+import random
 from ragtimerumble import preferences
 from ragtimerumble.config import (
-    GAMEROOT, COUNTDOWNS, DIRECTIONS, AVAILABLE_LANGUAGES)
+    COUNTDOWNS, DIRECTIONS, AVAILABLE_LANGUAGES, GAMETYPES)
 from ragtimerumble.display import set_screen_display_mode
 from ragtimerumble.coordinates import Coordinates
-from ragtimerumble.io import load_data, load_image, get_menu_text
+from ragtimerumble.io import (
+    load_data, load_image, get_menu_text, play_sound, play_dispatcher_music)
 from ragtimerumble.sprite import SpriteSheet
 from ragtimerumble.joystick import get_pressed_direction, get_current_commands
 
@@ -25,12 +27,24 @@ class Menu:
             MenuItem(4, 'help', (361, 265)),
             MenuItem(5, 'quit', (361, 290))]
         self.direction_countdown = 0
+        self.subscreen = None
+        play_dispatcher_music()
 
     def __next__(self):
+        if self.subscreen and not self.subscreen.done:
+            next(self.subscreen)
+            return
+
+        if self.subscreen and self.subscreen.done:
+            self.subscreen = None
+
         next(self.title)
         for joystick in self.joysticks:
             commands = get_current_commands(joystick)
             if commands.get('A'):
+                if self.index == 3:
+                    self.subscreen = ControlMenuScreen(self.joysticks)
+                    return
                 if self.index == 5:
                     self.done = True
                     return
@@ -47,20 +61,28 @@ class Menu:
             if direction in directions and self.index in enums:
                 self.items[self.index].set_next(direction == DIRECTIONS.LEFT)
                 self.direction_countdown = COUNTDOWNS.MENU_SELECTION_COOLDOWN
-                if self.index == 1:
+                if self.index == 0:
+                    play_sound('resources/sounds/coltclick.wav')
+                    i = self.items[0].enum_index
+                    preferences.set('gametype', GAMETYPES[i])
+                elif self.index == 1:
+                    play_sound('resources/sounds/coltclick.wav')
                     self.update_display_mode()
-                if self.index == 2:
+                elif self.index == 2:
+                    play_sound('resources/sounds/coltclick.wav')
                     i = self.items[2].enum_index
                     preferences.set('language', AVAILABLE_LANGUAGES[i])
                 return
 
             if direction == DIRECTIONS.UP:
+                play_sound('resources/sounds/woosh.wav')
                 self.direction_countdown = COUNTDOWNS.MENU_SELECTION_COOLDOWN
                 i = self.index - 1 if self.index else len(self.items) - 1
                 self.index = i
                 return
 
             if direction == DIRECTIONS.DOWN:
+                play_sound('resources/sounds/woosh.wav')
                 self.direction_countdown = COUNTDOWNS.MENU_SELECTION_COOLDOWN
                 i = self.index + 1 if self.index < len(self.items) - 1 else 0
                 self.index = i
@@ -69,6 +91,26 @@ class Menu:
     def update_display_mode(self):
         mode = self.items[1].enum_index  # 0 FS, 1 Scaled, 2 windowed
         set_screen_display_mode(mode)
+
+
+CONTROLLS_IMAGES = {
+    'french': 'resources/ui/controls_fr.png',
+    'english': 'resources/ui/controls_en.png'
+}
+
+
+class ControlMenuScreen:
+    def __init__(self, joysticks):
+        image = CONTROLLS_IMAGES[preferences.get('language')]
+        self.image = load_image(image)
+        self.done = False
+        self.joysticks = joysticks
+
+    def __next__(self):
+        for joystick in self.joysticks:
+            commands = get_current_commands(joystick)
+            if commands.get('B'):
+                self.done = True
 
 
 class MenuItem:
@@ -112,7 +154,7 @@ class Title:
     def __init__(self):
         data = load_data('resources/animdata/title.json')
         self.spritesheet = SpriteSheet(data, start_animation='waiting')
-        self.loop_cooldown = COUNTDOWNS.TITLE_LOOP_COOLDOWN
+        self.loop_cooldown = COUNTDOWNS.TITLE_LOOP_COOLDOWN_MIN
         self.coordinates = Coordinates((0, 0))
 
     @property
@@ -136,6 +178,11 @@ class Title:
             self.spritesheet.index = 0
             return
 
+        if self.spritesheet.animation == 'splash':
+            self.spritesheet.animation = 'fix'
+            self.spritesheet.index = 0
+            return
+
         if self.spritesheet.animation == 'fix':
             if self.loop_cooldown:
                 self.loop_cooldown -= 1
@@ -147,4 +194,6 @@ class Title:
         if self.spritesheet.animation == 'loop':
             self.spritesheet.animation = 'fix'
             self.spritesheet.index = 0
-            self.loop_cooldown = COUNTDOWNS.TITLE_LOOP_COOLDOWN
+            self.loop_cooldown = random.choice(range(
+                COUNTDOWNS.TITLE_LOOP_COOLDOWN_MIN,
+                COUNTDOWNS.TITLE_LOOP_COOLDOWN_MAX))

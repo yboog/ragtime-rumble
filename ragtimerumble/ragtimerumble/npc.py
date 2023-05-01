@@ -10,8 +10,7 @@ from ragtimerumble.config import (
     CHARACTER_STATUSES, SPEED, HARD_PATH_USAGE_PROBABILITY)
 from ragtimerumble.coordinates import Coordinates, path_cross_rect
 from ragtimerumble.io import (
-    choice_death_sentence, choice_random_name, load_data, image_mirror,
-    play_sound)
+    choice_death_sentence, load_data, image_mirror, play_sound)
 from ragtimerumble.pathfinding import (
     point_in_rectangle, shortest_path, smooth_path_to_path, equilateral_path,
     filter_close_paths, points_to_direction, distance, choice_destination)
@@ -74,10 +73,7 @@ class Npc:
         self.character.spritesheet.animation = 'vomit'
         self.character.spritesheet.index = 0
         self.character.buffer_animation = 'coma'
-        player = self.scene.find_player(self)
-        name = (
-            f'Player {player.index + 1}'
-            if player else choice_random_name(self.character.gender))
+        name = self.character.display_name
         messenger = self.scene.messenger
         sentence = choice_death_sentence()
         messenger.add_message(sentence.format(name=name))
