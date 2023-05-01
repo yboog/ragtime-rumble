@@ -83,8 +83,7 @@ def choice_display_name(data):
 def build_random_palette(palettes):
     indexes = list(range(len(palettes)))
     random.shuffle(indexes)
-    length = random.randrange(1, len(palettes))
-    palettes = [palettes[i] for i in indexes[:length]]
+    palettes = [palettes[i] for i in indexes[:len(palettes)]]
     palette_source = [c for v in palettes for c in v['origins']]
     palette_dest = []
     ids = []
