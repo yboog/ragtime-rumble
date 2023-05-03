@@ -1,4 +1,6 @@
 import random
+from copy import deepcopy
+
 from ragtimerumble import preferences
 from ragtimerumble.config import (
     COUNTDOWNS, DIRECTIONS, AVAILABLE_LANGUAGES, GAMETYPES)
@@ -113,6 +115,73 @@ class ControlMenuScreen:
                 self.done = True
 
 
+class ScoreSheetScreen:
+    def __init__(self, players, winner_index, scores, joysticks):
+        self.page = 0
+        self.scores = deepcopy(scores)
+        self.joysticks = joysticks
+        self.players = players
+        self.winner_index = winner_index
+        self.background = load_image('resources/ui/scores/score_ul.png')
+        self.characters_coordinates = [
+            Coordinates((85, 55)),
+            Coordinates((230, 55)),
+            Coordinates((367, 55)),
+            Coordinates((506, 55))]
+        self.columns = [
+            (50, 168), (192, 310), (332, 450), (471, 592)]  # left and right
+        self.round_left = 31
+        self.lines = {
+            'round': 21,
+            'player': 94,
+            'name': 134,
+            'money': 161,
+            'player_killed': (187, 201, 215),
+            'npc_killed': 245,
+            'victory': 267,
+            'total': 302,
+            'tot_wins': 133,
+            'tot_death': 146,
+            'tot_kills': (184, 198, 209),
+            'tot_money': 251,
+            'tot_npc_killed': 265,
+            'tot_score': 305}
+        self.page_cooldown = 0
+        for player in self.players:
+            animation = 'death' if player.index != winner_index else 'smoke'
+            player.character.spritesheet.animation = animation
+            index = player.character.spritesheet.animation_length() - 1
+            player.character.spritesheet.index = index
+        self.back_to_menu = False
+        self.next_round = False
+        self.done = True
+
+    def show(self):
+        self.page = 0
+        self.next_round = False
+        self.back_to_menu = False
+
+    def __next__(self):
+        for joystick in self.joysticks:
+            if self.page_cooldown > 0:
+                print(self.page_cooldown)
+                self.page_cooldown = max((self.page_cooldown - 1, 0))
+            else:
+                direction = get_pressed_direction(joystick)
+                lr = direction in [DIRECTIONS.LEFT, DIRECTIONS.RIGHT]
+                if lr and not self.page_cooldown:
+                    play_sound('resources/sounds/coltclick.wav')
+                    self.page_cooldown = COUNTDOWNS.MENU_SELECTION_COOLDOWN
+                    self.page = 1 if self.page == 0 else 0
+            commands = get_current_commands(joystick)
+            if commands.get('X'):
+                self.back_to_menu = True
+                return
+            if commands.get('A'):
+                self.next_round = True
+                return
+
+
 class MenuItem:
     def __init__(self, index, label, coordinates):
         self.index = index
@@ -139,7 +208,8 @@ class EnumItem:
 
     def set_next(self, previous=False):
         if previous:
-            i = self.enum_index - 1 if self.enum_index else len(self.values) - 1
+            length = len(self.values)
+            i = self.enum_index - 1 if self.enum_index else length - 1
             self.enum_index = i
             return
 

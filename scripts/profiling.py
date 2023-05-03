@@ -3,7 +3,8 @@ import os
 
 count = 0
 paths = [
-    os.path.join(os.path.dirname(__file__), "..", "drunkparanoia", "drunkparanoia"),
+    os.path.join(os.path.dirname(__file__), "..", "ragtimerumble", "ragtimerumble"),
+    os.path.join(os.path.dirname(__file__), "..", "sdk", "pixoleros", "pixoleros"),
 ]
 
 

@@ -22,6 +22,8 @@ class Player:
         self.index = index
         self.killer = None
         self.npc_killed = 0
+        self.looted_bodies = 0
+        self.dranken_beers = 0
         self.poker_iterator = PokerIterator(self)
 
     @property
@@ -211,6 +213,7 @@ class Player:
                 play_coin_sound()
                 character.shorn = True
                 self.coins += 1
+                self.looted_bodies += 1
                 self.create_coin_vfx()
                 self.action_cooldown = COUNTDOWNS.ACTION_COOLDOWN
                 return True
@@ -241,6 +244,7 @@ class PokerIterator:
 
     def __init__(self, player):
         self.player = player
+        self.balance = 0
         self.cooldown = COUNTDOWNS.POKER_BET_TIME_COOLDOWN
 
     def __next__(self):
@@ -257,3 +261,4 @@ class PokerIterator:
         win, loose = WIN_OR_LOOSE_AT_POKER_PROBABILITY
         victory = random.choice([True] * win + [False] * loose)
         self.player.coins += 1 if victory else -1
+        self.balance += 1 if victory else -1

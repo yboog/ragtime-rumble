@@ -3,7 +3,7 @@ import sys
 import pygame
 
 from ragtimerumble.io import load_skins, load_main_resources
-from ragtimerumble.config import DISPLAY_MODES
+from ragtimerumble.config import DISPLAY_MODES, DEFAULT_SCENE
 from ragtimerumble.display import set_screen_display_mode, get_screen
 from ragtimerumble.gameloop import GameLoop
 from ragtimerumble.render import render_game
@@ -15,9 +15,8 @@ set_screen_display_mode(DISPLAY_MODES.FULSCREEN)
 pygame.joystick.init()
 load_skins()
 load_main_resources()
-scene = 'resources/scenes/saloon.json'
 loop = GameLoop()
-loop.set_scene(scene)
+loop.set_scene(DEFAULT_SCENE)
 replay = []
 while not loop.done:
     next(loop)

@@ -4,10 +4,11 @@ import pygame
 from ragtimerumble import debug
 from ragtimerumble import preferences
 from ragtimerumble.character import Character
-from ragtimerumble.config import LOOP_STATUSES
+from ragtimerumble.config import LOOP_STATUSES, DIRECTIONS
 from ragtimerumble.gameloop import column_to_group, get_score_data
-from ragtimerumble.io import get_image, get_font, load_image, get_coin_stack
-from ragtimerumble.menu import ControlMenuScreen
+from ragtimerumble.io import (
+    get_image, get_font, load_image, get_coin_stack, get_score_player_icon)
+from ragtimerumble.menu import ControlMenuScreen, ScoreSheetScreen
 from ragtimerumble.pathfinding import distance, seg_to_vector
 from ragtimerumble.pilot import SmoothPathPilot
 from ragtimerumble.scene import Vfx
@@ -26,7 +27,7 @@ def render_game(screen, loop):
     if loop.status == LOOP_STATUSES.MENU:
         return render_menu(screen, loop.menu)
     if loop.status == LOOP_STATUSES.SCORE:
-        return render_score(screen, loop)
+        return render_score_screen(screen, loop.scores_screen)
     if loop.status == LOOP_STATUSES.LAST_KILL:
         render_last_kill(screen, loop)
         return
@@ -43,7 +44,7 @@ def render_menu(screen, menu):
     if menu.subscreen:
         return SUBSCREEN_RENDERER[type(menu.subscreen)](screen, menu)
     render_element(screen, menu.title)
-    font = pygame.font.Font(get_font(TEXT_FONT_FILE), 10)
+    font = pygame.font.Font(get_font(TEXT_FONT_FILE), 11)
     for item in menu.items:
         highlighted = item.index == menu.index
         color = (255, 125, 0) if highlighted else (255, 255, 255)
@@ -60,8 +61,247 @@ def render_controls_screen(screen, menu):
     screen.blit(image, (0, 0))
 
 
+def render_score_screen(screen, scores_screen):
+    render_black_screen(screen, 180)
+    image = get_image(scores_screen.background)
+    screen.blit(image, (0, 0))
+    winner = scores_screen.winner_index
+    render_score_header(screen, scores_screen, winner)
+    if scores_screen.page == 0:
+        render_round_score_content(screen, scores_screen, winner)
+    else:
+        render_total_score_content(screen, scores_screen, winner)
+
+
+def render_score_header(screen, scores_screen, winner):
+    for player in scores_screen.players:
+        # Draw character avatar.
+        palette = player.character.palette
+        direction = DIRECTIONS.RIGHT
+        id_ = player.character.spritesheet.image(direction, palette)
+        image = get_image(id_)
+        position = scores_screen.characters_coordinates[player.index].position
+        screen.blit(image, position)
+        # Draw character avatar dead filter
+        if player.index != winner:
+            image = image.copy()
+            image.fill((60, 60, 60), special_flags=pygame.BLEND_MULT)
+            image.set_alpha(150)
+            screen.blit(image, position)
+        # Draw Player number
+        id_ = get_score_player_icon(player.index, player.index == winner)
+        image = get_image(id_)
+        left = scores_screen.columns[player.index][0]
+        top = 121 - image.get_size()[0]
+        screen.blit(image, (left, top))
+
+
+def render_total_score_content(screen, scores_screen, winner):
+    image = get_image(load_image('resources/ui/scores/separator-2.png'))
+    screen.blit(image, (0, 0))
+    font = pygame.font.Font(get_font(TEXT_FONT_FILE), 11)
+    margin = 8
+    for player in scores_screen.players:
+        score = scores_screen.scores[f'player {player.index + 1}']
+        column = scores_screen.columns[player.index]
+
+        top = scores_screen.lines['tot_wins']
+        draw_text(
+            surface=screen,
+            text='Wins :',
+            pos=(column[0] + margin, top),
+            color=(255, 255, 255),
+            font=font)
+        draw_text(
+            surface=screen,
+            text=f'{score["victory"]}',
+            pos=(column[1] - margin, top),
+            font=font,
+            color=(255, 255, 255),
+            align='right')
+        top = scores_screen.lines['tot_death']
+        draw_text(
+            surface=screen,
+            text='Deaths :',
+            pos=(column[0] + margin, top),
+            color=(255, 255, 255),
+            font=font)
+        draw_text(
+            surface=screen,
+            text=f'{score["deaths"]}',
+            pos=(column[1] - margin, top),
+            font=font,
+            color=(255, 255, 255),
+            align='right')
+        opponents = [
+            p for p in scores_screen.players
+            if p.index != player.index]
+
+        for i, opponent in enumerate(opponents):
+            top = scores_screen.lines['tot_kills'][i]
+            text = f'Killed P{opponent.index + 1} :'
+            draw_text(
+                surface=screen,
+                text=text,
+                pos=(column[0] - margin, top),
+                font=font,
+                color=(255, 255, 255))
+            kills = score[f'player {opponent.index + 1}'][0]
+            draw_text(
+                surface=screen,
+                text=f'{kills}',
+                pos=(column[1] - margin, top),
+                font=font,
+                color=(255, 255, 255),
+                align='right')
+        top = scores_screen.lines['tot_money']
+        draw_text(
+            surface=screen,
+            text='Bank :',
+            pos=(column[0] + margin, top),
+            color=(255, 255, 255),
+            font=font)
+        draw_text(
+            surface=screen,
+            text=f'{score["money_earned"]}$',
+            pos=(column[1] - margin, top),
+            font=font,
+            color=(255, 255, 255),
+            align='right')
+        top = scores_screen.lines['tot_npc_killed']
+        draw_text(
+            surface=screen,
+            text='Npcs killed :',
+            pos=(column[0] + margin, top),
+            color=(255, 255, 255),
+            font=font)
+        draw_text(
+            surface=screen,
+            text=f'{score["civilians"]}',
+            pos=(column[1] - margin, top),
+            font=font,
+            color=(255, 255, 255),
+            align='right')
+        top = scores_screen.lines['tot_score']
+        draw_text(
+            surface=screen,
+            text='Score :',
+            pos=(column[0] + margin, top),
+            color=(255, 255, 255),
+            font=font)
+        draw_text(
+            surface=screen,
+            text='XXX',
+            pos=(column[1] - margin, top),
+            font=font,
+            color=(255, 255, 255),
+            align='right')
+
+
+def render_round_score_content(screen, scores_screen, winner):
+    image = get_image(load_image('resources/ui/scores/separator-1.png'))
+    screen.blit(image, (0, 0))
+    font = pygame.font.Font(get_font(TEXT_FONT_FILE), 11)
+    font_name = pygame.font.Font(get_font(MESSAGE_FONT_FILE), 8)
+    for player in scores_screen.players:
+        # Draw player name
+        left = scores_screen.columns[player.index][0]
+        color = (115, 98, 90) if player.index == winner else (255, 232, 152)
+        top = scores_screen.lines['name']
+        text = player.character.display_name
+        draw_text(screen, text, (left, top), color=color, font=font_name)
+
+        top = scores_screen.lines['money']
+        column = scores_screen.columns[player.index]
+        draw_text(
+            screen,
+            text='Money :',
+            pos=(column[0], top),
+            font=font,
+            color=(255, 255, 255))
+
+        draw_text(
+            screen,
+            text=f'{player.coins}$',
+            pos=(column[1], top),
+            font=font,
+            color=(255, 255, 255),
+            align='right')
+
+        top = scores_screen.lines['npc_killed']
+        kill = 'kill' if player.npc_killed < 2 else 'kills'
+        draw_text(
+            screen,
+            text=f'{player.npc_killed} Npc {kill} :',
+            pos=(column[0], top),
+            font=font,
+            color=(255, 255, 255))
+
+        draw_text(
+            screen,
+            text=f'- {player.npc_killed * 2}$',
+            pos=(column[1], top),
+            font=font,
+            color=(255, 255, 255),
+            align='right')
+
+        killed = [p for p in scores_screen.players if p.killer == player.index]
+        for i, killed_player in enumerate(killed):
+            top = scores_screen.lines['player_killed'][i]
+            draw_text(
+                screen,
+                text=f'Killed P{killed_player.index + 1} :',
+                pos=(column[0], top),
+                font=font,
+                color=(255, 255, 255))
+            draw_text(
+                screen,
+                text='+ 2$',
+                pos=(column[1], top),
+                font=font,
+                color=(255, 255, 255),
+                align='right')
+
+        if player.index == winner:
+            top = scores_screen.lines['victory']
+            draw_text(
+                screen,
+                text='Victory :',
+                pos=(column[0], top),
+                font=font,
+                color=(255, 255, 255))
+            draw_text(
+                screen,
+                text='+ 3$',
+                pos=(column[1], top),
+                font=font,
+                color=(255, 255, 255),
+                align='right')
+
+        total = (
+            player.coins +
+            (2 * len(killed)) +
+            (3 if winner else 0) -
+            (player.npc_killed * 2))
+        top = scores_screen.lines['total']
+        draw_text(
+            screen,
+            text='Total :',
+            pos=(column[0], top),
+            font=font,
+            color=(255, 255, 255))
+        draw_text(
+            screen,
+            text=f'{total}$',
+            pos=(column[1], top),
+            font=font,
+            color=(255, 255, 255),
+            align='right')
+
+
 SUBSCREEN_RENDERER = {
-    ControlMenuScreen: render_controls_screen
+    ControlMenuScreen: render_controls_screen,
+    ScoreSheetScreen: render_score_screen
 }
 
 CELL_WIDTH = 55
@@ -144,17 +384,22 @@ def render_last_kill(screen, loop):
         screen.blit(temp, (0, 0))
     for player in loop.scene.players:
         render_element(screen, player.character)
+        font = pygame.font.Font(get_font(TEXT_FONT_FILE), 11)
         x, y = player.character.coordinates.position
         y += 15
-        draw_text(screen, f'player {player.index + 1}', (x, y))
+        draw_text(screen, f'player {player.index + 1}', (x, y), font=font)
 
 
-def draw_text(surface, text, pos, size=15, font=None, color=None):
+def draw_text(
+        surface, text, pos, size=15, font=None, color=None, align='left'):
     color = color or (255, 255, 255)
     font = font or pygame.font.SysFont('Consolas', size)
-    text = font.render(text, True, color)
+    text = font.render(text, False, color)
     text_rect = text.get_rect(center=pos)
-    text_rect.left += text_rect.width / 2
+    if align == 'left':
+        text_rect.left += text_rect.width / 2
+    else:
+        text_rect.right -= text_rect.width / 2
     surface.blit(text, text_rect)
 
 
@@ -189,7 +434,8 @@ def render_dispatching(screen, loop):
         screen.blit(gamepad_image, (x, y))
         x = position[0] + gamepad_image.get_size()[0]
         y = position[1]
-        draw_text(screen, str(i + 1), (x, y), size=6)
+        font = pygame.font.Font(get_font(TEXT_FONT_FILE), 8)
+        draw_text(screen, str(i + 1), (x, y), font=font)
         column_counts[column] += 1
 
 

@@ -245,6 +245,12 @@ def load_frames(
     return ids
 
 
+def get_score_player_icon(index, is_winner):
+    return load_image(
+        'resources/ui/scores/'
+        f'p{index + 1}-{"win" if is_winner else "lose"}.png')
+
+
 def get_image(image_id):
     return _image_store.get(image_id)
 

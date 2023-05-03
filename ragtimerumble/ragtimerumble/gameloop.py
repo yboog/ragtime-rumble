@@ -6,8 +6,9 @@ from ragtimerumble.io import (
     list_joysticks, stop_ambiance, play_dispatcher_music, quit_event,
     stop_sound, play_sound, get_current_commands, stop_scene_music,
     stop_dispatcher_music, play_scene_music)
-from ragtimerumble.config import LOOP_STATUSES, COUNTDOWNS, DIRECTIONS
-from ragtimerumble.menu import Menu
+from ragtimerumble.config import (
+    LOOP_STATUSES, COUNTDOWNS, DIRECTIONS, DEFAULT_SCENE)
+from ragtimerumble.menu import Menu, ScoreSheetScreen
 from ragtimerumble.scene import load_scene, populate_scene, depopulate_scene
 from ragtimerumble.player import Player
 from ragtimerumble.npc import Npc
@@ -19,28 +20,48 @@ VIRGIN_SCORES = {
         'player 3': [0, 0],
         'player 4': [0, 0],
         'civilians': 0,
-        'victory': 0
+        'deaths': 0,
+        'victory': 0,
+        'dranked_beers': 0,
+        'money_earned': 0,
+        'poker_balance': 0,
+        'looted_bodies': 0
     },
     'player 2': {
         'player 1': [0, 0],
         'player 3': [0, 0],
         'player 4': [0, 0],
         'civilians': 0,
-        'victory': 0
+        'deaths': 0,
+        'victory': 0,
+        'dranked_beers': 0,
+        'money_earned': 0,
+        'poker_balance': 0,
+        'looted_bodies': 0
     },
     'player 3': {
         'player 1': [0, 0],
         'player 2': [0, 0],
         'player 4': [0, 0],
         'civilians': 0,
-        'victory': 0
+        'deaths': 0,
+        'victory': 0,
+        'dranked_beers': 0,
+        'money_earned': 0,
+        'poker_balance': 0,
+        'looted_bodies': 0
     },
     'player 4': {
         'player 1': [0, 0],
         'player 2': [0, 0],
         'player 3': [0, 0],
         'civilians': 0,
-        'victory': 0
+        'deaths': 0,
+        'victory': 0,
+        'dranked_beers': 0,
+        'money_earned': 0,
+        'poker_balance': 0,
+        'looted_bodies': 0
     }
 }
 
@@ -73,7 +94,21 @@ class GameLoop:
         self.clock = pygame.time.Clock()
         self.scores = deepcopy(VIRGIN_SCORES)
         self.joysticks = list_joysticks()
+        self.scores_screen = None
         self.menu = Menu(self.joysticks)
+
+    def reset_game(self):
+        self.status = LOOP_STATUSES.MENU
+        self.scene_path = None
+        self.scene = None
+        self.dispatcher = None
+        self.done = False
+        self.clock = pygame.time.Clock()
+        self.scores = deepcopy(VIRGIN_SCORES)
+        self.joysticks = list_joysticks()
+        self.scores_screen = None
+        self.menu = Menu(self.joysticks)
+        self.set_scene(DEFAULT_SCENE)
 
     def set_scene(self, path):
         self.scene_path = path
@@ -81,6 +116,7 @@ class GameLoop:
 
     def start_scene(self, start_music=True):
         gametype = preferences.get('gametype')
+        depopulate_scene(self.scene)
         populate_scene(self.scene_path, self.scene, gametype=gametype)
         self.status = LOOP_STATUSES.DISPATCHING
         self.dispatcher = PlayerDispatcher(self.scene, self.joysticks)
@@ -116,7 +152,7 @@ class GameLoop:
                 self.clock.tick(60)
                 if self.dispatcher.done:
                     stop_dispatcher_music()
-                    self.start_game()
+                    self.start_round()
 
             case LOOP_STATUSES.LAST_KILL:
                 self.clock.tick(30)
@@ -125,35 +161,47 @@ class GameLoop:
                     self.show_score()
 
             case LOOP_STATUSES.SCORE:
-                for joystick in self.joysticks:
-                    if get_current_commands(joystick).get("A"):
-                        depopulate_scene(self.scene)
-                        self.start_scene()
-                self.clock.tick(10)
+                next(self.scores_screen)
+                if self.scores_screen.next_round is True:
+                    self.start_scene()
+                    self.clock.tick(60)
+                if self.scores_screen.back_to_menu is True:
+                    self.reset_game()
 
     def show_score(self):
         self.status = LOOP_STATUSES.SCORE
+        # self.scores_screen.show()
+        winner = None
         for player in self.scene.players:
             player_key = f'player {player.index + 1}'
             if not player.dead:
                 self.scores[player_key]['victory'] += 1
+                winner = player.index
+            else:
+                self.scores[player_key]['deaths'] += 1
             if player.killer is not None:
                 killer_key = f'player {player.killer + 1}'
                 self.scores[killer_key][player_key][0] += 1
                 self.scores[player_key][killer_key][1] += 1
             self.scores[player_key]['civilians'] += player.npc_killed
+            killed = [
+                p for p in self.scene.players
+                if p.killer == player.index]
+            bank = (
+                player.coins +
+                (2 * len(killed)) +
+                (3 if winner else 0) -
+                (player.npc_killed * 2))
+            self.scores[player_key]['money_earned'] += bank
+            self.scores[player_key]['looted_bodies'] += player.looted_bodies
+        self.scores_screen = ScoreSheetScreen(
+            self.scene.players, winner, self.scores, self.joysticks)
 
-    @property
-    def tick_time(self):
-        return 30 if self.status == LOOP_STATUSES.LAST_KILL else 60
-
-    def start_game(self):
+    def start_round(self):
         while len(self.scene.characters) < self.scene.character_number:
             self.scene.build_character()
         self.scene.create_npcs()
         self.status = LOOP_STATUSES.BATTLE
-        import time
-        time.sleep(0.1)
         play_sound(self.scene.ambiance, -1)
         play_scene_music(self.scene.musics)
 
