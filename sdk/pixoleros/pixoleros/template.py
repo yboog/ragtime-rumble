@@ -15,6 +15,7 @@ EMPTY_ANIMDATA = {
         'call': {'images': [], 'exposures': []},
         'coma': {'images': [], 'exposures': []},
         'death': {'images': [], 'exposures': []},
+        'defeat': {'images': [], 'exposures': []},
         'drink': {'images': [], 'exposures': []},
         'gunshot': {'images': [], 'exposures': []},
         'idle': {'images': [], 'exposures': []},
@@ -23,6 +24,7 @@ EMPTY_ANIMDATA = {
         'smoke': {'images': [], 'exposures': []},
         'suspicious': {'images': [], 'exposures': []},
         'vomit': {'images': [], 'exposures': []},
+        'victory': {'images': [], 'exposures': []},
         'walk': {'images': [], 'exposures': []},
         'walk-back': {'images': [], 'exposures': []},
     }

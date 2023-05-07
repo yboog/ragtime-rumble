@@ -15,6 +15,7 @@ from ragtimerumble.npc import Npc
 
 
 VIRGIN_SCORES = {
+    'round': 0,
     'player 1': {
         'player 2': [0, 0],
         'player 3': [0, 0],
@@ -67,7 +68,6 @@ VIRGIN_SCORES = {
 
 
 def get_score_data(scores, row, col):
-
     row_keys = list(VIRGIN_SCORES)
     col_keys = (
         'player 1',
@@ -170,13 +170,12 @@ class GameLoop:
 
     def show_score(self):
         self.status = LOOP_STATUSES.SCORE
-        # self.scores_screen.show()
-        winner = None
+        winner = next((p.index for p in self.scene.players if not p.dead), -1)
+
         for player in self.scene.players:
             player_key = f'player {player.index + 1}'
             if not player.dead:
                 self.scores[player_key]['victory'] += 1
-                winner = player.index
             else:
                 self.scores[player_key]['deaths'] += 1
             if player.killer is not None:
@@ -190,17 +189,23 @@ class GameLoop:
             bank = (
                 player.coins +
                 (2 * len(killed)) +
-                (3 if winner else 0) -
+                (3 if winner == player.index else 0) -
                 (player.npc_killed * 2))
             self.scores[player_key]['money_earned'] += bank
             self.scores[player_key]['looted_bodies'] += player.looted_bodies
+
         self.scores_screen = ScoreSheetScreen(
             self.scene.players, winner, self.scores, self.joysticks)
+        for player in self.scene.players:
+            coord = self.scores_screen.characters_coordinates[player.index]
+            player.character.coordinates = coord
+        depopulate_scene(self.scene, clear_players=False)
 
     def start_round(self):
         while len(self.scene.characters) < self.scene.character_number:
             self.scene.build_character()
         self.scene.create_npcs()
+        self.scores['round'] += 1
         self.status = LOOP_STATUSES.BATTLE
         play_sound(self.scene.ambiance, -1)
         play_scene_music(self.scene.musics)

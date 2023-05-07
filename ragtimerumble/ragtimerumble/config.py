@@ -2,30 +2,15 @@ import os
 
 GAMEROOT = os.path.dirname(os.path.dirname(__file__))
 
-ANIMATIONS = [
-    'idle',
-    'walk',
-    'order',
-    'drink',
-    'piano',
-    'poker',
-    'bully',
-    'pee_in_pant',
-    'bet',
-    'call',
-    'smoke',
-    'bloodydeath',
-    'vomit',
-    'coma'
-]
-
 AVAILABLE_LANGUAGES = ['english', 'french']
 DEFAULT_SCENE = 'resources/scenes/saloon.json'
 DOG_GROWL_DISTANCE = 70
 DOG_BARK_DISTANCE = 40
 GAMETYPES = ['advanced', 'basic']
 DEAD_ANIMATIONS = ['death', 'coma']
-LOOPING_ANIMATIONS = ['idle', 'walk', 'piano', 'poker', 'suspicious', 'balcony']
+LOOPING_ANIMATIONS = [
+    'idle', 'walk', 'piano', 'poker',
+    'suspicious', 'balcony', 'victory', 'defeat']
 HOLDABLE_ANIMATIONS = ['call', 'death', 'coma']
 SMOOTH_PATH_SELECTION_RADIUS = 50
 HARD_PATH_SELECTION_RADIUS = 25

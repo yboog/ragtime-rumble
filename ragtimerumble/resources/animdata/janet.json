@@ -1,6 +1,5 @@
 {
   "name": "janet",
-  "type": "playable",
   "names": [
     "Mallory Knockx",
     "Belle Star",
@@ -39,6 +38,7 @@
     "Jesse Horseteeth",
     "Tela Tientoala"
   ],
+  "type": "playable",
   "framesize": [
     64,
     64
@@ -657,6 +657,29 @@
         6
       ],
       "startframe": 140
+    },
+    "victory": {
+      "exposures": [
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        6
+      ],
+      "startframe": 148
+    },
+    "defeat": {
+      "exposures": [
+        6
+      ],
+      "startframe": 160
     }
   },
   "filepath": "resources/skins/janet.png"

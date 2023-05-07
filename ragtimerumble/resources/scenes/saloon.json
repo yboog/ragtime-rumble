@@ -2751,7 +2751,7 @@
     "player1": {
       "life": {
         "position": [
-          5,
+          -3,
           325
         ],
         "file4": "/resources/ui/saloon/player-1/player-1-00.png",
@@ -2760,12 +2760,12 @@
         "file1": "/resources/ui/saloon/player-1/player-1-03.png"
       },
       "coins_position": [
-        15,
+        13,
         338
       ],
       "bullet": {
         "position": [
-          15,
+          13,
           325
         ],
         "on": "/resources/ui/saloon/bullet.png",
@@ -2775,7 +2775,7 @@
     "player2": {
       "life": {
         "position": [
-          50,
+          41,
           325
         ],
         "file4": "/resources/ui/saloon/player-2/player-2-00.png",
@@ -2784,12 +2784,12 @@
         "file1": "/resources/ui/saloon/player-2/player-2-03.png"
       },
       "coins_position": [
-        60,
+        51,
         338
       ],
       "bullet": {
         "position": [
-          60,
+          51,
           325
         ],
         "on": "/resources/ui/saloon/bullet.png",
@@ -2808,12 +2808,12 @@
         "file1": "/resources/ui/saloon/player-3/player-3-03.png"
       },
       "coins_position": [
-        90,
+        97,
         338
       ],
       "bullet": {
         "position": [
-          90,
+          97,
           325
         ],
         "on": "/resources/ui/saloon/bullet.png",
@@ -2823,7 +2823,7 @@
     "player4": {
       "life": {
         "position": [
-          140,
+          141,
           325
         ],
         "file4": "/resources/ui/saloon/player-4/player-4-00.png",
@@ -2832,12 +2832,12 @@
         "file1": "/resources/ui/saloon/player-4/player-4-03.png"
       },
       "coins_position": [
-        140,
+        143,
         338
       ],
       "bullet": {
         "position": [
-          140,
+          143,
           325
         ],
         "on": "/resources/ui/saloon/bullet.png",

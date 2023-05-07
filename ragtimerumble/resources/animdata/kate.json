@@ -1,7 +1,12 @@
 {
   "name": "kate",
+  "names": [
+    "Chambour Cyo Oui",
+    "Alana Lana Labas",
+    "Alloa Loa",
+    "Berty Liberty"
+  ],
   "type": "playable",
-  "names": ["rania simple choix", "toto sifredy", "marion colt blond"],
   "framesize": [
     64,
     64
@@ -661,6 +666,29 @@
         6
       ],
       "startframe": 141
+    },
+    "victory": {
+      "exposures": [
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        6
+      ],
+      "startframe": 149
+    },
+    "defeat": {
+      "exposures": [
+        6
+      ],
+      "startframe": 161
     }
   },
   "filepath": "resources/skins/kate.png"

@@ -148,10 +148,9 @@ class ScoreSheetScreen:
             'tot_score': 305}
         self.page_cooldown = 0
         for player in self.players:
-            animation = 'death' if player.index != winner_index else 'smoke'
+            animation = 'defeat' if player.index != winner_index else 'victory'
             player.character.spritesheet.animation = animation
-            index = player.character.spritesheet.animation_length() - 1
-            player.character.spritesheet.index = index
+            player.character.spritesheet.index = 0
         self.back_to_menu = False
         self.next_round = False
         self.done = True
@@ -162,9 +161,10 @@ class ScoreSheetScreen:
         self.back_to_menu = False
 
     def __next__(self):
+        for player in self.players:
+            next(player.character)
         for joystick in self.joysticks:
             if self.page_cooldown > 0:
-                print(self.page_cooldown)
                 self.page_cooldown = max((self.page_cooldown - 1, 0))
             else:
                 direction = get_pressed_direction(joystick)

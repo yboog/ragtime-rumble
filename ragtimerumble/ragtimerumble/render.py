@@ -7,7 +7,8 @@ from ragtimerumble.character import Character
 from ragtimerumble.config import LOOP_STATUSES, DIRECTIONS
 from ragtimerumble.gameloop import column_to_group, get_score_data
 from ragtimerumble.io import (
-    get_image, get_font, load_image, get_coin_stack, get_score_player_icon)
+    get_image, get_font, load_image, get_coin_stack, get_score_player_icon,
+    get_round_image, get_build_name)
 from ragtimerumble.menu import ControlMenuScreen, ScoreSheetScreen
 from ragtimerumble.pathfinding import distance, seg_to_vector
 from ragtimerumble.pilot import SmoothPathPilot
@@ -44,6 +45,7 @@ def render_menu(screen, menu):
     if menu.subscreen:
         return SUBSCREEN_RENDERER[type(menu.subscreen)](screen, menu)
     render_element(screen, menu.title)
+    render_build(screen, get_build_name())
     font = pygame.font.Font(get_font(TEXT_FONT_FILE), 11)
     for item in menu.items:
         highlighted = item.index == menu.index
@@ -54,6 +56,11 @@ def render_menu(screen, menu):
             pos=item.coordinates.position,
             font=font,
             color=color)
+
+
+def render_build(screen, name):
+    font = pygame.font.Font(get_font(TEXT_FONT_FILE), 11)
+    draw_text(screen, name, (5, 350), color=(50, 50, 50), font=font)
 
 
 def render_controls_screen(screen, menu):
@@ -70,10 +77,12 @@ def render_score_screen(screen, scores_screen):
     if scores_screen.page == 0:
         render_round_score_content(screen, scores_screen, winner)
     else:
-        render_total_score_content(screen, scores_screen, winner)
+        render_total_score_content(screen, scores_screen)
 
 
 def render_score_header(screen, scores_screen, winner):
+    image = get_round_image(scores_screen.scores['round'])
+    screen.blit(get_image(image), (0, 0))
     for player in scores_screen.players:
         # Draw character avatar.
         palette = player.character.palette
@@ -96,7 +105,7 @@ def render_score_header(screen, scores_screen, winner):
         screen.blit(image, (left, top))
 
 
-def render_total_score_content(screen, scores_screen, winner):
+def render_total_score_content(screen, scores_screen):
     image = get_image(load_image('resources/ui/scores/separator-2.png'))
     screen.blit(image, (0, 0))
     font = pygame.font.Font(get_font(TEXT_FONT_FILE), 11)
@@ -143,7 +152,7 @@ def render_total_score_content(screen, scores_screen, winner):
             draw_text(
                 surface=screen,
                 text=text,
-                pos=(column[0] - margin, top),
+                pos=(column[0] + margin, top),
                 font=font,
                 color=(255, 255, 255))
             kills = score[f'player {opponent.index + 1}'][0]
@@ -203,10 +212,11 @@ def render_round_score_content(screen, scores_screen, winner):
     screen.blit(image, (0, 0))
     font = pygame.font.Font(get_font(TEXT_FONT_FILE), 11)
     font_name = pygame.font.Font(get_font(MESSAGE_FONT_FILE), 8)
+
     for player in scores_screen.players:
         # Draw player name
         left = scores_screen.columns[player.index][0]
-        color = (115, 98, 90) if player.index == winner else (255, 232, 152)
+        color = (255, 232, 152) if player.index == winner else (115, 98, 90)
         top = scores_screen.lines['name']
         text = player.character.display_name
         draw_text(screen, text, (left, top), color=color, font=font_name)
@@ -281,8 +291,9 @@ def render_round_score_content(screen, scores_screen, winner):
         total = (
             player.coins +
             (2 * len(killed)) +
-            (3 if winner else 0) -
+            (3 if player.index == winner else 0) -
             (player.npc_killed * 2))
+
         top = scores_screen.lines['total']
         draw_text(
             screen,

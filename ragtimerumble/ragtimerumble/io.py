@@ -46,6 +46,14 @@ def stop_scene_music():
     _scene_music = None
 
 
+def get_build_name():
+    version_filepath = f'{GAMEROOT}/resources/version'
+    if not os.path.exists(version_filepath):
+        return 'Python Interactive'
+    with open(version_filepath, 'r') as f:
+        return f'build: {f.read()}'
+
+
 def play_dispatcher_music():
     sounds = (
         'resources/sounds/dispatcher_1_sound.ogg',
@@ -127,6 +135,11 @@ def choice_kill_sentence():
             _kill_sentences_generators[key] = itertools.cycle(array)
     language = preferences.get('language')
     return next(_kill_sentences_generators[language])
+
+
+def get_round_image(n):
+    path = f'resources/ui/scores/round-sources/round{n:02d}.png'
+    return load_image(path)
 
 
 def load_main_resources():

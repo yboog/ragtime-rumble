@@ -1,7 +1,7 @@
 {
   "name": "smith",
   "names": [
-    "José Delgado",
+    "Jos\u00e9 Delgado",
     "Pat' la fauche",
     "El Gringo",
     "Paul Regret",
@@ -599,7 +599,7 @@
         6,
         6,
         6,
-        35
+        24
       ],
       "startframe": 2
     },
@@ -617,6 +617,9 @@
     },
     "death": {
       "exposures": [
+        4,
+        4,
+        5,
         6,
         6,
         6,
@@ -625,15 +628,10 @@
         6,
         6,
         6,
-        6,
-        6,
-        6,
-        6,
-        6,
-        6,
-        6,
-        6,
-        6,
+        5,
+        5,
+        7,
+        5,
         6
       ],
       "startframe": 13
@@ -657,21 +655,19 @@
         6,
         6,
         6,
-        6,
-        6,
         6
       ],
-      "startframe": 31
+      "startframe": 29
     },
     "gunshot": {
       "exposures": [
+        4,
+        4,
         6,
+        7,
+        8,
         6,
-        6,
-        6,
-        6,
-        6,
-        6,
+        7,
         6,
         6,
         6,
@@ -682,7 +678,7 @@
         6,
         6
       ],
-      "startframe": 51
+      "startframe": 47
     },
     "idle": {
       "exposures": [
@@ -695,7 +691,7 @@
         6,
         6
       ],
-      "startframe": 67
+      "startframe": 63
     },
     "order": {
       "exposures": [
@@ -713,7 +709,7 @@
         6,
         6
       ],
-      "startframe": 75
+      "startframe": 71
     },
     "poker": {
       "exposures": [
@@ -751,7 +747,7 @@
         6,
         6
       ],
-      "startframe": 88
+      "startframe": 84
     },
     "smoke": {
       "exposures": [
@@ -780,13 +776,13 @@
         6,
         6
       ],
-      "startframe": 121
+      "startframe": 117
     },
     "suspicious": {
       "exposures": [
         6
       ],
-      "startframe": 145
+      "startframe": 141
     },
     "vomit": {
       "exposures": [
@@ -811,7 +807,7 @@
         6,
         6
       ],
-      "startframe": 146
+      "startframe": 142
     },
     "walk": {
       "exposures": [
@@ -824,7 +820,7 @@
         6,
         6
       ],
-      "startframe": 166
+      "startframe": 162
     },
     "walk-back": {
       "exposures": [
@@ -837,7 +833,34 @@
         6,
         6
       ],
-      "startframe": 174
+      "startframe": 170
+    },
+    "victory": {
+      "exposures": [
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        6
+      ],
+      "startframe": 178
+    },
+    "defeat": {
+      "exposures": [
+        6
+      ],
+      "startframe": 194
     }
   },
   "filepath": "resources/skins/smith.png"

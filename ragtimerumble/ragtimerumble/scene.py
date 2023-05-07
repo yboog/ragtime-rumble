@@ -80,20 +80,20 @@ def load_scene(filename):
     return scene
 
 
-def depopulate_scene(scene):
-    scene.bullet_positions.clear()
-    scene.life_positions.clear()
-    scene.life_images.clear()
-    scene.bullet_images.clear()
+def depopulate_scene(scene, clear_players=True):
+    if clear_players:
+        scene.players.clear()
+        scene.bullet_positions.clear()
+        scene.life_positions.clear()
+        scene.life_images.clear()
+        scene.bullet_images.clear()
     scene.secondary_npcs.clear()
     scene.interaction_zones.clear()
-    scene.players.clear()
     scene.possible_duels.clear()
     scene.characters.clear()
     scene.sniperreticles.clear()
     scene.black_screen_countdown = 0
     scene.white_screen_countdown = 0
-    scene.vfx.clear()
     scene.animated_vfx.clear()
     scene.messenger.clear()
     scene.vfx_overlays.clear()
