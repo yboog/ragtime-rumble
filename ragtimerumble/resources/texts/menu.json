@@ -1,4 +1,24 @@
 {
+    "back_to_menu": {
+        "french": "Retour au menu",
+        "english": "Back to menu"
+    },
+    "no": {
+        "french": "Non",
+        "english": "No"
+    },
+    "yes": {
+        "french": "Oui",
+        "english": "Yes"
+    },
+    "back_to_desktop": {
+        "french": "Retour au bureau",
+        "english": "Back to desktop"
+    },
+    "continue": {
+        "french": "Continuer",
+        "english": "Continue"
+    },
     "new_game": {
         "french": "Nouvelle partie",
         "english": "New Game"
@@ -28,7 +48,7 @@
         "english": "Windowed"
     },
     "controls": {
-        "french": "Controlles",
+        "french": "Contrôles",
         "english": "Controls"
     },
     "help": {

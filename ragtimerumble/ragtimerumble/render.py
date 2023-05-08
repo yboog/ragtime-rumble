@@ -8,7 +8,7 @@ from ragtimerumble.config import LOOP_STATUSES, DIRECTIONS
 from ragtimerumble.gameloop import column_to_group, get_score_data
 from ragtimerumble.io import (
     get_image, get_font, load_image, get_coin_stack, get_score_player_icon,
-    get_round_image, get_build_name, get_button_text)
+    get_round_image, get_build_name, get_menu_text)
 from ragtimerumble.menu import ControlMenuScreen, HotToPlayScreen
 from ragtimerumble.pathfinding import distance, seg_to_vector
 from ragtimerumble.pilot import SmoothPathPilot
@@ -27,6 +27,8 @@ def render_game(screen, loop):
     render_scene(screen, loop.scene)
     if loop.status == LOOP_STATUSES.MENU:
         return render_menu(screen, loop.menu)
+    if loop.status == LOOP_STATUSES.PAUSE:
+        return render_pause_menu(screen, loop.pause_menu)
     if loop.status == LOOP_STATUSES.SCORE:
         return render_score_screen(screen, loop.scores_screen)
     if loop.status == LOOP_STATUSES.LAST_KILL:
@@ -36,6 +38,23 @@ def render_game(screen, loop):
         render_dispatching(screen, loop)
         render_players_ol_score(screen, loop.scene)
     render_messages(screen, loop.scene)
+
+
+def render_pause_menu(screen, pause_menu):
+    render_black_screen(screen, 180)
+    bg = get_image(pause_menu.bg)
+    screen.blit(bg, (0, 0))
+    font = pygame.font.Font(get_font(TEXT_FONT_FILE), 11)
+    for item in pause_menu.items:
+        highlighted = item.index == pause_menu.index
+        color = (255, 125, 0) if highlighted else (255, 255, 255)
+        draw_text(
+            surface=screen,
+            text=item.label,
+            pos=item.coordinates.position,
+            font=font,
+            color=color)
+    render_buttons(screen, pause_menu.buttons, (85, 270))
 
 
 def render_menu(screen, menu):
@@ -87,7 +106,7 @@ def render_button(screen, button, pos):
     color = (248, 213, 155)
     button_image = get_image(button.image)
     screen.blit(button_image, pos)
-    text = get_button_text(button.key)
+    text = get_menu_text(button.key)
     font = pygame.font.Font(get_font(MESSAGE_FONT_FILE), 8)
     x = pos[0] + button_image.get_size()[0] + 3
     y = pos[1] + (button_image.get_size()[1] / 2)

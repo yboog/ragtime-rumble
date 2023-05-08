@@ -78,15 +78,6 @@ def get_touch_button_image(button):
     return load_image(f'resources/ui/touch-button/{button.lower()}.png')
 
 
-def get_button_text(key):
-    language = preferences.get('language')
-    if not _buttons_texts:
-        filepath = f'{GAMEROOT}/resources/texts/buttons.json'
-        with open(filepath, 'rb') as f:
-            _buttons_texts.update(json.load(f))
-    return _buttons_texts[key][language]
-
-
 def stop_dispatcher_music():
     global _dispatcher_music
     if not _dispatcher_music:

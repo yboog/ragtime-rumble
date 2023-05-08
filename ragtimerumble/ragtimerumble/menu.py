@@ -30,6 +30,7 @@ class Menu:
             MenuItem(4, 'help', (361, 265)),
             MenuItem(5, 'quit', (361, 290))]
         self.direction_countdown = 0
+        self.button_countdown = 0
         self.subscreen = None
         play_dispatcher_music()
 
@@ -42,6 +43,10 @@ class Menu:
             self.subscreen = None
 
         next(self.title)
+        if self.button_countdown > 0:
+            self.button_countdown -= 1
+            return
+
         for joystick in self.joysticks:
             commands = get_current_commands(joystick)
             if commands.get('A'):
@@ -111,7 +116,7 @@ class HotToPlayScreen:
         self.done = False
         self.joysticks = joysticks
         self.page_cooldown = 0
-        self.button = NavigationButton('back_to_menu', 'b')
+        self.button = NavigationButton('back_to_menu', 'B')
 
     @property
     def image(self):
@@ -195,9 +200,9 @@ class ScoreSheetScreen:
         self.next_round = False
         self.done = True
         self._buttons = [
-            NavigationButton('next_round', 'X'),
+            NavigationButton('next_round', 'A'),
             NavigationButton('back_to_menu', 'B'),
-            NavigationButton('yes', 'X'),
+            NavigationButton('yes', 'A'),
             NavigationButton('no', 'B')]
 
     @property
@@ -329,3 +334,71 @@ class NavigationButton:
     def __init__(self, text_key, button):
         self.image = get_touch_button_image(button)
         self.key = text_key
+
+
+class PauseMenu:
+    def __init__(self, joysticks):
+        self.joysticks = joysticks
+        self.button_countdown = 0
+        self.index = 0
+        self.buttons_visible = False
+        self.done = False
+        self.back_to_menu = False
+        self.quit_game = False
+        self.bg = load_image('resources/ui/pause-ul.png')
+        self.items = [
+            MenuItem(0, 'continue', (80, 210)),
+            MenuItem(1, 'back_to_menu', (80, 228)),
+            MenuItem(2, 'back_to_desktop', (80, 246))]
+        self._buttons = [
+            NavigationButton('yes', 'A'),
+            NavigationButton('no', 'B')]
+
+    @property
+    def buttons(self):
+        return self._buttons if self.buttons_visible else []
+
+    def __next__(self):
+        if self.button_countdown > 0:
+            self.button_countdown -= 1
+            return
+
+        for joystick in self.joysticks:
+            commands = get_current_commands(joystick)
+            if commands.get('B'):
+                self.buttons_visible = False
+                self.button_countdown = COUNTDOWNS.MENU_SELECTION_COOLDOWN
+                return
+
+            if commands.get('A'):
+                if self.index == 0:
+                    self.done = True
+                    return
+                if not self.buttons_visible:
+                    self.buttons_visible = True
+                    self.button_countdown = COUNTDOWNS.MENU_SELECTION_COOLDOWN
+                    return
+                elif self.index == 1:
+                    self.back_to_menu = True
+                    return
+                elif self.index == 2:
+                    self.quit_game = True
+                    return
+
+            if self.buttons_visible:
+                continue
+
+            direction = get_pressed_direction(joystick)
+            if direction == DIRECTIONS.UP:
+                play_sound('resources/sounds/woosh.wav')
+                self.button_countdown = COUNTDOWNS.MENU_SELECTION_COOLDOWN
+                i = self.index - 1 if self.index else len(self.items) - 1
+                self.index = i
+                return
+
+            if direction == DIRECTIONS.DOWN:
+                play_sound('resources/sounds/woosh.wav')
+                self.button_countdown = COUNTDOWNS.MENU_SELECTION_COOLDOWN
+                i = self.index + 1 if self.index < len(self.items) - 1 else 0
+                self.index = i
+                return

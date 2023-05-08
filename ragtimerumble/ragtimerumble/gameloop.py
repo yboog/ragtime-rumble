@@ -8,7 +8,7 @@ from ragtimerumble.io import (
     stop_dispatcher_music, play_scene_music)
 from ragtimerumble.config import (
     LOOP_STATUSES, COUNTDOWNS, DIRECTIONS, DEFAULT_SCENE)
-from ragtimerumble.menu import Menu, ScoreSheetScreen
+from ragtimerumble.menu import Menu, ScoreSheetScreen, PauseMenu
 from ragtimerumble.scene import load_scene, populate_scene, depopulate_scene
 from ragtimerumble.player import Player
 from ragtimerumble.npc import Npc
@@ -136,10 +136,33 @@ class GameLoop:
                     self.done = True
                     return
                 if self.menu.start is True:
+                    self.joysticks = list_joysticks()
                     self.start_scene(start_music=False)
                 self.clock.tick(60)
 
+            case LOOP_STATUSES.PAUSE:
+                if self.pause_menu.done:
+                    self.pause_menu = None
+                    self.status = LOOP_STATUSES.BATTLE
+                    return
+                if self.pause_menu.back_to_menu:
+                    self.reset_game()
+                    cld = COUNTDOWNS.MENU_SELECTION_COOLDOWN * 2
+                    self.menu.button_countdown = cld
+                    return
+                if self.pause_menu.quit_game:
+                    self.done = True
+                next(self.pause_menu)
+                self.clock.tick(60)
+                return
+
             case LOOP_STATUSES.BATTLE:
+                for joystick in self.joysticks:
+                    command = get_current_commands(joystick)
+                    if command.get('start') is True:
+                        self.status = LOOP_STATUSES.PAUSE
+                        self.pause_menu = PauseMenu(self.joysticks)
+                        return
                 next(self.scene)
                 self.clock.tick(60)
                 if self.scene.ultime_showdown:
