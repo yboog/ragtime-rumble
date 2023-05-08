@@ -7,7 +7,8 @@ from ragtimerumble.config import (
 from ragtimerumble.display import set_screen_display_mode
 from ragtimerumble.coordinates import Coordinates
 from ragtimerumble.io import (
-    load_data, load_image, get_menu_text, play_sound, play_dispatcher_music)
+    load_data, load_image, get_menu_text, play_sound, play_dispatcher_music,
+    get_how_to_play_image, get_touch_button_image)
 from ragtimerumble.sprite import SpriteSheet
 from ragtimerumble.joystick import get_pressed_direction, get_current_commands
 
@@ -46,6 +47,9 @@ class Menu:
             if commands.get('A'):
                 if self.index == 3:
                     self.subscreen = ControlMenuScreen(self.joysticks)
+                    return
+                if self.index == 4:
+                    self.subscreen = HotToPlayScreen(self.joysticks)
                     return
                 if self.index == 5:
                     self.done = True
@@ -101,12 +105,47 @@ CONTROLLS_IMAGES = {
 }
 
 
+class HotToPlayScreen:
+    def __init__(self, joysticks):
+        self.page = 1
+        self.done = False
+        self.joysticks = joysticks
+        self.page_cooldown = 0
+        self.button = NavigationButton('back_to_menu', 'b')
+
+    @property
+    def image(self):
+        return get_how_to_play_image(self.page)
+
+    def __next__(self):
+        for joystick in self.joysticks:
+            commands = get_current_commands(joystick)
+            if commands.get('B'):
+                self.done = True
+                return
+            if self.page_cooldown > 0:
+                self.page_cooldown = max((self.page_cooldown - 1, 0))
+            else:
+                direction = get_pressed_direction(joystick)
+                lr = direction in [DIRECTIONS.LEFT, DIRECTIONS.RIGHT]
+                if not lr:
+                    return
+                play_sound('resources/sounds/coltclick.wav')
+                if direction == DIRECTIONS.RIGHT:
+                    self.page_cooldown = COUNTDOWNS.MENU_SELECTION_COOLDOWN
+                    self.page = min((self.page + 1, 5))
+                elif direction == DIRECTIONS.LEFT:
+                    self.page_cooldown = COUNTDOWNS.MENU_SELECTION_COOLDOWN
+                    self.page = max((self.page - 1, 1))
+
+
 class ControlMenuScreen:
     def __init__(self, joysticks):
         image = CONTROLLS_IMAGES[preferences.get('language')]
         self.image = load_image(image)
         self.done = False
         self.joysticks = joysticks
+        self.button = NavigationButton('back_to_menu', 'B')
 
     def __next__(self):
         for joystick in self.joysticks:
@@ -118,6 +157,7 @@ class ControlMenuScreen:
 class ScoreSheetScreen:
     def __init__(self, players, winner_index, scores, joysticks):
         self.page = 0
+        self.button_pages = 0
         self.scores = deepcopy(scores)
         self.joysticks = joysticks
         self.players = players
@@ -154,6 +194,17 @@ class ScoreSheetScreen:
         self.back_to_menu = False
         self.next_round = False
         self.done = True
+        self._buttons = [
+            NavigationButton('next_round', 'X'),
+            NavigationButton('back_to_menu', 'B'),
+            NavigationButton('yes', 'X'),
+            NavigationButton('no', 'B')]
+
+    @property
+    def buttons(self):
+        if self.button_pages == 0:
+            return self._buttons[:2]
+        return self._buttons[2:]
 
     def show(self):
         self.page = 0
@@ -163,23 +214,28 @@ class ScoreSheetScreen:
     def __next__(self):
         for player in self.players:
             next(player.character)
+        if self.page_cooldown > 0:
+            self.page_cooldown = max((self.page_cooldown - 1, 0))
+            return
         for joystick in self.joysticks:
-            if self.page_cooldown > 0:
-                self.page_cooldown = max((self.page_cooldown - 1, 0))
-            else:
-                direction = get_pressed_direction(joystick)
-                lr = direction in [DIRECTIONS.LEFT, DIRECTIONS.RIGHT]
-                if lr and not self.page_cooldown:
-                    play_sound('resources/sounds/coltclick.wav')
-                    self.page_cooldown = COUNTDOWNS.MENU_SELECTION_COOLDOWN
-                    self.page = 1 if self.page == 0 else 0
+            direction = get_pressed_direction(joystick)
+            lr = direction in [DIRECTIONS.LEFT, DIRECTIONS.RIGHT]
+            if lr and not self.page_cooldown:
+                play_sound('resources/sounds/coltclick.wav')
+                self.page_cooldown = COUNTDOWNS.MENU_SELECTION_COOLDOWN
+                self.page = 1 if self.page == 0 else 0
             commands = get_current_commands(joystick)
-            if commands.get('X'):
-                self.back_to_menu = True
+            if commands.get('B'):
+                self.button_pages = 1 if self.button_pages == 0 else 0
+                self.page_cooldown = COUNTDOWNS.MENU_SELECTION_COOLDOWN
                 return
             if commands.get('A'):
-                self.next_round = True
-                return
+                if self.button_pages == 1:
+                    self.next_round = True
+                    return
+                else:
+                    self.back_to_menu = True
+                    return
 
 
 class MenuItem:
@@ -267,3 +323,9 @@ class Title:
             self.loop_cooldown = random.choice(range(
                 COUNTDOWNS.TITLE_LOOP_COOLDOWN_MIN,
                 COUNTDOWNS.TITLE_LOOP_COOLDOWN_MAX))
+
+
+class NavigationButton:
+    def __init__(self, text_key, button):
+        self.image = get_touch_button_image(button)
+        self.key = text_key

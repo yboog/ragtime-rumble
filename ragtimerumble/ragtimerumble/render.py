@@ -8,8 +8,8 @@ from ragtimerumble.config import LOOP_STATUSES, DIRECTIONS
 from ragtimerumble.gameloop import column_to_group, get_score_data
 from ragtimerumble.io import (
     get_image, get_font, load_image, get_coin_stack, get_score_player_icon,
-    get_round_image, get_build_name)
-from ragtimerumble.menu import ControlMenuScreen, ScoreSheetScreen
+    get_round_image, get_build_name, get_button_text)
+from ragtimerumble.menu import ControlMenuScreen, HotToPlayScreen
 from ragtimerumble.pathfinding import distance, seg_to_vector
 from ragtimerumble.pilot import SmoothPathPilot
 from ragtimerumble.scene import Vfx
@@ -66,6 +66,37 @@ def render_build(screen, name):
 def render_controls_screen(screen, menu):
     image = get_image(menu.subscreen.image)
     screen.blit(image, (0, 0))
+    render_button(screen, menu.subscreen.button, (4, 335))
+
+
+def render_how_to_play_screen(screen, menu):
+    id_ = load_image('resources/ui/howtoplay/htp_ul.png')
+    screen.blit(get_image(id_), (0, 0))
+    image = get_image(menu.subscreen.image)
+    screen.blit(image, (0, 0))
+    render_button(screen, menu.subscreen.button, (4, 335))
+
+
+def render_buttons(screen, buttons, pos):
+    for button in buttons:
+        right, _ = render_button(screen, button, pos)
+        pos = right + 5, pos[1]
+
+
+def render_button(screen, button, pos):
+    color = (248, 213, 155)
+    button_image = get_image(button.image)
+    screen.blit(button_image, pos)
+    text = get_button_text(button.key)
+    font = pygame.font.Font(get_font(MESSAGE_FONT_FILE), 8)
+    x = pos[0] + button_image.get_size()[0] + 3
+    y = pos[1] + (button_image.get_size()[1] / 2)
+    text = font.render(text, False, color)
+    text_rect = text.get_rect(center=(x, y))
+    text_rect.left += text_rect.width / 2
+
+    screen.blit(text, text_rect)
+    return text_rect.bottomright
 
 
 def render_score_screen(screen, scores_screen):
@@ -78,6 +109,7 @@ def render_score_screen(screen, scores_screen):
         render_round_score_content(screen, scores_screen, winner)
     else:
         render_total_score_content(screen, scores_screen)
+    render_buttons(screen, scores_screen.buttons, (4, 335))
 
 
 def render_score_header(screen, scores_screen, winner):
@@ -312,7 +344,7 @@ def render_round_score_content(screen, scores_screen, winner):
 
 SUBSCREEN_RENDERER = {
     ControlMenuScreen: render_controls_screen,
-    ScoreSheetScreen: render_score_screen
+    HotToPlayScreen: render_how_to_play_screen
 }
 
 CELL_WIDTH = 55

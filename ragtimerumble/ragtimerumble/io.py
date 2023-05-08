@@ -20,6 +20,7 @@ _sounds = {}
 _dispatcher_music = None
 _scene_music = None
 _menu_texts = {}
+_buttons_texts = {}
 
 
 def play_coin_sound():
@@ -54,6 +55,12 @@ def get_build_name():
         return f'build: {f.read()}'
 
 
+def get_how_to_play_image(page):
+    language = {'french': 'fr', 'english': 'en'}.get(
+        preferences.get('language'), 'en')
+    return load_image(f'resources/ui/howtoplay/page{page}-{language}.png')
+
+
 def play_dispatcher_music():
     sounds = (
         'resources/sounds/dispatcher_1_sound.ogg',
@@ -65,6 +72,19 @@ def play_dispatcher_music():
         stop_dispatcher_music()
     _dispatcher_music = load_sound(sound)
     _dispatcher_music.play(-1)
+
+
+def get_touch_button_image(button):
+    return load_image(f'resources/ui/touch-button/{button.lower()}.png')
+
+
+def get_button_text(key):
+    language = preferences.get('language')
+    if not _buttons_texts:
+        filepath = f'{GAMEROOT}/resources/texts/buttons.json'
+        with open(filepath, 'rb') as f:
+            _buttons_texts.update(json.load(f))
+    return _buttons_texts[key][language]
 
 
 def stop_dispatcher_music():

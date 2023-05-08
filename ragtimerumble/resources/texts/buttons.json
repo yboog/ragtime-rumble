@@ -1,0 +1,22 @@
+{
+    "continue": {
+        "french": "Continuer",
+        "english": "Continue"
+    },
+    "yes": {
+        "french": "Oui",
+        "english": "Yes"
+    },
+    "no": {
+        "french": "Non",
+        "english": "No"
+    },
+    "back_to_menu": {
+        "french": "Retour au menu",
+        "english": "Back to menu"
+    },
+    "next_round": {
+        "french": "Tour suivant",
+        "english": "Next round"
+    }
+}
