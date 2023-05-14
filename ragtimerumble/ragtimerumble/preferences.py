@@ -2,7 +2,8 @@
 
 preferences = {
     'language': 'english',
-    'gametype': 'advanced'
+    'gametype': 'advanced',
+    'rounds': 10,
 }
 
 

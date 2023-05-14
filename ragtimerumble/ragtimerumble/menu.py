@@ -22,13 +22,16 @@ class Menu:
         self.done = False
         self.start = False
         displays = ('fullscreen', 'wscaled', 'windowed')
+        rounds = [f'{i}' for i in range(1, 11)]
         self.items = [
             EnumItem(0, 'new_game', (361, 185), values=('advanced', 'basic')),
             EnumItem(1, 'display', (361, 210), values=displays),
             EnumItem(2, 'language', (361, 225), values=AVAILABLE_LANGUAGES),
-            MenuItem(3, 'controls', (361, 250)),
-            MenuItem(4, 'help', (361, 265)),
-            MenuItem(5, 'quit', (361, 290))]
+            EnumItem(3, 'rounds', (361, 240), values=rounds),
+            MenuItem(4, 'controls', (361, 265)),
+            MenuItem(5, 'help', (361, 280)),
+            MenuItem(6, 'quit', (361, 305))]
+        self.items[3].enum_index = 9
         self.direction_countdown = 0
         self.button_countdown = 0
         self.subscreen = None
@@ -50,17 +53,18 @@ class Menu:
         for joystick in self.joysticks:
             commands = get_current_commands(joystick)
             if commands.get('A'):
-                if self.index == 3:
-                    self.subscreen = ControlMenuScreen(self.joysticks)
-                    return
-                if self.index == 4:
-                    self.subscreen = HotToPlayScreen(self.joysticks)
-                    return
-                if self.index == 5:
-                    self.done = True
-                    return
-                if self.index == 0:
-                    self.start = True
+                match self.index:
+                    case 0:
+                        self.start = True
+                    case 4:
+                        self.subscreen = ControlMenuScreen(self.joysticks)
+                        return
+                    case 5:
+                        self.subscreen = HotToPlayScreen(self.joysticks)
+                        return
+                    case 6:
+                        self.done = True
+                        return
 
             if self.direction_countdown > 0:
                 self.direction_countdown -= 1
@@ -68,21 +72,26 @@ class Menu:
 
             direction = get_pressed_direction(joystick)
             directions = (DIRECTIONS.LEFT, DIRECTIONS.RIGHT)
-            enums = 0, 1, 2
+            enums = 0, 1, 2, 3
             if direction in directions and self.index in enums:
                 self.items[self.index].set_next(direction == DIRECTIONS.LEFT)
                 self.direction_countdown = COUNTDOWNS.MENU_SELECTION_COOLDOWN
-                if self.index == 0:
-                    play_sound('resources/sounds/coltclick.wav')
-                    i = self.items[0].enum_index
-                    preferences.set('gametype', GAMETYPES[i])
-                elif self.index == 1:
-                    play_sound('resources/sounds/coltclick.wav')
-                    self.update_display_mode()
-                elif self.index == 2:
-                    play_sound('resources/sounds/coltclick.wav')
-                    i = self.items[2].enum_index
-                    preferences.set('language', AVAILABLE_LANGUAGES[i])
+                match self.index:
+                    case 0:
+                        play_sound('resources/sounds/coltclick.wav')
+                        i = self.items[0].enum_index
+                        preferences.set('gametype', GAMETYPES[i])
+                    case 1:
+                        play_sound('resources/sounds/coltclick.wav')
+                        self.update_display_mode()
+                    case 2:
+                        play_sound('resources/sounds/coltclick.wav')
+                        i = self.items[2].enum_index
+                        preferences.set('language', AVAILABLE_LANGUAGES[i])
+                    case 3:
+                        play_sound('resources/sounds/coltclick.wav')
+                        i = self.items[3].enum_index
+                        preferences.set('rounds', int(self.items[3].values[i]))
                 return
 
             if direction == DIRECTIONS.UP:

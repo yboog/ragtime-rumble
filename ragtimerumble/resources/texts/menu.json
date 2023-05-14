@@ -11,6 +11,10 @@
         "french": "Oui",
         "english": "Yes"
     },
+    "rounds": {
+        "french": "Rounds",
+        "english": "Rounds"
+    },
     "back_to_desktop": {
         "french": "Retour au bureau",
         "english": "Back to desktop"

@@ -61,9 +61,9 @@ def get_ps4_controller_keystate(key_name, joystick):
         case 'RS_RIGHT':
             return joystick.get_axis(2) > .5
         case 'RS_UP':
-            return joystick.get_axis(4) < -.5
+            return joystick.get_axis(3) < -.5
         case 'RS_DOWN':
-            return joystick.get_axis(4) > .5
+            return joystick.get_axis(3) > .5
     return False
 
 

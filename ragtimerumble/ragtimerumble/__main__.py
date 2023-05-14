@@ -11,7 +11,7 @@ from ragtimerumble import debug
 
 
 pygame.init()
-set_screen_display_mode(DISPLAY_MODES.FULSCREEN)
+set_screen_display_mode(DISPLAY_MODES.FULLSCREEN)
 pygame.joystick.init()
 load_skins()
 load_main_resources()

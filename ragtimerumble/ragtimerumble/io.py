@@ -78,6 +78,10 @@ def get_touch_button_image(button):
     return load_image(f'resources/ui/touch-button/{button.lower()}.png')
 
 
+def get_icon():
+    return get_image(load_image('/resources/ragtime.ico'))
+
+
 def stop_dispatcher_music():
     global _dispatcher_music
     if not _dispatcher_music:
@@ -119,6 +123,8 @@ def get_menu_text(key):
         filepath = f'{GAMEROOT}/resources/texts/menu.json'
         with open(filepath, 'rb') as f:
             _menu_texts.update(json.load(f))
+    if key not in _menu_texts:  # Thing does not need to be translated
+        return key
     return _menu_texts[key][language]
 
 
@@ -166,6 +172,7 @@ def quit_event():
 
 
 def list_joysticks():
+    pygame.joystick.quit()
     pygame.joystick.init()
     pygame.joystick.get_count()
     joysticks = []
@@ -173,7 +180,6 @@ def list_joysticks():
         try:
             joystick = pygame.joystick.Joystick(i)
             joystick.init()
-            get_current_commands(joystick)
             joysticks.append(joystick)
         except BaseException:
             print(f'Unsupported joystick {joystick.get_name()}')

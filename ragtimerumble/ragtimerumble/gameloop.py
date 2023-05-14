@@ -8,7 +8,8 @@ from ragtimerumble.io import (
     stop_dispatcher_music, play_scene_music)
 from ragtimerumble.config import (
     LOOP_STATUSES, COUNTDOWNS, DIRECTIONS, DEFAULT_SCENE)
-from ragtimerumble.menu import Menu, ScoreSheetScreen, PauseMenu
+from ragtimerumble.menu import (
+    Menu, ScoreSheetScreen, PauseMenu, NavigationButton)
 from ragtimerumble.scene import load_scene, populate_scene, depopulate_scene
 from ragtimerumble.player import Player
 from ragtimerumble.npc import Npc
@@ -108,6 +109,7 @@ class GameLoop:
         self.joysticks = list_joysticks()
         self.scores_screen = None
         self.menu = Menu(self.joysticks)
+        self.menu.button_countdown = COUNTDOWNS.MENU_SELECTION_COOLDOWN * 2
         self.set_scene(DEFAULT_SCENE)
 
     def set_scene(self, path):
@@ -173,6 +175,9 @@ class GameLoop:
             case LOOP_STATUSES.DISPATCHING:
                 next(self.dispatcher)
                 self.clock.tick(60)
+                if self.dispatcher.back_to_menu:
+                    self.reset_game()
+                    return
                 if self.dispatcher.done:
                     stop_dispatcher_music()
                     self.start_round()
@@ -245,6 +250,11 @@ class PlayerDispatcher:
         self.cooldowns = [0, 0, 0, 0]
         self.assigned = [None, None, None, None, None]
         self.players = [None for _ in range(len(joysticks))]
+        self.leave_overlay = False
+        self.back_to_menu = False
+        self.back_to_menu_buttons = [
+            NavigationButton('back_to_menu', 'A'),
+            NavigationButton('no', 'B')]
 
     def eval_player_selection(self, i, joystick):
         group = column_to_group(self.joysticks_column[i])
@@ -263,6 +273,7 @@ class PlayerDispatcher:
                         COUNTDOWNS.INTERACTION_LOOP_COOLDOWN_MAX))
                     self.scene.npcs.append(npc)
                     play_sound('resources/sounds/coltclick.wav')
+                    joystick.rumble(1, 1, 1)
                 return
 
     def __next__(self):
@@ -274,24 +285,33 @@ class PlayerDispatcher:
                 self.cooldowns[i] -= 1
                 continue
 
+            commands = get_current_commands(joystick)
+
+            if self.leave_overlay:
+                return self.eval_leave_overlay(commands)
+
+            if commands.get('B'):
+                self.cooldowns[i] = COUNTDOWNS.MENU_SELECTION_COOLDOWN
+                self.leave_overlay = True
+
             if joystick in self.assigned:
                 if not self.players[i]:
                     self.eval_player_selection(i, joystick)
                 continue
 
-            if get_current_commands(joystick).get('LEFT'):
+            if commands.get('LEFT'):
                 value = max((0, self.joysticks_column[i] - 1))
                 play_sound('resources/sounds/stroke_whoosh_02.ogg')
                 self.joysticks_column[i] = value
                 self.cooldowns[i] = COUNTDOWNS.MENU_SELECTION_COOLDOWN
 
-            elif get_current_commands(joystick).get('RIGHT'):
+            elif commands.get('RIGHT'):
                 play_sound('resources/sounds/stroke_whoosh_02.ogg')
                 value = min((4, self.joysticks_column[i] + 1))
                 self.joysticks_column[i] = value
                 self.cooldowns[i] = COUNTDOWNS.MENU_SELECTION_COOLDOWN
 
-            elif get_current_commands(joystick).get('A'):
+            elif commands.get('A'):
                 column = self.joysticks_column[i]
                 if column == 2:
                     continue
@@ -301,6 +321,14 @@ class PlayerDispatcher:
                 play_sound('resources/sounds/card.wav')
 
         self.done = sum(bool(p) for p in self.players) == len(self.joysticks)
+
+    def eval_leave_overlay(self, commands):
+        if commands.get('B'):
+            self.leave_overlay = False
+            for i in range(len(self.cooldowns)):
+                self.cooldowns[i] = COUNTDOWNS.MENU_SELECTION_COOLDOWN
+        if commands.get('A'):
+            self.back_to_menu = True
 
     def generate_characters(self, column):
         index = column_to_group(column)

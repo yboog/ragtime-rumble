@@ -37,6 +37,10 @@ def render_game(screen, loop):
     if loop.status == LOOP_STATUSES.DISPATCHING:
         render_dispatching(screen, loop)
         render_players_ol_score(screen, loop.scene)
+        if loop.dispatcher.leave_overlay:
+            render_black_screen(screen, 180)
+            buttons = loop.dispatcher.back_to_menu_buttons
+            render_buttons(screen, buttons, (4, 335))
     render_messages(screen, loop.scene)
 
 
