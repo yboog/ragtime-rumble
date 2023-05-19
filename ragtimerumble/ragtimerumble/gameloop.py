@@ -149,6 +149,8 @@ class GameLoop:
                     return
                 if self.pause_menu.back_to_menu:
                     self.reset_game()
+                    stop_scene_music()
+                    stop_ambiance()
                     cld = COUNTDOWNS.MENU_SELECTION_COOLDOWN * 2
                     self.menu.button_countdown = cld
                     return

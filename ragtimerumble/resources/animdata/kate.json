@@ -606,7 +606,6 @@
         6,
         6,
         6,
-        6,
         6
       ],
       "startframe": 92
@@ -615,7 +614,7 @@
       "exposures": [
         6
       ],
-      "startframe": 113
+      "startframe": 112
     },
     "vomit": {
       "exposures": [
@@ -639,7 +638,7 @@
         4,
         4
       ],
-      "startframe": 114
+      "startframe": 113
     },
     "walk": {
       "exposures": [
@@ -652,7 +651,7 @@
         6,
         6
       ],
-      "startframe": 133
+      "startframe": 132
     },
     "walk-back": {
       "exposures": [
@@ -665,7 +664,7 @@
         6,
         6
       ],
-      "startframe": 141
+      "startframe": 140
     },
     "victory": {
       "exposures": [
@@ -680,15 +679,21 @@
         6,
         6,
         6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
         6
       ],
-      "startframe": 149
+      "startframe": 148
     },
     "defeat": {
       "exposures": [
         6
       ],
-      "startframe": 161
+      "startframe": 166
     }
   },
   "filepath": "resources/skins/kate.png"

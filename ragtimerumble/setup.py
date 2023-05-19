@@ -73,4 +73,4 @@ with open(f'{gameroot}/lib/resources/version', 'w') as f:
 
 destination = f'{desktop}/ragtimerumble-{version}.7z'
 with py7zr.SevenZipFile(destination, 'w') as archive:
-    archive.writeall(gameroot)
+    archive.writeall(gameroot, arcname=os.path.basename(gameroot))

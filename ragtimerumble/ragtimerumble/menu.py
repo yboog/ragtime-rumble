@@ -121,7 +121,7 @@ CONTROLLS_IMAGES = {
 
 class HotToPlayScreen:
     def __init__(self, joysticks):
-        self.page = 1
+        self.page = 0
         self.done = False
         self.joysticks = joysticks
         self.page_cooldown = 0
@@ -150,7 +150,7 @@ class HotToPlayScreen:
                     self.page = min((self.page + 1, 5))
                 elif direction == DIRECTIONS.LEFT:
                     self.page_cooldown = COUNTDOWNS.MENU_SELECTION_COOLDOWN
-                    self.page = max((self.page - 1, 1))
+                    self.page = max((self.page - 1, 0))
 
 
 class ControlMenuScreen:

@@ -164,11 +164,15 @@ def load_main_resources():
 
 
 def quit_event():
-    return any((
-        event.type == pygame.KEYDOWN and
-        event.key == pygame.K_ESCAPE or
-        event.type == pygame.QUIT)
-        for event in pygame.event.get())
+    try:
+        events = pygame.event.get()
+        return any((
+            event.type == pygame.KEYDOWN and
+            event.key == pygame.K_ESCAPE or
+            event.type == pygame.QUIT)
+            for event in events)
+    except SystemError:
+        return False
 
 
 def list_joysticks():

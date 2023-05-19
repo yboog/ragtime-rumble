@@ -1,7 +1,7 @@
 {
   "name": "smith",
   "names": [
-    "Jos\u00e9 Delgado",
+    "José Delgado",
     "Pat' la fauche",
     "El Gringo",
     "Paul Regret",
@@ -852,6 +852,8 @@
         6,
         6,
         6,
+        6,
+        6,
         6
       ],
       "startframe": 178
@@ -860,7 +862,7 @@
       "exposures": [
         6
       ],
-      "startframe": 194
+      "startframe": 196
     }
   },
   "filepath": "resources/skins/smith.png"
