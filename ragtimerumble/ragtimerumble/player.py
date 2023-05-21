@@ -52,7 +52,7 @@ class Player:
         self.character.spritesheet.animation = 'vomit'
         self.character.spritesheet.index = 0
         self.character.buffer_animation = 'coma'
-        name = self.display_name
+        name = self.character.display_name
         messenger = self.scene.messenger
         sentence = choice_death_sentence()
         messenger.add_message(sentence.format(name=name))

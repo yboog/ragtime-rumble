@@ -244,7 +244,7 @@ class ScoreSheetScreen:
                 self.page_cooldown = COUNTDOWNS.MENU_SELECTION_COOLDOWN
                 return
             if commands.get('A'):
-                if self.button_pages == 1:
+                if self.button_pages == 0:
                     self.next_round = True
                     return
                 else:

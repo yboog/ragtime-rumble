@@ -3,6 +3,14 @@
         "french": "Retour au menu",
         "english": "Back to menu"
     },
+    "this_is_a_tie": {
+        "french": "Ėgalité !!",
+        "english": "This is a tie !!"
+    },
+    "next_round": {
+        "french": "Tour suivant",
+        "english": "Next round"
+    },
     "no": {
         "french": "Non",
         "english": "No"

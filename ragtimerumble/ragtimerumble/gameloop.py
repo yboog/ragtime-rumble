@@ -130,7 +130,6 @@ class GameLoop:
         self.done = self.done or quit_event()
         if self.done:
             return
-
         match self.status:
             case LOOP_STATUSES.MENU:
                 next(self.menu)
@@ -173,6 +172,10 @@ class GameLoop:
                     stop_sound(self.scene.ambiance)
                     stop_scene_music()
                     self.status = LOOP_STATUSES.LAST_KILL
+                elif self.scene.this_is_a_tie:
+                    stop_sound(self.scene.ambiance)
+                    stop_scene_music()
+                    self.show_score()
 
             case LOOP_STATUSES.DISPATCHING:
                 next(self.dispatcher)

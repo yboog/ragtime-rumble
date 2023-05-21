@@ -138,6 +138,7 @@ def render_score_screen(screen, scores_screen):
 def render_score_header(screen, scores_screen, winner):
     image = get_round_image(scores_screen.scores['round'])
     screen.blit(get_image(image), (0, 0))
+    winner_title = get_menu_text('this_is_a_tie')
     for player in scores_screen.players:
         # Draw character avatar.
         palette = player.character.palette
@@ -152,12 +153,21 @@ def render_score_header(screen, scores_screen, winner):
             image.fill((60, 60, 60), special_flags=pygame.BLEND_MULT)
             image.set_alpha(150)
             screen.blit(image, position)
+        else:  # Set winner title.
+            winner_title = f'{player.character.display_name} wins !'
         # Draw Player number
         id_ = get_score_player_icon(player.index, player.index == winner)
         image = get_image(id_)
         left = scores_screen.columns[player.index][0]
         top = 121 - image.get_size()[0]
         screen.blit(image, (left, top))
+    font = pygame.font.Font(get_font(MESSAGE_FONT_FILE), 14)
+    draw_text(
+        surface=screen,
+        text=winner_title,
+        pos=(240, 35),
+        color=(255, 126, 0),
+        font=font)
 
 
 def render_total_score_content(screen, scores_screen):

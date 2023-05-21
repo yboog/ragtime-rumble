@@ -208,6 +208,10 @@ class Scene:
         return sum(
             True for p in self.players if (not p.dead and not p.dying)) == 1
 
+    @property
+    def this_is_a_tie(self):
+        return all(p.dead for p in self.players)
+
     def build_character(self, group=None, direction=None, popspot=None):
         if group and popspot:
             position = group['popspots'][popspot]
