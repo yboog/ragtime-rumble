@@ -155,8 +155,20 @@ def choice_kill_sentence():
 
 
 def get_round_image(n):
-    path = f'resources/ui/scores/round-sources/round{n:02d}.png'
+    path = f'resources/ui/round/round/{n:02d}.png'
     return load_image(path)
+
+
+def get_round_total_image(n):
+    return load_image(f'resources/ui/round/total/{n:02d}.png')
+
+
+def get_round_header(n):
+    return load_image('resources/ui/round/round.png')
+
+
+def get_game_over_header():
+    return load_image('resources/ui/round/gameover.png')
 
 
 def load_main_resources():

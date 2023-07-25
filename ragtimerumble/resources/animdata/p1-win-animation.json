@@ -1,0 +1,52 @@
+{
+  "name": "p1",
+  "type": "fx",
+  "framesize": [
+    205,
+    48
+  ],
+  "filepath": "c:\\perso\\ragtime-rumble/ragtimerumble/resources/ui/scores/win-animations/p1.png",
+  "animations": {
+    "loop": {
+      "exposures": [
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        6
+      ],
+      "startframe": 0
+    }
+  }
+}

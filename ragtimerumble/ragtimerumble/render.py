@@ -8,8 +8,9 @@ from ragtimerumble.config import LOOP_STATUSES, DIRECTIONS
 from ragtimerumble.gameloop import column_to_group, get_score_data
 from ragtimerumble.io import (
     get_image, get_font, load_image, get_coin_stack, get_score_player_icon,
-    get_round_image, get_build_name, get_menu_text)
-from ragtimerumble.menu import ControlMenuScreen, HotToPlayScreen
+    get_round_image, get_round_header, get_round_total_image,
+    get_build_name, get_menu_text, get_game_over_header)
+from ragtimerumble.menu import ControlMenuScreen, HowToPlayScreen
 from ragtimerumble.pathfinding import distance, seg_to_vector
 from ragtimerumble.pilot import SmoothPathPilot
 from ragtimerumble.scene import Vfx
@@ -130,14 +131,30 @@ def render_score_screen(screen, scores_screen):
     render_score_header(screen, scores_screen, winner)
     if scores_screen.page == 0:
         render_round_score_content(screen, scores_screen, winner)
+    elif scores_screen.page == 1:
+        render_total_score_content(screen, scores_screen, winner)
     else:
-        render_total_score_content(screen, scores_screen)
+        render_end_game(screen, scores_screen)
     render_buttons(screen, scores_screen.buttons, (4, 335))
 
 
-def render_score_header(screen, scores_screen, winner):
-    image = get_round_image(scores_screen.scores['round'])
+def render_round(screen, round_number):
+    image = get_round_header()
     screen.blit(get_image(image), (0, 0))
+    image = get_round_total_image(preferences.get('rounds'))
+    screen.blit(get_image(image), (0, 0))
+    image = get_round_image(round_number)
+    screen.blit(get_image(image), (0, 0))
+
+
+def render_game_over_header(screen):
+    render_round(screen, preferences.get('rounds'))
+    image = get_game_over_header()
+    screen.blit(get_image(image), (0, 0))
+
+
+def render_score_header(screen, scores_screen, winner):
+    render_round(screen, scores_screen.scores['round'])
     winner_title = get_menu_text('this_is_a_tie')
     for player in scores_screen.players:
         # Draw character avatar.
@@ -154,7 +171,7 @@ def render_score_header(screen, scores_screen, winner):
             image.set_alpha(150)
             screen.blit(image, position)
         else:  # Set winner title.
-            winner_title = f'{player.character.display_name} wins !'
+            winner_title = f'{player.character.display_name} wins!'
         # Draw Player number
         id_ = get_score_player_icon(player.index, player.index == winner)
         image = get_image(id_)
@@ -168,6 +185,10 @@ def render_score_header(screen, scores_screen, winner):
         pos=(240, 35),
         color=(255, 126, 0),
         font=font)
+
+
+def render_end_game(screen, scores_screen, winner):
+    render_game_over_header(screen)
 
 
 def render_total_score_content(screen, scores_screen):
@@ -377,7 +398,7 @@ def render_round_score_content(screen, scores_screen, winner):
 
 SUBSCREEN_RENDERER = {
     ControlMenuScreen: render_controls_screen,
-    HotToPlayScreen: render_how_to_play_screen
+    HowToPlayScreen: render_how_to_play_screen
 }
 
 CELL_WIDTH = 55

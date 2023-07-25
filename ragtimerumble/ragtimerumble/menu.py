@@ -60,7 +60,7 @@ class Menu:
                         self.subscreen = ControlMenuScreen(self.joysticks)
                         return
                     case 5:
-                        self.subscreen = HotToPlayScreen(self.joysticks)
+                        self.subscreen = HowToPlayScreen(self.joysticks)
                         return
                     case 6:
                         self.done = True
@@ -119,7 +119,7 @@ CONTROLLS_IMAGES = {
 }
 
 
-class HotToPlayScreen:
+class HowToPlayScreen:
     def __init__(self, joysticks):
         self.page = 0
         self.done = False
@@ -246,10 +246,9 @@ class ScoreSheetScreen:
             if commands.get('A'):
                 if self.button_pages == 0:
                     self.next_round = True
-                    return
                 else:
                     self.back_to_menu = True
-                    return
+                return
 
 
 class MenuItem:
