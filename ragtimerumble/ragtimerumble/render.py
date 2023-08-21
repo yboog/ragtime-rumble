@@ -5,15 +5,16 @@ from ragtimerumble import debug
 from ragtimerumble import preferences
 from ragtimerumble.character import Character
 from ragtimerumble.config import LOOP_STATUSES, DIRECTIONS
-from ragtimerumble.gameloop import column_to_group, get_score_data
+from ragtimerumble.gameloop import column_to_group
 from ragtimerumble.io import (
     get_image, get_font, load_image, get_coin_stack, get_score_player_icon,
-    get_round_image, get_round_header, get_round_total_image,
+    get_round_image, get_round_total_image, get_scoresheet_text,
     get_build_name, get_menu_text, get_game_over_header)
 from ragtimerumble.menu import ControlMenuScreen, HowToPlayScreen
 from ragtimerumble.pathfinding import distance, seg_to_vector
 from ragtimerumble.pilot import SmoothPathPilot
 from ragtimerumble.scene import Vfx
+from ragtimerumble.scores import get_score_data
 
 
 KILL_MESSAGE_SCREEN_PADDING = 10
@@ -22,6 +23,7 @@ KILL_MESSAGE_MARGIN = 2
 MESSAGE_FONT_SIZE = 8
 MESSAGE_FONT_FILE = 'Pixel-Western.otf'
 TEXT_FONT_FILE = 'Retro-Gaming.ttf'
+LOSER_POSITIONS = [(125, 240), (305, 240), (490, 240)]
 
 
 def render_game(screen, loop):
@@ -32,6 +34,8 @@ def render_game(screen, loop):
         return render_pause_menu(screen, loop.pause_menu)
     if loop.status == LOOP_STATUSES.SCORE:
         return render_score_screen(screen, loop.scores_screen)
+    if loop.status == LOOP_STATUSES.END_GAME:
+        return render_final_score_screen(screen, loop.scores_screen)
     if loop.status == LOOP_STATUSES.LAST_KILL:
         render_last_kill(screen, loop)
         return
@@ -132,14 +136,20 @@ def render_score_screen(screen, scores_screen):
     if scores_screen.page == 0:
         render_round_score_content(screen, scores_screen, winner)
     elif scores_screen.page == 1:
-        render_total_score_content(screen, scores_screen, winner)
-    else:
-        render_end_game(screen, scores_screen)
+        render_total_score_content(screen, scores_screen)
     render_buttons(screen, scores_screen.buttons, (4, 335))
 
 
+def render_final_score_screen(screen, scores_screen):
+    render_black_screen(screen, 180)
+    image = get_image(scores_screen.background)
+    screen.blit(image, (0, 0))
+    render_end_game(screen, scores_screen, scores_screen.winner_index)
+    render_buttons(screen, [scores_screen.button], (4, 335))
+
+
 def render_round(screen, round_number):
-    image = get_round_header()
+    image = load_image('/resources/ui/scores/round.png')
     screen.blit(get_image(image), (0, 0))
     image = get_round_total_image(preferences.get('rounds'))
     screen.blit(get_image(image), (0, 0))
@@ -154,16 +164,13 @@ def render_game_over_header(screen):
 
 
 def render_score_header(screen, scores_screen, winner):
-    render_round(screen, scores_screen.scores['round'])
+    round_number = scores_screen.scores['round']
+    render_round(screen, round_number)
     winner_title = get_menu_text('this_is_a_tie')
     for player in scores_screen.players:
         # Draw character avatar.
-        palette = player.character.palette
-        direction = DIRECTIONS.RIGHT
-        id_ = player.character.spritesheet.image(direction, palette)
-        image = get_image(id_)
         position = scores_screen.characters_coordinates[player.index].position
-        screen.blit(image, position)
+        image = draw_winner_avatar(screen, player, position)
         # Draw character avatar dead filter
         if player.index != winner:
             image = image.copy()
@@ -189,6 +196,47 @@ def render_score_header(screen, scores_screen, winner):
 
 def render_end_game(screen, scores_screen, winner):
     render_game_over_header(screen)
+    font = pygame.font.Font(get_font(TEXT_FONT_FILE), 11)
+    loser_index = 0
+    for player in scores_screen.players:
+        if player.index != winner:
+            score = scores_screen.scores[f'player {player.index + 1}']
+            path = f'resources/ui/scores/p{player.index + 1}-lose.png'
+            image = get_image(load_image(path))
+            pos = LOSER_POSITIONS[loser_index]
+            screen.blit(image, pos)
+            mkey = scores_screen.player_message_keys[player.index]
+            texts = get_scoresheet_text(mkey, score).split('\n')
+            draw_texts(
+                surface=screen,
+                texts=texts,
+                pos=(pos[0] + 16, 280),
+                font=font,
+                size=11,
+                align='center')
+            continue
+        draw_winner_avatar(screen, player, (108, 109))
+        draw_texts(
+            surface=screen,
+            texts=scores_screen.winner_message.split('\n'),
+            pos=(240, 190),
+            font=font,
+            size=11,
+            align='left')
+    image = get_image(scores_screen.winner_animation.image)
+    screen.blit(image, scores_screen.winner_animation.render_position)
+    id_ = load_image('/resources/ui/scores/deadbodys.png')
+    image = get_image(id_)
+    screen.blit(image, (90, 160))
+
+
+def draw_winner_avatar(screen, player, position):
+    palette = player.character.palette
+    direction = DIRECTIONS.RIGHT
+    id_ = player.character.spritesheet.image(direction, palette)
+    image = get_image(id_)
+    screen.blit(image, position)
+    return image
 
 
 def render_total_score_content(screen, scores_screen):
@@ -487,6 +535,22 @@ def render_last_kill(screen, loop):
         draw_text(screen, f'player {player.index + 1}', (x, y), font=font)
 
 
+def draw_texts(
+        surface, texts, pos, size=15, font=None, color=None, align='left',
+        spacing=None):
+    spacing = spacing or (size + (size / 4))
+    for i, text in enumerate(texts):
+        position = pos[0], pos[1] + (spacing * i)
+        draw_text(
+            surface=surface,
+            text=text,
+            pos=position,
+            size=size,
+            font=font,
+            color=color,
+            align=align)
+
+
 def draw_text(
         surface, text, pos, size=15, font=None, color=None, align='left'):
     color = color or (255, 255, 255)
@@ -495,6 +559,8 @@ def draw_text(
     text_rect = text.get_rect(center=pos)
     if align == 'left':
         text_rect.left += text_rect.width / 2
+    elif align == 'center':
+        ...
     else:
         text_rect.right -= text_rect.width / 2
     surface.blit(text, text_rect)

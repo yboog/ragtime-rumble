@@ -24,6 +24,7 @@ class Player:
         self.npc_killed = 0
         self.looted_bodies = 0
         self.dranken_beers = 0
+        self.smoked_cigarets = 0
         self.poker_iterator = PokerIterator(self)
 
     @property
@@ -190,6 +191,7 @@ class Player:
 
         if commands.get('A'):
             self.character.release_duel()
+            self.smoked_cigarets += 1
         next(self.character)
 
     def evaluate_free(self):

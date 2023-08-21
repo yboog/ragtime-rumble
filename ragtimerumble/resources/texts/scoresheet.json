@@ -1,0 +1,58 @@
+{
+    "roundswon": {
+        "french": "{number} partie(s) remportée(s)",
+        "english": "{number} rounds won"
+    },
+    "kills": {
+        "french": "{number} joueur(s) abattu(s)",
+        "english": "{number} player(s) shooted"
+    },
+    "npckills": {
+        "french": "{number} innocent(s) abattu(s)",
+        "english": "{number} innocent(s) shooted"
+    },
+    "money": {
+        "french": "{number}$ en banque",
+        "english": "{number}$ in bank"
+    },
+    "beers": {
+        "french": "a bu {number} bière",
+        "english": "drank {number} beers"
+    },
+    "alcoholic": {
+        "french": "Le plus alcoolique \n({number} bières)",
+        "english": "The most alcoholic\n({number} beers)"
+    },
+    "guilty": {
+        "french": "Le plus coupable \n({number} innocents tués)",
+        "english": "The most alcoholic\n({number} innocents shooted)"
+    },
+    "rich": {
+        "french": "Le plus riche \n({number}$ en banque)",
+        "english": "The richest\n({number}$ in bank)"
+    },
+    "poor": {
+        "french": "Le plus pauvre \n({number}$ en banque)",
+        "english": "The poorest\n({number}$ in bank)"
+    },
+    "smoker": {
+        "french": "La cheminée \n({number} cigarettes)",
+        "english": "The crazy smoker\n({number} cigarets)"
+    },
+    "vulture": {
+        "french": "Le vautour \n({number} corps pillés)",
+        "english": "The vulture\n({number} bodies looted)"
+    },
+    "lucky": {
+        "french": "Tricheur ou chanceux ?\n({number}$ au poker",
+        "english": "Lucky or cheater ?\n({number}$ earned playing poker)"
+    },
+    "loser": {
+        "french": "le poissard\n({number}$ au poker",
+        "english": "The loser\n(lost {number}$ at poker)"
+    },
+    "boring": {
+        "french": "Ce type n'a aucun intérêt !",
+        "english": "this fella's got no \ndang appeal whatsoever!"
+    }
+}

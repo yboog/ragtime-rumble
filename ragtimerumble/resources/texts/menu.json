@@ -82,5 +82,9 @@
     "quit": {
         "french": "Quitter le jeu",
         "english": "Quit"
+    },
+    "final_sheet": {
+        "french": "Afficher le tableau des scores",
+        "english": "Show final score sheet"
     }
 }

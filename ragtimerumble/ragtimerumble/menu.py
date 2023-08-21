@@ -1,6 +1,5 @@
 import random
 from copy import deepcopy
-
 from ragtimerumble import preferences
 from ragtimerumble.config import (
     COUNTDOWNS, DIRECTIONS, AVAILABLE_LANGUAGES, GAMETYPES)
@@ -8,9 +7,10 @@ from ragtimerumble.display import set_screen_display_mode
 from ragtimerumble.coordinates import Coordinates
 from ragtimerumble.io import (
     load_data, load_image, get_menu_text, play_sound, play_dispatcher_music,
-    get_how_to_play_image, get_touch_button_image)
+    get_how_to_play_image, get_touch_button_image, build_winner_message)
 from ragtimerumble.sprite import SpriteSheet
 from ragtimerumble.joystick import get_pressed_direction, get_current_commands
+from ragtimerumble.scores import get_final_winner_index, get_most_sheet
 
 
 class Menu:
@@ -42,7 +42,7 @@ class Menu:
             next(self.subscreen)
             return
 
-        if self.subscreen and self.subscreen.done:
+        if self.subscreen:
             self.subscreen = None
 
         next(self.title)
@@ -168,9 +168,74 @@ class ControlMenuScreen:
                 self.done = True
 
 
+class bidirection_cycle:
+    def __init__(self, iterable):
+        self.index = 0
+        self.iterable = iterable
+
+    def __next__(self):
+        self.index += 1
+        if self.index >= len(self.iterable):
+            self.index = 0
+        return self.iterable[self.index]
+
+    def next(self):
+        return self.__next__()
+
+    def previous(self):
+        self.index -= 1
+        if self.index < 0:
+            self.index = len(self.iterable) - 1
+        return self.iterable[self.index]
+
+
+class FinalScoreScreen:
+    def __init__(self, players, scores, joysticks):
+        self.joysticks = joysticks
+        self.is_done = False
+        self.players = players
+        self.scores = scores
+        self.background = load_image('resources/ui/scores/score_ul.png')
+        self.winner_index = get_final_winner_index(scores)
+        self.winner_animation = Winner(self.winner_index)
+        score = scores[f'player {self.winner_index + 1}']
+        self.winner_message = build_winner_message(score)
+        self.player_message_keys = self.get_select_players_message_keys()
+        self.button = NavigationButton('back_to_menu', 'A')
+        self.cooldown = COUNTDOWNS.MENU_SELECTION_COOLDOWN
+
+    def get_select_players_message_keys(self):
+        most_sheet_keys = get_most_sheet(self.scores)
+        already_assigned = []
+        keys = []
+        for most_keys in most_sheet_keys:
+            most_keys = [k for k in most_keys if k not in already_assigned]
+            if not most_keys:
+                keys.append('boring')
+                continue
+            key = random.choice(most_keys)
+            keys.append(key)
+            already_assigned.append(key)
+        return keys
+
+    def __next__(self):
+        next(self.winner_animation)
+
+        if self.cooldown > 0:
+            self.cooldown -= 1
+            return
+
+        for joystick in self.joysticks:
+            commands = get_current_commands(joystick)
+            if commands.get('A'):
+                self.is_done = True
+
+
 class ScoreSheetScreen:
     def __init__(self, players, winner_index, scores, joysticks):
+        self.is_final = preferences.get('rounds') == scores['round']
         self.page = 0
+        self.page_iterator = bidirection_cycle([0, 1])
         self.button_pages = 0
         self.scores = deepcopy(scores)
         self.joysticks = joysticks
@@ -212,13 +277,16 @@ class ScoreSheetScreen:
             NavigationButton('next_round', 'A'),
             NavigationButton('back_to_menu', 'B'),
             NavigationButton('yes', 'A'),
-            NavigationButton('no', 'B')]
+            NavigationButton('no', 'B'),
+            NavigationButton('final_sheet', 'A')]
 
     @property
     def buttons(self):
-        if self.button_pages == 0:
-            return self._buttons[:2]
-        return self._buttons[2:]
+        if self.is_final:
+            return [self._buttons[4]]
+        return (
+            self._buttons[:2] if self.button_pages == 0
+            else self._buttons[2:4])
 
     def show(self):
         self.page = 0
@@ -237,14 +305,17 @@ class ScoreSheetScreen:
             if lr and not self.page_cooldown:
                 play_sound('resources/sounds/coltclick.wav')
                 self.page_cooldown = COUNTDOWNS.MENU_SELECTION_COOLDOWN
-                self.page = 1 if self.page == 0 else 0
+                if direction == DIRECTIONS.LEFT:
+                    self.page = self.page_iterator.previous()
+                else:
+                    self.page = next(self.page_iterator)
             commands = get_current_commands(joystick)
             if commands.get('B'):
                 self.button_pages = 1 if self.button_pages == 0 else 0
                 self.page_cooldown = COUNTDOWNS.MENU_SELECTION_COOLDOWN
                 return
             if commands.get('A'):
-                if self.button_pages == 0:
+                if self.button_pages == 0 or self.is_final:
                     self.next_round = True
                 else:
                     self.back_to_menu = True
@@ -287,6 +358,28 @@ class EnumItem:
             self.values[self.enum_index]
         except IndexError:
             self.enum_index = 0
+
+
+class Winner:
+    def __init__(self, player_index):
+        filepath = f'resources/animdata/p{player_index + 1}-win-animation.json'
+        data = load_data(filepath)
+        self.spritesheet = SpriteSheet(data, start_animation='loop')
+        self.coordinates = Coordinates((235, 128))
+
+    @property
+    def image(self):
+        return self.spritesheet.image()
+
+    @property
+    def render_position(self):
+        return self.coordinates.position
+
+    def __next__(self):
+        if self.spritesheet.animation_is_done:
+            self.spritesheet.index = 0
+            return
+        return next(self.spritesheet)
 
 
 class Title:

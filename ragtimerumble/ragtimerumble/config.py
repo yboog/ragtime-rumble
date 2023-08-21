@@ -41,6 +41,7 @@ class LOOP_STATUSES:
     BATTLE = 'fight'
     LAST_KILL = 'lastkill'
     SCORE = 'score'
+    END_GAME = 'end_game'
 
 
 class COUNTDOWNS:

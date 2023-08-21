@@ -9,80 +9,12 @@ from ragtimerumble.io import (
 from ragtimerumble.config import (
     LOOP_STATUSES, COUNTDOWNS, DIRECTIONS, DEFAULT_SCENE)
 from ragtimerumble.menu import (
-    Menu, ScoreSheetScreen, PauseMenu, NavigationButton)
+    Menu, ScoreSheetScreen, FinalScoreScreen, PauseMenu, NavigationButton)
 from ragtimerumble.scene import load_scene, populate_scene, depopulate_scene
 from ragtimerumble.player import Player
 from ragtimerumble.npc import Npc
-
-
-VIRGIN_SCORES = {
-    'round': 0,
-    'player 1': {
-        'player 2': [0, 0],
-        'player 3': [0, 0],
-        'player 4': [0, 0],
-        'civilians': 0,
-        'deaths': 0,
-        'victory': 0,
-        'dranked_beers': 0,
-        'money_earned': 0,
-        'poker_balance': 0,
-        'looted_bodies': 0
-    },
-    'player 2': {
-        'player 1': [0, 0],
-        'player 3': [0, 0],
-        'player 4': [0, 0],
-        'civilians': 0,
-        'deaths': 0,
-        'victory': 0,
-        'dranked_beers': 0,
-        'money_earned': 0,
-        'poker_balance': 0,
-        'looted_bodies': 0
-    },
-    'player 3': {
-        'player 1': [0, 0],
-        'player 2': [0, 0],
-        'player 4': [0, 0],
-        'civilians': 0,
-        'deaths': 0,
-        'victory': 0,
-        'dranked_beers': 0,
-        'money_earned': 0,
-        'poker_balance': 0,
-        'looted_bodies': 0
-    },
-    'player 4': {
-        'player 1': [0, 0],
-        'player 2': [0, 0],
-        'player 3': [0, 0],
-        'civilians': 0,
-        'deaths': 0,
-        'victory': 0,
-        'dranked_beers': 0,
-        'money_earned': 0,
-        'poker_balance': 0,
-        'looted_bodies': 0
-    }
-}
-
-
-def get_score_data(scores, row, col):
-    row_keys = list(VIRGIN_SCORES)
-    col_keys = (
-        'player 1',
-        'player 2',
-        'player 3',
-        'player 4',
-        'total',
-        'civilians',
-        'victory')
-    if col_keys[col] == 'total':
-        data = [scores[row_keys[row]].get(col_keys[i]) for i in range(4)]
-        data = [d for d in data if d is not None]
-        return [sum(d[0] for d in data), sum(d[1] for d in data)]
-    return scores[row_keys[row]].get(col_keys[col])
+from ragtimerumble.scores import (
+    VIRGIN_SCORES, get_final_winner_index, get_most)
 
 
 class GameLoop:
@@ -126,83 +58,110 @@ class GameLoop:
         if start_music:
             play_dispatcher_music()
 
+    def evaluate_menu(self):
+        next(self.menu)
+        if self.menu.done is True:
+            self.done = True
+            return
+        if self.menu.start is True:
+            self.joysticks = list_joysticks()
+            self.start_scene(start_music=False)
+        self.clock.tick(60)
+
+    def evaluate_pause(self):
+        if self.pause_menu.done:
+            self.pause_menu = None
+            self.status = LOOP_STATUSES.BATTLE
+            return
+        if self.pause_menu.back_to_menu:
+            self.reset_game()
+            stop_scene_music()
+            stop_ambiance()
+            cld = COUNTDOWNS.MENU_SELECTION_COOLDOWN * 2
+            self.menu.button_countdown = cld
+            return
+        if self.pause_menu.quit_game:
+            self.done = True
+        next(self.pause_menu)
+        self.clock.tick(60)
+        return
+
+    def evaluate_battle(self):
+        for joystick in self.joysticks:
+            command = get_current_commands(joystick)
+            if command.get('start') is True:
+                self.status = LOOP_STATUSES.PAUSE
+                self.pause_menu = PauseMenu(self.joysticks)
+                return
+        next(self.scene)
+        self.clock.tick(60)
+        if self.scene.ultime_showdown:
+            stop_sound(self.scene.ambiance)
+            stop_scene_music()
+            self.status = LOOP_STATUSES.LAST_KILL
+        elif self.scene.this_is_a_tie:
+            stop_sound(self.scene.ambiance)
+            stop_scene_music()
+            self.show_score()
+
+    def evaluate_dispatching(self):
+        next(self.dispatcher)
+        self.clock.tick(60)
+        if self.dispatcher.back_to_menu:
+            self.reset_game()
+            return
+        if self.dispatcher.done:
+            stop_dispatcher_music()
+            self.start_round()
+
+    def evaluate_last_kill(self):
+        self.clock.tick(30)
+        next(self.scene)
+        if self.scene.done:
+            self.show_score()
+
+    def evaluate_score(self):
+        next(self.scores_screen)
+        if self.scores_screen.next_round is True:
+            if self.scores_screen.is_final:
+                return self.show_finale_sheet()
+            self.start_scene()
+            self.clock.tick(60)
+        if self.scores_screen.back_to_menu is True:
+            self.reset_game()
+
+    def evaluate_final_sheet(self):
+        next(self.scores_screen)
+        if self.scores_screen.is_done:
+            self.reset_game()
+        self.clock.tick(60)
+
     def __next__(self):
         self.done = self.done or quit_event()
         if self.done:
             return
         match self.status:
             case LOOP_STATUSES.MENU:
-                next(self.menu)
-                if self.menu.done is True:
-                    self.done = True
-                    return
-                if self.menu.start is True:
-                    self.joysticks = list_joysticks()
-                    self.start_scene(start_music=False)
-                self.clock.tick(60)
-
+                self.evaluate_menu()
             case LOOP_STATUSES.PAUSE:
-                if self.pause_menu.done:
-                    self.pause_menu = None
-                    self.status = LOOP_STATUSES.BATTLE
-                    return
-                if self.pause_menu.back_to_menu:
-                    self.reset_game()
-                    stop_scene_music()
-                    stop_ambiance()
-                    cld = COUNTDOWNS.MENU_SELECTION_COOLDOWN * 2
-                    self.menu.button_countdown = cld
-                    return
-                if self.pause_menu.quit_game:
-                    self.done = True
-                next(self.pause_menu)
-                self.clock.tick(60)
-                return
-
+                self.evaluate_pause()
             case LOOP_STATUSES.BATTLE:
-                for joystick in self.joysticks:
-                    command = get_current_commands(joystick)
-                    if command.get('start') is True:
-                        self.status = LOOP_STATUSES.PAUSE
-                        self.pause_menu = PauseMenu(self.joysticks)
-                        return
-                next(self.scene)
-                self.clock.tick(60)
-                if self.scene.ultime_showdown:
-                    stop_sound(self.scene.ambiance)
-                    stop_scene_music()
-                    self.status = LOOP_STATUSES.LAST_KILL
-                elif self.scene.this_is_a_tie:
-                    stop_sound(self.scene.ambiance)
-                    stop_scene_music()
-                    self.show_score()
-
+                self.evaluate_battle()
             case LOOP_STATUSES.DISPATCHING:
-                next(self.dispatcher)
-                self.clock.tick(60)
-                if self.dispatcher.back_to_menu:
-                    self.reset_game()
-                    return
-                if self.dispatcher.done:
-                    stop_dispatcher_music()
-                    self.start_round()
-
+                self.evaluate_dispatching()
             case LOOP_STATUSES.LAST_KILL:
-                self.clock.tick(30)
-                next(self.scene)
-                if self.scene.done:
-                    self.show_score()
-
+                self.evaluate_last_kill()
             case LOOP_STATUSES.SCORE:
-                next(self.scores_screen)
-                if self.scores_screen.next_round is True:
-                    self.start_scene()
-                    self.clock.tick(60)
-                if self.scores_screen.back_to_menu is True:
-                    self.reset_game()
+                self.evaluate_score()
+            case LOOP_STATUSES.END_GAME:
+                self.evaluate_final_sheet()
+
+    def show_finale_sheet(self):
+        self.status = LOOP_STATUSES.END_GAME
+        self.scores_screen = FinalScoreScreen(
+            self.scene.players, self.scores, self.joysticks)
 
     def show_score(self):
-        self.status = LOOP_STATUSES.SCORE
         winner = next((p.index for p in self.scene.players if not p.dead), -1)
 
         for player in self.scene.players:
@@ -226,6 +185,7 @@ class GameLoop:
                 (player.npc_killed * 2))
             self.scores[player_key]['money_earned'] += bank
             self.scores[player_key]['looted_bodies'] += player.looted_bodies
+            self.scores[player_key]['cigarets'] += player.smoked_cigarets
 
         self.scores_screen = ScoreSheetScreen(
             self.scene.players, winner, self.scores, self.joysticks)
@@ -233,6 +193,7 @@ class GameLoop:
             coord = self.scores_screen.characters_coordinates[player.index]
             player.character.coordinates = coord
         depopulate_scene(self.scene, clear_players=False)
+        self.status = LOOP_STATUSES.SCORE
 
     def start_round(self):
         while len(self.scene.characters) < self.scene.character_number:

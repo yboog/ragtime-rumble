@@ -20,7 +20,7 @@ _sounds = {}
 _dispatcher_music = None
 _scene_music = None
 _menu_texts = {}
-_buttons_texts = {}
+_scoresheet_texts = {}
 
 
 def play_coin_sound():
@@ -128,6 +128,32 @@ def get_menu_text(key):
     return _menu_texts[key][language]
 
 
+SCORE_KEYS = {
+    "alcoholic": "dranked_beers",
+    "guilty": "civilians",
+    "rich": "money_earned",
+    "poor": "money_earned",
+    "smoker": "cigarets",
+    "vulture": "looted_bodies",
+    "lucky": "poker_balance",
+    "loser": "poker_balance",
+}
+
+
+def get_scoresheet_text(key, score=None):
+    language = preferences.get('language')
+    if not _scoresheet_texts:
+        filepath = f'{GAMEROOT}/resources/texts/scoresheet.json'
+        with open(filepath, 'rb') as f:
+            _scoresheet_texts.update(json.load(f))
+    if key not in _scoresheet_texts:  # Thing does not need to be translated
+        return key
+    text = _scoresheet_texts[key][language]
+    if score is None:
+        return text
+    return text.format(number=score[SCORE_KEYS[key]])
+
+
 def choice_death_sentence():
     if not _death_sentences_generators:
         filepath = f'{GAMEROOT}/resources/texts/darwinaward.json'
@@ -188,9 +214,9 @@ def quit_event():
 
 
 def list_joysticks():
-    pygame.joystick.quit()
-    pygame.joystick.init()
-    pygame.joystick.get_count()
+    # pygame.joystick.quit()
+    # pygame.joystick.init()
+
     joysticks = []
     for i in range(pygame.joystick.get_count()):
         try:
@@ -376,3 +402,14 @@ def image_mirror(id_, horizontal=True, vertical=False):
         mirror = pygame.transform.flip(image, horizontal, vertical)
         _image_store[flip_id] = mirror
     return flip_id
+
+
+def build_winner_message(score):
+    victory = score['victory']
+    roundswon = get_scoresheet_text('roundswon').format(number=victory)
+    n = sum(score.get(f'player {i}', [0, 0])[0] for i in range(1, 5))
+    kills = get_scoresheet_text('kills').format(number=n)
+    npc = get_scoresheet_text('npckills').format(number=score['civilians'])
+    money = get_scoresheet_text('money').format(number=score['money_earned'])
+    beers = get_scoresheet_text('beers').format(number=score['dranked_beers'])
+    return f"""{roundswon} - {kills}\n{npc}\n{money} - {beers}"""
