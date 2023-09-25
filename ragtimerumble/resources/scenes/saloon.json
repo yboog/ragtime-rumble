@@ -4555,7 +4555,8 @@
   "characters": [
     "resources/animdata/smith.json",
     "resources/animdata/kate.json",
-    "resources/animdata/janet.json"
+    "resources/animdata/janet.json",
+    "resources/animdata/jo.json"
   ],
   "overlays": [
     {

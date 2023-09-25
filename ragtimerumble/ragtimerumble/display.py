@@ -23,3 +23,7 @@ def set_screen_display_mode(display_mode):
             _screen = pygame.display.set_mode(RESOLUTION)
     pygame.display.set_caption('Ragtime Rumble')
     pygame.display.set_icon(get_icon())
+
+
+def is_fullscreen():
+    return _screen.get_flags() & pygame.FULLSCREEN

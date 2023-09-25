@@ -11,6 +11,13 @@ from ragtimerumble.io import (
 from ragtimerumble.sprite import SpriteSheet
 from ragtimerumble.joystick import get_pressed_direction, get_current_commands
 from ragtimerumble.scores import get_final_winner_index, get_most_sheet
+from ragtimerumble.display import is_fullscreen
+
+
+def _get_current_screen_menu_value():
+    if is_fullscreen():
+        return 'fullscreen'
+    return 'windowed'
 
 
 class Menu:
@@ -24,10 +31,21 @@ class Menu:
         displays = ('fullscreen', 'wscaled', 'windowed')
         rounds = [f'{i}' for i in range(1, 11)]
         self.items = [
-            EnumItem(0, 'new_game', (361, 185), values=('advanced', 'basic')),
-            EnumItem(1, 'display', (361, 210), values=displays),
-            EnumItem(2, 'language', (361, 225), values=AVAILABLE_LANGUAGES),
-            EnumItem(3, 'rounds', (361, 240), values=rounds),
+            EnumItem(
+                0, 'new_game', (361, 185),
+                values=('advanced', 'basic'),
+                default=preferences.get('gametype')),
+            EnumItem(
+                1, 'display', (361, 210),
+                values=displays,
+                default=_get_current_screen_menu_value()),
+            EnumItem(
+                2, 'language', (361, 225),
+                values=AVAILABLE_LANGUAGES,
+                default=preferences.get('language')),
+            EnumItem(
+                3, 'rounds', (361, 240),
+                values=rounds, default=f'{preferences.get("rounds")}'),
             MenuItem(4, 'controls', (361, 265)),
             MenuItem(5, 'help', (361, 280)),
             MenuItem(6, 'quit', (361, 305))]
@@ -334,12 +352,12 @@ class MenuItem:
 
 
 class EnumItem:
-    def __init__(self, index, label, coordinates, values):
+    def __init__(self, index, label, coordinates, values, default=None):
         self.index = index
         self._label = label
         self.coordinates = Coordinates(coordinates)
         self.values = values
-        self.enum_index = 0
+        self.enum_index = 0 if not default else self.values.index(default)
 
     @property
     def label(self):

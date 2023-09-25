@@ -25,6 +25,9 @@
     ],
     "english": [
         "{name} eats flowers by the root.",
-        "{name} has no more leggs."
+        "{name} has no more legs."
+    ],
+    "dutch": [
+        "{name} JAAA ZEEEKKER !!"
     ]
 }

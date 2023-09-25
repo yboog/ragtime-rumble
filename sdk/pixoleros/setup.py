@@ -74,7 +74,7 @@ setup(
     name="Pixoleros",
     author="Jean-Loup Comby & Lionel Brouyère",
     options={"build_exe": build_exe_options},
-    executables=[Executable('pixoleros/__main__.py')])
+    executables=[Executable('pixoleros/__main__.py', base="Win32GUI")])
 
 
 current = os.path.dirname(__file__)

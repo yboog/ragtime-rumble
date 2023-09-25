@@ -204,6 +204,7 @@ def render_end_game(screen, scores_screen, winner):
             path = f'resources/ui/scores/p{player.index + 1}-lose.png'
             image = get_image(load_image(path))
             pos = LOSER_POSITIONS[loser_index]
+            loser_index += 1
             screen.blit(image, pos)
             mkey = scores_screen.player_message_keys[player.index]
             texts = get_scoresheet_text(mkey, score).split('\n')

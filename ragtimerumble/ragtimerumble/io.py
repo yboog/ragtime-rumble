@@ -149,9 +149,11 @@ def get_scoresheet_text(key, score=None):
     if key not in _scoresheet_texts:  # Thing does not need to be translated
         return key
     text = _scoresheet_texts[key][language]
+    if key == 'boring':
+        return text
     if score is None:
         return text
-    return text.format(number=score[SCORE_KEYS[key]])
+    return text.format(number=score[SCORE_KEYS.get(key)])
 
 
 def choice_death_sentence():
