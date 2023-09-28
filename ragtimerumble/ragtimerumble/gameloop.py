@@ -254,7 +254,8 @@ class PlayerDispatcher:
             commands = get_current_commands(joystick)
 
             if self.leave_overlay:
-                return self.eval_leave_overlay(commands)
+                self.eval_leave_overlay(commands)
+                continue
 
             if commands.get('B'):
                 self.cooldowns[i] = COUNTDOWNS.MENU_SELECTION_COOLDOWN

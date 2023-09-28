@@ -24,8 +24,7 @@ class Npc:
     def __init__(self, character, scene):
         self.character = character
         self.scene = scene
-        self.next_duel_check_countdown = random.randrange(
-            COUNTDOWNS.DUEL_CHECK_MIN, COUNTDOWNS.DUEL_CHECK_MAX)
+        self.next_duel_check_countdown = self.get_next_duel_check_countdown()
         self.coma_count_down = random.randrange(
             COUNTDOWNS.COMA_MIN, COUNTDOWNS.COMA_MAX)
         self.interaction_cooldown = random.randrange(
@@ -44,12 +43,18 @@ class Npc:
         if self.character not in origin:
             return False
         self.character.request_duel()
-        self.next_duel_check_countdown = random.randrange(
-            COUNTDOWNS.DUEL_CHECK_MIN, COUNTDOWNS.DUEL_CHECK_MAX)
+
+        self.next_duel_check_countdown = self.get_next_duel_check_countdown()
         self.release_time = random.randrange(
             COUNTDOWNS.DUEL_RELEASE_TIME_MIN,
             COUNTDOWNS.DUEL_RELEASE_TIME_MAX)
         return True
+
+    def get_next_duel_check_countdown(self):
+        chr_num = self.scene.alive_character_number
+        minimum = COUNTDOWNS.DUEL_RELEASE_TIME_MIN * (chr_num / 10)
+        maximum = COUNTDOWNS.DUEL_RELEASE_TIME_MAX * (chr_num / 2)
+        return random.randrange(int(minimum), int(maximum))
 
     def release_target(self):
         target = self.character.duel_target

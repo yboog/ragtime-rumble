@@ -1,7 +1,7 @@
 {
   "name": "smith",
   "names": [
-    "José Delgado",
+    "Jos\u00e9 Delgado",
     "Pat' la fauche",
     "El Gringo",
     "Paul Regret",
@@ -706,7 +706,6 @@
         6,
         6,
         6,
-        6,
         6
       ],
       "startframe": 71
@@ -747,7 +746,7 @@
         6,
         6
       ],
-      "startframe": 84
+      "startframe": 83
     },
     "smoke": {
       "exposures": [
@@ -776,13 +775,13 @@
         6,
         6
       ],
-      "startframe": 117
+      "startframe": 116
     },
     "suspicious": {
       "exposures": [
         6
       ],
-      "startframe": 141
+      "startframe": 140
     },
     "vomit": {
       "exposures": [
@@ -807,7 +806,7 @@
         6,
         6
       ],
-      "startframe": 142
+      "startframe": 141
     },
     "walk": {
       "exposures": [
@@ -820,7 +819,7 @@
         6,
         6
       ],
-      "startframe": 162
+      "startframe": 161
     },
     "walk-back": {
       "exposures": [
@@ -833,7 +832,7 @@
         6,
         6
       ],
-      "startframe": 170
+      "startframe": 169
     },
     "victory": {
       "exposures": [
@@ -856,13 +855,13 @@
         6,
         6
       ],
-      "startframe": 178
+      "startframe": 177
     },
     "defeat": {
       "exposures": [
         6
       ],
-      "startframe": 196
+      "startframe": 195
     }
   },
   "filepath": "resources/skins/smith.png"

@@ -79,7 +79,7 @@ class Player:
         self.character.kill(target, black_screen, silently)
         player = self.scene.find_player(target)
         if player:
-            player.killer = self.index
+            player.killer = self.index if player != self else None
             player.life = 0
         else:
             self.npc_killed += 1

@@ -530,11 +530,7 @@
         6,
         6,
         6,
-        6,
-        6,
-        6,
-        6,
-        6,
+        10,
         6,
         6,
         6,
@@ -562,7 +558,7 @@
         4,
         4
       ],
-      "startframe": 53
+      "startframe": 49
     },
     "idle": {
       "exposures": [
@@ -583,7 +579,7 @@
         6,
         6
       ],
-      "startframe": 70
+      "startframe": 66
     },
     "order": {
       "exposures": [
@@ -599,13 +595,13 @@
         6,
         6
       ],
-      "startframe": 86
+      "startframe": 82
     },
     "poker": {
       "exposures": [
         6
       ],
-      "startframe": 97
+      "startframe": 93
     },
     "smoke": {
       "exposures": [
@@ -625,13 +621,13 @@
         6,
         8
       ],
-      "startframe": 98
+      "startframe": 94
     },
     "suspicious": {
       "exposures": [
         6
       ],
-      "startframe": 113
+      "startframe": 109
     },
     "vomit": {
       "exposures": [
@@ -654,7 +650,7 @@
         6,
         6
       ],
-      "startframe": 114
+      "startframe": 110
     },
     "walk": {
       "exposures": [
@@ -667,7 +663,7 @@
         6,
         6
       ],
-      "startframe": 132
+      "startframe": 128
     },
     "walk-back": {
       "exposures": [
@@ -680,7 +676,7 @@
         6,
         6
       ],
-      "startframe": 140
+      "startframe": 136
     },
     "victory": {
       "exposures": [
@@ -703,13 +699,13 @@
         6,
         6
       ],
-      "startframe": 148
+      "startframe": 144
     },
     "defeat": {
       "exposures": [
         6
       ],
-      "startframe": 166
+      "startframe": 162
     }
   },
   "filepath": "resources/skins/janet.png"

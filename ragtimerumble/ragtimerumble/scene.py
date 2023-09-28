@@ -371,6 +371,11 @@ class Scene:
         self.killer = origin
 
     @property
+    def alive_character_number(self):
+        return len(
+            [c for c in self.characters if c.status != CHARACTER_STATUSES.OUT])
+
+    @property
     def dying_characters(self):
         return [
             c for c in self.characters if c.spritesheet.animation == 'death']
