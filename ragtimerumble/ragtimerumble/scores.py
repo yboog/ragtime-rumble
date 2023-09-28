@@ -70,16 +70,19 @@ def get_final_winner_index(scores):
     if formated.count(max(formated)) == 1:
         return formated.index(max(formated))
     tie_players = [i for i, s in enumerate(formated) if s == max(formated)]
+    print(tie_players)
     formated = [
         f - s['deaths'] - (s['civilians'] / 10) - (s['dranked_beers'] / 100) -
         (s['looted_bodies'] / 1000) for f, s in zip(formated, scores)]
     only_tie = [formated[p] for p in tie_players]
+    print(tie_players)
     if only_tie.count(max(only_tie)) == 1:
         for i in tie_players:
             if formated[i] == max(only_tie):
                 return i
-    only_tie = [i for i in only_tie if formated[i] == max(only_tie)]
-    return random.choice(only_tie)
+    print(only_tie, formated, tie_players)
+    tie_players = [i for i, s in enumerate(formated) if s == max(formated)]
+    return random.choice(tie_players)
 
 
 def get_most(scores, key):

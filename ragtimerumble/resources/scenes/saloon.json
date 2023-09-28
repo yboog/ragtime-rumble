@@ -2665,8 +2665,8 @@
             290
           ],
           "down": [
-            448,
-            335
+            452,
+            341
           ]
         },
         "assigned": [
@@ -3053,7 +3053,9 @@
   ],
   "interactions": [
     {
-      "gametypes": ["advanced"],
+      "gametypes": [
+        "advanced"
+      ],
       "action": "order",
       "insound": "resources/sounds/hittable.wav",
       "outsound": null,
@@ -3083,7 +3085,9 @@
       "id": "order"
     },
     {
-      "gametypes": ["advanced"],
+      "gametypes": [
+        "advanced"
+      ],
       "action": "bet",
       "direction": "up",
       "busy": false,
@@ -3110,7 +3114,10 @@
     },
     {
       "action": "balcony",
-      "gametypes": ["advanced", "basic"],
+      "gametypes": [
+        "advanced",
+        "basic"
+      ],
       "busy": false,
       "lockable": false,
       "direction": "down",
@@ -3135,7 +3142,10 @@
       "id": "balcony"
     },
     {
-      "gametypes": ["advanced", "basic"],
+      "gametypes": [
+        "advanced",
+        "basic"
+      ],
       "action": "poker",
       "busy": false,
       "lockable": true,
@@ -3162,7 +3172,10 @@
     },
     {
       "action": "poker",
-      "gametypes": ["advanced", "basic"],
+      "gametypes": [
+        "advanced",
+        "basic"
+      ],
       "busy": false,
       "lockable": true,
       "direction": "right",
@@ -3188,7 +3201,10 @@
     },
     {
       "action": "poker",
-      "gametypes": ["advanced", "basic"],
+      "gametypes": [
+        "advanced",
+        "basic"
+      ],
       "insound": null,
       "outsound": null,
       "direction": "left",
@@ -3214,7 +3230,10 @@
     },
     {
       "action": "poker",
-      "gametypes": ["advanced", "basic"],
+      "gametypes": [
+        "advanced",
+        "basic"
+      ],
       "insound": null,
       "outsound": null,
       "busy": false,
@@ -3240,7 +3259,10 @@
     },
     {
       "action": "poker",
-      "gametypes": ["advanced", "basic"],
+      "gametypes": [
+        "advanced",
+        "basic"
+      ],
       "busy": false,
       "lockable": true,
       "insound": null,
@@ -3266,7 +3288,10 @@
     },
     {
       "action": "poker",
-      "gametypes": ["advanced", "basic"],
+      "gametypes": [
+        "advanced",
+        "basic"
+      ],
       "busy": false,
       "insound": null,
       "outsound": null,
@@ -3292,7 +3317,10 @@
     },
     {
       "action": "poker",
-      "gametypes": ["advanced", "basic"],
+      "gametypes": [
+        "advanced",
+        "basic"
+      ],
       "insound": null,
       "outsound": null,
       "busy": false,
@@ -3318,7 +3346,10 @@
     },
     {
       "action": "poker",
-      "gametypes": ["advanced", "basic"],
+      "gametypes": [
+        "advanced",
+        "basic"
+      ],
       "busy": false,
       "insound": null,
       "outsound": null,
@@ -3344,7 +3375,10 @@
     },
     {
       "action": "poker",
-      "gametypes": ["advanced", "basic"],
+      "gametypes": [
+        "advanced",
+        "basic"
+      ],
       "insound": null,
       "outsound": null,
       "busy": false,
@@ -3370,7 +3404,10 @@
     },
     {
       "action": "poker",
-      "gametypes": ["advanced", "basic"],
+      "gametypes": [
+        "advanced",
+        "basic"
+      ],
       "insound": null,
       "outsound": null,
       "busy": false,
@@ -3396,7 +3433,10 @@
     },
     {
       "action": "poker",
-      "gametypes": ["advanced", "basic"],
+      "gametypes": [
+        "advanced",
+        "basic"
+      ],
       "insound": null,
       "outsound": null,
       "busy": false,
@@ -3422,7 +3462,10 @@
     },
     {
       "action": "poker",
-      "gametypes": ["advanced", "basic"],
+      "gametypes": [
+        "advanced",
+        "basic"
+      ],
       "insound": null,
       "outsound": null,
       "busy": false,
@@ -3448,7 +3491,10 @@
     },
     {
       "action": "poker",
-      "gametypes": ["advanced", "basic"],
+      "gametypes": [
+        "advanced",
+        "basic"
+      ],
       "insound": null,
       "outsound": null,
       "busy": false,
@@ -3474,7 +3520,10 @@
     },
     {
       "action": "poker",
-      "gametypes": ["advanced", "basic"],
+      "gametypes": [
+        "advanced",
+        "basic"
+      ],
       "insound": null,
       "outsound": null,
       "busy": false,
@@ -3500,7 +3549,10 @@
     },
     {
       "action": "poker",
-      "gametypes": ["advanced", "basic"],
+      "gametypes": [
+        "advanced",
+        "basic"
+      ],
       "insound": null,
       "outsound": null,
       "busy": false,
@@ -3526,7 +3578,10 @@
     },
     {
       "action": "poker",
-      "gametypes": ["advanced", "basic"],
+      "gametypes": [
+        "advanced",
+        "basic"
+      ],
       "insound": null,
       "outsound": null,
       "busy": false,
@@ -4471,7 +4526,9 @@
   "npcs": [
     {
       "file": "resources/animdata/sniper.json",
-      "gametypes": ["advanced"],
+      "gametypes": [
+        "advanced"
+      ],
       "startposition": [
         212,
         30
@@ -4493,39 +4550,239 @@
     },
     {
       "file": "resources/animdata/diego.json",
-      "gametypes": ["basic", "advanced"],
+      "gametypes": [
+        "basic",
+        "advanced"
+      ],
       "type": "dog",
-      "startposition":[
+      "startposition": [
         40,
         107
       ],
       "direction": "right",
       "path": [
-        [40, 107], [68, 79], [173, 79], [198, 55], [320, 55], [330, 63],
-        [321, 70], [255, 70], [235, 52], [156, 52], [73, 130], [24, 130],
-        [10, 144], [47, 181], [81, 182], [103, 203], [139, 203],
-        [170, 172], [201, 172], [212, 183], [199, 197], [163, 196],
-        [113, 245], [143, 277], [173, 248], [117, 193], [77, 193],
-        [41, 157], [13, 157], [60, 107]]
+        [
+          40,
+          107
+        ],
+        [
+          68,
+          79
+        ],
+        [
+          173,
+          79
+        ],
+        [
+          198,
+          55
+        ],
+        [
+          320,
+          55
+        ],
+        [
+          330,
+          63
+        ],
+        [
+          321,
+          70
+        ],
+        [
+          255,
+          70
+        ],
+        [
+          235,
+          52
+        ],
+        [
+          156,
+          52
+        ],
+        [
+          73,
+          130
+        ],
+        [
+          24,
+          130
+        ],
+        [
+          10,
+          144
+        ],
+        [
+          47,
+          181
+        ],
+        [
+          81,
+          182
+        ],
+        [
+          103,
+          203
+        ],
+        [
+          139,
+          203
+        ],
+        [
+          170,
+          172
+        ],
+        [
+          201,
+          172
+        ],
+        [
+          212,
+          183
+        ],
+        [
+          199,
+          197
+        ],
+        [
+          163,
+          196
+        ],
+        [
+          113,
+          245
+        ],
+        [
+          143,
+          277
+        ],
+        [
+          173,
+          248
+        ],
+        [
+          117,
+          193
+        ],
+        [
+          77,
+          193
+        ],
+        [
+          41,
+          157
+        ],
+        [
+          13,
+          157
+        ],
+        [
+          60,
+          107
+        ]
+      ]
     },
     {
       "file": "resources/animdata/diego.json",
-      "gametypes": ["basic"],
+      "gametypes": [
+        "basic"
+      ],
       "type": "dog",
       "direction": "left",
-      "startposition":[
+      "startposition": [
         377,
         210
       ],
       "path": [
-        [377, 210], [439, 210], [481, 252], [324, 252], [371, 299], [327, 344],
-        [507, 344], [526, 323], [581, 323], [614, 290], [510, 290], [468, 248],
-        [518, 197], [620, 197], [584, 162], [543, 202], [476, 202], [446, 171],
-        [413, 171], [377, 210]]
+        [
+          377,
+          210
+        ],
+        [
+          439,
+          210
+        ],
+        [
+          481,
+          252
+        ],
+        [
+          324,
+          252
+        ],
+        [
+          371,
+          299
+        ],
+        [
+          327,
+          344
+        ],
+        [
+          507,
+          344
+        ],
+        [
+          526,
+          323
+        ],
+        [
+          581,
+          323
+        ],
+        [
+          614,
+          290
+        ],
+        [
+          510,
+          290
+        ],
+        [
+          468,
+          248
+        ],
+        [
+          518,
+          197
+        ],
+        [
+          620,
+          197
+        ],
+        [
+          584,
+          162
+        ],
+        [
+          543,
+          202
+        ],
+        [
+          476,
+          202
+        ],
+        [
+          446,
+          171
+        ],
+        [
+          413,
+          171
+        ],
+        [
+          377,
+          210
+        ]
+      ]
     },
     {
       "file": "resources/animdata/pianist.json",
-      "gametypes": ["basic", "advanced"],
+      "gametypes": [
+        "basic",
+        "advanced"
+      ],
       "startposition": [
         30,
         5
@@ -4534,7 +4791,9 @@
     },
     {
       "file": "resources/animdata/barman.json",
-      "gametypes": ["advanced"],
+      "gametypes": [
+        "advanced"
+      ],
       "startposition": [
         225,
         110
