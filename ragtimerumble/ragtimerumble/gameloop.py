@@ -7,20 +7,22 @@ from ragtimerumble.io import (
     stop_sound, play_sound, get_current_commands, stop_scene_music,
     stop_dispatcher_music, play_scene_music)
 from ragtimerumble.config import (
-    LOOP_STATUSES, COUNTDOWNS, DIRECTIONS, DEFAULT_SCENE)
+    LOOP_STATUSES, COUNTDOWNS, DIRECTIONS)
 from ragtimerumble.menu import (
     Menu, ScoreSheetScreen, FinalScoreScreen, PauseMenu, NavigationButton)
-from ragtimerumble.scene import load_scene, populate_scene, depopulate_scene
+from ragtimerumble.scene import (
+    load_scene, populate_scene, depopulate_scene, scene_iterator)
 from ragtimerumble.player import Player
 from ragtimerumble.npc import Npc
-from ragtimerumble.scores import (
-    VIRGIN_SCORES, get_final_winner_index, get_most)
+from ragtimerumble.scores import VIRGIN_SCORES
 
 
 class GameLoop:
     def __init__(self):
         self.status = LOOP_STATUSES.MENU
         self.scene_path = None
+        self.scenes_iterator = scene_iterator()
+        self.scenes_cache = {}
         self.scene = None
         self.dispatcher = None
         self.done = False
@@ -42,11 +44,11 @@ class GameLoop:
         self.scores_screen = None
         self.menu = Menu(self.joysticks)
         self.menu.button_countdown = COUNTDOWNS.MENU_SELECTION_COOLDOWN * 2
-        self.set_scene(DEFAULT_SCENE)
+        self.set_scene(next(self.scenes_iterator))
 
     def set_scene(self, path):
         self.scene_path = path
-        self.scene = load_scene(path)
+        self.scene = self.scenes_cache.setdefault(path, load_scene(path))
 
     def start_scene(self, start_music=True):
         gametype = preferences.get('gametype')
@@ -125,6 +127,7 @@ class GameLoop:
         if self.scores_screen.next_round is True:
             if self.scores_screen.is_final:
                 return self.show_finale_sheet()
+            self.set_scene(next(self.scenes_iterator))
             self.start_scene()
             self.clock.tick(60)
         if self.scores_screen.back_to_menu is True:

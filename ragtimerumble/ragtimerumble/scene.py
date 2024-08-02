@@ -1,12 +1,15 @@
+import os
 import sys
 import uuid
 import json
 import random
 import itertools
+from random import shuffle
 from copy import deepcopy
 
 from ragtimerumble.background import Prop, Background, Overlay
 from ragtimerumble.character import Character
+from ragtimerumble.config import GAMEROOT
 from ragtimerumble.coordinates import (
     box_hit_box, point_in_rectangle, box_hit_polygon, path_cross_polygon,
     path_cross_rect, Coordinates)
@@ -28,6 +31,14 @@ NPC_TYPES = {
     'sniper': Sniper,
     'dog': Dog
 }
+
+
+def scene_iterator():
+    scene_filepaths = [
+        f'resources/scenes/{f}'
+        for f in os.listdir(f'{GAMEROOT}/resources/scenes')]
+    shuffle(scene_filepaths)
+    return itertools.cycle(scene_filepaths)
 
 
 def load_scene(filename):
@@ -463,7 +474,7 @@ class InteractionZone:
         self.zone = data["zone"]
         self.attraction = data["attraction"]
         self.direction = data["direction"]
-        self.enabled = True
+        self.enable = True
         self.play_once = data["play_once"]
         self.busy = False
         self.destroyable = False

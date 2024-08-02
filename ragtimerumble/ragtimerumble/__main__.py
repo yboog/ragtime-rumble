@@ -2,6 +2,9 @@
 import sys
 import pygame
 
+import os
+sys.path.append(f'{os.path.dirname(__file__)}/..')
+
 from ragtimerumble.io import load_skins, load_main_resources
 from ragtimerumble.config import DISPLAY_MODES, DEFAULT_SCENE
 from ragtimerumble.display import set_screen_display_mode, get_screen
