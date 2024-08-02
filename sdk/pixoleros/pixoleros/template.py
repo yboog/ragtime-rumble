@@ -23,9 +23,12 @@ EMPTY_ANIMDATA = {
         'poker': {'images': [], 'exposures': []},
         'smoke': {'images': [], 'exposures': []},
         'suspicious': {'images': [], 'exposures': []},
+        'startup': {'images': [], 'exposures': []},
+        'sweating': {'images': [], 'exposures': []},
         'vomit': {'images': [], 'exposures': []},
         'victory': {'images': [], 'exposures': []},
         'walk': {'images': [], 'exposures': []},
+        'water': {'images': [], 'exposures': []},
         'walk-back': {'images': [], 'exposures': []},
     }
 }

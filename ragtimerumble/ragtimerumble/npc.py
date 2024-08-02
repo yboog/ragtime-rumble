@@ -461,6 +461,37 @@ class Dog:
         next(self.spritesheet)
 
 
+class Chicken:
+    def __init__(self, file=None, startposition=None, **_):
+        self.data = load_data(file)
+        self.spritesheet = SpriteSheet(self.data, 'idle-a')
+        self.coordinates = Coordinates((startposition))
+
+    def render_position(self):
+        return self.coordinates.position
+
+    @property
+    def switch(self):
+        return self.data['y']
+
+    @property
+    def image(self):
+        return self.spritesheet.image()
+
+    def __next___(self):
+        'abcdefgh'
+
+    def set_idle(self):
+        letters = list('abcdefgh')
+        if self.spritesheet.animation.startswith('idle'):
+            # Avoid looping the same animation
+            letters = [
+                l for l in letters if l != self.spritesheet.animation[-1]]
+        self.spritesheet.animation = f'idle-{random.choice(letters)}'
+        self.spritesheet.index = 0
+
+
+
 class Barman:
 
     def __init__(self, file=None, startposition=None, path=None, **_):

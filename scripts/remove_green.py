@@ -12,6 +12,7 @@ repo_root = os.path.dirname(os.path.dirname(__file__))
 files = (
     f"{repo_root}/ragtimerumble/resources/skins/smith.png",
     f"{repo_root}/ragtimerumble/resources/skins/janet.png",
+    f"{repo_root}/ragtimerumble/resources/skins/paulette.png",
     f"{repo_root}/ragtimerumble/resources/skins/sniper.png",
     f"{repo_root}/ragtimerumble/resources/skins/title.png",
     f"{repo_root}/ragtimerumble/resources/skins/barman.png",

@@ -415,7 +415,7 @@ class InteractionModel(QtCore.QAbstractTableModel):
         return len(self.model.data['interactions'])
 
     def columnCount(self, *_):
-        return 7
+        return 9
 
     def flags(self, index):
         flags = super().flags(index)
@@ -426,13 +426,13 @@ class InteractionModel(QtCore.QAbstractTableModel):
         row, col = index.row(), index.column()
 
         if col == 0:
-            if value not in ['poker', 'piano', 'bet', 'rob', 'balcony']:
+            if value not in ['poker', 'piano', 'bet', 'rob', 'balcony', 'startup']:
                 return False
             self.model.data['interactions'][row]['action'] = value
             self.changed.emit()
             return True
 
-        elif col in (3, 4):
+        elif col in (4, 5):
             try:
                 data = json.loads(value)
                 if not is_zone(data):
@@ -444,7 +444,7 @@ class InteractionModel(QtCore.QAbstractTableModel):
             except TypeError:
                 return False
 
-        elif col == 1:
+        elif col == 2:
             try:
                 data = [v.strip(" ") for v in value.strip('[]').split(',')]
                 data = [
@@ -457,7 +457,7 @@ class InteractionModel(QtCore.QAbstractTableModel):
                 print(e)
                 return False
 
-        elif col == 2:
+        elif col == 3:
             directions = ['left', 'right', 'up', 'down']
             if value not in directions:
                 return False
@@ -465,21 +465,28 @@ class InteractionModel(QtCore.QAbstractTableModel):
             self.changed.emit()
             return True
 
-        elif col == 5:
+        elif col == 6:
             if value.lower() not in ["0", "1", "true", "false"]:
                 return False
             value = value.lower() in ["1", "true"]
             self.model.data['interactions'][row]['busy'] = value
             return True
 
-        elif col == 6:
+        elif col == 7:
             if value.lower() not in ["0", "1", "true", "false"]:
                 return False
             value = value.lower() in ["1", "true"]
             self.model.data['interactions'][row]['lockable'] = value
             return True
 
-        elif col == 7:
+        elif col == 1:
+            if value.lower() not in ["0", "1", "true", "false"]:
+                return False
+            value = value.lower() in ["1", "true"]
+            self.model.data['interactions'][row]['play_once'] = value
+            return True
+
+        elif col == 8:
             existing_ids = [
                 self.model.data['interactions'][r]["id"]
                 for r in range(self.rowCount()) if r != row]
@@ -492,7 +499,7 @@ class InteractionModel(QtCore.QAbstractTableModel):
         if orientation != QtCore.Qt.Horizontal or role != QtCore.Qt.DisplayRole:
             return
         h = [
-            "Action", "Target", "Direction",
+            "Action", "Play Once", "Target", "Direction",
             "Zone", "Attraction", "Busy", "Lockable", "Id"]
         return h[section]
 
@@ -506,7 +513,7 @@ class InteractionModel(QtCore.QAbstractTableModel):
         interaction = self.model.data['interactions'][index.row()]
         col = index.column()
         keys = [
-            "action", "target", "direction", "zone",
+            "action", "play_once", "target", "direction", "zone",
             "attraction", "busy", "lockable", "id"]
         return str(interaction.get(keys[col]))
 
@@ -1230,9 +1237,20 @@ class Editor(QtWidgets.QWidget):
             target = [rect.center().x(), rect.center().y()]
             rect = [rect.left(), rect.top(), rect.width(), rect.height()]
             interaction = {
+                "gametypes": [
+                    "advanced",
+                    "basic"],
                 "action": "poker",
                 "direction": "right",
                 "zone": rect,
+                "insound": None,
+                "outsound": None,
+                "attraction": rect[:],
+                "busy": False,
+                "id": None,
+                "enable": True,
+                "lockable": True,
+                "play_once": False,
                 "target": target}
             self.model.data['interactions'].append(interaction)
             self.interactions_model.layoutChanged.emit()
@@ -1521,6 +1539,7 @@ class Visibilities(QtWidgets.QWidget):
 app = QtWidgets.QApplication([])
 gameroot = 'C:/perso/ragtime-rumble/ragtimerumble'
 scene = 'C:/perso/ragtime-rumble/ragtimerumble/resources/scenes/saloon.json'
+scene = 'C:/perso/ragtime-rumble/ragtimerumble/resources/scenes/street.json'
 editor = Editor(gameroot, scene)
 editor.show()
 app.exec()

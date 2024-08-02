@@ -17,11 +17,12 @@ from ragtimerumble.duel import find_possible_duels
 from ragtimerumble.io import (
     load_image, load_data, image_mirror, choice_display_name,
     choice_kill_sentence, load_frames)
-from ragtimerumble.npc import Npc, Pianist, Barman, Sniper, Dog
+from ragtimerumble.npc import Npc, Pianist, Barman, Sniper, Dog, Chicken
 from ragtimerumble.sprite import SpriteSheet, image_index_from_exposures
 
 
 NPC_TYPES = {
+    'chicken': Chicken,
     'pianist': Pianist,
     'barman': Barman,
     'sniper': Sniper,
@@ -462,6 +463,8 @@ class InteractionZone:
         self.zone = data["zone"]
         self.attraction = data["attraction"]
         self.direction = data["direction"]
+        self.enabled = True
+        self.play_once = data["play_once"]
         self.busy = False
         self.destroyable = False
 

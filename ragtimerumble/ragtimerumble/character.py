@@ -183,6 +183,8 @@ class Character:
         self.spritesheet.animation = 'idle'
         self.spritesheet.index = 0
         if self.interacting_zone:
+            if self.interacting_zone.play_once:
+                self.interacting_zone.enable = False
             if self.interacting_zone.out_sound:
                 play_sound(self.interacting_zone.out_sound)
             self.interacting_zone.busy = False
@@ -299,7 +301,8 @@ class Character:
             return
 
     def request_interaction(self):
-        zones = self.scene.interactive_props + self.scene.interaction_zones
+        zones = [z for z in self.scene.interaction_zones if z.enable]
+        zones += self.scene.interactive_props
         for zone in zones:
             if zone.contains(self.coordinates.position) and not zone.busy:
                 self.go_to(zone.target, zone)

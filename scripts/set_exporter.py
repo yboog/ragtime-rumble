@@ -11,10 +11,10 @@ import json
 
 
 SRGB_PROFILE = "sRGB-elle-V2-srgbtrc.icc"
-ROOT = "C:/perso/drunk-paranoia/drunkparanoia"
-LEVEL_FOLDER = "resources/sets/saloon"
+ROOT = "C:/perso/ragtime-rumble/ragtimerumble"
+LEVEL_FOLDER = "resources/sets/street"
 IMAGES_FOLDER = f"{ROOT}/{LEVEL_FOLDER}"
-LEVEL_FILE = "resources/scenes/saloon.json"
+LEVEL_FILE = "resources/scenes/street.json"
 
 
 def check_name_clash(nodes):
@@ -65,7 +65,7 @@ def node_to_qimage(node, document):
 
 def update_or_layer(filename, data, node):
     bounds = node_bounds(node, document)
-    for element in data['elements']:
+    for element in data['overlays']:
         if element['file'] == filename:
             element["position"] = bounds
             return
@@ -78,7 +78,7 @@ def update_or_layer(filename, data, node):
         "center": [x, y],
         "box": None}
 
-    data['elements'].append(element)
+    data.setdefault('overlays', []).append(element)
     return element
 
 
@@ -94,6 +94,7 @@ check_name_clash(nodes)
 for node in nodes:
     if not node.visible():
         continue
+    print(node)
     filename = node.name() + '.png'
     path = os.path.join(IMAGES_FOLDER, filename)
     image = node_to_qimage(node, document)

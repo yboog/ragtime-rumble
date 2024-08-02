@@ -25,7 +25,7 @@
     },
     "guilty": {
         "french": "Le plus coupable \n({number} innocents tués)",
-        "english": "The most alcoholic\n({number} innocents shooted)"
+        "english": "the murderer\n({number} innocents shooted)"
     },
     "rich": {
         "french": "Le plus riche \n({number}$ en banque)",

@@ -3056,6 +3056,7 @@
       "gametypes": [
         "advanced"
       ],
+      "play_once": false,
       "action": "order",
       "insound": "resources/sounds/hittable.wav",
       "outsound": null,
@@ -3088,6 +3089,7 @@
       "gametypes": [
         "advanced"
       ],
+      "play_once": false,
       "action": "bet",
       "direction": "up",
       "busy": false,
@@ -3118,6 +3120,7 @@
         "advanced",
         "basic"
       ],
+      "play_once": false,
       "busy": false,
       "lockable": false,
       "direction": "down",
@@ -3146,6 +3149,7 @@
         "advanced",
         "basic"
       ],
+      "play_once": false,
       "action": "poker",
       "busy": false,
       "lockable": true,
@@ -3176,6 +3180,7 @@
         "advanced",
         "basic"
       ],
+      "play_once": false,
       "busy": false,
       "lockable": true,
       "direction": "right",
@@ -3205,6 +3210,7 @@
         "advanced",
         "basic"
       ],
+      "play_once": false,
       "insound": null,
       "outsound": null,
       "direction": "left",
@@ -3234,6 +3240,7 @@
         "advanced",
         "basic"
       ],
+      "play_once": false,
       "insound": null,
       "outsound": null,
       "busy": false,
@@ -3263,6 +3270,7 @@
         "advanced",
         "basic"
       ],
+      "play_once": false,
       "busy": false,
       "lockable": true,
       "insound": null,
@@ -3292,6 +3300,7 @@
         "advanced",
         "basic"
       ],
+      "play_once": false,
       "busy": false,
       "insound": null,
       "outsound": null,
@@ -3321,6 +3330,7 @@
         "advanced",
         "basic"
       ],
+      "play_once": false,
       "insound": null,
       "outsound": null,
       "busy": false,
@@ -3350,6 +3360,7 @@
         "advanced",
         "basic"
       ],
+      "play_once": false,
       "busy": false,
       "insound": null,
       "outsound": null,
@@ -3379,6 +3390,7 @@
         "advanced",
         "basic"
       ],
+      "play_once": false,
       "insound": null,
       "outsound": null,
       "busy": false,
@@ -3408,6 +3420,7 @@
         "advanced",
         "basic"
       ],
+      "play_once": false,
       "insound": null,
       "outsound": null,
       "busy": false,
@@ -3437,6 +3450,7 @@
         "advanced",
         "basic"
       ],
+      "play_once": false,
       "insound": null,
       "outsound": null,
       "busy": false,
@@ -3466,6 +3480,7 @@
         "advanced",
         "basic"
       ],
+      "play_once": false,
       "insound": null,
       "outsound": null,
       "busy": false,
@@ -3495,6 +3510,7 @@
         "advanced",
         "basic"
       ],
+      "play_once": false,
       "insound": null,
       "outsound": null,
       "busy": false,
@@ -3524,6 +3540,7 @@
         "advanced",
         "basic"
       ],
+      "play_once": false,
       "insound": null,
       "outsound": null,
       "busy": false,
@@ -3553,6 +3570,7 @@
         "advanced",
         "basic"
       ],
+      "play_once": false,
       "insound": null,
       "outsound": null,
       "busy": false,
@@ -3582,6 +3600,7 @@
         "advanced",
         "basic"
       ],
+      "play_once": false,
       "insound": null,
       "outsound": null,
       "busy": false,
@@ -3758,7 +3777,7 @@
   ],
   "backgrounds": [
     {
-      "file": "resources/sets/background.png",
+      "file": "resources/sets/saloon/background.png",
       "position": [
         0,
         0
@@ -4819,7 +4838,7 @@
   ],
   "overlays": [
     {
-      "file": "resources/sets/downleft.png",
+      "file": "resources/sets/saloon/downleft.png",
       "position": [
         0,
         0
@@ -4827,7 +4846,7 @@
       "y": 500
     },
     {
-      "file": "resources/sets/upstairsrailing.png",
+      "file": "resources/sets/saloon/upstairsrailing.png",
       "position": [
         0,
         0
@@ -4835,7 +4854,7 @@
       "y": 163
     },
     {
-      "file": "resources/sets/downstairrailing.png",
+      "file": "resources/sets/saloon/downstairrailing.png",
       "position": [
         0,
         0
@@ -4843,7 +4862,7 @@
       "y": 0
     },
     {
-      "file": "resources/sets/upstairs.png",
+      "file": "resources/sets/saloon/upstairs.png",
       "position": [
         0,
         0
@@ -4851,7 +4870,7 @@
       "y": 140
     },
     {
-      "file": "resources/sets/verticalrailing.png",
+      "file": "resources/sets/saloon/verticalrailing.png",
       "position": [
         0,
         0

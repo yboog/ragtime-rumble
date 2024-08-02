@@ -1,0 +1,151 @@
+{
+  "name": "paulette",
+  "type": "chicken",
+  "y": -1000,
+  "framesize": [
+    64,
+    64
+  ],
+  "filepath": "resources/skins/paulette.png",
+  "animations": {
+    "idle-a": {
+      "exposures": [
+        6,
+        6
+      ],
+      "startframe": 0
+    },
+    "idle-b": {
+      "exposures": [
+        6,
+        6
+      ],
+      "startframe": 2
+    },
+    "idle-c": {
+      "exposures": [
+        6,
+        6
+      ],
+      "startframe": 4
+    },
+    "idle-d": {
+      "exposures": [
+        6,
+        6
+      ],
+      "startframe": 6
+    },
+    "idle-e": {
+      "exposures": [
+        6,
+        6
+      ],
+      "startframe": 8
+    },
+    "idle-f": {
+      "exposures": [
+        6,
+        6
+      ],
+      "startframe": 10
+    },
+    "idle-g": {
+      "exposures": [
+        6,
+        6
+      ],
+      "startframe": 12
+    },
+    "idle-h": {
+      "exposures": [
+        6,
+        6
+      ],
+      "startframe": 14
+    },
+    "idle-i": {
+      "exposures": [
+        6,
+        6
+      ],
+      "startframe": 16
+    },
+    "runcycle": {
+      "exposures": [
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        6
+      ],
+      "startframe": 18
+    },
+    "runjump": {
+      "exposures": [
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        6
+      ],
+      "startframe": 30
+    },
+    "scratch": {
+      "exposures": [
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        6
+      ],
+      "startframe": 38
+    },
+    "walkcycle": {
+      "exposures": [
+        6,
+        6,
+        6,
+        6,
+        6,
+        6
+      ],
+      "startframe": 68
+    }
+  }
+}
