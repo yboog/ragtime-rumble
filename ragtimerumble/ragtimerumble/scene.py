@@ -36,7 +36,8 @@ NPC_TYPES = {
 def scene_iterator():
     scene_filepaths = [
         f'resources/scenes/{f}'
-        for f in os.listdir(f'{GAMEROOT}/resources/scenes')]
+        for f in os.listdir(f'{GAMEROOT}/resources/scenes')
+        if not f.startswith('_')]
     shuffle(scene_filepaths)
     return itertools.cycle(scene_filepaths)
 

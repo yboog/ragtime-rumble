@@ -658,7 +658,9 @@ def remove_key_color(filename, key_color):
     image = Image.open(filename).convert('RGBA')
     data = np.array(image)
     data[(data == orig_color).all(axis=-1)] = replacement_color
-    return ImageQt.ImageQt(Image.fromarray(data, mode='RGBA'))
+    image = ImageQt.ImageQt(Image.fromarray(data, mode='RGBA'))
+    image.mode = 'RGBA'
+    return ImageQt.toqimage(Image.fromarray(data, mode='RGBA'))
 
 
 class LevelCanvasModel:
@@ -1207,10 +1209,23 @@ class Editor(QtWidgets.QWidget):
         layout.addLayout(hlayout)
         layout.addLayout(right)
 
-    def tab_changed(self, *_):
+    def tab_changed(self, index):
         for table in (self.walls, self.interactions):
             table.horizontalHeader().resizeSections(
                 QtWidgets.QHeaderView.ResizeToContents)
+        text = self.tab.tabBar().tabText(index)
+        self.model.filter = self.visibilities.filter.isChecked()
+        self.model.walls = text == 'Walls'
+        self.model.popspots = text == 'Pop spots'
+        self.model.interactions = text == 'Interactions'
+        self.model.display_props = text == 'Props'
+        self.model.stairs = text == 'Stairs'
+        self.model.targets = text == 'Origin/Targets'
+        self.model.switches = text == 'OL / Switches'
+        self.model.fences = text == 'Fences'
+        self.model.startups = text == 'Startups'
+        self.model.paths = text == 'NPC Paths'
+        self.repaint()
 
     def mode_changed(self, index):
         self.canvas.mode = (
@@ -1538,8 +1553,8 @@ class Visibilities(QtWidgets.QWidget):
 
 app = QtWidgets.QApplication([])
 gameroot = 'C:/perso/ragtime-rumble/ragtimerumble'
-scene = 'C:/perso/ragtime-rumble/ragtimerumble/resources/scenes/saloon.json'
-scene = 'C:/perso/ragtime-rumble/ragtimerumble/resources/scenes/street.json'
+scene = 'C:/perso/ragtime-rumble/ragtimerumble/resources/scenes/_saloon.json'
+# scene = 'C:/perso/ragtime-rumble/ragtimerumble/resources/scenes/street.json'
 editor = Editor(gameroot, scene)
 editor.show()
 app.exec()

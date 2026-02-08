@@ -12,7 +12,6 @@ class Overlay:
         self.image = image
         self.switch = y
         self.render_position = position
-        print(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>", image, position)
         self.coordinates = Coordinates(position)
 
 
