@@ -37,10 +37,21 @@ def paint_canvas_selection(painter, document, viewportmapper, selection):
                 polygon=document.data['walls'][selection.data],
                 viewportmapper=viewportmapper,
                 selected=True)
-        case Selection.NO_GO_ZONES:
+        case Selection.NO_GO_ZONE:
             paint_selected_rect_object(
                 painter=painter,
                 rect=document.data['no_go_zones'][selection.data],
+                viewportmapper=viewportmapper,
+                selected=True)
+        case Selection.INTERACTION:
+            zone = (
+                document.data['interactions'][selection.data]['zone'] or
+                document.data['interactions'][selection.data]['attraction'])
+            if zone is None:
+                return
+            paint_selected_rect_object(
+                painter=painter,
+                rect=zone,
                 viewportmapper=viewportmapper,
                 selected=True)
         case Selection.FENCE:

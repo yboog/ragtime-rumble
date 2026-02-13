@@ -280,7 +280,6 @@ class PropsModel(QtCore.QAbstractTableModel):
 
 
 class OverlaysModel(QtCore.QAbstractTableModel):
-    changed = QtCore.Signal()
 
     def __init__(self, document):
         super().__init__()
@@ -298,27 +297,17 @@ class OverlaysModel(QtCore.QAbstractTableModel):
         return len(self.document.data['overlays'])
 
     def columnCount(self, *_):
-        return 2
+        return 3
 
     def headerData(self, section, orientation, role):
         if role != QtCore.Qt.DisplayRole:
             return
         if orientation != QtCore.Qt.Horizontal:
             return
-        return ('File', 'Switch Y')[section]
+        return ('File', 'Position', 'Switch Y')[section]
 
-    def flags(self, index):
-        flags = super().flags(index)
-        if index.column() == 1:
-            flags |= QtCore.Qt.ItemIsEditable
-        return flags
-
-    def setData(self, index, value, _):
-        if not index.isValid() or not index.column():
-            return False
-        self.document.data['overlays'][index.row()]['y'] = value
-        self.changed.emit()
-        return True
+    def flags(self, _):
+        return QtCore.Qt.ItemIsEnabled | QtCore.Qt.ItemIsSelectable
 
     def data(self, index, role):
         if not index.isValid():
@@ -327,6 +316,8 @@ class OverlaysModel(QtCore.QAbstractTableModel):
             return
         if index.column() == 0:
             return self.document.data['overlays'][index.row()]['file']
+        if index.column() == 1:
+            return str(self.document.data['overlays'][index.row()]['position'])
         return self.document.data['overlays'][index.row()]['y']
 
 

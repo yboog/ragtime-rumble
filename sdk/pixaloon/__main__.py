@@ -3,12 +3,17 @@ from functools import partial
 sys.path.append('c:/perso/ragtime-rumble/sdk/')
 
 from PySide6 import QtWidgets, QtCore, QtGui
+from pixaloon.attributeeditor import AttributeEditor
 from pixaloon.canvas.canvas import LevelCanvas
 from pixaloon.dataeditor import DataEditor
 from pixaloon.document import Document
-from pixaloon.selection import Selection
 from pixaloon.io import get_icon
+from pixaloon.options import OptionsEditor
+from pixaloon.selection import Selection
+from pixaloon.sceneeditor import SceneEditor
+
 from pixaloon.canvas.tools.fence import FenceTool
+from pixaloon.canvas.tools.interaction import InteractionTool
 from pixaloon.canvas.tools.overlays import OverlayTool
 from pixaloon.canvas.tools.popspots import PopSpotTool
 from pixaloon.canvas.tools.wall import WallTool
@@ -32,8 +37,21 @@ class Pixaloon(QtWidgets.QMainWindow):
         self.edit.triggered.connect(partial(self.set_tool_mode, 2))
         self.edit.setCheckable(True)
 
+        self.attributeeditor = AttributeEditor(self.document)
+
         self.dataeditor = DataEditor(self.document)
         self.dataeditor.data_updated.connect(self.canvas.update)
+
+        self.sceneeditor = SceneEditor(self.document)
+        self.sceneeditor.setSizePolicy(
+            QtWidgets.QSizePolicy.Expanding,
+            QtWidgets.QSizePolicy.Fixed)
+
+        self.optioneditor = OptionsEditor(self.document)
+        self.optioneditor.option_set.connect(self.canvas.update)
+        self.optioneditor.setSizePolicy(
+            QtWidgets.QSizePolicy.Expanding,
+            QtWidgets.QSizePolicy.Fixed)
 
         tools = QtGui.QActionGroup(self)
         tools.setExclusive(True)
@@ -44,7 +62,7 @@ class Pixaloon(QtWidgets.QMainWindow):
         self.spot = QtGui.QAction(get_icon('spot.png'), '', self)
         self.spot.setToolTip('Pop spots')
         self.spot.element_type = 'popspots'
-        self.spot.tool = PopSpotTool(self.canvas, self.document)
+        self.spot.tool = PopSpotTool(self.canvas)
         self.spot.setCheckable(True)
         self.spot.setChecked(True)
 
@@ -52,7 +70,7 @@ class Pixaloon(QtWidgets.QMainWindow):
         self.wall.setToolTip('Walls')
         self.wall.element_type = 'walls'
         self.wall.setCheckable(True)
-        self.wall.tool = WallTool(self.canvas, self.document)
+        self.wall.tool = WallTool(self.canvas)
 
         self.stair = QtGui.QAction(get_icon('stair.png'), '', self)
         self.stair.setToolTip('Stairs')
@@ -63,7 +81,7 @@ class Pixaloon(QtWidgets.QMainWindow):
         self.fence.setToolTip('Fences')
         self.fence.element_type = 'fences'
         self.fence.setCheckable(True)
-        self.fence.tool = FenceTool(self.canvas, self.document)
+        self.fence.tool = FenceTool(self.canvas)
 
         self.prop = QtGui.QAction(get_icon('prop.png'), '', self)
         self.prop.setToolTip('Props')
@@ -73,29 +91,28 @@ class Pixaloon(QtWidgets.QMainWindow):
         self.interaction.setToolTip('Interactive zones')
         self.interaction.element_type = 'interactions'
         self.interaction.setCheckable(True)
+        self.interaction.tool = InteractionTool(self.canvas)
 
         self.switch = QtGui.QAction(get_icon('switch.png'), '', self)
         self.switch.setToolTip('Switch over/below')
         self.switch.element_type = 'switchs'
         self.switch.setCheckable(True)
-        self.switch.tool = OverlayTool(self.canvas, self.document)
+        self.switch.tool = OverlayTool(self.canvas)
 
         self.startup = QtGui.QAction(get_icon('startup.png'), '', self)
         self.startup.setToolTip('Spawn spots')
         self.startup.element_type = 'startups'
         self.startup.setCheckable(True)
+
         self.path = QtGui.QAction(get_icon('path.png'), '', self)
         self.path.setToolTip('Path finding')
         self.path.element_type = 'paths'
         self.path.setCheckable(True)
+
         self.target = QtGui.QAction(get_icon('target.png'), '', self)
         self.target.setToolTip('Targets')
         self.target.element_type = 'targets'
         self.target.setCheckable(True)
-        self.veil_alpha = QtWidgets.QSlider(QtCore.Qt.Horizontal)
-        self.veil_alpha.valueChanged.connect(self.set_veil_alpha)
-        self.veil_alpha.setMinimum(0)
-        self.veil_alpha.setMaximum(255)
 
         mode = QtGui.QActionGroup(self)
         mode.setExclusive(True)
@@ -127,12 +144,27 @@ class Pixaloon(QtWidgets.QMainWindow):
         self.modes_toolbar.addAction(self.startup)
         self.modes_toolbar.addAction(self.path)
         self.modes_toolbar.addAction(self.target)
-        self.modes_toolbar.addWidget(self.veil_alpha)
+
+
+        self.option_dock = QtWidgets.QDockWidget()
+        self.option_dock.setWindowTitle('Option')
+        self.option_dock.setWidget(self.optioneditor)
+        self.addDockWidget(QtCore.Qt.RightDockWidgetArea, self.option_dock)
+
+        self.scene_dock = QtWidgets.QDockWidget()
+        self.scene_dock.setWindowTitle('Scene')
+        self.scene_dock.setWidget(self.sceneeditor)
+        self.addDockWidget(QtCore.Qt.RightDockWidgetArea, self.scene_dock)
 
         self.data_dock = QtWidgets.QDockWidget()
-        self.data_dock.setWindowTitle('Data')
+        self.data_dock.setWindowTitle('Data Tables')
         self.data_dock.setWidget(self.dataeditor)
-        self.addDockWidget(QtCore.Qt.RightDockWidgetArea, self.data_dock)
+        self.addDockWidget(QtCore.Qt.LeftDockWidgetArea, self.data_dock)
+
+        self.attributes_dock = QtWidgets.QDockWidget()
+        self.attributes_dock.setWindowTitle('Attributes')
+        self.attributes_dock.setWidget(self.attributeeditor)
+        self.addDockWidget(QtCore.Qt.LeftDockWidgetArea, self.attributes_dock)
 
         self.addToolBar(QtCore.Qt.TopToolBarArea, self.tools_toolbar)
         self.addToolBar(QtCore.Qt.TopToolBarArea, self.modes_toolbar)
@@ -145,11 +177,7 @@ class Pixaloon(QtWidgets.QMainWindow):
         self.canvas.toolmode.mode = mode
 
     def sizeHint(self):
-        return QtCore.QSize(900, 750)
-
-    def set_veil_alpha(self, value):
-        self.document.veil_alpha = value
-        self.canvas.update()
+        return QtCore.QSize(1300, 800)
 
     def mode_changed(self, action):
         self.document.elements_to_render = [action.element_type]
@@ -157,19 +185,17 @@ class Pixaloon(QtWidgets.QMainWindow):
             self.canvas.tool = action.tool
         else:
             from pixaloon.canvas.tools.basetool import NavigationTool
-            self.canvas.tool = NavigationTool(self.canvas, self.document)
+            self.canvas.tool = NavigationTool(self.canvas)
         self.dataeditor.set_element_type(action.element_type)
         self.canvas.repaint()
 
     def set_document(self, document):
         self.document = document
-        self.fence.tool.document = document
-        self.spot.tool.document = document
-        self.switch.tool.document = document
-        self.wall.tool.document = document
         self.canvas.set_document(document)
-        self.veil_alpha.setValue(document.veil_alpha)
         self.dataeditor.set_document(document)
+        self.sceneeditor.set_document(document)
+        self.optioneditor.set_document(document)
+        self.attributeeditor.set_document(document)
 
     def register_actions(self):
         action = QtGui.QAction('Focus', self)
@@ -189,8 +215,10 @@ class Pixaloon(QtWidgets.QMainWindow):
             return
         if self.document.selection.tool == Selection.WALL:
             del self.document.data['walls'][self.document.selection.data]
-        if self.document.selection.tool == Selection.NO_GO_ZONES:
+        if self.document.selection.tool == Selection.NO_GO_ZONE:
             del self.document.data['no_go_zones'][self.document.selection.data]
+        if self.document.selection.tool == Selection.INTERACTION:
+            del self.document.data['interactions'][self.document.selection.data]
         if self.document.selection.tool == Selection.FENCE:
             del self.document.data['fences'][self.document.selection.data]
         if self.document.selection.tool == Selection.OVERLAY:
@@ -206,7 +234,6 @@ class Pixaloon(QtWidgets.QMainWindow):
 
 if __name__ == '__main__':
     app = QtWidgets.QApplication([])
-
     window = Pixaloon()
     document = Document.open(
         r'C:\perso\ragtime-rumble\ragtimerumble\resources\scenes\street.json')

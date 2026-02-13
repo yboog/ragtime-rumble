@@ -1,14 +1,14 @@
 
 from PySide6 import QtCore
 
-
 class Selection(QtCore.QObject):
     changed = QtCore.Signal()
 
-    POPSPOTS = 'popspots'
-    NO_GO_ZONES = 'no_go_zones'
+    POPSPOT = 'popspots'
+    NO_GO_ZONE = 'no_go_zones'
     WALL = 'wall'
     FENCE = 'fences'
+    INTERACTION = 'interaction'
     OVERLAY = 'overlay'
 
     def __init__(self):

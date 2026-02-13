@@ -1,4 +1,4 @@
-from PySide6 import QtCore, QtWidgets
+from PySide6 import QtCore, QtWidgets, QtGui
 from pixaloon.selection import Selection
 from pixaloon.canvas.tools.basetool import NavigationTool
 from pixaloon.toolmode import ToolMode
@@ -6,9 +6,6 @@ from pixaloon.mathutils import start_end_to_rect_data
 
 
 class OverlayTool(NavigationTool):
-    def __init__(self, canvas=None, document=None):
-        super().__init__(canvas, document)
-        self.editing_index = None
 
     def mousePressEvent(self, event):
         if self.toolmode.mode == ToolMode.SELECTION:
@@ -20,34 +17,11 @@ class OverlayTool(NavigationTool):
         qpoint = self.document.viewportmapper.to_units_coords(event.pos())
         qpoint = qpoint.toPoint()
         point = [int(v) for v in qpoint.toTuple()]
-        if self.new_shape_data is None:
-            self.new_shape_data = [point, [point[0] + 1, point[1] + 1]]
-
-    def mouseMoveEvent(self, event):
-        if super().mouseMoveEvent(event):
-            return
-        qpoint = self.document.viewportmapper.to_units_coords(event.pos())
-        qpoint = qpoint.toPoint()
-        point = [int(v) for v in qpoint.toTuple()]
-        if self.toolmode.mode == ToolMode.CREATE and self.new_shape_data:
-            self.new_shape_data[1] = point
-
-    def mouseReleaseEvent(self, event):
-        return_conditions = (
-            self.toolmode.mode != ToolMode.CREATE or
-            not self.new_shape_data)
-        if return_conditions:
-            return
-        rect = start_end_to_rect_data(*self.new_shape_data)
-        self.document.data['fences'].append(rect)
-        self.selection.tool = Selection.FENCE
-        self.selection.data = len(self.document.data['fences']) - 1
-        self.new_shape_data = None
-        self.document.edited.emit()
-        self.selection.changed.emit()
-        return super().mouseReleaseEvent(event)
+        print('TODO')
 
     def mouse_press_selection(self, event):
+        if event.button() != QtCore.Qt.LeftButton:
+            return
         qpoint = self.document.viewportmapper.to_units_coords(event.pos())
         qpoint = qpoint.toPoint()
         for i, overlay in enumerate(self.document.data['overlays']):
@@ -64,11 +38,16 @@ class OverlayTool(NavigationTool):
             self.selection.changed.emit()
 
     def draw(self, painter):
-        match self.toolmode.mode:
-            case ToolMode.EDIT:
-                return
-            case ToolMode.CREATE:
-                self.draw_create(painter)
+        painter.setBrush(QtCore.Qt.transparent)
+        pen = QtGui.QPen(QtCore.Qt.black)
+        pen.setStyle(QtCore.Qt.DashLine)
+        painter.setPen(pen)
+        for i, overlay_data in enumerate(self.document.data['overlays']):
+            image = self.document.overlays[i]
+            size = image.size().toTuple()
+            rect = QtCore.QRectF(*overlay_data['position'], *size)
+            rect = self.viewportmapper.to_viewport_rect(rect)
+            painter.drawRect(rect)
 
     def draw_create(self, painter):
         if self.new_shape_data is None:

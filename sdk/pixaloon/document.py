@@ -16,7 +16,7 @@ class Document(QtCore.QObject):
         self.viewportmapper: ViewportMapper = ViewportMapper()
         self.selection: Selection = Selection()
         self.navigator: Navigator = Navigator()
-        self.elements_to_render = []
+        self.gameroot = gameroot
         self.elements_to_render = [
             'popspots',
             'props',
@@ -27,7 +27,6 @@ class Document(QtCore.QObject):
             'interactions',
             'startups',
             'paths']
-        self.gameroot = gameroot
 
         self.veil_alpha = 100
         self.overlays = []
@@ -36,9 +35,15 @@ class Document(QtCore.QObject):
         self.selected_target = 0
         self.update_qimages()
 
+    def set_gameroot(self, gameroot):
+        self.gameroot = gameroot
+        self.update_qimages()
+
     @staticmethod
-    def open(filepath):
-        gameroot = os.path.dirname(os.path.dirname(os.path.dirname(filepath)))
+    def open(filepath, gameroot=None):
+        gameroot = (
+            gameroot or
+            os.path.dirname(os.path.dirname(os.path.dirname(filepath))))
         with open(filepath, 'r') as f:
             data = json.load(f)
         return Document(gameroot, data)

@@ -52,7 +52,6 @@ class DataEditor(QtWidgets.QWidget):
         selection_mode = QtWidgets.QAbstractItemView.SingleSelection
         selection_behavior = QtWidgets.QAbstractItemView.SelectRows
         self.overlays_model = OverlaysModel(self.document)
-        self.overlays_model.changed.connect(self.data_updated.emit)
         self.overlays = QtWidgets.QTableView()
         self.overlays.setModel(self.overlays_model)
         self.overlays.setSelectionMode(selection_mode)
@@ -127,6 +126,7 @@ class DataEditor(QtWidgets.QWidget):
         self.overlays_model.set_document(document)
         self.fences_model.set_document(document)
         self.props_model.set_document(document)
+        self.interactions_model.set_document(document)
 
     def fence_selected(self):
         row = next((idx.row() for idx in self.fences.selectedIndexes()), None)
@@ -154,7 +154,7 @@ class DataEditor(QtWidgets.QWidget):
             self.document.selection.tool = Selection.WALL
         else:
             self.document.selection.data = row
-            self.document.selection.tool = Selection.NO_GO_ZONES
+            self.document.selection.tool = Selection.NO_GO_ZONE
         self.data_updated.emit()
 
     def clear_selection(self):
@@ -173,21 +173,20 @@ class DataEditor(QtWidgets.QWidget):
 
     def selection_changed(self):
         self.clear_selection()
+        seldata = self.document.selection.data
         match self.document.selection.tool:
             case Selection.WALL:
                 row = len(self.document.data['no_go_zones'])
-                row +=  self.document.selection.data
-                self.walls.selectRow(row)
-            case Selection.NO_GO_ZONES:
-                row = self.document.selection.data
-                self.walls.selectRow(row)
+                self.walls.selectRow(row + seldata)
+            case Selection.NO_GO_ZONE:
+                self.walls.selectRow(seldata)
+            case Selection.INTERACTION:
+                self.interactions.selectRow(seldata)
             case Selection.FENCE:
-                row = self.document.selection.data
-                index = self.fences_model.index(row, 0)
+                index = self.fences_model.index(seldata, 0)
                 self.fences.setCurrentIndex(index)
             case Selection.OVERLAY:
-                row = self.document.selection.data
-                self.overlays.selectRow(row)
+                self.overlays.selectRow(seldata)
 
 
 class Startups(QtWidgets.QWidget):

@@ -4,8 +4,23 @@ from pixaloon.canvas.tools.basetool import NavigationTool
 from pixaloon.toolmode import ToolMode
 from pixaloon.mathutils import distance, start_end_to_rect_data
 
+DEFAULT_INTERACTION = {
+    "gametypes": ["advanced", "basic"],
+    "play_once": False,
+    "action": "poker",
+    "id": "poker-4-up",
+    "busy": False,
+    "lockable": True,
+    "direction": "left",
+    "insound": None,
+    "outsound": None,
+    "zone": [25, 25, 50, 50],
+    "target": [50, 50],
+    "attraction": [0, 0, 75, 75],
+}
 
-class WallTool(NavigationTool):
+
+class InteractionTool(NavigationTool):
     def __init__(self, canvas=None):
         super().__init__(canvas)
         self.editing_index = None
@@ -13,6 +28,8 @@ class WallTool(NavigationTool):
         self.close_new_shape = False
 
     def mousePressEvent(self, event):
+        if event.button() != QtCore.Qt.LeftButton:
+            return
         if self.toolmode.mode == ToolMode.SELECTION:
             return self.mouse_press_selection(event)
         if self.toolmode.mode == ToolMode.CREATE:
@@ -24,17 +41,6 @@ class WallTool(NavigationTool):
         point = [int(v) for v in qpoint.toTuple()]
         if self.new_shape_data is None:
             return self.create_new_shape(point)
-        if self.new_shape_data[0] == 'shape':
-            if not self.close_new_shape:
-                self.new_shape_data[1].append(point)
-                return
-            self.document.data['walls'].append(self.new_shape_data[1])
-            self.document.edited.emit()
-            self.selection.tool = Selection.WALL
-            self.selection.data = len(self.document.data['walls']) - 1
-            self.selection.changed.emit()
-            self.new_shape_data = None
-            return
 
     def mouseMoveEvent(self, event):
         if super().mouseMoveEvent(event):
@@ -43,55 +49,41 @@ class WallTool(NavigationTool):
         qpoint = qpoint.toPoint()
         point = [int(v) for v in qpoint.toTuple()]
         if self.toolmode.mode == ToolMode.CREATE and self.new_shape_data:
-            if self.new_shape_data[0] == 'shape':
-                data = self.new_shape_data[1]
-                if len(data) < 3:
-                    self.close_new_shape = False
-                    return
-                self.close_new_shape = distance(point, data[0]) < 3
-                return True
-            self.new_shape_data[1][1] = point
+            self.new_shape_data[1] = point
 
     def mouseReleaseEvent(self, event):
         return_conditions = (
             self.toolmode.mode != ToolMode.CREATE or
-            not self.new_shape_data or
-            self.new_shape_data[0] != 'rect')
+            not self.new_shape_data)
         if return_conditions:
             return
-        rect = start_end_to_rect_data(*self.new_shape_data[1])
-        self.document.data['no_go_zones'].append(rect)
-        self.selection.tool = Selection.NO_GO_ZONE
-        self.selection.data = len(self.document.data['no_go_zones']) - 1
+        rect = start_end_to_rect_data(*self.new_shape_data)
+        interaction = DEFAULT_INTERACTION.copy()
+        interaction['zone'] = rect
+        interaction['attraction'] = rect
+        x = int(rect[0] + (rect[2] / 2))
+        y = int(rect[1] + (rect[3] / 2))
+        interaction['position'] = x, y
+        self.document.data['interactions'].append(interaction)
+        self.selection.tool = Selection.INTERACTION
+        self.selection.data = len(self.document.data['interactions']) - 1
         self.new_shape_data = None
         self.document.edited.emit()
         self.selection.changed.emit()
         return super().mouseReleaseEvent(event)
 
     def create_new_shape(self, point):
-        if self.document.navigator.shift_pressed:
-            self.new_shape_data = 'shape', [point]
-            return
         tl_bl = [point, [point[0] + 1, point[1] + 1]]
-        self.new_shape_data = 'rect', tl_bl
+        self.new_shape_data = tl_bl
 
     def mouse_press_selection(self, event):
         qpoint = self.document.viewportmapper.to_units_coords(event.pos())
         qpoint = qpoint.toPoint()
         # point = [int(v) for v in qpoint.toTuple()]
-        for i, zone in enumerate(self.document.data['no_go_zones']):
-            rect = QtCore.QRect(*zone)
+        for i, interaction in enumerate(self.document.data['interactions']):
+            rect = QtCore.QRect(*interaction['attraction'])
             if rect.contains(qpoint):
-                self.selection.tool = Selection.NO_GO_ZONE
-                self.selection.data = i
-                self.selection.changed.emit()
-                return
-
-        for i, wall in enumerate(self.document.data['walls']):
-            points = [QtCore.QPointF(*p) for p in wall]
-            polygon = QtGui.QPolygonF(points)
-            if polygon.containsPoint(qpoint, QtCore.Qt.OddEvenFill):
-                self.selection.tool = Selection.WALL
+                self.selection.tool = Selection.INTERACTION
                 self.selection.data = i
                 self.selection.changed.emit()
                 return
@@ -109,18 +101,14 @@ class WallTool(NavigationTool):
     def draw_create(self, painter):
         if self.new_shape_data is None:
             return
-        if self.new_shape_data[0] == 'rect':
-            self.draw_rect(painter)
-        if self.new_shape_data[0] == 'shape':
-            self.draw_shape(painter)
-
-    def draw_rect(self, painter):
-        data = start_end_to_rect_data(*self.new_shape_data[1])
+        data = start_end_to_rect_data(*self.new_shape_data)
         rect = QtCore.QRectF(*data)
         painter.drawRect(self.viewportmapper.to_viewport_rect(rect))
 
     def draw_shape(self, painter):
-        data = self.new_shape_data[1]
+        if not self.new_shape_data:
+            return
+        data = self.new_shape_data
         painter.setPen(QtCore.Qt.yellow)
         painter.setBrush(QtCore.Qt.yellow)
         wh = self.viewportmapper.to_viewport(1)

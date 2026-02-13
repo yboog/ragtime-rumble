@@ -6,8 +6,8 @@ from pixaloon.mathutils import start_end_to_rect_data
 
 
 class FenceTool(NavigationTool):
-    def __init__(self, canvas=None, document=None):
-        super().__init__(canvas, document)
+    def __init__(self, canvas=None):
+        super().__init__(canvas)
         self.editing_index = None
         self.new_shape_data = None
 

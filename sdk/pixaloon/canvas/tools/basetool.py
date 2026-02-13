@@ -9,10 +9,15 @@ class BaseTool:
     children. This is NOT doing anything.
     """
 
-    def __init__(self, canvas=None, document=None):
+    def __init__(self, canvas=None):
         self.canvas = canvas
-        self.document = document
         self.is_dirty = False
+
+    @property
+    def document(self):
+        if not self.canvas:
+            return
+        return self.canvas.document
 
     @property
     def navigator(self):
@@ -31,9 +36,6 @@ class BaseTool:
     @property
     def viewportmapper(self):
         return self.document.viewportmapper
-
-    def set_document(self, document):
-        self.document = document
 
     def keyPressEvent(self, event):
         ...

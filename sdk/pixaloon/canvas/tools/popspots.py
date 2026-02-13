@@ -5,8 +5,8 @@ from pixaloon.mathutils import distance
 
 
 class PopSpotTool(NavigationTool):
-    def __init__(self, canvas=None, document=None):
-        super().__init__(canvas, document)
+    def __init__(self, canvas=None):
+        super().__init__(canvas)
         self.editing_index = None
 
     def mousePressEvent(self, event):

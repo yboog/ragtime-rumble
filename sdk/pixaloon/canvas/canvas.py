@@ -26,7 +26,7 @@ class LevelCanvas(QtWidgets.QWidget):
         super().__init__(parent)
         self.setMouseTracking(True)
         self.toolmode: ToolMode = ToolMode()
-        self.tool = NavigationTool(self, document)
+        self.tool = NavigationTool(self)
         self.document = document
 
     def showEvent(self, event):
@@ -38,7 +38,7 @@ class LevelCanvas(QtWidgets.QWidget):
 
     def set_document(self, document):
         self.document = document
-        self.tool.set_document(document)
+        self.document.edited.connect(self.update)
         self.update()
 
     def focus(self):
