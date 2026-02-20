@@ -118,6 +118,10 @@ class Pixaloon(QtWidgets.QMainWindow):
         self.create_menu()
 
     def create_menu(self):
+        new = QtGui.QAction('New', self)
+        new.triggered.connect(self.create_new)
+        open_ = QtGui.QAction('Open', self)
+        open_.triggered.connect(self.open_document_prompt)
         save = QtGui.QAction('Save', self)
         save.triggered.connect(self.save_current_document)
         save_as = QtGui.QAction('Save as', self)
@@ -126,8 +130,8 @@ class Pixaloon(QtWidgets.QMainWindow):
         exit_action.triggered.connect(self.close)
 
         filemenu = QtWidgets.QMenu('File', self)
-        filemenu.addAction(QtGui.QAction('New', self))
-        filemenu.addAction(QtGui.QAction('Open', self))
+        filemenu.addAction(new)
+        filemenu.addAction(open_)
         filemenu.addAction(save)
         filemenu.addAction(save_as)
         filemenu.addSeparator()
@@ -187,8 +191,21 @@ class Pixaloon(QtWidgets.QMainWindow):
 
     def open_document(self, filepath):
         document = Document.open(filepath)
+        name = os.path.basename(filepath)
+        self.create_sub_window(document, name)
+
+    def open_document_prompt(self):
+        filepaths, _ = QtWidgets.QFileDialog.getOpenFileNames(
+            self, 'Open levels', filter='*.json')
+        if not filepaths:
+            return
+        for filepath in filepaths:
+            self.open_document(filepath)
+        self.update_window_title()
+
+    def create_sub_window(self, document, name):
         canvas = LevelCanvas(document, self)
-        canvas.setWindowTitle(os.path.basename(filepath))
+        canvas.setWindowTitle(name)
         self.mdi.addSubWindow(canvas)
         self.set_document(document)
         self.update_window_title()
@@ -197,7 +214,9 @@ class Pixaloon(QtWidgets.QMainWindow):
         document = self.current_canvas().document
         if not document.filepath:
             return self.save_current_document_as(self)
-        with open(document.filepath, 'r') as f:
+        with open(document.filepath, 'w') as f:
+            import pprint
+            pprint.pprint(document.data)
             json.dump(document.data, f, indent=2)
 
     def save_current_document_as(self):
@@ -207,6 +226,7 @@ class Pixaloon(QtWidgets.QMainWindow):
             return
         self.current_canvas().document.filepath = path
         self.save_current_document()
+        self.update_window_title()
 
     def update_window_title(self):
         fp = self.current_canvas().document.filepath
@@ -215,6 +235,17 @@ class Pixaloon(QtWidgets.QMainWindow):
             return
         self.setWindowTitle(f'{PIXALOON} - {fp}')
 
+    def create_new(self):
+        fp = f'{os.path.dirname(__file__)}/resources/emptylevel.json'
+        with open(fp, 'r') as f:
+            data = json.load(f)
+        r = QtWidgets.QFileDialog.getExistingDirectory(self, 'Select GameRoot')
+        if not r:
+            return
+        document = Document(gameroot=r, data=data)
+        self.create_sub_window(document, 'Untitled')
+
     def current_canvas(self):
         return self.mdi.currentSubWindow().widget()
+
 

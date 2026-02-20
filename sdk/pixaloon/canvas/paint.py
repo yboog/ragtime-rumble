@@ -7,6 +7,10 @@ def paint_canvas_base(painter, document, viewportmapper, rect):
         painter.setPen(QtCore.Qt.NoPen)
         painter.setBrush(QtGui.QColor(25, 25, 25))
         painter.drawRect(rect)
+        painter.setBrush(QtCore.Qt.NoBrush)
+        painter.setPen(QtGui.QPen())
+        rect = viewportmapper.to_viewport_rect(QtCore.QRect(0, 0, 640, 360))
+        painter.drawRect(rect)
         positions = [bg['position'] for bg in document.data['backgrounds']]
         for pos, image in zip(positions, document.backgrounds):
             img_rect = QtCore.QRect(QtCore.QPoint(*pos), image.size())
