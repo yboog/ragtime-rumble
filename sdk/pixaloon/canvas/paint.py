@@ -4,6 +4,9 @@ from pixaloon.selection import Selection
 
 
 def paint_canvas_base(painter, document, viewportmapper, rect):
+        painter.setPen(QtCore.Qt.NoPen)
+        painter.setBrush(QtGui.QColor(25, 25, 25))
+        painter.drawRect(rect)
         positions = [bg['position'] for bg in document.data['backgrounds']]
         for pos, image in zip(positions, document.backgrounds):
             img_rect = QtCore.QRect(QtCore.QPoint(*pos), image.size())
@@ -20,7 +23,7 @@ def paint_canvas_base(painter, document, viewportmapper, rect):
             point = QtCore.QPoint(x, y)
             img_rect = QtCore.QRect(point, image.size())
             img_rect = viewportmapper.to_viewport_rect(img_rect)
-            painter.drawImage(rect, image)
+            painter.drawImage(img_rect, image)
         if document.veil_alpha:
             color = QtGui.QColor(QtCore.Qt.white)
             color.setAlpha(document.veil_alpha)
@@ -29,14 +32,36 @@ def paint_canvas_base(painter, document, viewportmapper, rect):
             painter.drawRect(rect)
 
 
-def paint_canvas_selection(painter, document, viewportmapper, selection):
+def paint_canvas_selection(painter, document, viewportmapper):
+    selection = document.selection
     match selection.tool:
+        case Selection.POPSPOT:
+            painter.setPen(QtCore.Qt.white)
+            painter.setBrush(QtCore.Qt.white)
+            for row in document.selection.data:
+                x, y = document.data['popspots'][row]
+                point = QtCore.QPoint(x, y)
+                point = viewportmapper.to_viewport_coords(point)
+                painter.drawEllipse(point, 4, 4)
+        case Selection.STAIR:
+            paint_selected_rect_object(
+                painter=painter,
+                rect=document.data['stairs'][selection.data]['zone'],
+                viewportmapper=viewportmapper,
+                selected=True)
         case Selection.WALL:
             paint_wall(
                 painter=painter,
                 polygon=document.data['walls'][selection.data],
                 viewportmapper=viewportmapper,
                 selected=True)
+        case Selection.PATH:
+            path = document.data['paths'][selection.data[0]]
+            paint_selected_path(
+                painter=painter,
+                path=path,
+                point_selected_index=selection.data[1],
+                viewportmapper=viewportmapper)
         case Selection.NO_GO_ZONE:
             paint_selected_rect_object(
                 painter=painter,
@@ -60,6 +85,13 @@ def paint_canvas_selection(painter, document, viewportmapper, selection):
                 rect=document.data['fences'][selection.data],
                 viewportmapper=viewportmapper,
                 selected=True)
+        case Selection.TARGET:
+            paint_canvas_target(
+                painter=painter,
+                target=document.data['targets'][selection.data[0]],
+                viewportmapper=viewportmapper,
+                selected=True,
+                selected_destination=selection.data[1])
         case Selection.OVERLAY:
             pos = document.data['overlays'][selection.data]['position']
             image = document.overlays[selection.data]
@@ -81,6 +113,31 @@ def paint_canvas_switchs(painter, document, viewportmapper, left, right):
         line = QtCore.QLineF(p1, p2)
         painter.setPen(QtCore.Qt.white)
         painter.drawLine(line)
+
+
+def paint_scores(painter, document, viewportmapper):
+    position = document.data['score']['ol']['position']
+    image = document.scores['overlay']
+    rect = QtCore.QRect(QtCore.QPoint(*position), image.size())
+    rect = viewportmapper.to_viewport_rect(rect)
+    painter.drawImage(rect, image)
+    for i in range(1, 5):
+        p = f'player{i}'
+        position = document.data['score'][p]['life']['position']
+        image = document.scores[p]['life']
+        rect = QtCore.QRect(QtCore.QPoint(*position), image.size())
+        rect = viewportmapper.to_viewport_rect(rect)
+        painter.drawImage(rect, image)
+        position = document.data['score'][p]['bullet']['position']
+        image = document.scores[p]['bullet']
+        rect = QtCore.QRect(QtCore.QPoint(*position), image.size())
+        rect = viewportmapper.to_viewport_rect(rect)
+        painter.drawImage(rect, image)
+        position = document.data['score'][p]['coins_position']
+        image = document.scores['coin-stack']
+        rect = QtCore.QRect(QtCore.QPoint(*position), image.size())
+        rect = viewportmapper.to_viewport_rect(rect)
+        painter.drawImage(rect, image)
 
 
 def paint_canvas_popspots(painter, document, viewportmapper):
@@ -155,29 +212,41 @@ def paint_canvas_stairs(painter, document, viewportmapper):
         painter.drawLine(line)
 
 
-def paint_canvas_targets(painter, document, viewportmapper):
-    for i, origin_dsts in enumerate(document.data['targets']):
-        # sel = document.selected_target
-        # if sel is not None and i != sel:
-        #     continue
-        color = QtGui.QColor('#FF00FF')
-        painter.setPen(color)
-        color.setAlpha(50)
+def paint_canvas_target(
+        painter,
+        target,
+        viewportmapper,
+        selected=False,
+        selected_destination=False):
+    color = QtGui.QColor('#FF00FF' if not selected else 'cyan')
+    painter.setPen(color)
+    color.setAlpha(25 if not selected else 255)
+    painter.setBrush(color)
+    origin = QtCore.QRect(*target['origin'])
+    origin = viewportmapper.to_viewport_rect(origin)
+    painter.drawRect(origin)
+    lines = []
+    for i, dst in enumerate(target['destinations']):
+        color = (
+            '#FFFF00' if
+            not selected else 'white' if
+            not selected_destination == i else 'red')
+        color = QtGui.QColor(color)
+        pen = QtGui.QPen(color)
+        pen.setWidth(4 if selected_destination == i and selected else 1)
+        painter.setPen(pen)
+        color.setAlpha(25 if not selected else 120)
         painter.setBrush(color)
-        origin = QtCore.QRect(*origin_dsts['origin'])
-        origin = viewportmapper.to_viewport_rect(origin)
-        painter.drawRect(origin)
-        for dst in origin_dsts['destinations']:
-            color = QtGui.QColor('#FFFF00')
-            painter.setPen(color)
-            color.setAlpha(50)
-            painter.setBrush(color)
-            dst = QtCore.QRect(*dst)
-            dst = viewportmapper.to_viewport_rect(dst)
-            painter.drawRect(dst)
-            painter.setPen(QtCore.Qt.white)
-            painter.setBrush(QtCore.Qt.NoBrush)
-            painter.drawLine(origin.center(), dst.center())
+        dst = QtCore.QRect(*dst)
+        dst = viewportmapper.to_viewport_rect(dst)
+        painter.drawRect(dst)
+        lines.append(QtCore.QLineF(origin.center(), dst.center()))
+    pen = QtGui.QPen(QtCore.Qt.white if not selected else QtCore.Qt.black)
+    pen.setWidth(1 if not selected else 3)
+    painter.setPen(pen)
+    painter.setBrush(QtCore.Qt.NoBrush)
+    for line in lines:
+        painter.drawLine(line)
 
 
 def paint_canvas_fences(painter, document, viewportmapper):
@@ -196,12 +265,7 @@ def paint_canvas_interactions(painter, document, viewportmapper):
     color.setAlpha(50)
     painter.setBrush(color)
     align = QtCore.Qt.AlignCenter
-    for i, interaction in enumerate(document.data['interactions']):
-        # selection = document.selected_interaction
-        # if i == selection and selection is not None:
-        #     painter.setPen(QtCore.Qt.white)
-        # else:
-        #     painter.setPen(QtCore.Qt.green)
+    for interaction in document.data['interactions']:
         color.setAlpha(50)
         painter.setBrush(color)
         painter.setBrush(color)
@@ -242,25 +306,27 @@ def paint_canvas_interactions(painter, document, viewportmapper):
 
 def paint_canvas_startups(painter, document, viewportmapper):
     painter.setBrush(QtCore.Qt.green)
-    painter.setPen(QtCore.Qt.blue)
-    for point in document.data['startups']['unassigned']:
+    painter.setPen(QtCore.Qt.black)
+    font = QtGui.QFont()
+    font.setBold(True)
+    font.setFamily('terminal')
+    font.setPointSize(12)
+    painter.setFont(font)
+    last_point = None
+    for i, point in enumerate(document.data['startups']['unassigned']):
         point = viewportmapper.to_viewport_coords(QtCore.QPointF(*point))
         painter.drawEllipse(point, 4, 4)
+        painter.drawText(point + QtCore.QPointF(5, 2), f'{i + 1}')
+        if last_point:
+            painter.drawLine(point, last_point)
+        last_point = point
     for i, group in enumerate(document.data['startups']['groups']):
-        painter.setBrush(QtCore.Qt.green)
-        painter.setPen(QtCore.Qt.blue)
-        for point in group['assigned']:
-            point = viewportmapper.to_viewport_coords(QtCore.QPointF(*point))
-            painter.drawEllipse(point, 4, 4)
+        # startup groups
         directions = 'left', 'up', 'right', 'down'
         points = [
             QtCore.QPointF(*group['popspots'][d]) for d in directions]
         points = [
             viewportmapper.to_viewport_coords(p) for p in points]
-        # if i == document.selected_group:
-        #     color = QtCore.Qt.white
-        # else:
-        #     color = QtCore.Qt.magenta
         color = QtCore.Qt.white
         color = QtGui.QColor(color)
         painter.setPen(color)
@@ -270,12 +336,38 @@ def paint_canvas_startups(painter, document, viewportmapper):
         painter.drawPolygon(polygon)
         painter.setBrush(QtCore.Qt.black)
         painter.setPen(QtCore.Qt.black)
+        center = QtCore.QPointF()
+        for p in points:
+            center += p
+        center /= 4
         for direction in directions:
             point = QtCore.QPoint(*group['popspots'][direction])
             painter.drawText(
                 viewportmapper.to_viewport_coords(point),
                 direction)
 
+        # gamepad placement
+        painter.setBrush(QtCore.Qt.green)
+        painter.setPen(QtCore.Qt.blue)
+        last_point = None
+        closest_point = None
+        for j, point in enumerate(group['assigned']):
+            point = viewportmapper.to_viewport_coords(QtCore.QPointF(*point))
+            painter.drawEllipse(point, 4, 4)
+            painter.drawText(point + QtCore.QPointF(5, 2), f'{j + 1}')
+            if not last_point:
+                p = point + QtCore.QPointF(25, 2)
+                painter.drawText(p, f'Player {i + 1}')
+            else:
+                painter.drawLine(point, last_point)
+            last_point = point
+            if closest_point is None:
+                closest_point = point
+                continue
+            closest_point = (
+                point if QtCore.QLineF(closest_point, center).length() >
+                QtCore.QLineF(point, center).length() else closest_point)
+        painter.drawLine(center, closest_point)
 
 
 def paint_canvas_paths(painter, document, viewportmapper):
@@ -303,3 +395,31 @@ def paint_canvas_paths(painter, document, viewportmapper):
         painter.drawEllipse(points[0], 2, 2)
         painter.setPen(QtCore.Qt.red)
         painter.drawEllipse(points[-1], 1, 1)
+
+
+def paint_selected_path(painter, path, point_selected_index, viewportmapper):
+        pen = QtGui.QPen(QtCore.Qt.white)
+        pen.setWidth(4)
+        pen.setStyle(QtCore.Qt.SolidLine)
+        painter.setPen(pen)
+        points = [
+            viewportmapper.to_viewport_coords(QtCore.QPoint(*p))
+            for p in path['points']]
+
+        start = None
+        for end in points:
+            if start is None:
+                start = end
+                continue
+            painter.drawLine(start, end)
+            start = end
+
+        painter.setPen(QtCore.Qt.green)
+        painter.drawEllipse(points[0], 2, 2)
+        painter.setPen(QtCore.Qt.red)
+        painter.drawEllipse(points[-1], 1, 1)
+
+        if point_selected_index is not None:
+            painter.setPen(QtCore.Qt.NoPen)
+            painter.setBrush(QtCore.Qt.yellow)
+            painter.drawEllipse(points[point_selected_index], 5, 5)

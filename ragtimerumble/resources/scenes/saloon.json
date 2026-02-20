@@ -4838,6 +4838,7 @@
   ],
   "overlays": [
     {
+      "type": "prop",
       "file": "resources/sets/saloon/downleft.png",
       "position": [
         0,
@@ -4846,6 +4847,7 @@
       "y": 500
     },
     {
+      "type": "prop",
       "file": "resources/sets/saloon/upstairsrailing.png",
       "position": [
         0,
@@ -4854,6 +4856,7 @@
       "y": 163
     },
     {
+      "type": "prop",
       "file": "resources/sets/saloon/downstairrailing.png",
       "position": [
         0,
@@ -4862,6 +4865,7 @@
       "y": 0
     },
     {
+      "type": "prop",
       "file": "resources/sets/saloon/upstairs.png",
       "position": [
         0,
@@ -4870,6 +4874,7 @@
       "y": 140
     },
     {
+      "type": "prop",
       "file": "resources/sets/saloon/verticalrailing.png",
       "position": [
         0,

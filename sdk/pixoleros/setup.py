@@ -83,10 +83,14 @@ deployroot = os.path.join(desktop, "pixoleros")
 src = os.path.join(current, "build/exe.win-amd64-3.10")
 
 for folder in qt_folder_excludes:
-    shutil.rmtree(f'{src}/lib/PySide6/{folder}')
+    directory = f'{src}/lib/PySide6/{folder}'
+    if os.path.exists(directory):
+        shutil.rmtree(directory)
 
 for filename in qt_file_excludes:
-    os.remove(f'{src}/lib/PySide6/{filename}')
+    filename = f'{src}/lib/PySide6/{filename}'
+    if os.path.exists(filename):
+        os.remove(filename)
 
 os.makedirs(deployroot)
 file_names = os.listdir(src)

@@ -2,7 +2,8 @@ from PySide6 import QtGui, QtCore
 from pixaloon.selection import Selection
 from pixaloon.canvas.tools.basetool import NavigationTool
 from pixaloon.toolmode import ToolMode
-from pixaloon.mathutils import distance, start_end_to_rect_data
+from pixaloon.mathutils import start_end_to_rect_data
+
 
 DEFAULT_INTERACTION = {
     "gametypes": ["advanced", "basic"],
@@ -69,7 +70,7 @@ class InteractionTool(NavigationTool):
         self.selection.data = len(self.document.data['interactions']) - 1
         self.new_shape_data = None
         self.document.edited.emit()
-        self.selection.changed.emit()
+        self.selection.changed.emit(self)
         return super().mouseReleaseEvent(event)
 
     def create_new_shape(self, point):
@@ -85,11 +86,11 @@ class InteractionTool(NavigationTool):
             if rect.contains(qpoint):
                 self.selection.tool = Selection.INTERACTION
                 self.selection.data = i
-                self.selection.changed.emit()
+                self.selection.changed.emit(self)
                 return
 
             self.selection.clear()
-            self.selection.changed.emit()
+            self.selection.changed.emit(self)
 
     def draw(self, painter):
         match self.toolmode.mode:

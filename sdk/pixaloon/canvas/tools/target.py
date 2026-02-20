@@ -1,11 +1,11 @@
-from PySide6 import QtCore
+from PySide6 import QtGui, QtCore
 from pixaloon.selection import Selection
 from pixaloon.canvas.tools.basetool import NavigationTool
 from pixaloon.toolmode import ToolMode
-from pixaloon.mathutils import start_end_to_rect_data
+from pixaloon.mathutils import distance, start_end_to_rect_data
 
 
-class FenceTool(NavigationTool):
+class TargetTool(NavigationTool):
     def __init__(self, canvas=None):
         super().__init__(canvas)
         self.editing_index = None
@@ -21,8 +21,17 @@ class FenceTool(NavigationTool):
         qpoint = self.document.viewportmapper.to_units_coords(event.pos())
         qpoint = qpoint.toPoint()
         point = [int(v) for v in qpoint.toTuple()]
-        if self.new_shape_data is None:
-            self.new_shape_data = [point, [point[0] + 1, point[1] + 1]]
+        if self.new_shape_data is not None:
+            return
+
+        shape_type = (
+            'destination'
+            if self.document.navigator.shift_pressed and
+            self.document.selection.data else
+            'origin')
+
+        tl_bl = [point, [point[0] + 1, point[1] + 1]]
+        self.new_shape_data = shape_type, tl_bl
 
     def mouseMoveEvent(self, event):
         if super().mouseMoveEvent(event):
@@ -31,7 +40,7 @@ class FenceTool(NavigationTool):
         qpoint = qpoint.toPoint()
         point = [int(v) for v in qpoint.toTuple()]
         if self.toolmode.mode == ToolMode.CREATE and self.new_shape_data:
-            self.new_shape_data[1] = point
+            self.new_shape_data[1][1] = point
 
     def mouseReleaseEvent(self, event):
         return_conditions = (
@@ -39,29 +48,34 @@ class FenceTool(NavigationTool):
             not self.new_shape_data)
         if return_conditions:
             return
-        rect = start_end_to_rect_data(*self.new_shape_data)
-        self.document.data['fences'].append(rect)
-        self.selection.tool = Selection.FENCE
-        self.selection.data = len(self.document.data['fences']) - 1
+        rect = start_end_to_rect_data(*self.new_shape_data[1])
+        if self.new_shape_data[0] == 'origin':
+            data = {'origin': rect, 'weight': 3, 'destinations': []}
+            self.document.data['targets'].append(data)
+            self.selection.tool = Selection.TARGET
+            self.selection.data = len(self.document.data['targets']) - 1, None
+        else:
+            index = self.document.selection.data[0]
+            self.document.data['targets'][index]['destinations'].append(rect)
+            i = len(self.document.data['targets'][index]['destinations']) - 1
+            self.selection.data = index, i
         self.new_shape_data = None
+        self.selection.changed.emit(self)
         self.document.edited.emit()
-        self.selection.changed.emit()
         return super().mouseReleaseEvent(event)
 
     def mouse_press_selection(self, event):
         qpoint = self.document.viewportmapper.to_units_coords(event.pos())
         qpoint = qpoint.toPoint()
-        # point = [int(v) for v in qpoint.toTuple()]
-        for i, zone in enumerate(self.document.data['fences']):
-            rect = QtCore.QRect(*zone)
+        for i, target in enumerate(self.document.data['targets']):
+            rect = QtCore.QRect(*target['origin'])
             if rect.contains(qpoint):
-                self.selection.tool = Selection.FENCE
-                self.selection.data = i
-                self.selection.changed.emit()
+                self.selection.tool = Selection.TARGET
+                self.selection.data = [i, None]
+                self.selection.changed.emit(self)
                 return
-
             self.selection.clear()
-            self.selection.changed.emit()
+            self.selection.changed.emit(self)
 
     def draw(self, painter):
         match self.toolmode.mode:
@@ -73,6 +87,6 @@ class FenceTool(NavigationTool):
     def draw_create(self, painter):
         if self.new_shape_data is None:
             return
-        data = start_end_to_rect_data(*self.new_shape_data)
+        data = start_end_to_rect_data(*self.new_shape_data[1])
         rect = QtCore.QRectF(*data)
         painter.drawRect(self.viewportmapper.to_viewport_rect(rect))

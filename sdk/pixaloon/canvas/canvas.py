@@ -5,7 +5,8 @@ from pixaloon.canvas.paint import (
     paint_canvas_popspots, paint_canvas_base, paint_canvas_fences,
     paint_canvas_interactions, paint_canvas_paths, paint_canvas_props,
     paint_canvas_stairs, paint_canvas_startups, paint_canvas_switchs,
-    paint_canvas_targets, paint_canvas_walls, paint_canvas_selection)
+    paint_scores, paint_canvas_target, paint_canvas_walls,
+    paint_canvas_selection)
 from pixaloon.canvas.tools.basetool import NavigationTool
 from pixaloon.toolmode import ToolMode
 
@@ -27,7 +28,8 @@ class LevelCanvas(QtWidgets.QWidget):
         self.setMouseTracking(True)
         self.toolmode: ToolMode = ToolMode()
         self.tool = NavigationTool(self)
-        self.document = document
+        self.document = None
+        self.set_document(document)
 
     def showEvent(self, event):
         QtCore.QTimer.singleShot(1, self.focus)
@@ -39,6 +41,7 @@ class LevelCanvas(QtWidgets.QWidget):
     def set_document(self, document):
         self.document = document
         self.document.edited.connect(self.update)
+        self.document.selection.changed.connect(lambda _: self.update())
         self.update()
 
     def focus(self):
@@ -127,37 +130,45 @@ class LevelCanvas(QtWidgets.QWidget):
 
         try:
             if 'popspots' in self.document.elements_to_render:
-                paint_canvas_popspots(painter, self.document, self.document.viewportmapper)
-        except BaseException:
-            print('popspots')
+                paint_canvas_popspots(
+                    painter, self.document, self.document.viewportmapper)
+        except BaseException as e:
+            print('popspot', e)
             ...
 
         try:
             if 'props' in self.document.elements_to_render:
-                paint_canvas_props(painter, self.document, self.document.viewportmapper)
+                paint_canvas_props(
+                    painter, self.document, self.document.viewportmapper)
         except BaseException:
             print('props')
             ...
 
         try:
             if 'walls' in self.document.elements_to_render:
-                paint_canvas_walls(painter, self.document, self.document.viewportmapper)
+                paint_canvas_walls(
+                    painter, self.document, self.document.viewportmapper)
         except BaseException as e:
             print('walls', e)
             ...
 
         try:
             if 'stairs' in self.document.elements_to_render:
-                paint_canvas_stairs(painter, self.document, self.document.viewportmapper)
+                paint_canvas_stairs(
+                    painter, self.document, self.document.viewportmapper)
         except BaseException:
             print('stairs')
             ...
 
         try:
             if 'targets' in self.document.elements_to_render:
-                paint_canvas_targets(painter, self.document, self.document.viewportmapper)
-        except BaseException:
-            print('targets')
+                for target in self.document.data['targets']:
+                    paint_canvas_target(
+                        painter=painter,
+                        target=target,
+                        viewportmapper=self.document.viewportmapper)
+        except BaseException as e:
+            print('targets', e)
             ...
 
         try:
@@ -177,22 +188,24 @@ class LevelCanvas(QtWidgets.QWidget):
 
         try:
             if 'startups' in self.document.elements_to_render:
-                paint_canvas_startups(painter, self.document, self.document.viewportmapper)
+                paint_canvas_startups(
+                    painter, self.document, self.document.viewportmapper)
         except BaseException as e:
             print('startups', str(e))
             ...
 
         try:
             if 'paths' in self.document.elements_to_render:
-                paint_canvas_paths(painter, self.document, self.document.viewportmapper)
+                paint_canvas_paths(
+                    painter, self.document, self.document.viewportmapper)
         except BaseException:
             print('paths')
             ...
+        paint_scores(painter, self.document, self.document.viewportmapper)
         paint_canvas_selection(
             painter,
             self.document,
-            self.document.viewportmapper,
-            self.tool.selection)
+            self.document.viewportmapper)
         self.tool.draw(painter)
         painter.end()
 

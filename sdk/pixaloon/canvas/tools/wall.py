@@ -32,7 +32,7 @@ class WallTool(NavigationTool):
             self.document.edited.emit()
             self.selection.tool = Selection.WALL
             self.selection.data = len(self.document.data['walls']) - 1
-            self.selection.changed.emit()
+            self.selection.changed.emit(self)
             self.new_shape_data = None
             return
 
@@ -65,7 +65,7 @@ class WallTool(NavigationTool):
         self.selection.data = len(self.document.data['no_go_zones']) - 1
         self.new_shape_data = None
         self.document.edited.emit()
-        self.selection.changed.emit()
+        self.selection.changed.emit(self)
         return super().mouseReleaseEvent(event)
 
     def create_new_shape(self, point):
@@ -84,7 +84,7 @@ class WallTool(NavigationTool):
             if rect.contains(qpoint):
                 self.selection.tool = Selection.NO_GO_ZONE
                 self.selection.data = i
-                self.selection.changed.emit()
+                self.selection.changed.emit(self)
                 return
 
         for i, wall in enumerate(self.document.data['walls']):
@@ -93,11 +93,11 @@ class WallTool(NavigationTool):
             if polygon.containsPoint(qpoint, QtCore.Qt.OddEvenFill):
                 self.selection.tool = Selection.WALL
                 self.selection.data = i
-                self.selection.changed.emit()
+                self.selection.changed.emit(self)
                 return
 
             self.selection.clear()
-            self.selection.changed.emit()
+            self.selection.changed.emit(self)
 
     def draw(self, painter):
         match self.toolmode.mode:

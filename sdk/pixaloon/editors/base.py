@@ -36,7 +36,7 @@ class BaseEditor(QtWidgets.QWidget):
 
     def selection_changed(self):
         """To implement in subclasses"""
-        pass
+        raise NotImplementedError()
 
     def values_changed(self):
         if not self.document:

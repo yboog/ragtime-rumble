@@ -31,11 +31,11 @@ class OverlayTool(NavigationTool):
             if rect.contains(qpoint):
                 self.selection.tool = Selection.OVERLAY
                 self.selection.data = i
-                self.selection.changed.emit()
+                self.selection.changed.emit(self)
                 return
 
             self.selection.clear()
-            self.selection.changed.emit()
+            self.selection.changed.emit(self)
 
     def draw(self, painter):
         painter.setBrush(QtCore.Qt.transparent)

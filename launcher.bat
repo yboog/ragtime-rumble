@@ -1,1 +1,1 @@
-py %~dp0/launcher.py
+py -3.10 %~dp0/launcher.py

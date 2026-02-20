@@ -6,9 +6,9 @@ from PySide6 import QtWidgets, QtCore
 class OptionsEditor(QtWidgets.QWidget):
     option_set = QtCore.Signal()
 
-    def __init__(self, document, parent=None):
+    def __init__(self, parent=None):
         super().__init__(parent)
-        self.document = document
+        self.document = None
         self.veil_alpha = QtWidgets.QSlider(QtCore.Qt.Horizontal)
         self.veil_alpha.valueChanged.connect(self.set_veil_alpha)
         self.veil_alpha.setMinimum(0)

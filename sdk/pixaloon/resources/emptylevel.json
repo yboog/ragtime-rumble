@@ -1,0 +1,1544 @@
+{
+    "character_number": 35,
+    "name": "No name",
+    "musics": [
+        "resources/sounds/ragtime_1_MA_BrunoFreitas_OldWestSaloon_HonkyTonk.ogg",
+    ],
+    "ambiance": "resources/sounds/ambiance_saloon.ogg",
+    "paths": [],
+    "startups": {
+        "unassigned": [
+            [
+                320,
+                50
+            ],
+            [
+                320,
+                80
+            ],
+            [
+                320,
+                110
+            ],
+            [
+                320,
+                140
+            ]
+        ],
+        "groups": [
+            {
+                "popspots": {
+                    "left": [
+                        21,
+                        210
+                    ],
+                    "right": [
+                        101,
+                        210
+                    ],
+                    "up": [
+                        62,
+                        185
+                    ],
+                    "down": [
+                        62,
+                        230
+                    ]
+                },
+                "assigned": [
+                    [
+                        62,
+                        125
+                    ],
+                    [
+                        62,
+                        105
+                    ],
+                    [
+                        62,
+                        85
+                    ],
+                    [
+                        62,
+                        65
+                    ]
+                ],
+                "interactions": {
+                    "left": null,
+                    "right": null,
+                    "up":  null,
+                    "down": null
+                }
+            },
+            {
+                "popspots": {
+                    "left": [
+                        140,
+                        280
+                    ],
+                    "right": [
+                        221,
+                        280
+                    ],
+                    "up": [
+                        181,
+                        255
+                    ],
+                    "down": [
+                        181,
+                        300
+                    ]
+                },
+                "assigned": [
+                    [
+                        181,
+                        190
+                    ],
+                    [
+                        181,
+                        170
+                    ],
+                    [
+                        181,
+                        150
+                    ],
+                    [
+                        181,
+                        130
+                    ]
+                ],
+                "interactions": {
+                    "left": null,
+                    "right": null,
+                    "up": null,
+                    "down": null
+                }
+            },
+            {
+                "popspots": {
+                    "left": [
+                        425,
+                        255
+                    ],
+                    "right": [
+                        515,
+                        255
+                    ],
+                    "up": [
+                        472,
+                        215
+                    ],
+                    "down": [
+                        472,
+                        290
+                    ]
+                },
+                "assigned": [
+                    [
+                        472,
+                        170
+                    ],
+                    [
+                        472,
+                        150
+                    ],
+                    [
+                        472,
+                        130
+                    ],
+                    [
+                        472,
+                        110
+                    ]
+                ],
+                "interactions": {
+                    "left": null,
+                    "right": null,
+                    "up": null,
+                    "down": null
+                }
+            },
+            {
+                "popspots": {
+                    "left": [
+                        512,
+                        120
+                    ],
+                    "right": [
+                        590,
+                        120
+                    ],
+                    "up": [
+                        551,
+                        95
+                    ],
+                    "down": [
+                        551,
+                        147
+                    ]
+                },
+                "assigned": [
+                    [
+                        551,
+                        245
+                    ],
+                    [
+                        551,
+                        225
+                    ],
+                    [
+                        551,
+                        205
+                    ],
+                    [
+                        551,
+                        185
+                    ]
+                ],
+                "interactions": {
+                    "left": null,
+                    "right": null,
+                    "up": null,
+                    "down": null
+                }
+            }
+        ]
+    },
+    "score": {
+        "ol": {
+            "file": "resources/sets/street/OL-score.png",
+            "position": [
+                0,
+                310
+            ]
+        },
+        "player1": {
+            "life": {
+                "position": [
+                    -3,
+                    325
+                ],
+                "file4": "/resources/ui/saloon/player-1/player-1-00.png",
+                "file3": "/resources/ui/saloon/player-1/player-1-01.png",
+                "file2": "/resources/ui/saloon/player-1/player-1-02.png",
+                "file1": "/resources/ui/saloon/player-1/player-1-03.png"
+            },
+            "coins_position": [
+                13,
+                338
+            ],
+            "bullet": {
+                "position": [
+                    13,
+                    325
+                ],
+                "on": "/resources/ui/saloon/bullet.png",
+                "off": "/resources/ui/saloon/bullet_off.png"
+            }
+        },
+        "player2": {
+            "life": {
+                "position": [
+                    41,
+                    325
+                ],
+                "file4": "/resources/ui/saloon/player-2/player-2-00.png",
+                "file3": "/resources/ui/saloon/player-2/player-2-01.png",
+                "file2": "/resources/ui/saloon/player-2/player-2-02.png",
+                "file1": "/resources/ui/saloon/player-2/player-2-03.png"
+            },
+            "coins_position": [
+                51,
+                338
+            ],
+            "bullet": {
+                "position": [
+                    51,
+                    325
+                ],
+                "on": "/resources/ui/saloon/bullet.png",
+                "off": "/resources/ui/saloon/bullet_off.png"
+            }
+        },
+        "player3": {
+            "life": {
+                "position": [
+                    95,
+                    325
+                ],
+                "file4": "/resources/ui/saloon/player-3/player-3-00.png",
+                "file3": "/resources/ui/saloon/player-3/player-3-01.png",
+                "file2": "/resources/ui/saloon/player-3/player-3-02.png",
+                "file1": "/resources/ui/saloon/player-3/player-3-03.png"
+            },
+            "coins_position": [
+                97,
+                338
+            ],
+            "bullet": {
+                "position": [
+                    97,
+                    325
+                ],
+                "on": "/resources/ui/saloon/bullet.png",
+                "off": "/resources/ui/saloon/bullet_off.png"
+            }
+        },
+        "player4": {
+            "life": {
+                "position": [
+                    141,
+                    325
+                ],
+                "file4": "/resources/ui/saloon/player-4/player-4-00.png",
+                "file3": "/resources/ui/saloon/player-4/player-4-01.png",
+                "file2": "/resources/ui/saloon/player-4/player-4-02.png",
+                "file1": "/resources/ui/saloon/player-4/player-4-03.png"
+            },
+            "coins_position": [
+                143,
+                338
+            ],
+            "bullet": {
+                "position": [
+                    143,
+                    325
+                ],
+                "on": "/resources/ui/saloon/bullet.png",
+                "off": "/resources/ui/saloon/bullet_off.png"
+            }
+        }
+    },
+    "fences": [
+        [
+            180,
+            114,
+            141,
+            17
+        ],
+        [
+            144,
+            69,
+            121,
+            19
+        ],
+        [
+            270,
+            26,
+            49,
+            57
+        ]
+    ],
+    "no_go_zones": [
+        [
+            0,
+            336,
+            195,
+            25
+        ],
+        [
+            177,
+            128,
+            155,
+            31
+        ],
+        [
+            1,
+            129,
+            55,
+            29
+        ],
+        [
+            0,
+            0,
+            95,
+            88
+        ],
+        [
+            0,
+            88,
+            19,
+            41
+        ],
+        [
+            142,
+            79,
+            124,
+            13
+        ],
+        [
+            94,
+            0,
+            223,
+            13
+        ],
+        [
+            333,
+            0,
+            85,
+            27
+        ],
+        [
+            432,
+            0,
+            237,
+            61
+        ],
+        [
+            437,
+            239,
+            56,
+            31
+        ],
+        [
+            494,
+            247,
+            14,
+            11
+        ],
+        [
+            640,
+            0,
+            112,
+            360
+        ],
+        [
+            0,
+            360,
+            657,
+            51
+        ],
+        [
+            -11,
+            50,
+            11,
+            311
+        ]
+    ],
+    "walls": [
+        [
+            [
+                266,
+                79
+            ],
+            [
+                265,
+                92
+            ],
+            [
+                289,
+                66
+            ],
+            [
+                278,
+                66
+            ]
+        ],
+        [
+            [
+                318,
+                0
+            ],
+            [
+                318,
+                40
+            ],
+            [
+                332,
+                22
+            ],
+            [
+                335,
+                0
+            ]
+        ],
+        [
+            [
+                409,
+                37
+            ],
+            [
+                433,
+                61
+            ],
+            [
+                437,
+                1
+            ],
+            [
+                409,
+                0
+            ]
+        ]
+    ],
+    "interactions": [
+        {
+            "gametypes": [
+                "advanced",
+                "basic"
+            ],
+            "insound": null,
+            "outsound": null,
+            "action": "poker",
+            "direction": "left",
+            "zone": [
+                15,
+                197,
+                14,
+                22
+            ],
+            "attraction": [
+                15,
+                197,
+                14,
+                22
+            ],
+            "busy": true,
+            "id": "startup-1-left",
+            "enable": true,
+            "lockable": true,
+            "play_once": true,
+            "target": [
+                21,
+                207
+            ]
+        },
+        {
+            "gametypes": [
+                "advanced",
+                "basic"
+            ],
+            "insound": null,
+            "outsound": null,
+            "action": "poker",
+            "direction": "up",
+            "zone": [
+                50,
+                176,
+                25,
+                16
+            ],
+            "attraction": [
+                50,
+                176,
+                25,
+                16
+            ],
+            "busy": true,
+            "id": "startup-1-up",
+            "enable": true,
+            "lockable": true,
+            "play_once": true,
+            "target": [
+                62,
+                183
+            ]
+        },
+        {
+            "gametypes": [
+                "advanced",
+                "basic"
+            ],
+            "insound": null,
+            "outsound": null,
+            "action": "poker",
+            "direction": "right",
+            "zone": [
+                91,
+                198,
+                22,
+                22
+            ],
+            "attraction": [
+                91,
+                198,
+                22,
+                22
+            ],
+            "busy": true,
+            "id": "statup-1-right",
+            "enable": true,
+            "lockable": true,
+            "play_once": true,
+            "target": [
+                101,
+                208
+            ]
+        },
+        {
+            "gametypes": [
+                "advanced",
+                "basic"
+            ],
+            "insound": null,
+            "outsound": null,
+            "action": "poker",
+            "direction": "down",
+            "zone": [
+                49,
+                222,
+                27,
+                17
+            ],
+            "attraction": [
+                49,
+                222,
+                27,
+                17
+            ],
+            "busy": true,
+            "id": "startup-1-down",
+            "enable": true,
+            "lockable": true,
+            "play_once": true,
+            "target": [
+                62,
+                230
+            ]
+        },
+        {
+            "gametypes": [
+                "advanced",
+                "basic"
+            ],
+            "insound": null,
+            "outsound": null,
+            "action": "poker",
+            "direction": "left",
+            "zone": [
+                131,
+                269,
+                16,
+                23
+            ],
+            "attraction": [
+                131,
+                269,
+                16,
+                23
+            ],
+            "busy": true,
+            "id": "startup-2-left",
+            "enable": true,
+            "lockable": true,
+            "play_once": true,
+            "target": [
+                138,
+                280
+            ]
+        },
+        {
+            "gametypes": [
+                "advanced",
+                "basic"
+            ],
+            "insound": null,
+            "outsound": null,
+            "action": "poker",
+            "direction": "up",
+            "zone": [
+                168,
+                245,
+                26,
+                17
+            ],
+            "attraction": [
+                168,
+                245,
+                26,
+                17
+            ],
+            "busy": true,
+            "id": "startup-2-up",
+            "enable": true,
+            "lockable": true,
+            "play_once": true,
+            "target": [
+                180,
+                253
+            ]
+        },
+        {
+            "gametypes": [
+                "advanced",
+                "basic"
+            ],
+            "insound": null,
+            "outsound": null,
+            "action": "poker",
+            "direction": "right",
+            "zone": [
+                213,
+                258,
+                16,
+                39
+            ],
+            "attraction": [
+                213,
+                258,
+                16,
+                39
+            ],
+            "busy": true,
+            "id": "startup-2-right",
+            "enable": true,
+            "lockable": true,
+            "play_once": true,
+            "target": [
+                220,
+                277
+            ]
+        },
+        {
+            "gametypes": [
+                "advanced",
+                "basic"
+            ],
+            "insound": null,
+            "outsound": null,
+            "action": "poker",
+            "direction": "down",
+            "zone": [
+                164,
+                292,
+                37,
+                15
+            ],
+            "attraction": [
+                164,
+                292,
+                37,
+                15
+            ],
+            "busy": true,
+            "id": "startup-2-down",
+            "enable": true,
+            "lockable": true,
+            "play_once": true,
+            "target": [
+                182,
+                299
+            ]
+        },
+        {
+            "gametypes": [
+                "advanced",
+                "basic"
+            ],
+            "insound": null,
+            "outsound": null,
+            "action": "poker",
+            "direction": "left",
+            "zone": [
+                412,
+                240,
+                30,
+                27
+            ],
+            "attraction": [
+                412,
+                240,
+                30,
+                27
+            ],
+            "busy": true,
+            "id": "startup-3-left",
+            "enable": true,
+            "lockable": true,
+            "play_once": false,
+            "target": [
+                426,
+                253
+            ]
+        },
+        {
+            "gametypes": [
+                "advanced",
+                "basic"
+            ],
+            "insound": null,
+            "outsound": null,
+            "action": "poker",
+            "direction": "up",
+            "zone": [
+                457,
+                201,
+                33,
+                25
+            ],
+            "attraction": [
+                457,
+                201,
+                33,
+                25
+            ],
+            "busy": true,
+            "id": "startup-3-up",
+            "enable": true,
+            "lockable": true,
+            "play_once": false,
+            "target": [
+                473,
+                213
+            ]
+        },
+        {
+            "gametypes": [
+                "advanced",
+                "basic"
+            ],
+            "insound": null,
+            "outsound": null,
+            "action": "poker",
+            "direction": "right",
+            "zone": [
+                507,
+                234,
+                27,
+                35
+            ],
+            "attraction": [
+                507,
+                234,
+                27,
+                35
+            ],
+            "busy": true,
+            "id": "startup-3-right",
+            "enable": true,
+            "lockable": true,
+            "play_once": false,
+            "target": [
+                520,
+                251
+            ]
+        },
+        {
+            "gametypes": [
+                "advanced",
+                "basic"
+            ],
+            "insound": null,
+            "outsound": null,
+            "action": "poker",
+            "direction": "down",
+            "zone": [
+                446,
+                281,
+                52,
+                19
+            ],
+            "attraction": [
+                446,
+                281,
+                52,
+                19
+            ],
+            "busy": true,
+            "id": "startup-3-down",
+            "enable": true,
+            "lockable": true,
+            "play_once": false,
+            "target": [
+                471,
+                290
+            ]
+        },
+        {
+            "gametypes": [
+                "advanced",
+                "basic"
+            ],
+            "insound": null,
+            "outsound": null,
+            "action": "poker",
+            "direction": "left",
+            "zone": [
+                494,
+                105,
+                36,
+                28
+            ],
+            "attraction": [
+                494,
+                105,
+                36,
+                28
+            ],
+            "busy": true,
+            "id": "startup-4-left",
+            "enable": true,
+            "lockable": true,
+            "play_once": true,
+            "target": [
+                511,
+                118
+            ]
+        },
+        {
+            "gametypes": [
+                "advanced",
+                "basic"
+            ],
+            "insound": null,
+            "outsound": null,
+            "action": "poker",
+            "direction": "up",
+            "zone": [
+                535,
+                78,
+                35,
+                28
+            ],
+            "attraction": [
+                535,
+                78,
+                35,
+                28
+            ],
+            "busy": true,
+            "id": "startup-4-up",
+            "enable": true,
+            "lockable": true,
+            "play_once": true,
+            "target": [
+                552,
+                91
+            ]
+        },
+        {
+            "gametypes": [
+                "advanced",
+                "basic"
+            ],
+            "insound": null,
+            "outsound": null,
+            "action": "poker",
+            "direction": "right",
+            "zone": [
+                580,
+                98,
+                20,
+                40
+            ],
+            "attraction": [
+                580,
+                98,
+                20,
+                40
+            ],
+            "busy": true,
+            "id": "startup-4-right",
+            "enable": true,
+            "lockable": true,
+            "play_once": true,
+            "target": [
+                589,
+                117
+            ]
+        },
+        {
+            "gametypes": [
+                "advanced",
+                "basic"
+            ],
+            "insound": null,
+            "outsound": null,
+            "action": "poker",
+            "direction": "down",
+            "zone": [
+                531,
+                137,
+                42,
+                19
+            ],
+            "attraction": [
+                531,
+                137,
+                42,
+                19
+            ],
+            "busy": true,
+            "id": "startup-4-down",
+            "enable": true,
+            "lockable": true,
+            "play_once": true,
+            "target": [
+                551,
+                146
+            ]
+        }
+    ],
+    "popspots": [
+        [
+            25,
+            178
+        ],
+        [
+            161,
+            208
+        ],
+        [
+            108,
+            181
+        ],
+        [
+            280,
+            313
+        ],
+        [
+            360,
+            40
+        ],
+        [
+            379,
+            75
+        ],
+        [
+            302,
+            88
+        ],
+        [
+            356,
+            112
+        ],
+        [
+            123,
+            47
+        ],
+        [
+            232,
+            57
+        ],
+        [
+            120,
+            119
+        ],
+        [
+            237,
+            200
+        ],
+        [
+            302,
+            250
+        ],
+        [
+            333,
+            203
+        ],
+        [
+            291,
+            183
+        ],
+        [
+            401,
+            148
+        ],
+        [
+            402,
+            213
+        ],
+        [
+            361,
+            310
+        ],
+        [
+            358,
+            261
+        ],
+        [
+            226,
+            248
+        ],
+        [
+            115,
+            247
+        ],
+        [
+            62,
+            293
+        ],
+        [
+            38,
+            260
+        ],
+        [
+            15,
+            299
+        ],
+        [
+            612,
+            309
+        ],
+        [
+            564,
+            340
+        ],
+        [
+            557,
+            299
+        ],
+        [
+            457,
+            341
+        ],
+        [
+            418,
+            286
+        ],
+        [
+            616,
+            206
+        ],
+        [
+            591,
+            190
+        ],
+        [
+            523,
+            178
+        ],
+        [
+            468,
+            87
+        ],
+        [
+            604,
+            84
+        ],
+        [
+            465,
+            149
+        ],
+        [
+            418,
+            106
+        ],
+        [
+            592,
+            256
+        ],
+        [
+            397,
+            343
+        ],
+        [
+            318,
+            289
+        ],
+        [
+            249,
+            338
+        ]
+    ],
+    "stairs": [],
+    "backgrounds": [
+        {
+            "file": "resources/sets/street/UL-bg.png",
+            "position": [
+                0,
+                0
+            ]
+        }
+    ],
+    "targets": [
+        {
+            "origin": [
+                541,
+                61,
+                94,
+                80
+            ],
+            "weight": 3,
+            "destinations": [
+                [
+                    434,
+                    61,
+                    105,
+                    135
+                ],
+                [
+                    542,
+                    144,
+                    97,
+                    215
+                ],
+                [
+                    342,
+                    154,
+                    299,
+                    66
+                ]
+            ]
+        },
+        {
+            "origin": [
+                438,
+                66,
+                100,
+                79
+            ],
+            "weight": 3,
+            "destinations": [
+                [
+                    439,
+                    66,
+                    199,
+                    150
+                ],
+                [
+                    334,
+                    150,
+                    106,
+                    67
+                ]
+            ]
+        },
+        {
+            "origin": [
+                517,
+                276,
+                121,
+                82
+            ],
+            "weight": 3,
+            "destinations": [
+                [
+                    517,
+                    64,
+                    121,
+                    210
+                ],
+                [
+                    218,
+                    272,
+                    297,
+                    87
+                ]
+            ]
+        },
+        {
+            "origin": [
+                519,
+                173,
+                118,
+                101
+            ],
+            "weight": 3,
+            "destinations": [
+                [
+                    437,
+                    62,
+                    203,
+                    152
+                ],
+                [
+                    519,
+                    247,
+                    120,
+                    114
+                ]
+            ]
+        },
+        {
+            "origin": [
+                1,
+                163,
+                118,
+                172
+            ],
+            "weight": 3,
+            "destinations": [
+                [
+                    245,
+                    164,
+                    182,
+                    201
+                ],
+                [
+                    120,
+                    164,
+                    125,
+                    76
+                ]
+            ]
+        },
+        {
+            "origin": [
+                56,
+                165,
+                117,
+                172
+            ],
+            "weight": 3,
+            "destinations": [
+                [
+                    60,
+                    93,
+                    115,
+                    68
+                ],
+                [
+                    99,
+                    52,
+                    40,
+                    41
+                ],
+                [
+                    59,
+                    92,
+                    115,
+                    31
+                ],
+                [
+                    89,
+                    93,
+                    55,
+                    29
+                ],
+                [
+                    176,
+                    166,
+                    247,
+                    169
+                ]
+            ]
+        },
+        {
+            "origin": [
+                350,
+                151,
+                89,
+                66
+            ],
+            "weight": 3,
+            "destinations": [
+                [
+                    450,
+                    70,
+                    185,
+                    151
+                ],
+                [
+                    183,
+                    157,
+                    167,
+                    60
+                ],
+                [
+                    213,
+                    223,
+                    215,
+                    129
+                ]
+            ]
+        },
+        {
+            "origin": [
+                185,
+                159,
+                244,
+                111
+            ],
+            "weight": 3,
+            "destinations": [
+                [
+                    350,
+                    153,
+                    147,
+                    62
+                ],
+                [
+                    213,
+                    272,
+                    283,
+                    88
+                ],
+                [
+                    64,
+                    161,
+                    146,
+                    166
+                ]
+            ]
+        },
+        {
+            "origin": [
+                94,
+                272,
+                174,
+                60
+            ],
+            "weight": 3,
+            "destinations": [
+                [
+                    59,
+                    93,
+                    116,
+                    39
+                ],
+                [
+                    15,
+                    165,
+                    160,
+                    94
+                ]
+            ]
+        },
+        {
+            "origin": [
+                213,
+                281,
+                427,
+                79
+            ],
+            "weight": 3,
+            "destinations": [
+                [
+                    219,
+                    171,
+                    206,
+                    187
+                ],
+                [
+                    66,
+                    239,
+                    152,
+                    81
+                ]
+            ]
+        },
+        {
+            "origin": [
+                61,
+                92,
+                116,
+                27
+            ],
+            "weight": 3,
+            "destinations": [
+                [
+                    178,
+                    91,
+                    144,
+                    31
+                ],
+                [
+                    25,
+                    91,
+                    112,
+                    28
+                ]
+            ]
+        }
+    ],
+    "npcs": [],
+    "characters": [
+        "resources/animdata/smith.json",
+        "resources/animdata/kate.json",
+        "resources/animdata/janet.json",
+        "resources/animdata/jo.json"
+    ],
+    "overlays": [
+        {
+            "type": "prop",
+            "file": "resources/sets/street/OL2-saloon.png",
+            "position": [
+                0,
+                0
+            ],
+            "y": 100
+        },
+        {
+            "type": "prop",
+            "file": "resources/sets/street/OL1-saloon.png",
+            "position": [
+                0,
+                0
+            ],
+            "y": 100
+        },
+        {
+            "type": "prop",
+            "file": "resources/sets/street/ANI-portesaloon.png",
+            "position": [
+                96,
+                55
+            ],
+            "y": 100
+        },
+        {
+            "type": "prop",
+            "file": "resources/sets/street/OL-fontaine01.png",
+            "position": [
+                436,
+                220
+            ],
+            "y": 100
+        },
+        {
+            "type": "prop",
+            "file": "resources/sets/street/OL-score.png",
+            "position": [
+                0,
+                310
+            ],
+            "y": 100
+          },
+          {
+            "type": "prop",
+            "file": "resources/sets/street/startup-element.png",
+            "position": [
+                108,
+                115
+              ],
+              "y": -1000
+        }
+    ],
+    "vfx": [
+        {
+            "name": "vomit",
+            "type": "static",
+            "file": "resources/props/vomit.png",
+            "y": -1000
+        },
+        {
+            "name": "coin-alert",
+            "type": "animated",
+            "file": "resources/vfx/coin-alert.json"
+        }
+    ],
+    "interactive_props": [
+        {
+            "name": "bottle",
+            "action": "drink",
+            "insound": "resources/sounds/glouglou.wav",
+            "outsound": null,
+            "offset": [
+                -20,
+                -20
+            ],
+            "target": [
+                20,
+                20
+            ],
+            "zone": [
+                0,
+                0,
+                40,
+                30
+            ],
+            "image": "resources/props/beer.png",
+            "switch": 15,
+            "attraction": [
+                0,
+                -30,
+                100,
+                100
+            ],
+            "direction": "left",
+            "lockable": false
+        }
+    ],
+    "props": []
+}

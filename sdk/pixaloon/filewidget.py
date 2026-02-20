@@ -6,7 +6,7 @@ from pixaloon.path import relative_normpath
 class FileLineEdit(QtWidgets.QWidget):
     edited = QtCore.Signal()
 
-    def __init__(self, document, filters, parent=None):
+    def __init__(self, filters, document=None, parent=None):
         super().__init__(parent)
         self.document = document
         self.filters = filters
@@ -40,10 +40,10 @@ class FileLineEdit(QtWidgets.QWidget):
 
 
 class FilesList(QtWidgets.QWidget):
-    def __init__(self, document, key, filters, parent=None):
+    def __init__(self, key, filters, parent=None):
         super().__init__(parent)
         self.filters = filters
-        self.model = RessourceFilesListModel(document, key)
+        self.model = RessourceFilesListModel(key)
         self.list = QtWidgets.QListView()
         self.list.setModel(self.model)
         self.add = QtWidgets.QPushButton('+')
@@ -88,10 +88,10 @@ class FilesList(QtWidgets.QWidget):
 
 
 class RessourceFilesListModel(QtCore.QAbstractListModel):
-    def __init__(self, document, key):
+    def __init__(self, key):
         super().__init__()
         self.key = key
-        self.document = document
+        self.document = None
 
     def rowCount(self, *_):
         if self.document is None:

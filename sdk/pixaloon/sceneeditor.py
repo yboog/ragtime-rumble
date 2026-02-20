@@ -5,13 +5,13 @@ from pixaloon.path import relative_normpath
 
 
 class SceneEditor(QtWidgets.QWidget):
-    def __init__(self, document, parent=None):
+    def __init__(self, parent=None):
         super().__init__(parent)
-        self.document = document
         self.character_number = QtWidgets.QSpinBox()
-        self.characters = FilesList(self.document, 'characters', '*.json')
-        self.ambiance = AmbianceEdit(document)
-        self.musics = FilesList(self.document, 'musics', '*.ogg')
+        self.characters = FilesList('characters', filters='*.json')
+        self.ambiance = AmbianceEdit()
+        self.musics = FilesList('musics', filters='*.ogg')
+        self.backgrounds = FilesList('backgrounds', filters='*.png')
 
         form = QtWidgets.QFormLayout(self)
         form.setContentsMargins(0, 0, 0, 0)
@@ -28,9 +28,9 @@ class SceneEditor(QtWidgets.QWidget):
 
 
 class AmbianceEdit(QtWidgets.QLineEdit):
-    def __init__(self, document, parent=None):
+    def __init__(self, parent=None):
         super().__init__(parent)
-        self.model = AmbianceModel(document)
+        self.model = AmbianceModel()
         self.mapper = QtWidgets.QDataWidgetMapper()
         self.mapper.setModel(self.model)
         self.mapper.addMapping(self, 0)
@@ -45,9 +45,14 @@ class AmbianceEdit(QtWidgets.QLineEdit):
 
 
 class AmbianceModel(QtCore.QAbstractTableModel):
-    def __init__(self, document):
+    def __init__(self):
         super().__init__()
+        self.document = None
+
+    def set_document(self, document):
+        self.layoutAboutToBeChanged.emit()
         self.document = document
+        self.layoutChanged.emit()
 
     def rowCount(self, *_):
         return 1

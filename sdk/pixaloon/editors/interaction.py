@@ -3,10 +3,10 @@ from pixaloon.editors.base import BaseEditor
 from pixaloon.intlisteditor import IntListEditor
 from pixaloon.filewidget import FileLineEdit
 from pixaloon.selection import Selection
-from pixaloon.vec2deditor import Vec2DEditor
+from pixaloon.intarrayeditor import IntArrayEditor
 
 
-class InterationEditor(BaseEditor):
+class InteractionEditor(BaseEditor):
     def __init__(self, parent=None):
         super().__init__(parent)
         self.play_once = QtWidgets.QComboBox()
@@ -25,7 +25,7 @@ class InterationEditor(BaseEditor):
         self.action.addItems(['order', 'bet', 'balcony', 'poker'])
         self.action.currentIndexChanged.connect(self.data_edited)
 
-        self.target = Vec2DEditor()
+        self.target = IntArrayEditor()
         self.target.value_changed.connect(self.data_edited)
 
         self.attraction = IntListEditor()
@@ -65,7 +65,8 @@ class InterationEditor(BaseEditor):
         self.add_row('Lockable', self.lockable)
 
     def selection_changed(self):
-        if self.document.selection.tool != Selection.INTERACTION:
+        selection = self.document.selection
+        if selection.tool != Selection.INTERACTION or selection.data is None:
             return
         data = self.document.data['interactions'][self.document.selection.data]
         self.block_signals(True)
