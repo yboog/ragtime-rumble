@@ -119,6 +119,7 @@ class LevelCanvas(QtWidgets.QWidget):
         painter.setPen(QtCore.Qt.NoPen)
         painter.setBrush(color)
         painter.drawRect(rect)
+        paint_scores(painter, self.document, self.document.viewportmapper)
 
         try:
             if 'switchs' in self.document.elements_to_render:
@@ -196,12 +197,15 @@ class LevelCanvas(QtWidgets.QWidget):
 
         try:
             if 'paths' in self.document.elements_to_render:
+                painter.setOpacity(.3)
+                paint_canvas_walls(
+                    painter, self.document, self.document.viewportmapper)
+                painter.setOpacity(1)
                 paint_canvas_paths(
                     painter, self.document, self.document.viewportmapper)
         except BaseException:
             print('paths')
             ...
-        paint_scores(painter, self.document, self.document.viewportmapper)
         paint_canvas_selection(
             painter,
             self.document,

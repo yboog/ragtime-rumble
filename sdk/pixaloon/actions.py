@@ -3,12 +3,20 @@ from pixaloon.canvas.tools.overlays import OverlayTool
 from pixaloon.canvas.tools.path import PathTool
 from pixaloon.canvas.tools.popspots import PopSpotTool
 from pixaloon.canvas.tools.square import FenceTool, StairTool
+from pixaloon.canvas.tools.score import ScoreTool
 from pixaloon.canvas.tools.startups import StartupTool
 from pixaloon.canvas.tools.target import TargetTool
 from pixaloon.canvas.tools.wall import WallTool
 
 
 TOOL_ACTIONS = [
+    {
+        'icon': 'background.png',
+        'tooltip': 'Backgrounds',
+        'element_type': 'backgrounds',
+        'tool_cls': None,
+        'checkable': True,
+    },
     {
         'icon': 'spot.png',
         'tooltip': 'Pop spots',
@@ -17,10 +25,11 @@ TOOL_ACTIONS = [
         'checkable': True,
     },
     {
-        'icon': 'background.png',
-        'tooltip': 'Backgrounds',
-        'element_type': 'backgrounds',
+        'icon': 'startup.png',
+        'tooltip': 'Spawn spots',
         'tool_cls': None,
+        'element_type': 'startups',
+        'tool_cls': StartupTool,
         'checkable': True,
     },
     {
@@ -65,14 +74,6 @@ TOOL_ACTIONS = [
         'tool_cls': OverlayTool,
     },
     {
-        'icon': 'startup.png',
-        'tooltip': 'Spawn spots',
-        'tool_cls': None,
-        'element_type': 'startups',
-        'tool_cls': StartupTool,
-        'checkable': True,
-    },
-    {
         'icon': 'path.png',
         'tooltip': 'Path finding',
         'element_type': 'paths',
@@ -84,5 +85,12 @@ TOOL_ACTIONS = [
         'tooltip': 'Targets',
         'element_type': 'targets',
         'tool_cls': TargetTool,
+        'checkable': True,
+    },
+    {
+        'icon': 'coin.png',
+        'tooltip': 'Coin',
+        'element_type': 'score',
+        'tool_cls': ScoreTool,
         'checkable': True,
     }]

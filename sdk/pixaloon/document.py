@@ -18,7 +18,7 @@ class Document(QtCore.QObject):
         self.selection: Selection = Selection()
         self.navigator: Navigator = Navigator()
         self.gameroot = gameroot
-        self.elements_to_render = ['popspots',]
+        self.elements_to_render = []
 
         self.veil_alpha = 10
         self.overlays = []
@@ -58,6 +58,7 @@ class Document(QtCore.QObject):
             img = remove_key_color(f'{self.gameroot}/{prop["file"]}')
             self.props.append(img)
 
+        # Score sheet
         path = f'{self.gameroot}/{self.data["score"]["ol"]["file"]}'
         self.scores['overlay'] = remove_key_color(path)
         path = f'{self.gameroot}/resources/ui/coin-stack/coin-stack-05.png'

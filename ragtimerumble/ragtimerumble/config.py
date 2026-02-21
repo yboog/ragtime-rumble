@@ -3,7 +3,6 @@ import os
 GAMEROOT = os.path.dirname(os.path.dirname(__file__))
 
 AVAILABLE_LANGUAGES = ['english', 'french']
-DEFAULT_SCENE = 'resources/scenes/street.json'
 DOG_GROWL_DISTANCE = 70
 DOG_BARK_DISTANCE = 40
 GAMETYPES = ['advanced', 'basic']

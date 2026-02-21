@@ -18,8 +18,9 @@ from ragtimerumble.scores import VIRGIN_SCORES
 
 
 class GameLoop:
-    def __init__(self):
+    def __init__(self, unlocked_fps=False):
         self.status = LOOP_STATUSES.MENU
+        self.unlocked_fps = unlocked_fps
         self.scene_path = None
         self.scenes_iterator = scene_iterator()
         self.scenes_cache = {}
@@ -96,7 +97,9 @@ class GameLoop:
                 self.pause_menu = PauseMenu(self.joysticks)
                 return
         next(self.scene)
-        self.clock.tick(60)
+        if not self.unlocked_fps:
+            self.clock.tick(60)
+            return
         if self.scene.ultime_showdown:
             stop_sound(self.scene.ambiance)
             stop_scene_music()

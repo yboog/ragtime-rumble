@@ -410,18 +410,47 @@ def paint_selected_path(painter, path, point_selected_index, viewportmapper):
             viewportmapper.to_viewport_coords(QtCore.QPoint(*p))
             for p in path['points']]
 
+        r = QtCore.QRectF(-10, -8, 20, 10)
+        ref_rect = viewportmapper.to_viewport_rect(r)
+        lines = []
+        painter.setPen(QtCore.Qt.NoPen)
+        painter.setBrush(QtGui.QColor(150, 150, 30))
         start = None
         for end in points:
+            rect = QtCore.QRectF(ref_rect)
+            rect.moveCenter(end)
+            painter.drawRect(rect)
             if start is None:
+                last_rect = rect
                 start = end
                 continue
-            painter.drawLine(start, end)
+            lines.append(QtCore.QLineF(start, end))
             start = end
+            if not path['hard']:
+                continue
+            ppoints = [
+                rect.topLeft(), rect.bottomLeft(),
+                last_rect.bottomLeft(), last_rect.topLeft()]
+            painter.drawPolygon(QtGui.QPolygonF(ppoints))
+            ppoints = [
+                rect.topLeft(), rect.topRight(),
+                last_rect.topRight(), last_rect.topLeft()]
+            painter.drawPolygon(QtGui.QPolygonF(ppoints))
+            ppoints = [
+                rect.topRight(), rect.topLeft(),
+                last_rect.topLeft(), last_rect.topRight()]
+            painter.drawPolygon(QtGui.QPolygonF(ppoints))
+            ppoints = [
+                rect.bottomRight(), rect.bottomLeft(),
+                last_rect.bottomLeft(), last_rect.bottomRight()]
+            painter.drawPolygon(QtGui.QPolygonF(ppoints))
+            last_rect = rect
 
-        painter.setPen(QtCore.Qt.green)
-        painter.drawEllipse(points[0], 2, 2)
-        painter.setPen(QtCore.Qt.red)
-        painter.drawEllipse(points[-1], 1, 1)
+        pen = QtGui.QPen(QtCore.Qt.white)
+        pen.setWidth(2)
+        painter.setPen(pen)
+        for line in lines:
+            painter.drawLine(line)
 
         if point_selected_index is not None:
             painter.setPen(QtCore.Qt.NoPen)

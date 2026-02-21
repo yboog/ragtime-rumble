@@ -1,5 +1,4 @@
 from PySide6 import QtGui, QtCore
-from pixaloon.selection import Selection
 from pixaloon.canvas.tools.basetool import NavigationTool
 from pixaloon.toolmode import ToolMode
 from pixaloon.mathutils import distance

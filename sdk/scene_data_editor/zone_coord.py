@@ -3,8 +3,8 @@ import json
 import subprocess
 
 import numpy as np
-from PIL import Image, ImageQt
 from PySide6 import QtWidgets, QtCore, QtGui
+from PIL import Image, ImageQt
 
 
 def get_stair_line(rect, inclination):

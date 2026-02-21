@@ -13,6 +13,8 @@ class WallTool(NavigationTool):
         self.close_new_shape = False
 
     def mousePressEvent(self, event):
+        if event.button() != QtCore.Qt.LeftButton:
+            return
         if self.toolmode.mode == ToolMode.SELECTION:
             return self.mouse_press_selection(event)
         if self.toolmode.mode == ToolMode.CREATE:

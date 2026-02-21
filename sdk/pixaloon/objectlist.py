@@ -24,7 +24,8 @@ class TableView(QtWidgets.QTableView):
 
     def setModel(self, model):
         super().setModel(model)
-        self.setSelectionMode(model.SELECTION_MODE)
+        if model is not None:
+            self.setSelectionMode(model.SELECTION_MODE)
 
 
 class ObjectsList(QtWidgets.QWidget):

@@ -3,13 +3,14 @@ import json
 from functools import partial
 
 from PySide6 import QtWidgets, QtCore, QtGui
-
 from pixaloon.actions import TOOL_ACTIONS
 from pixaloon.attributeeditor import AttributeEditor
 from pixaloon.canvas.canvas import LevelCanvas
 from pixaloon.document import Document
 from pixaloon.io import get_icon
+from pixaloon.heatmap import HeatmapDisplayWidget
 from pixaloon.options import OptionsEditor
+from pixaloon.pop import run_game
 from pixaloon.objectlist import ObjectsList
 from pixaloon.sceneeditor import SceneEditor
 from pixaloon.canvas.tools.basetool import NavigationTool
@@ -28,6 +29,8 @@ class Pixaloon(QtWidgets.QMainWindow):
         self.mdi.subWindowActivated.connect(self.sub_window_changed)
         self.mdi.setViewMode(QtWidgets.QMdiArea.TabbedView)
         self.mdi.setTabsClosable(True)
+
+        self.tools_windows = []
 
         self.actions = []
         self.navigate = QtGui.QAction(get_icon('navigate.png'), '', self)
@@ -139,6 +142,18 @@ class Pixaloon(QtWidgets.QMainWindow):
 
         self.menuBar().addMenu(filemenu)
 
+        run_game = QtGui.QAction('Run game', self)
+        run_game.triggered.connect(
+            lambda: RunGameDialog(self.current_canvas().document).exec())
+        heatmap_analytics = QtGui.QAction('Heat map analytics', self)
+        heatmap_analytics.triggered.connect(self.open_hitmap_display)
+
+        tools_menu = QtWidgets.QMenu('Tools')
+        tools_menu.addAction(run_game)
+        tools_menu.addAction(heatmap_analytics)
+
+        self.menuBar().addMenu(tools_menu)
+
     def sub_window_changed(self, window):
         canvas = window.widget() if window else None
         if not canvas:
@@ -248,4 +263,76 @@ class Pixaloon(QtWidgets.QMainWindow):
     def current_canvas(self):
         return self.mdi.currentSubWindow().widget()
 
+    def open_hitmap_display(self):
+        filepath, _ = QtWidgets.QFileDialog.getOpenFileName(
+            self, 'Open heat map file', filter='*.pkl')
+        if not filepath:
+            return
+        window = HeatmapDisplayWidget(filepath, self)
+        self.tools_windows.append(window)
+        window.show()
 
+
+class RunGameDialog(QtWidgets.QDialog):
+    def __init__(self, document, parent=None):
+        super().__init__(parent)
+
+        self.document = document
+        self.default_scene = QtWidgets.QCheckBox('Test with current scene')
+        self.default_scene.setChecked(True)
+
+        self.windowed = QtWidgets.QCheckBox('Windowed')
+        self.windowed.setChecked(True)
+
+        self.record_replay = QtWidgets.QCheckBox('Record replay')
+        self.record_replay.setChecked(True)
+
+        self.replay_path = QtWidgets.QLineEdit()
+        self.replay_path.setReadOnly(True)
+
+        self.replay_browse = QtWidgets.QPushButton()
+        self.replay_browse.setIcon(get_icon('open.png'))
+        self.replay_browse.setFixedWidth(30)
+        self.replay_browse.released.connect(self.select_file)
+        self.clear_replay = QtWidgets.QPushButton('X')
+        self.clear_replay.setFixedWidth(30)
+        self.clear_replay.released.connect(
+            lambda: self.replay_browse.setText(''))
+
+        run = QtWidgets.QPushButton('Run')
+        run.released.connect(self.accept)
+
+        replay_layout = QtWidgets.QHBoxLayout()
+        replay_layout.setContentsMargins(0, 0, 0, 0)
+        replay_layout.setSpacing(0)
+        replay_layout.addWidget(self.replay_path)
+        replay_layout.addWidget(self.replay_browse)
+        replay_layout.addWidget(self.clear_replay)
+
+        layout = QtWidgets.QVBoxLayout(self)
+        layout.setContentsMargins(0, 0, 0, 0)
+        layout.addWidget(self.default_scene)
+        layout.addWidget(self.windowed)
+        layout.addWidget(self.record_replay)
+        layout.addLayout(replay_layout)
+        layout.addWidget(run)
+
+    def select_file(self):
+        filepath, _ = QtWidgets.QFileDialog.getSaveFileName(
+            self, 'Record path', self.document.gameroot, filter='*.pkl')
+        if not filepath:
+            return
+        self.replay_path.setText(filepath)
+
+    def accept(self):
+        try:
+            replay_path = self.replay_path.text() or None
+            replay_path = replay_path if self.record_replay.isChecked() else None
+            run_game(
+                document=self.document,
+                windowed=self.windowed.isChecked(),
+                use_document_as_default_scene=self.default_scene.isChecked(),
+                record_replay_filepath=replay_path)
+            super().accept()
+        except BaseException as e:
+            QtWidgets.QMessageBox.critical(self, 'Error', str(e))

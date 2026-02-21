@@ -43,7 +43,6 @@ def scene_iterator():
 
 
 def load_scene(filename):
-
     filepath = f'{GAMEROOT}/{filename}'
     with open(filepath, 'r') as f:
         data = json.load(f)
