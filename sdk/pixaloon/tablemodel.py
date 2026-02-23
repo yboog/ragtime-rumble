@@ -59,6 +59,19 @@ class StartupsModel(AbstractTableModel):
                 return 'Unassigned spot positions'
             return f'Player {index.row()}'
 
+
+class ShadowModel(AbstractTableModel):
+    HEADERS = 'Player',
+    DATAKEY = 'shadow_zones'
+    SELECTION_TOOL = Selection.SHADOW
+
+    def data(self, index, role):
+        if not index.isValid():
+            return
+        if role == QtCore.Qt.DisplayRole:
+            return str(self.document.data[self.DATAKEY][index.row()]['polygon'])
+
+
 class PathsModel(AbstractTableModel):
     HEADERS = 'Hard', 'Path'
     DATAKEY = 'paths'

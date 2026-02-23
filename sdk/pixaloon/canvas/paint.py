@@ -89,6 +89,12 @@ def paint_canvas_selection(painter, document, viewportmapper):
                 rect=document.data['fences'][selection.data],
                 viewportmapper=viewportmapper,
                 selected=True)
+        case Selection.SHADOW:
+            paint_wall(
+                painter=painter,
+                polygon=document.data['shadow_zones'][selection.data]['polygon'],
+                viewportmapper=viewportmapper,
+                selected=True)
         case Selection.TARGET:
             paint_canvas_target(
                 painter=painter,
@@ -176,11 +182,17 @@ def paint_canvas_props(painter, document, viewportmapper):
         painter.drawEllipse(rect.left(), rect.top(), 2, 2)
 
 
+def paint_canvas_shadow_zones(painter, document, viewportmapper):
+    for data in document.data['shadow_zones']:
+        color = QtGui.QColor(*data['color'])
+        paint_wall(painter, data['polygon'], viewportmapper, color)
+
+
 def paint_canvas_walls(painter, document, viewportmapper):
     for rect in document.data['no_go_zones']:
         paint_selected_rect_object(painter, rect, viewportmapper, selected=False)
     for polygon in document.data['walls']:
-        paint_wall(painter, polygon, viewportmapper, selected=False)
+        paint_wall(painter, polygon, viewportmapper, color=None, selected=False)
 
 
 def paint_selected_rect_object(painter, rect, viewportmapper, selected=False):
@@ -194,12 +206,13 @@ def paint_selected_rect_object(painter, rect, viewportmapper, selected=False):
     painter.drawRect(viewportmapper.to_viewport_rect(rect))
 
 
-def paint_wall(painter, polygon, viewportmapper, selected=False):
+def paint_wall(painter, polygon, viewportmapper, color=None, selected=False):
     pen = QtGui.QPen(QtCore.Qt.yellow if selected else QtCore.Qt.red)
     pen.setWidth(2 if selected else 1)
     painter.setPen(pen)
-    color = QtGui.QColor(QtCore.Qt.red)
-    color.setAlpha(125 if selected else 50)
+    if not color:
+        color = QtGui.QColor(QtCore.Qt.red)
+        color.setAlpha(125 if selected else 50)
     painter.setBrush(color)
     polygon = QtGui.QPolygonF([
         viewportmapper.to_viewport_coords(QtCore.QPoint(*p))

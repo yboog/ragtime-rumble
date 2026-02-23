@@ -42,6 +42,43 @@ class WallsEditor(BaseEditor):
         self.polygon.set_values(values)
 
 
+class ShadowEditor(BaseEditor):
+    def __init__(self, parent=None):
+        super().__init__(parent)
+        self.polygon = IntArrayListEditor(resizable=True)
+        self.polygon.values_changed.connect(self.values_changed)
+        self.color = QtWidgets.QLineEdit()
+        self.color.returnPressed.connect(self.values_changed)
+        self.add_row('Color', self.color)
+        self.add_row('Polygon', self.polygon)
+
+    def values_changed(self, *_):
+        selection = self.document.selection
+        if selection.tool != Selection.SHADOW or selection.data is None:
+            return
+        if not self.document:
+            return
+        try:
+            color = [int(v) for v in self.color.text().strip('[]()').split(',')]
+        except ValueError:
+            QtWidgets.QMessageBox.critical(self, 'Invalid color, please write tuple')
+            return
+        data = self.document.data['shadow_zones'][self.document.selection.data]
+        data['color'] = color
+        self.document.edited.emit()
+
+    def selection_changed(self):
+        selection = self.document.selection
+        if selection.tool != Selection.SHADOW or selection.data is None:
+            return self.polygon.clear()
+        index = self.document.selection.data
+        data = self.document.data['shadow_zones'][index]
+        self.block_signals(True)
+        self.polygon.set_values(data['polygon'])
+        self.color.setText(str(data['color']))
+        self.block_signals(False)
+
+
 class FenceEditor(BaseEditor):
     def __init__(self, parent=None):
         super().__init__(parent)

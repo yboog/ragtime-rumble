@@ -9,7 +9,7 @@ from pixaloon.editors.interaction import InteractionEditor
 from pixaloon.editors.overlay import OverlayEditor
 from pixaloon.editors.path import PathEditor
 from pixaloon.editors.square import (
-    NoGoZoneEditor, WallsEditor, FenceEditor, StairEditor)
+    NoGoZoneEditor, WallsEditor, FenceEditor, StairEditor, ShadowEditor)
 from pixaloon.editors.target import TargetEditor
 
 
@@ -38,6 +38,7 @@ class AttributeEditor(QtWidgets.QWidget):
             Selection.STAIR: StairEditor,
             Selection.OVERLAY: OverlayEditor,
             Selection.TARGET: TargetEditor,
+            Selection.SHADOW: ShadowEditor,
             Selection.PATH: PathEditor,
             Selection.WALL: WallsEditor}.get(
                 self.document.selection.tool, QtWidgets.QWidget)
@@ -48,7 +49,6 @@ class AttributeEditor(QtWidgets.QWidget):
         if self.current_editor is not None:
             self.layout.removeWidget(self.current_editor)
             self.current_editor.deleteLater()
-
         self.current_editor = cls(parent=self)
         if hasattr(self.current_editor, 'set_document'):
             self.current_editor.set_document(self.document)

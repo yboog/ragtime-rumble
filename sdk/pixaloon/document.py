@@ -83,6 +83,8 @@ class Document(QtCore.QObject):
                 del self.data['paths'][index]
             case Selection.WALL:
                 del self.data['walls'][self.selection.data]
+            case Selection.SHADOW:
+                del self.data['shadow_zones'][self.selection.data]
             case Selection.TARGET:
                 target, destination = self.selection.data
                 if destination is None:

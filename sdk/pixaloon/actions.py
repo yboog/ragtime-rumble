@@ -4,6 +4,7 @@ from pixaloon.canvas.tools.path import PathTool
 from pixaloon.canvas.tools.popspots import PopSpotTool
 from pixaloon.canvas.tools.square import FenceTool, StairTool
 from pixaloon.canvas.tools.score import ScoreTool
+from pixaloon.canvas.tools.shadow import ShadowTool
 from pixaloon.canvas.tools.startups import StartupTool
 from pixaloon.canvas.tools.target import TargetTool
 from pixaloon.canvas.tools.wall import WallTool
@@ -52,6 +53,13 @@ TOOL_ACTIONS = [
         'element_type': 'fences',
         'checkable': True,
         'tool_cls': FenceTool,
+    },
+    {
+        'icon': 'shadow.png',
+        'tooltip': 'Shadow zone',
+        'element_type': 'shadows',
+        'checkable': True,
+        'tool_cls': ShadowTool,
     },
     {
         'icon': 'prop.png',

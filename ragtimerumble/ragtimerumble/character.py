@@ -323,6 +323,10 @@ class Character:
             zone for zone in zones if
             zone.attract(self.coordinates.position)), None)
 
+    def shadow_zone(self):
+        box = get_box(self.coordinates.position, self.box)
+        return self.scene.instersected_shadow_zone(box)
+
     def go_to(self, position, zone=None):
         self.status = CHARACTER_STATUSES.AUTOPILOT
         path = shortest_path(self.coordinates.position, position.copy())

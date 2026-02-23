@@ -58,6 +58,7 @@ def load_scene(filename):
     scene.no_go_zones = data['no_go_zones']
     scene.walls = data['walls']
     scene.stairs = data['stairs']
+    scene.shadow_zones = data['shadow_zones']
     scene.targets = data['targets']
     scene.fences = data['fences']
     scene.startups = data['startups']
@@ -163,28 +164,29 @@ class Scene:
         self.life_positions = []
         self.score_ol = None
         # Data
+        self.animated_vfx = []
         self.backgrounds = []
         self.characters = []
         self.fences = []
         self.hard_paths = []
         self.interaction_zones = []
+        self.interactive_props = []
         self.no_go_zones = []
         self.npcs = []
+        self.musics = []
         self.overlays = []
         self.players = []
         self.possible_duels = []
         self.props = []
-        self.interactive_props = []
         self.secondary_npcs = []
         self.smooth_paths = []
+        self.shadow_zones = []
+        self.sniperreticles = []
         self.stairs = []
         self.targets = []
         self.vfx = []
         self.vfx_overlays = []
-        self.animated_vfx = []
         self.walls = []
-        self.sniperreticles = []
-        self.musics = []
         # Runtime
         self.black_screen_countdown = 0
         self.white_screen_countdown = 0
@@ -305,6 +307,11 @@ class Scene:
         if any(path_cross_rect(zone, path) for zone in self.no_go_zones):
             return True
         return any(path_cross_polygon(path, wall) for wall in self.walls)
+
+    def instersected_shadow_zone(self, box):
+        for shadow_zone in self.shadow_zones:
+            if box_hit_polygon(box, shadow_zone['polygon']):
+                return shadow_zone
 
     def collide(self, box):
         for element in self.elements:

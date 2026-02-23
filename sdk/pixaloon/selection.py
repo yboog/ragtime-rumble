@@ -4,18 +4,19 @@ from PySide6 import QtCore
 class Selection(QtCore.QObject):
     changed = QtCore.Signal(object)
 
-    POPSPOT = 'popspots'
-    PATH = 'path'
-    PROP = 'prop'
-    NO_GO_ZONE = 'no_go_zones'
-    STARTUP = 'startup'
-    WALL = 'wall'
+    BACKGROUND = 'background'
     FENCE = 'fences'
     INTERACTION = 'interaction'
+    NO_GO_ZONE = 'no_go_zones'
+    PATH = 'path'
+    POPSPOT = 'popspots'
+    PROP = 'prop'
     OVERLAY = 'overlay'
-    TARGET = 'origin_targets'
-    BACKGROUND = 'background'
+    SHADOW = 'Shadow'
+    STARTUP = 'startup'
     STAIR = 'stair'
+    TARGET = 'origin_targets'
+    WALL = 'wall'
 
     def __init__(self):
         super().__init__()

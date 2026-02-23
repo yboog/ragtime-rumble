@@ -8,7 +8,7 @@ from pixaloon.intarrayeditor import IntArrayListEditor
 class PathEditor(BaseEditor):
     def __init__(self, parent=None):
         super().__init__(parent)
-        self.points = IntArrayListEditor()
+        self.points = IntArrayListEditor(resizable=True)
         self.points.row_selected.connect(self._point_selected)
         self.points.values_changed.connect(self.values_changed)
 

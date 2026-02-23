@@ -655,6 +655,17 @@ def render_scene(screen, scene):
     # Scores.
     render_players_ol_score(screen, scene)
 
+    for character in scene.characters:
+        shadow_zone = character.shadow_zone()
+        if shadow_zone is None:
+            continue
+        original = get_image(character.image)
+        silhouette = pygame.Surface(original.get_size(), pygame.SRCALPHA)
+        silhouette.fill(shadow_zone['color'])
+        silhouette.blit(original, (0, 0), special_flags=pygame.BLEND_RGBA_MULT)
+
+        screen.blit(silhouette, character.render_position)
+
     if not debug.active:
         return
 
@@ -666,13 +677,6 @@ def render_scene(screen, scene):
     for zone in scene.interactive_props:
         draw_rect(screen, zone.zone, 50)
         draw_rect(screen, zone.attraction, 25)
-
-    # TEST FOR HIGHLIGHT RENDER CHARACER
-    for character in scene.characters:
-        image = get_image(character.image).copy()
-        image.fill((255, 255, 255), special_flags=pygame.BLEND_ADD)
-        image.set_alpha(50)
-        screen.blit(image, character.render_position)
 
 
 def render_players_ol_score(screen, scene):
