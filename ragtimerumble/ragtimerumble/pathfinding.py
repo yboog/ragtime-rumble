@@ -110,6 +110,12 @@ def choice_destination(scene, position, box):
     return pos
 
 
+def random_position_in_rect(rect):
+    x = random.choice(range(rect[0], rect[0] + rect[2]))
+    y = random.choice(range(rect[1], rect[1] + rect[3]))
+    return x, y
+
+
 def choice_destination_from(targets, point):
     targets = [
         t for t in targets if point_in_rectangle(point, *t['origin'])]

@@ -735,7 +735,7 @@ def render_element(screen, element):
             image.set_alpha(150)
             screen.blit(image, element.render_position)
     except TypeError:
-        print(img, get_image(img))
+        print(img, get_image(img), element.render_position)
         raise
     if debug.render_path:
         condition = (

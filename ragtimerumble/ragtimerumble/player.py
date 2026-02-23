@@ -86,7 +86,6 @@ class Player:
         self.bullet_cooldown = COUNTDOWNS.BULLET_COOLDOWN
 
     def __next__(self):
-
         if self.character.status == CHARACTER_STATUSES.OUT:
             next(self.character)
             return

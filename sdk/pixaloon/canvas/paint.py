@@ -106,6 +106,11 @@ def paint_canvas_selection(painter, document, viewportmapper):
             painter.setPen(pen)
             painter.setBrush(QtCore.Qt.NoBrush)
             painter.drawRect(img_rect)
+            y = document.data['overlays'][selection.data]['y']
+            y = viewportmapper.to_viewport_coords(QtCore.QPoint(0, y)).y()
+            x = viewportmapper.to_viewport(-1000)
+            x2 = viewportmapper.to_viewport(1000)
+            painter.drawLine(QtCore.QLine(x, y, x2, y))
 
 
 def paint_canvas_switchs(painter, document, viewportmapper, left, right):

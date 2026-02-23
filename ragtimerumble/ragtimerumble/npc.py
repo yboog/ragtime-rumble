@@ -4,6 +4,7 @@ import itertools
 
 from ragtimerumble.config import (
     COUNTDOWNS, SMOOTH_PATH_SELECTION_RADIUS, SMOOTH_PATH_USAGE_PROBABILITY,
+    CHICKEN_RUNDISTANCE,
     HARD_PATH_SELECTION_RADIUS, DIRECTIONS, DOG_GROWL_DISTANCE,
     DOG_BARK_DISTANCE)
 from ragtimerumble.config import (
@@ -11,15 +12,21 @@ from ragtimerumble.config import (
 from ragtimerumble.coordinates import Coordinates, path_cross_rect
 from ragtimerumble.io import (
     choice_death_sentence, load_data, image_mirror, play_sound)
+from ragtimerumble.mathutils import set_vector_length
 from ragtimerumble.pathfinding import (
     point_in_rectangle, shortest_path, smooth_path_to_path, equilateral_path,
-    filter_close_paths, points_to_direction, distance, choice_destination)
+    filter_close_paths, points_to_direction, distance, choice_destination,
+    random_position_in_rect)
 from ragtimerumble.pilot import SmoothPathPilot, HardPathPilot
+from ragtimerumble.randomutils import choose
 from ragtimerumble.sprite import SpriteSheet
 from ragtimerumble.sniperreticle import SniperReticle
 
 
 class Npc:
+    """
+    Fake player
+    """
 
     def __init__(self, character, scene):
         self.character = character
@@ -462,32 +469,147 @@ class Dog:
 
 
 class Chicken:
-    def __init__(self, file=None, startposition=None, **_):
-        self.data = load_data(file)
-        self.spritesheet = SpriteSheet(self.data, 'idle-a')
-        self.coordinates = Coordinates((startposition))
+    IDLE_ANIMATIONS = {
+        'idle-a': 5,
+        'idle-b': 5,
+        'idle-c': 5,
+        'idle-d': 5,
+        'idle-e': 5,
+        'idle-f': 10,
+        'idle-g': 3,
+        'idle-h': 1,
+        'idle-i': 1,
+        'scratch': 3}
+    ANIMATION_SOUNDS = {
+        'idle-h': '/resources/sounds/cluck-1.wav',
+        'idle-e': '/resources/sounds/cluck-2.wav',
+        'idle-g': '/resources/sounds/cluck-3.wav',
+        'scratch': '/resources/sounds/chicken-scratch.wav',
+    }
 
+    def __init__(
+            self, scene=None, file=None, startposition=None, zone=None, **_):
+        self.data = load_data(file)
+        self.scene = scene
+        self.spritesheet = SpriteSheet(self.data, 'idle-a')
+        self.startposition = startposition
+        self.coordinates = Coordinates((startposition))
+        self.path = None
+        self.direction = DIRECTIONS.LEFT
+        self.destination = None
+        self.run_cooldown = 0
+        self.zone = zone
+
+    def closest_player_distance(self):
+        min_distance = sys.maxsize
+        closest_player = None
+        for player in self.scene.players:
+            if player.dying or player.dead:
+                continue
+            if player.character.status == CHARACTER_STATUSES.INTERACTING:
+                continue
+            coordinates = player.character.coordinates
+            distance = self.coordinates.distance_to(coordinates)
+            if distance < min_distance:
+                min_distance = distance
+                closest_player = player
+        return min_distance, closest_player
+
+    @property
     def render_position(self):
-        return self.coordinates.position
+        offset_x, offset_y = self.spritesheet.data['center']
+        return self.coordinates.x - offset_x, self.coordinates.y - offset_y
 
     @property
     def switch(self):
-        return self.data['y']
+        return self.data['y'] + self.coordinates.y
 
     @property
     def image(self):
-        return self.spritesheet.image()
+        return self.spritesheet.image(self.direction)
 
-    def __next___(self):
-        'abcdefgh'
+    def check_run(self):
+        if self.run_cooldown > 0 or self.spritesheet.animation == 'runcycle':
+            return False
+        distance, player = self.closest_player_distance()
+        if distance > CHICKEN_RUNDISTANCE or player is None:
+            return False
+        coordinates = player.character.coordinates
+        x = coordinates.position[0] - self.coordinates.position[0]
+        y = coordinates.position[1] - self.coordinates.position[1]
+        v = set_vector_length([x, y], 50)
+        dst = self.startposition[0] - v[0], self.startposition[1] - v[1]
+
+        self.path = iter(shortest_path(self.coordinates.position, dst))
+        self.spritesheet.animation = 'runcycle'
+        self.destination = next(self.path)
+        self.spritesheet.index = 1
+        self.walk()
+        play_sound('/resources/sounds/chicken-scream.wav')
+        self.run_cooldown = COUNTDOWNS.CHICKEN_RUN_COOLDOWN
+        return True
+
+    def __next__(self):
+        if self.check_run():
+            return
+        self.run_cooldown = max((0, self.run_cooldown - 1))
+        next(self.spritesheet)
+
+        if self.spritesheet.animation in self.IDLE_ANIMATIONS:
+            if self.spritesheet.animation_is_done:
+                continue_idle = choose({True: 4, False: 1})
+                if continue_idle:
+                    return self.set_idle()
+                return self.start_walk()
+        if self.spritesheet.animation in ('walkcycle', 'runcycle'):
+            self.walk()
+
+    def start_walk(self):
+        dst = random_position_in_rect(self.zone)
+        self.path = iter(shortest_path(self.coordinates.position, dst))
+        self.spritesheet.animation = 'walkcycle'
+        self.destination = next(self.path)
+        self.spritesheet.index = 1
+        self.walk()
+
+    def walk(self):
+        p1 = self.coordinates.position
+        direction = points_to_direction(p1, self.destination)
+        if not direction:
+            self.destination = next(self.path)
+            return self.walk()
+        speed = (
+            SPEED.CHICKEN_WALK if self.spritesheet.animation == 'walkcycle'
+            else SPEED.CHICKEN_RUN)
+        p2 = self.coordinates.shift(direction, speed, 0)
+        if p2[0] > p1[0]:
+            self.direction = DIRECTIONS.LEFT
+        else:
+            self.direction = DIRECTIONS.RIGHT
+
+        if distance(p1, self.destination) < distance(p2, self.destination):
+            try:
+                self.destination = next(self.path)
+                return self.walk()
+            except StopIteration:
+                self.set_idle()
+
+        self.coordinates.position = p2
+        if self.spritesheet.animation_is_done:
+            self.spritesheet.index = 0
+            return
+        next(self.spritesheet)
 
     def set_idle(self):
-        letters = list('abcdefgh')
-        if self.spritesheet.animation.startswith('idle'):
-            # Avoid looping the same animation
-            letters = [
-                l for l in letters if l != self.spritesheet.animation[-1]]
-        self.spritesheet.animation = f'idle-{random.choice(letters)}'
+        # Avoid looping the same animation
+        possible_animations = {
+            k: v for k, v in self.IDLE_ANIMATIONS.items()
+            if k != self.spritesheet.animation}
+        animation = choose(possible_animations)
+        sound = self.ANIMATION_SOUNDS.get(animation)
+        if sound:
+            play_sound(sound)
+        self.spritesheet.animation = animation
         self.spritesheet.index = 0
 
 

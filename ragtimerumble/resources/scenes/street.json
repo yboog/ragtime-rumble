@@ -2780,18 +2780,6 @@
       178
     ],
     [
-      161,
-      208
-    ],
-    [
-      108,
-      181
-    ],
-    [
-      280,
-      313
-    ],
-    [
       360,
       40
     ],
@@ -2820,28 +2808,8 @@
       119
     ],
     [
-      237,
-      200
-    ],
-    [
-      302,
-      250
-    ],
-    [
-      333,
-      203
-    ],
-    [
       291,
       183
-    ],
-    [
-      401,
-      148
-    ],
-    [
-      402,
-      213
     ],
     [
       361,
@@ -2850,14 +2818,6 @@
     [
       358,
       261
-    ],
-    [
-      226,
-      248
-    ],
-    [
-      115,
-      247
     ],
     [
       62,
@@ -2900,20 +2860,12 @@
       190
     ],
     [
-      523,
-      178
-    ],
-    [
       468,
       87
     ],
     [
       604,
       84
-    ],
-    [
-      465,
-      149
     ],
     [
       418,
@@ -2928,12 +2880,56 @@
       343
     ],
     [
-      318,
-      289
+      309,
+      337
     ],
     [
-      249,
-      338
+      242,
+      330
+    ],
+    [
+      171,
+      285
+    ],
+    [
+      208,
+      180
+    ],
+    [
+      197,
+      100
+    ],
+    [
+      538,
+      215
+    ],
+    [
+      489,
+      202
+    ],
+    [
+      25,
+      204
+    ],
+    [
+      504,
+      320
+    ],
+    [
+      331,
+      63
+    ],
+    [
+      539,
+      66
+    ],
+    [
+      621,
+      130
+    ],
+    [
+      433,
+      134
     ]
   ],
   "stairs": [],
@@ -3348,7 +3344,45 @@
       ]
     }
   ],
-  "npcs": [],
+  "hidden_zones": [],
+  "npcs": [
+    {
+      "file": "resources/animdata/chicken.json",
+      "gametypes": [
+        "basic",
+        "advanced"
+      ],
+      "type": "chicken",
+      "startposition": [
+        375,
+        310
+      ],
+      "zone": [
+        350,
+        290,
+        50,
+        50
+      ]
+    },
+    {
+      "file": "resources/animdata/chicken.json",
+      "gametypes": [
+        "basic",
+        "advanced"
+      ],
+      "type": "chicken",
+      "startposition": [
+        425,
+        110
+      ],
+      "zone": [
+        415,
+        100,
+        20,
+        20
+      ]
+    }
+  ],
   "characters": [
     "resources/animdata/smith.json",
     "resources/animdata/kate.json",
@@ -3357,49 +3391,49 @@
   ],
   "overlays": [
     {
-      "type": "prop",
+      "type": "props",
       "file": "resources/sets/street/OL2-saloon.png",
       "position": [
         0,
         0
       ],
-      "y": 100
+      "y": 94
     },
     {
-      "type": "prop",
+      "type": "props",
       "file": "resources/sets/street/OL1-saloon.png",
       "position": [
         0,
         0
       ],
-      "y": 100
+      "y": 143
     },
     {
-      "type": "prop",
+      "type": "props",
       "file": "resources/sets/street/ANI-portesaloon.png",
       "position": [
         96,
         55
       ],
-      "y": 100
+      "y": 94
     },
     {
-      "type": "prop",
+      "type": "props",
       "file": "resources/sets/street/OL-fontaine01.png",
       "position": [
         436,
         220
       ],
-      "y": 100
+      "y": 234
     },
     {
-      "type": "prop",
+      "type": "props",
       "file": "resources/sets/street/OL-score.png",
       "position": [
         0,
         310
       ],
-      "y": 100
+      "y": -100
     },
     {
       "type": "prop",

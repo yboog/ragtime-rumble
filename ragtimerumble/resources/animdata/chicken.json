@@ -1,11 +1,12 @@
 {
   "name": "paulette",
   "type": "chicken",
-  "y": -1000,
+  "y": -0,
   "framesize": [
     64,
     64
   ],
+  "center": [32, 55],
   "filepath": "resources/skins/paulette.png",
   "animations": {
     "idle-a": {
@@ -38,8 +39,8 @@
     },
     "idle-e": {
       "exposures": [
-        6,
-        6
+        25,
+        25
       ],
       "startframe": 8
     },
@@ -52,22 +53,22 @@
     },
     "idle-g": {
       "exposures": [
-        6,
-        6
+        8,
+        15
       ],
       "startframe": 12
     },
     "idle-h": {
       "exposures": [
-        6,
-        6
+        8,
+        32
       ],
       "startframe": 14
     },
     "idle-i": {
       "exposures": [
-        6,
-        6
+        8,
+        45
       ],
       "startframe": 16
     },

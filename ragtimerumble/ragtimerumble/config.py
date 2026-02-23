@@ -3,6 +3,7 @@ import os
 GAMEROOT = os.path.dirname(os.path.dirname(__file__))
 
 AVAILABLE_LANGUAGES = ['english', 'french']
+CHICKEN_RUNDISTANCE = 50
 DOG_GROWL_DISTANCE = 70
 DOG_BARK_DISTANCE = 40
 GAMETYPES = ['advanced', 'basic']
@@ -50,6 +51,7 @@ class COUNTDOWNS:
     BOTTLE_ADD = 6000 // 3
     BULLET_COOLDOWN = 600
     BLACK_SCREEN = 92
+    CHICKEN_RUN_COOLDOWN = 30
     COMA_MIN = 500
     COMA_MAX = 10000
     COOLDOWN_MIN = 50
@@ -89,6 +91,8 @@ class SPEED:
     SNIPER_RECTICLE_MIN = .2
     SNIPER_RECTICLE_MAX = 2.5
     SNIPER_RECTICLE_FACTOR = 1.15
+    CHICKEN_WALK = 0.2
+    CHICKEN_RUN = 2
 
 
 class ELEMENT_TYPES:

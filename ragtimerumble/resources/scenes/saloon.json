@@ -4896,6 +4896,7 @@
       "file": "resources/vfx/coin-alert.json"
     }
   ],
+  "hidden_zones": [],
   "interactive_props": [
     {
       "name": "bottle",
@@ -4924,6 +4925,7 @@
         100,
         100
       ],
+      "play_once": false,
       "direction": "left",
       "lockable": false
     }

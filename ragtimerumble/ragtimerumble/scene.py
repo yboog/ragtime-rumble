@@ -29,7 +29,7 @@ NPC_TYPES = {
     'pianist': Pianist,
     'barman': Barman,
     'sniper': Sniper,
-    'dog': Dog
+    'dog': Dog,
 }
 
 
