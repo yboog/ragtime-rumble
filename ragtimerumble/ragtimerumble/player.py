@@ -153,7 +153,6 @@ class Player:
                 life = self.life + COUNTDOWNS.BOTTLE_ADD
                 self.life = min((COUNTDOWNS.MAX_LIFE, life))
                 self.character.set_free()
-                return
 
         is_looping = self.character.spritesheet.animation in LOOPING_ANIMATIONS
         commands = get_current_commands(self.joystick)

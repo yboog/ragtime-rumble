@@ -713,6 +713,64 @@
         6
       ],
       "startframe": 166
+    },
+    "startup": {
+      "exposures": [
+        6,
+        6,
+        33,
+        5,
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        4,
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        6
+      ],
+      "startframe": 167
+    },
+    "sweating": {
+      "exposures": [
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        6
+      ],
+      "startframe": 190
+    },
+    "water": {
+      "exposures": [
+        6
+      ],
+      "startframe": 209
     }
   },
   "filepath": "resources/skins/kate.png"

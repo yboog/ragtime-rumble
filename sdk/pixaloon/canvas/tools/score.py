@@ -10,7 +10,6 @@ class ScoreTool(NavigationTool):
         super().__init__(canvas)
         self.edited_element = None
         self.hovered_element = None
-        self.mouse_offset = None
 
     def mousePressEvent(self, event):
         if self.toolmode.mode != ToolMode.EDIT:

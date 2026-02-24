@@ -22,7 +22,7 @@ class InteractionEditor(BaseEditor):
         self.lockable.currentIndexChanged.connect(self.data_edited)
 
         self.action = QtWidgets.QComboBox()
-        self.action.addItems(['order', 'bet', 'balcony', 'poker'])
+        self.action.addItems(['bet', 'balcony', 'order','poker', 'startup'])
         self.action.currentIndexChanged.connect(self.data_edited)
 
         self.target = IntArrayEditor()

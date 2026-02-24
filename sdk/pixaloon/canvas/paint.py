@@ -287,6 +287,7 @@ def paint_canvas_interactions(painter, document, viewportmapper):
     color.setAlpha(50)
     painter.setBrush(color)
     align = QtCore.Qt.AlignCenter
+    painter.setPen(QtCore.Qt.white)
     for interaction in document.data['interactions']:
         color.setAlpha(50)
         painter.setBrush(color)

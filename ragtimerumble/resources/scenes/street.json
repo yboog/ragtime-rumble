@@ -1882,12 +1882,12 @@
       {
         "popspots": {
           "left": [
-            485,
-            134
+            491,
+            133
           ],
           "right": [
-            565,
-            135
+            559,
+            133
           ],
           "up": [
             530,
@@ -1895,7 +1895,7 @@
           ],
           "down": [
             528,
-            164
+            160
           ]
         },
         "assigned": [
@@ -2275,22 +2275,22 @@
   "interactions": [
     {
       "gametypes": [
-        "advanced",
-        "basic"
+        "basic",
+        "advanced"
       ],
       "insound": null,
       "outsound": null,
-      "action": "poker",
-      "direction": "left",
+      "action": "startup",
+      "direction": "right",
       "zone": [
-        15,
-        197,
+        85,
+        209,
         14,
         22
       ],
       "attraction": [
-        15,
-        197,
+        85,
+        209,
         14,
         22
       ],
@@ -2298,30 +2298,30 @@
       "id": "startup-1-left",
       "enable": true,
       "lockable": true,
-      "play_once": true,
+      "play_once": false,
       "target": [
-        21,
-        207
+        92,
+        219
       ]
     },
     {
       "gametypes": [
-        "advanced",
-        "basic"
+        "basic",
+        "advanced"
       ],
       "insound": null,
       "outsound": null,
-      "action": "poker",
-      "direction": "up",
+      "action": "startup",
+      "direction": "down",
       "zone": [
-        50,
-        176,
+        109,
+        192,
         25,
         16
       ],
       "attraction": [
-        50,
-        176,
+        109,
+        192,
         25,
         16
       ],
@@ -2329,61 +2329,61 @@
       "id": "startup-1-up",
       "enable": true,
       "lockable": true,
-      "play_once": true,
+      "play_once": false,
       "target": [
-        62,
-        183
+        121,
+        199
       ]
     },
     {
       "gametypes": [
-        "advanced",
-        "basic"
+        "basic",
+        "advanced"
       ],
       "insound": null,
       "outsound": null,
-      "action": "poker",
-      "direction": "right",
+      "action": "startup",
+      "direction": "left",
       "zone": [
-        91,
-        198,
+        140,
+        210,
         22,
         22
       ],
       "attraction": [
-        91,
-        198,
+        140,
+        210,
         22,
         22
       ],
       "busy": true,
-      "id": "statup-1-right",
+      "id": "startup-1-right",
       "enable": true,
       "lockable": true,
-      "play_once": true,
+      "play_once": false,
       "target": [
-        101,
-        208
+        150,
+        220
       ]
     },
     {
       "gametypes": [
-        "advanced",
-        "basic"
+        "basic",
+        "advanced"
       ],
       "insound": null,
       "outsound": null,
-      "action": "poker",
-      "direction": "down",
+      "action": "startup",
+      "direction": "up",
       "zone": [
-        49,
-        222,
+        109,
+        235,
         27,
         17
       ],
       "attraction": [
-        49,
-        222,
+        109,
+        235,
         27,
         17
       ],
@@ -2391,30 +2391,30 @@
       "id": "startup-1-down",
       "enable": true,
       "lockable": true,
-      "play_once": true,
+      "play_once": false,
       "target": [
-        62,
-        230
+        122,
+        243
       ]
     },
     {
       "gametypes": [
-        "advanced",
-        "basic"
+        "basic",
+        "advanced"
       ],
       "insound": null,
       "outsound": null,
-      "action": "poker",
-      "direction": "left",
+      "action": "startup",
+      "direction": "right",
       "zone": [
-        131,
-        269,
+        231,
+        254,
         16,
         23
       ],
       "attraction": [
-        131,
-        269,
+        231,
+        254,
         16,
         23
       ],
@@ -2422,30 +2422,30 @@
       "id": "startup-2-left",
       "enable": true,
       "lockable": true,
-      "play_once": true,
+      "play_once": false,
       "target": [
-        138,
-        280
+        238,
+        265
       ]
     },
     {
       "gametypes": [
-        "advanced",
-        "basic"
+        "basic",
+        "advanced"
       ],
       "insound": null,
       "outsound": null,
-      "action": "poker",
-      "direction": "up",
+      "action": "startup",
+      "direction": "down",
       "zone": [
-        168,
-        245,
+        253,
+        235,
         26,
         17
       ],
       "attraction": [
-        168,
-        245,
+        253,
+        235,
         26,
         17
       ],
@@ -2453,30 +2453,30 @@
       "id": "startup-2-up",
       "enable": true,
       "lockable": true,
-      "play_once": true,
+      "play_once": false,
       "target": [
-        180,
-        253
+        265,
+        243
       ]
     },
     {
       "gametypes": [
-        "advanced",
-        "basic"
+        "basic",
+        "advanced"
       ],
       "insound": null,
       "outsound": null,
-      "action": "poker",
-      "direction": "right",
+      "action": "startup",
+      "direction": "left",
       "zone": [
-        213,
-        258,
+        284,
+        250,
         16,
         39
       ],
       "attraction": [
-        213,
-        258,
+        284,
+        250,
         16,
         39
       ],
@@ -2484,30 +2484,30 @@
       "id": "startup-2-right",
       "enable": true,
       "lockable": true,
-      "play_once": true,
+      "play_once": false,
       "target": [
-        220,
-        277
+        291,
+        269
       ]
     },
     {
       "gametypes": [
-        "advanced",
-        "basic"
+        "basic",
+        "advanced"
       ],
       "insound": null,
       "outsound": null,
-      "action": "poker",
-      "direction": "down",
+      "action": "startup",
+      "direction": "up",
       "zone": [
-        164,
-        292,
+        245,
+        281,
         37,
         15
       ],
       "attraction": [
-        164,
-        292,
+        245,
+        281,
         37,
         15
       ],
@@ -2515,30 +2515,30 @@
       "id": "startup-2-down",
       "enable": true,
       "lockable": true,
-      "play_once": true,
+      "play_once": false,
       "target": [
-        182,
-        299
+        263,
+        288
       ]
     },
     {
       "gametypes": [
-        "advanced",
-        "basic"
+        "basic",
+        "advanced"
       ],
       "insound": null,
       "outsound": null,
-      "action": "poker",
-      "direction": "left",
+      "action": "startup",
+      "direction": "right",
       "zone": [
-        412,
-        240,
+        338,
+        186,
         30,
         27
       ],
       "attraction": [
-        412,
-        240,
+        338,
+        186,
         30,
         27
       ],
@@ -2548,28 +2548,28 @@
       "lockable": true,
       "play_once": false,
       "target": [
-        426,
-        253
+        352,
+        199
       ]
     },
     {
       "gametypes": [
-        "advanced",
-        "basic"
+        "basic",
+        "advanced"
       ],
       "insound": null,
       "outsound": null,
-      "action": "poker",
-      "direction": "up",
+      "action": "startup",
+      "direction": "down",
       "zone": [
-        457,
-        201,
+        376,
+        160,
         33,
         25
       ],
       "attraction": [
-        457,
-        201,
+        376,
+        160,
         33,
         25
       ],
@@ -2579,28 +2579,28 @@
       "lockable": true,
       "play_once": false,
       "target": [
-        473,
-        213
+        392,
+        172
       ]
     },
     {
       "gametypes": [
-        "advanced",
-        "basic"
+        "basic",
+        "advanced"
       ],
       "insound": null,
       "outsound": null,
-      "action": "poker",
-      "direction": "right",
+      "action": "startup",
+      "direction": "left",
       "zone": [
-        507,
-        234,
+        413,
+        182,
         27,
         35
       ],
       "attraction": [
-        507,
-        234,
+        413,
+        182,
         27,
         35
       ],
@@ -2610,28 +2610,28 @@
       "lockable": true,
       "play_once": false,
       "target": [
-        520,
-        251
+        426,
+        199
       ]
     },
     {
       "gametypes": [
-        "advanced",
-        "basic"
+        "basic",
+        "advanced"
       ],
       "insound": null,
       "outsound": null,
-      "action": "poker",
-      "direction": "down",
+      "action": "startup",
+      "direction": "up",
       "zone": [
-        446,
-        281,
+        365,
+        215,
         52,
         19
       ],
       "attraction": [
-        446,
-        281,
+        365,
+        215,
         52,
         19
       ],
@@ -2641,28 +2641,28 @@
       "lockable": true,
       "play_once": false,
       "target": [
-        471,
-        290
+        390,
+        224
       ]
     },
     {
       "gametypes": [
-        "advanced",
-        "basic"
+        "basic",
+        "advanced"
       ],
       "insound": null,
       "outsound": null,
-      "action": "poker",
-      "direction": "left",
+      "action": "startup",
+      "direction": "right",
       "zone": [
-        494,
-        105,
+        472,
+        120,
         36,
         28
       ],
       "attraction": [
-        494,
-        105,
+        472,
+        120,
         36,
         28
       ],
@@ -2670,30 +2670,30 @@
       "id": "startup-4-left",
       "enable": true,
       "lockable": true,
-      "play_once": true,
+      "play_once": false,
       "target": [
-        511,
-        118
+        489,
+        133
       ]
     },
     {
       "gametypes": [
-        "advanced",
-        "basic"
+        "basic",
+        "advanced"
       ],
       "insound": null,
       "outsound": null,
-      "action": "poker",
-      "direction": "up",
+      "action": "startup",
+      "direction": "down",
       "zone": [
-        535,
-        78,
+        506,
+        90,
         35,
         28
       ],
       "attraction": [
-        535,
-        78,
+        506,
+        90,
         35,
         28
       ],
@@ -2701,30 +2701,30 @@
       "id": "startup-4-up",
       "enable": true,
       "lockable": true,
-      "play_once": true,
+      "play_once": false,
       "target": [
-        552,
-        91
+        523,
+        103
       ]
     },
     {
       "gametypes": [
-        "advanced",
-        "basic"
+        "basic",
+        "advanced"
       ],
       "insound": null,
       "outsound": null,
-      "action": "poker",
-      "direction": "right",
+      "action": "startup",
+      "direction": "left",
       "zone": [
-        580,
-        98,
+        544,
+        115,
         20,
         40
       ],
       "attraction": [
-        580,
-        98,
+        544,
+        115,
         20,
         40
       ],
@@ -2732,30 +2732,30 @@
       "id": "startup-4-right",
       "enable": true,
       "lockable": true,
-      "play_once": true,
+      "play_once": false,
       "target": [
-        589,
-        117
+        553,
+        134
       ]
     },
     {
       "gametypes": [
-        "advanced",
-        "basic"
+        "basic",
+        "advanced"
       ],
       "insound": null,
       "outsound": null,
-      "action": "poker",
-      "direction": "down",
+      "action": "startup",
+      "direction": "up",
       "zone": [
-        531,
-        137,
+        498,
+        150,
         42,
         19
       ],
       "attraction": [
-        531,
-        137,
+        498,
+        150,
         42,
         19
       ],
@@ -2763,10 +2763,10 @@
       "id": "startup-4-down",
       "enable": true,
       "lockable": true,
-      "play_once": true,
+      "play_once": false,
       "target": [
-        551,
-        146
+        518,
+        159
       ]
     }
   ],
@@ -3374,6 +3374,32 @@
   ],
   "npcs": [
     {
+      "file": "resources/animdata/banjo.json",
+      "gametypes": [
+        "basic",
+        "advanced"
+      ],
+      "type": "loop",
+      "position": [
+        324,
+        109
+      ],
+      "switch": 352
+    },
+    {
+      "file": "resources/animdata/saloon-door-a.json",
+      "gametypes": [
+        "basic",
+        "advanced"
+      ],
+      "type": "saloon-door",
+      "position": [
+        0, 0
+      ],
+      "switch": 94,
+      "zone": [95, 62, 47, 29]
+    },
+    {
       "file": "resources/animdata/chicken.json",
       "gametypes": [
         "basic",
@@ -3434,15 +3460,6 @@
         0
       ],
       "y": 143
-    },
-    {
-      "type": "props",
-      "file": "resources/sets/street/ANI-portesaloon.png",
-      "position": [
-        96,
-        55
-      ],
-      "y": 94
     },
     {
       "type": "props",

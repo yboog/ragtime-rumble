@@ -9,7 +9,7 @@ DOG_BARK_DISTANCE = 40
 GAMETYPES = ['advanced', 'basic']
 DEAD_ANIMATIONS = ['death', 'coma']
 LOOPING_ANIMATIONS = [
-    'idle', 'walk', 'piano', 'poker',
+    'idle', 'walk', 'piano', 'poker', 'startup',
     'suspicious', 'balcony', 'victory', 'defeat']
 HOLDABLE_ANIMATIONS = ['call', 'death', 'coma']
 SMOOTH_PATH_SELECTION_RADIUS = 50

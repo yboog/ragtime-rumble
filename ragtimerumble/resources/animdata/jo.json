@@ -982,6 +982,61 @@
         6
       ],
       "startframe": 178
+    },
+    "startup": {
+      "exposures": [
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        6
+      ],
+      "startframe": 186
+    },
+    "sweating": {
+      "exposures": [
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        6
+      ],
+      "startframe": 204
+    },
+    "water": {
+      "exposures": [
+        6
+      ],
+      "startframe": 225
     }
   },
   "filepath": "resources/skins/jo.png"

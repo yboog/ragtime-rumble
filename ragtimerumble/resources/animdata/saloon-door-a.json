@@ -1,0 +1,43 @@
+{
+  "name": "saloon-door",
+  "type": "saloon-door-a",
+  "y": -1000,
+  "framesize": [
+    181,
+    117
+  ],
+  "filepath": "resources/skins/saloon-door-a.png",
+  "animations": {
+    "opened": {
+      "exposures": [
+        6
+      ],
+      "startframe": 0
+    },
+    "closed": {
+      "exposures": [
+        6
+      ],
+      "startframe": 1
+    },
+    "closing": {
+      "exposures": [
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        6
+      ],
+      "startframe": 2
+    }
+  }
+}

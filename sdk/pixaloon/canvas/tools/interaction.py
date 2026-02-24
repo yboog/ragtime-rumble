@@ -27,6 +27,7 @@ class InteractionTool(NavigationTool):
         self.editing_index = None
         self.new_shape_data = None
         self.close_new_shape = False
+        self.mouse_offsets = None
 
     def mousePressEvent(self, event):
         if event.button() != QtCore.Qt.LeftButton:
@@ -35,6 +36,35 @@ class InteractionTool(NavigationTool):
             return self.mouse_press_selection(event)
         if self.toolmode.mode == ToolMode.CREATE:
             return self.mouse_press_create(event)
+        if self.toolmode.mode == ToolMode.EDIT:
+            return self.mouse_press_edit(event)
+
+    def mouse_press_selection(self, event):
+        qpoint = self.document.viewportmapper.to_units_coords(event.pos())
+        qpoint = qpoint.toPoint()
+        for i, interaction in enumerate(self.document.data['interactions']):
+            rect = QtCore.QRect(*interaction['attraction'])
+            if rect.contains(qpoint):
+                self.selection.tool = Selection.INTERACTION
+                self.selection.data = i
+                self.selection.changed.emit(self)
+                return
+
+            self.selection.clear()
+            self.selection.changed.emit(self)
+
+    def mouse_press_edit(self, event):
+        self.mouse_press_selection(event)
+        if not self.selection:
+            self.mouse_offsets = None
+            return
+
+        interaction = self.document.data['interactions'][self.selection.data]
+        cursor = self.viewportmapper.to_units_coords(event.pos())
+        self.mouse_offsets = {
+            'zone': cursor - QtCore.QPointF(*interaction['zone'][:2]),
+            'attraction': cursor - QtCore.QPointF(*interaction['attraction'][:2]),
+            'target': cursor - QtCore.QPointF(*interaction['target'][:2])}
 
     def mouse_press_create(self, event):
         qpoint = self.document.viewportmapper.to_units_coords(event.pos())
@@ -47,9 +77,31 @@ class InteractionTool(NavigationTool):
         if super().mouseMoveEvent(event):
             return
         qpoint = self.document.viewportmapper.to_units_coords(event.pos())
-        qpoint = qpoint.toPoint()
-        point = [int(v) for v in qpoint.toTuple()]
+
+        if self.toolmode.mode == ToolMode.EDIT and self.selection:
+            if not self.navigator.left_pressed:
+                return
+            # Offset attraction
+            inter = self.document.data['interactions'][self.selection.data]
+            tl = (qpoint - self.mouse_offsets['attraction']).toTuple()
+            attraction = inter['attraction']
+            attraction = [int(v) for v in [*tl, *inter['attraction'][2:]]]
+            inter['attraction'] = attraction
+            # Offset zone
+            tl = (qpoint - self.mouse_offsets['zone']).toTuple()
+            zone = inter['zone']
+            zone = [int(v) for v in [*tl, *inter['zone'][2:]]]
+            inter['zone'] = zone
+            # Offset Target
+            target = (qpoint - self.mouse_offsets['target']).toTuple()
+            inter['target'] = target
+            # Update data
+            self.document.data['interactions'][self.selection.data] = inter
+            self.document.edited.emit()
+            self.selection.changed.emit(self)
         if self.toolmode.mode == ToolMode.CREATE and self.new_shape_data:
+            qpoint = qpoint.toPoint()
+            point = [int(v) for v in qpoint.toTuple()]
             self.new_shape_data[1] = point
 
     def mouseReleaseEvent(self, event):
@@ -76,21 +128,6 @@ class InteractionTool(NavigationTool):
     def create_new_shape(self, point):
         tl_bl = [point, [point[0] + 1, point[1] + 1]]
         self.new_shape_data = tl_bl
-
-    def mouse_press_selection(self, event):
-        qpoint = self.document.viewportmapper.to_units_coords(event.pos())
-        qpoint = qpoint.toPoint()
-        # point = [int(v) for v in qpoint.toTuple()]
-        for i, interaction in enumerate(self.document.data['interactions']):
-            rect = QtCore.QRect(*interaction['attraction'])
-            if rect.contains(qpoint):
-                self.selection.tool = Selection.INTERACTION
-                self.selection.data = i
-                self.selection.changed.emit(self)
-                return
-
-            self.selection.clear()
-            self.selection.changed.emit(self)
 
     def draw(self, painter):
         match self.toolmode.mode:
@@ -126,13 +163,4 @@ class InteractionTool(NavigationTool):
             self.viewportmapper.to_viewport_coords(QtCore.QPoint(*p))
             for p in data])
         painter.drawPolygon(polygon)
-        if self.close_new_shape:
-            pen = QtGui.QPen(color)
-            radius = self.viewportmapper.to_viewport(3)
-            painter.setPen(pen)
-            p = QtCore.QPoint(*data[0])
-            p = self.viewportmapper.to_viewport_coords(p)
-            p.setX(p.x() + self.viewportmapper.to_viewport(0.5))
-            p.setY(p.y() + self.viewportmapper.to_viewport(0.5))
-            painter.drawEllipse(p, radius, radius)
 

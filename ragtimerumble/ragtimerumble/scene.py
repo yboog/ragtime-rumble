@@ -20,7 +20,8 @@ from ragtimerumble.duel import find_possible_duels
 from ragtimerumble.io import (
     load_image, load_data, image_mirror, choice_display_name,
     choice_kill_sentence, load_frames)
-from ragtimerumble.npc import Npc, Pianist, Barman, Sniper, Dog, Chicken
+from ragtimerumble.npc import (
+    Npc, Pianist, Barman, Sniper, Dog, Chicken, Loop, SaloonDoor)
 from ragtimerumble.sprite import SpriteSheet, image_index_from_exposures
 
 
@@ -29,7 +30,9 @@ NPC_TYPES = {
     'pianist': Pianist,
     'barman': Barman,
     'sniper': Sniper,
+    'saloon-door': SaloonDoor,
     'dog': Dog,
+    'loop': Loop
 }
 
 
