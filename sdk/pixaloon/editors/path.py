@@ -3,11 +3,14 @@ from PySide6 import QtWidgets
 from pixaloon.editors.base import BaseEditor
 from pixaloon.selection import Selection
 from pixaloon.intarrayeditor import IntArrayListEditor
+from pixaloon.widgets import GameTypesSelector
 
 
 class PathEditor(BaseEditor):
     def __init__(self, parent=None):
         super().__init__(parent)
+        self.gametypes = GameTypesSelector()
+        self.gametypes.edited.connect(self.values_changed)
         self.points = IntArrayListEditor(resizable=True)
         self.points.row_selected.connect(self._point_selected)
         self.points.values_changed.connect(self.values_changed)
@@ -19,6 +22,7 @@ class PathEditor(BaseEditor):
 
         self.add_row('Hard', self.hard)
         self.add_row('Points', self.points)
+        self.add_row('Game types', self.gametypes)
         self.old_selection = None
 
     def selection_changed(self):
@@ -35,6 +39,7 @@ class PathEditor(BaseEditor):
         path = self.document.data['paths'][selection.data[0]]
         self.points.set_values(path['points'])
         self.hard.setCurrentIndex(int(path['hard']))
+        self.gametypes.set_game_types(path['gametypes'])
         self.block_signals(False)
 
     def point_selected(self, row):
@@ -57,5 +62,6 @@ class PathEditor(BaseEditor):
 
     def data(self):
         return {
+            'gametypes': self.gametypes.game_types(),
             'hard': bool(self.hard.currentIndex()),
             'points': self.points.values()}

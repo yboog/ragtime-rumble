@@ -8,6 +8,7 @@ from pixaloon.editors.background import BackgroundEditor
 from pixaloon.editors.interaction import InteractionEditor
 from pixaloon.editors.overlay import OverlayEditor
 from pixaloon.editors.path import PathEditor
+from pixaloon.editors.popspot import PopspotEditor
 from pixaloon.editors.prop import PropEditor
 from pixaloon.editors.square import (
     NoGoZoneEditor, WallsEditor, FenceEditor, StairEditor, ShadowEditor,
@@ -37,6 +38,7 @@ class AttributeEditor(QtWidgets.QWidget):
             Selection.FENCE: FenceEditor,
             Selection.BACKGROUND: BackgroundEditor,
             Selection.INTERACTION: InteractionEditor,
+            Selection.POPSPOT: PopspotEditor,
             Selection.STAIR: StairEditor,
             Selection.OVERLAY: OverlayEditor,
             Selection.BGPH: PlaceHolderEditor,

@@ -10,6 +10,8 @@ class PopSpotTool(NavigationTool):
         self.editing_index = None
 
     def mousePressEvent(self, event):
+        if event.button() != QtCore.Qt.LeftButton:
+            return
         if self.toolmode.mode == ToolMode.SELECTION:
             return
         qpoint = self.document.viewportmapper.to_units_coords(event.pos())
@@ -20,7 +22,9 @@ class PopSpotTool(NavigationTool):
                     self.editing_index = i
                     return
             return
-        self.document.data['popspots'].append(point)
+        self.document.data['popspots'].append({
+            'gametypes': self.document.gametypes_display_filters,
+            'position': point})
         self.document.edited.emit()
         self.editing_index = -1
 
@@ -34,7 +38,7 @@ class PopSpotTool(NavigationTool):
             return True
         qpoint = self.document.viewportmapper.to_units_coords(event.pos())
         point = [int(v) for v in qpoint.toTuple()]
-        self.document.data['popspots'][self.editing_index] = point
+        self.document.data['popspots'][self.editing_index]['position'] = point
         self.document.edited.emit()
         return True
 
@@ -43,7 +47,7 @@ class PopSpotTool(NavigationTool):
             return super().mouseReleaseEvent(event)
         qpoint = self.viewportmapper.to_units_coords(event.pos())
         point = [int(v) for v in qpoint.toTuple()]
-        self.document.data['popspots'][self.editing_index] = point
+        self.document.data['popspots'][self.editing_index]['position'] = point
         self.document.edited.emit()
         self.editing_index = None
         return super().mouseReleaseEvent(event)
@@ -54,7 +58,8 @@ class PopSpotTool(NavigationTool):
         qpoint = self.canvas.mapFromGlobal(QtGui.QCursor.pos())
         point = self.document.viewportmapper.to_units_coords(qpoint)
         point = [int(v) for v in point.toTuple()]
-        for point2 in self.document.data['popspots']:
+        for data in self.document.data['popspots']:
+            point2 = data['position']
             distance(point, point2)
             if distance(point, point2) < 2:
                 pen = QtGui.QPen(QtGui.QColor(255, 255, 0, 50))

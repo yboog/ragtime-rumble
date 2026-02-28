@@ -210,7 +210,7 @@ class PopspotsModel(AbstractTableModel):
             return
 
         if role in (QtCore.Qt.DisplayRole, QtCore.Qt.EditRole):
-            return str(self.document.data['popspots'][index.row()])
+            return str(self.document.data['popspots'][index.row()]['position'])
 
 
 class BackgroundsModel(AbstractTableModel):

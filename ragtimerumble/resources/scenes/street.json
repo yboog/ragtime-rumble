@@ -56,7 +56,11 @@
           97
         ]
       ],
-      "hard": true
+      "hard": true,
+      "gametypes": [
+        "advanced",
+        "basic"
+      ]
     },
     {
       "points": [
@@ -105,7 +109,11 @@
           336
         ]
       ],
-      "hard": true
+      "hard": true,
+      "gametypes": [
+        "advanced",
+        "basic"
+      ]
     },
     {
       "points": [
@@ -158,7 +166,11 @@
           126
         ]
       ],
-      "hard": true
+      "hard": true,
+      "gametypes": [
+        "advanced",
+        "basic"
+      ]
     },
     {
       "points": [
@@ -195,7 +207,11 @@
           101
         ]
       ],
-      "hard": true
+      "hard": true,
+      "gametypes": [
+        "advanced",
+        "basic"
+      ]
     },
     {
       "points": [
@@ -228,7 +244,10 @@
           97
         ]
       ],
-      "hard": true
+      "hard": true,
+      "gametypes": [
+        "basic"
+      ]
     },
     {
       "points": [
@@ -277,7 +296,11 @@
           200
         ]
       ],
-      "hard": true
+      "hard": true,
+      "gametypes": [
+        "advanced",
+        "basic"
+      ]
     },
     {
       "points": [
@@ -306,7 +329,10 @@
           338
         ]
       ],
-      "hard": true
+      "hard": true,
+      "gametypes": [
+        "basic"
+      ]
     },
     {
       "points": [
@@ -363,7 +389,11 @@
           45
         ]
       ],
-      "hard": true
+      "hard": true,
+      "gametypes": [
+        "advanced",
+        "basic"
+      ]
     },
     {
       "points": [
@@ -408,7 +438,11 @@
           210
         ]
       ],
-      "hard": true
+      "hard": true,
+      "gametypes": [
+        "advanced",
+        "basic"
+      ]
     },
     {
       "points": [
@@ -422,10 +456,10 @@
         ],
         [
           350,
-          226
+          200
         ],
         [
-          467,
+          438,
           107
         ],
         [
@@ -453,7 +487,11 @@
           102
         ]
       ],
-      "hard": true
+      "hard": true,
+      "gametypes": [
+        "basic",
+        "advanced"
+      ]
     },
     {
       "points": [
@@ -478,7 +516,10 @@
           170
         ]
       ],
-      "hard": true
+      "hard": true,
+      "gametypes": [
+        "basic"
+      ]
     },
     {
       "points": [
@@ -527,7 +568,11 @@
           118
         ]
       ],
-      "hard": true
+      "hard": true,
+      "gametypes": [
+        "advanced",
+        "basic"
+      ]
     },
     {
       "points": [
@@ -548,7 +593,11 @@
           109
         ]
       ],
-      "hard": true
+      "hard": true,
+      "gametypes": [
+        "advanced",
+        "basic"
+      ]
     },
     {
       "points": [
@@ -585,7 +634,11 @@
           112
         ]
       ],
-      "hard": true
+      "hard": true,
+      "gametypes": [
+        "advanced",
+        "basic"
+      ]
     },
     {
       "points": [
@@ -662,7 +715,11 @@
           219
         ]
       ],
-      "hard": true
+      "hard": true,
+      "gametypes": [
+        "advanced",
+        "basic"
+      ]
     },
     {
       "points": [
@@ -719,7 +776,11 @@
           187
         ]
       ],
-      "hard": true
+      "hard": true,
+      "gametypes": [
+        "advanced",
+        "basic"
+      ]
     },
     {
       "points": [
@@ -792,7 +853,11 @@
           169
         ]
       ],
-      "hard": true
+      "hard": true,
+      "gametypes": [
+        "advanced",
+        "basic"
+      ]
     },
     {
       "points": [
@@ -833,7 +898,11 @@
           180
         ]
       ],
-      "hard": true
+      "hard": true,
+      "gametypes": [
+        "advanced",
+        "basic"
+      ]
     },
     {
       "points": [
@@ -898,7 +967,11 @@
           99
         ]
       ],
-      "hard": true
+      "hard": true,
+      "gametypes": [
+        "advanced",
+        "basic"
+      ]
     },
     {
       "points": [
@@ -927,7 +1000,11 @@
           105
         ]
       ],
-      "hard": true
+      "hard": true,
+      "gametypes": [
+        "advanced",
+        "basic"
+      ]
     },
     {
       "points": [
@@ -980,7 +1057,10 @@
           280
         ]
       ],
-      "hard": false
+      "hard": false,
+      "gametypes": [
+        "basic"
+      ]
     },
     {
       "points": [
@@ -1009,7 +1089,11 @@
           293
         ]
       ],
-      "hard": false
+      "hard": false,
+      "gametypes": [
+        "advanced",
+        "basic"
+      ]
     },
     {
       "points": [
@@ -1042,7 +1126,10 @@
           228
         ]
       ],
-      "hard": false
+      "hard": false,
+      "gametypes": [
+        "basic"
+      ]
     },
     {
       "points": [
@@ -1075,7 +1162,11 @@
           128
         ]
       ],
-      "hard": false
+      "hard": false,
+      "gametypes": [
+        "advanced",
+        "basic"
+      ]
     },
     {
       "points": [
@@ -1100,7 +1191,10 @@
           342
         ]
       ],
-      "hard": false
+      "hard": false,
+      "gametypes": [
+        "basic"
+      ]
     },
     {
       "points": [
@@ -1129,7 +1223,11 @@
           237
         ]
       ],
-      "hard": false
+      "hard": false,
+      "gametypes": [
+        "advanced",
+        "basic"
+      ]
     },
     {
       "points": [
@@ -1162,7 +1260,11 @@
           348
         ]
       ],
-      "hard": false
+      "hard": false,
+      "gametypes": [
+        "advanced",
+        "basic"
+      ]
     },
     {
       "points": [
@@ -1191,7 +1293,10 @@
           299
         ]
       ],
-      "hard": false
+      "hard": false,
+      "gametypes": [
+        "basic"
+      ]
     },
     {
       "points": [
@@ -1216,7 +1321,11 @@
           115
         ]
       ],
-      "hard": false
+      "hard": false,
+      "gametypes": [
+        "advanced",
+        "basic"
+      ]
     },
     {
       "points": [
@@ -1245,7 +1354,10 @@
           287
         ]
       ],
-      "hard": false
+      "hard": false,
+      "gametypes": [
+        "basic"
+      ]
     },
     {
       "points": [
@@ -1282,7 +1394,10 @@
           187
         ]
       ],
-      "hard": false
+      "hard": false,
+      "gametypes": [
+        "basic"
+      ]
     },
     {
       "points": [
@@ -1307,7 +1422,10 @@
           262
         ]
       ],
-      "hard": false
+      "hard": false,
+      "gametypes": [
+        "basic"
+      ]
     },
     {
       "points": [
@@ -1328,7 +1446,11 @@
           210
         ]
       ],
-      "hard": false
+      "hard": false,
+      "gametypes": [
+        "advanced",
+        "basic"
+      ]
     },
     {
       "points": [
@@ -1353,7 +1475,10 @@
           274
         ]
       ],
-      "hard": false
+      "hard": false,
+      "gametypes": [
+        "basic"
+      ]
     },
     {
       "points": [
@@ -1382,7 +1507,11 @@
           208
         ]
       ],
-      "hard": false
+      "hard": false,
+      "gametypes": [
+        "advanced",
+        "basic"
+      ]
     },
     {
       "points": [
@@ -1427,7 +1556,10 @@
           316
         ]
       ],
-      "hard": false
+      "hard": false,
+      "gametypes": [
+        "basic"
+      ]
     },
     {
       "points": [
@@ -1468,7 +1600,10 @@
           322
         ]
       ],
-      "hard": false
+      "hard": false,
+      "gametypes": [
+        "basic"
+      ]
     },
     {
       "points": [
@@ -1509,7 +1644,10 @@
           232
         ]
       ],
-      "hard": false
+      "hard": false,
+      "gametypes": [
+        "basic"
+      ]
     },
     {
       "points": [
@@ -1530,7 +1668,11 @@
           77
         ]
       ],
-      "hard": true
+      "hard": true,
+      "gametypes": [
+        "advanced",
+        "basic"
+      ]
     },
     {
       "points": [
@@ -1559,7 +1701,11 @@
           171
         ]
       ],
-      "hard": true
+      "hard": true,
+      "gametypes": [
+        "advanced",
+        "basic"
+      ]
     },
     {
       "points": [
@@ -1616,7 +1762,10 @@
           294
         ]
       ],
-      "hard": false
+      "hard": false,
+      "gametypes": [
+        "basic"
+      ]
     },
     {
       "points": [
@@ -1645,7 +1794,10 @@
           341
         ]
       ],
-      "hard": false
+      "hard": false,
+      "gametypes": [
+        "basic"
+      ]
     },
     {
       "points": [
@@ -1698,7 +1850,11 @@
           209
         ]
       ],
-      "hard": true
+      "hard": true,
+      "gametypes": [
+        "advanced",
+        "basic"
+      ]
     },
     {
       "points": [
@@ -1725,6 +1881,806 @@
         [
           451,
           329
+        ]
+      ],
+      "hard": false,
+      "gametypes": [
+        "basic"
+      ]
+    },
+    {
+      "gametypes": [
+        "advanced"
+      ],
+      "points": [
+        [
+          165,
+          270
+        ],
+        [
+          203,
+          233
+        ],
+        [
+          291,
+          222
+        ],
+        [
+          340,
+          262
+        ],
+        [
+          343,
+          308
+        ],
+        [
+          392,
+          305
+        ],
+        [
+          443,
+          247
+        ],
+        [
+          471,
+          211
+        ],
+        [
+          537,
+          202
+        ],
+        [
+          620,
+          210
+        ],
+        [
+          620,
+          154
+        ],
+        [
+          582,
+          108
+        ],
+        [
+          518,
+          87
+        ],
+        [
+          471,
+          116
+        ],
+        [
+          431,
+          157
+        ],
+        [
+          392,
+          162
+        ]
+      ],
+      "hard": false
+    },
+    {
+      "gametypes": [
+        "advanced"
+      ],
+      "points": [
+        [
+          125,
+          289
+        ],
+        [
+          199,
+          302
+        ],
+        [
+          277,
+          337
+        ],
+        [
+          349,
+          327
+        ],
+        [
+          384,
+          278
+        ],
+        [
+          350,
+          236
+        ],
+        [
+          295,
+          218
+        ],
+        [
+          301,
+          187
+        ],
+        [
+          341,
+          171
+        ],
+        [
+          416,
+          161
+        ],
+        [
+          435,
+          183
+        ],
+        [
+          495,
+          188
+        ],
+        [
+          540,
+          174
+        ],
+        [
+          598,
+          168
+        ],
+        [
+          610,
+          129
+        ],
+        [
+          584,
+          94
+        ],
+        [
+          537,
+          92
+        ]
+      ],
+      "hard": false
+    },
+    {
+      "gametypes": [
+        "advanced"
+      ],
+      "points": [
+        [
+          202,
+          44
+        ],
+        [
+          303,
+          44
+        ],
+        [
+          303,
+          61
+        ],
+        [
+          361,
+          61
+        ],
+        [
+          361,
+          96
+        ],
+        [
+          379,
+          113
+        ],
+        [
+          474,
+          113
+        ]
+      ],
+      "hard": true
+    },
+    {
+      "gametypes": [
+        "advanced"
+      ],
+      "points": [
+        [
+          139,
+          110
+        ],
+        [
+          139,
+          169
+        ],
+        [
+          190,
+          168
+        ]
+      ],
+      "hard": true
+    },
+    {
+      "gametypes": [
+        "advanced"
+      ],
+      "points": [
+        [
+          200,
+          270
+        ],
+        [
+          249,
+          307
+        ],
+        [
+          338,
+          342
+        ],
+        [
+          434,
+          320
+        ],
+        [
+          437,
+          264
+        ],
+        [
+          446,
+          213
+        ],
+        [
+          452,
+          163
+        ],
+        [
+          392,
+          153
+        ],
+        [
+          349,
+          175
+        ],
+        [
+          337,
+          201
+        ]
+      ],
+      "hard": false
+    },
+    {
+      "gametypes": [
+        "advanced"
+      ],
+      "points": [
+        [
+          362,
+          278
+        ],
+        [
+          414,
+          264
+        ],
+        [
+          450,
+          224
+        ],
+        [
+          473,
+          190
+        ],
+        [
+          469,
+          142
+        ],
+        [
+          454,
+          116
+        ],
+        [
+          422,
+          110
+        ]
+      ],
+      "hard": false
+    },
+    {
+      "gametypes": [
+        "advanced"
+      ],
+      "points": [
+        [
+          496,
+          87
+        ],
+        [
+          466,
+          102
+        ],
+        [
+          461,
+          131
+        ],
+        [
+          469,
+          162
+        ],
+        [
+          508,
+          180
+        ],
+        [
+          554,
+          163
+        ],
+        [
+          567,
+          136
+        ]
+      ],
+      "hard": false
+    },
+    {
+      "gametypes": [
+        "advanced"
+      ],
+      "points": [
+        [
+          523,
+          94
+        ],
+        [
+          590,
+          96
+        ],
+        [
+          623,
+          139
+        ],
+        [
+          625,
+          175
+        ],
+        [
+          598,
+          212
+        ],
+        [
+          567,
+          225
+        ],
+        [
+          534,
+          228
+        ],
+        [
+          501,
+          229
+        ],
+        [
+          462,
+          233
+        ],
+        [
+          439,
+          251
+        ],
+        [
+          426,
+          273
+        ],
+        [
+          424,
+          291
+        ]
+      ],
+      "hard": false
+    },
+    {
+      "gametypes": [
+        "advanced"
+      ],
+      "points": [
+        [
+          414,
+          238
+        ],
+        [
+          391,
+          265
+        ],
+        [
+          405,
+          306
+        ],
+        [
+          408,
+          341
+        ],
+        [
+          378,
+          348
+        ],
+        [
+          352,
+          349
+        ],
+        [
+          328,
+          328
+        ],
+        [
+          324,
+          284
+        ],
+        [
+          319,
+          245
+        ],
+        [
+          301,
+          217
+        ],
+        [
+          283,
+          209
+        ],
+        [
+          231,
+          209
+        ],
+        [
+          204,
+          228
+        ],
+        [
+          195,
+          257
+        ],
+        [
+          194,
+          269
+        ],
+        [
+          169,
+          277
+        ],
+        [
+          154,
+          277
+        ]
+      ],
+      "hard": false
+    },
+    {
+      "gametypes": [
+        "advanced"
+      ],
+      "points": [
+        [
+          29,
+          221
+        ],
+        [
+          30,
+          261
+        ],
+        [
+          49,
+          278
+        ],
+        [
+          91,
+          298
+        ],
+        [
+          151,
+          298
+        ],
+        [
+          187,
+          289
+        ],
+        [
+          239,
+          306
+        ],
+        [
+          256,
+          337
+        ],
+        [
+          285,
+          320
+        ],
+        [
+          350,
+          335
+        ],
+        [
+          386,
+          305
+        ],
+        [
+          407,
+          302
+        ],
+        [
+          418,
+          285
+        ]
+      ],
+      "hard": false
+    },
+    {
+      "gametypes": [
+        "basic",
+        "advanced"
+      ],
+      "points": [
+        [
+          69,
+          213
+        ],
+        [
+          73,
+          246
+        ],
+        [
+          96,
+          261
+        ],
+        [
+          137,
+          257
+        ],
+        [
+          170,
+          242
+        ],
+        [
+          200,
+          225
+        ],
+        [
+          250,
+          213
+        ],
+        [
+          318,
+          215
+        ],
+        [
+          338,
+          229
+        ],
+        [
+          390,
+          252
+        ],
+        [
+          417,
+          239
+        ],
+        [
+          437,
+          206
+        ],
+        [
+          429,
+          176
+        ],
+        [
+          387,
+          161
+        ]
+      ],
+      "hard": false
+    },
+    {
+      "gametypes": [
+        "advanced"
+      ],
+      "points": [
+        [
+          511,
+          96
+        ],
+        [
+          571,
+          94
+        ],
+        [
+          591,
+          116
+        ],
+        [
+          591,
+          142
+        ],
+        [
+          565,
+          163
+        ],
+        [
+          527,
+          172
+        ],
+        [
+          495,
+          182
+        ],
+        [
+          486,
+          196
+        ],
+        [
+          451,
+          231
+        ],
+        [
+          433,
+          262
+        ],
+        [
+          434,
+          307
+        ],
+        [
+          447,
+          328
+        ]
+      ],
+      "hard": false
+    },
+    {
+      "gametypes": [
+        "advanced"
+      ],
+      "points": [
+        [
+          154,
+          287
+        ],
+        [
+          185,
+          267
+        ],
+        [
+          196,
+          236
+        ],
+        [
+          238,
+          217
+        ],
+        [
+          275,
+          210
+        ],
+        [
+          327,
+          231
+        ],
+        [
+          324,
+          274
+        ],
+        [
+          307,
+          297
+        ],
+        [
+          343,
+          329
+        ],
+        [
+          375,
+          338
+        ],
+        [
+          402,
+          336
+        ],
+        [
+          412,
+          326
+        ]
+      ],
+      "hard": false
+    },
+    {
+      "gametypes": [
+        "advanced"
+      ],
+      "points": [
+        [
+          439,
+          326
+        ],
+        [
+          434,
+          283
+        ],
+        [
+          401,
+          259
+        ],
+        [
+          367,
+          236
+        ],
+        [
+          350,
+          210
+        ],
+        [
+          346,
+          191
+        ],
+        [
+          362,
+          155
+        ],
+        [
+          389,
+          148
+        ],
+        [
+          415,
+          145
+        ],
+        [
+          439,
+          139
+        ],
+        [
+          452,
+          126
+        ],
+        [
+          456,
+          100
+        ],
+        [
+          444,
+          86
+        ]
+      ],
+      "hard": false
+    },
+    {
+      "gametypes": [
+        "advanced"
+      ],
+      "points": [
+        [
+          332,
+          251
+        ],
+        [
+          313,
+          220
+        ],
+        [
+          278,
+          196
+        ],
+        [
+          234,
+          193
+        ],
+        [
+          195,
+          202
+        ],
+        [
+          161,
+          205
+        ],
+        [
+          137,
+          197
+        ],
+        [
+          122,
+          181
+        ],
+        [
+          116,
+          170
         ]
       ],
       "hard": false
@@ -2750,162 +3706,535 @@
     }
   ],
   "popspots": [
-    [
-      25,
-      178
-    ],
-    [
-      360,
-      40
-    ],
-    [
-      379,
-      75
-    ],
-    [
-      302,
-      88
-    ],
-    [
-      356,
-      112
-    ],
-    [
-      123,
-      47
-    ],
-    [
-      232,
-      57
-    ],
-    [
-      120,
-      119
-    ],
-    [
-      291,
-      183
-    ],
-    [
-      361,
-      310
-    ],
-    [
-      358,
-      261
-    ],
-    [
-      62,
-      293
-    ],
-    [
-      38,
-      260
-    ],
-    [
-      15,
-      299
-    ],
-    [
-      612,
-      309
-    ],
-    [
-      564,
-      340
-    ],
-    [
-      557,
-      299
-    ],
-    [
-      457,
-      341
-    ],
-    [
-      418,
-      286
-    ],
-    [
-      616,
-      206
-    ],
-    [
-      591,
-      190
-    ],
-    [
-      468,
-      87
-    ],
-    [
-      604,
-      84
-    ],
-    [
-      418,
-      106
-    ],
-    [
-      592,
-      256
-    ],
-    [
-      397,
-      343
-    ],
-    [
-      309,
-      337
-    ],
-    [
-      242,
-      330
-    ],
-    [
-      171,
-      285
-    ],
-    [
-      208,
-      180
-    ],
-    [
-      197,
-      100
-    ],
-    [
-      538,
-      215
-    ],
-    [
-      489,
-      202
-    ],
-    [
-      25,
-      204
-    ],
-    [
-      504,
-      320
-    ],
-    [
-      331,
-      63
-    ],
-    [
-      539,
-      66
-    ],
-    [
-      621,
-      130
-    ],
-    [
-      433,
-      134
-    ]
+    {
+      "gametypes": [
+        "advanced",
+        "basic"
+      ],
+      "position": [
+        25,
+        178
+      ]
+    },
+    {
+      "gametypes": [
+        "advanced",
+        "basic"
+      ],
+      "position": [
+        360,
+        40
+      ]
+    },
+    {
+      "gametypes": [
+        "advanced",
+        "basic"
+      ],
+      "position": [
+        379,
+        75
+      ]
+    },
+    {
+      "gametypes": [
+        "advanced",
+        "basic"
+      ],
+      "position": [
+        302,
+        88
+      ]
+    },
+    {
+      "gametypes": [
+        "advanced",
+        "basic"
+      ],
+      "position": [
+        356,
+        112
+      ]
+    },
+    {
+      "gametypes": [
+        "advanced",
+        "basic"
+      ],
+      "position": [
+        123,
+        47
+      ]
+    },
+    {
+      "gametypes": [
+        "advanced",
+        "basic"
+      ],
+      "position": [
+        232,
+        57
+      ]
+    },
+    {
+      "gametypes": [
+        "advanced",
+        "basic"
+      ],
+      "position": [
+        120,
+        119
+      ]
+    },
+    {
+      "gametypes": [
+        "advanced",
+        "basic"
+      ],
+      "position": [
+        291,
+        183
+      ]
+    },
+    {
+      "gametypes": [
+        "advanced",
+        "basic"
+      ],
+      "position": [
+        361,
+        310
+      ]
+    },
+    {
+      "gametypes": [
+        "advanced",
+        "basic"
+      ],
+      "position": [
+        358,
+        261
+      ]
+    },
+    {
+      "gametypes": [
+        "advanced",
+        "basic"
+      ],
+      "position": [
+        62,
+        293
+      ]
+    },
+    {
+      "gametypes": [
+        "advanced",
+        "basic"
+      ],
+      "position": [
+        38,
+        260
+      ]
+    },
+    {
+      "gametypes": [
+        "advanced",
+        "basic"
+      ],
+      "position": [
+        15,
+        299
+      ]
+    },
+    {
+      "gametypes": [
+        "basic"
+      ],
+      "position": [
+        612,
+        309
+      ]
+    },
+    {
+      "gametypes": [
+        "basic"
+      ],
+      "position": [
+        564,
+        340
+      ]
+    },
+    {
+      "gametypes": [
+        "basic"
+      ],
+      "position": [
+        557,
+        299
+      ]
+    },
+    {
+      "gametypes": [
+        "basic"
+      ],
+      "position": [
+        457,
+        341
+      ]
+    },
+    {
+      "gametypes": [
+        "advanced",
+        "basic"
+      ],
+      "position": [
+        418,
+        286
+      ]
+    },
+    {
+      "gametypes": [
+        "advanced",
+        "basic"
+      ],
+      "position": [
+        616,
+        206
+      ]
+    },
+    {
+      "gametypes": [
+        "advanced",
+        "basic"
+      ],
+      "position": [
+        591,
+        190
+      ]
+    },
+    {
+      "gametypes": [
+        "advanced",
+        "basic"
+      ],
+      "position": [
+        468,
+        87
+      ]
+    },
+    {
+      "gametypes": [
+        "advanced",
+        "basic"
+      ],
+      "position": [
+        604,
+        84
+      ]
+    },
+    {
+      "gametypes": [
+        "advanced",
+        "basic"
+      ],
+      "position": [
+        418,
+        106
+      ]
+    },
+    {
+      "gametypes": [
+        "advanced",
+        "basic"
+      ],
+      "position": [
+        592,
+        256
+      ]
+    },
+    {
+      "gametypes": [
+        "advanced",
+        "basic"
+      ],
+      "position": [
+        397,
+        343
+      ]
+    },
+    {
+      "gametypes": [
+        "advanced",
+        "basic"
+      ],
+      "position": [
+        309,
+        337
+      ]
+    },
+    {
+      "gametypes": [
+        "advanced",
+        "basic"
+      ],
+      "position": [
+        242,
+        330
+      ]
+    },
+    {
+      "gametypes": [
+        "advanced",
+        "basic"
+      ],
+      "position": [
+        171,
+        285
+      ]
+    },
+    {
+      "gametypes": [
+        "advanced",
+        "basic"
+      ],
+      "position": [
+        208,
+        180
+      ]
+    },
+    {
+      "gametypes": [
+        "advanced",
+        "basic"
+      ],
+      "position": [
+        197,
+        100
+      ]
+    },
+    {
+      "gametypes": [
+        "advanced",
+        "basic"
+      ],
+      "position": [
+        538,
+        215
+      ]
+    },
+    {
+      "gametypes": [
+        "advanced",
+        "basic"
+      ],
+      "position": [
+        489,
+        202
+      ]
+    },
+    {
+      "gametypes": [
+        "advanced",
+        "basic"
+      ],
+      "position": [
+        25,
+        204
+      ]
+    },
+    {
+      "gametypes": [
+        "basic"
+      ],
+      "position": [
+        504,
+        320
+      ]
+    },
+    {
+      "gametypes": [
+        "advanced",
+        "basic"
+      ],
+      "position": [
+        331,
+        63
+      ]
+    },
+    {
+      "gametypes": [
+        "advanced",
+        "basic"
+      ],
+      "position": [
+        539,
+        66
+      ]
+    },
+    {
+      "gametypes": [
+        "advanced",
+        "basic"
+      ],
+      "position": [
+        621,
+        130
+      ]
+    },
+    {
+      "gametypes": [
+        "advanced",
+        "basic"
+      ],
+      "position": [
+        433,
+        134
+      ]
+    },
+    {
+      "gametypes": [
+        "advanced"
+      ],
+      "position": [
+        441,
+        244
+      ]
+    },
+    {
+      "gametypes": [
+        "advanced"
+      ],
+      "position": [
+        270,
+        345
+      ]
+    },
+    {
+      "gametypes": [
+        "advanced"
+      ],
+      "position": [
+        426,
+        323
+      ]
+    },
+    {
+      "gametypes": [
+        "advanced"
+      ],
+      "position": [
+        391,
+        126
+      ]
+    },
+    {
+      "gametypes": [
+        "advanced"
+      ],
+      "position": [
+        433,
+        75
+      ]
+    },
+    {
+      "gametypes": [
+        "advanced"
+      ],
+      "position": [
+        476,
+        100
+      ]
+    },
+    {
+      "gametypes": [
+        "advanced"
+      ],
+      "position": [
+        562,
+        87
+      ]
+    },
+    {
+      "gametypes": [
+        "advanced"
+      ],
+      "position": [
+        413,
+        90
+      ]
+    },
+    {
+      "gametypes": [
+        "advanced"
+      ],
+      "position": [
+        256,
+        102
+      ]
+    },
+    {
+      "gametypes": [
+        "advanced"
+      ],
+      "position": [
+        179,
+        139
+      ]
+    },
+    {
+      "gametypes": [
+        "advanced"
+      ],
+      "position": [
+        75,
+        106
+      ]
+    },
+    {
+      "gametypes": [
+        "advanced"
+      ],
+      "position": [
+        71,
+        181
+      ]
+    },
+    {
+      "gametypes": [
+        "advanced"
+      ],
+      "position": [
+        113,
+        304
+      ]
+    },
+    {
+      "gametypes": [
+        "advanced"
+      ],
+      "position": [
+        248,
+        295
+      ]
+    },
+    {
+      "gametypes": [
+        "advanced"
+      ],
+      "position": [
+        371,
+        283
+      ]
+    },
+    {
+      "gametypes": [
+        "advanced"
+      ],
+      "position": [
+        466,
+        170
+      ]
+    }
   ],
   "stairs": [],
   "backgrounds": [
@@ -2939,6 +4268,9 @@
           97,
           215
         ]
+      ],
+      "gametypes": [
+        "basic"
       ]
     },
     {
@@ -2962,6 +4294,9 @@
           152,
           81
         ]
+      ],
+      "gametypes": [
+        "basic"
       ]
     },
     {
@@ -2985,6 +4320,10 @@
           112,
           20
         ]
+      ],
+      "gametypes": [
+        "advanced",
+        "basic"
       ]
     },
     {
@@ -3002,6 +4341,9 @@
           186,
           68
         ]
+      ],
+      "gametypes": [
+        "basic"
       ]
     },
     {
@@ -3025,6 +4367,10 @@
           69,
           99
         ]
+      ],
+      "gametypes": [
+        "advanced",
+        "basic"
       ]
     },
     {
@@ -3060,6 +4406,9 @@
           130,
           39
         ]
+      ],
+      "gametypes": [
+        "basic"
       ]
     },
     {
@@ -3089,6 +4438,9 @@
           83,
           57
         ]
+      ],
+      "gametypes": [
+        "basic"
       ]
     },
     {
@@ -3118,6 +4470,10 @@
           119,
           85
         ]
+      ],
+      "gametypes": [
+        "advanced",
+        "basic"
       ]
     },
     {
@@ -3159,6 +4515,10 @@
           98,
           32
         ]
+      ],
+      "gametypes": [
+        "advanced",
+        "basic"
       ]
     },
     {
@@ -3188,6 +4548,10 @@
           42,
           96
         ]
+      ],
+      "gametypes": [
+        "advanced",
+        "basic"
       ]
     },
     {
@@ -3229,6 +4593,10 @@
           69,
           97
         ]
+      ],
+      "gametypes": [
+        "advanced",
+        "basic"
       ]
     },
     {
@@ -3258,6 +4626,10 @@
           99,
           89
         ]
+      ],
+      "gametypes": [
+        "advanced",
+        "basic"
       ]
     },
     {
@@ -3287,6 +4659,9 @@
           205,
           72
         ]
+      ],
+      "gametypes": [
+        "basic"
       ]
     },
     {
@@ -3315,6 +4690,170 @@
           286,
           155,
           73
+        ]
+      ],
+      "gametypes": [
+        "advanced",
+        "basic"
+      ]
+    },
+    {
+      "gametypes": [
+        "advanced"
+      ],
+      "origin": [
+        215,
+        282,
+        72,
+        74
+      ],
+      "weight": 3,
+      "destinations": [
+        [
+          293,
+          283,
+          163,
+          74
+        ],
+        [
+          140,
+          178,
+          103,
+          120
+        ],
+        [
+          376,
+          285,
+          80,
+          72
+        ]
+      ]
+    },
+    {
+      "gametypes": [
+        "advanced"
+      ],
+      "origin": [
+        507,
+        65,
+        132,
+        45
+      ],
+      "weight": 3,
+      "destinations": [
+        [
+          552,
+          110,
+          86,
+          117
+        ],
+        [
+          433,
+          64,
+          75,
+          46
+        ],
+        [
+          552,
+          111,
+          86,
+          114
+        ]
+      ]
+    },
+    {
+      "gametypes": [
+        "advanced"
+      ],
+      "origin": [
+        551,
+        111,
+        88,
+        44
+      ],
+      "weight": 3,
+      "destinations": [
+        [
+          509,
+          65,
+          130,
+          45
+        ],
+        [
+          552,
+          156,
+          84,
+          70
+        ]
+      ]
+    },
+    {
+      "gametypes": [
+        "advanced"
+      ],
+      "origin": [
+        550,
+        155,
+        90,
+        74
+      ],
+      "weight": 3,
+      "destinations": [
+        [
+          424,
+          150,
+          126,
+          78
+        ],
+        [
+          424,
+          151,
+          74,
+          71
+        ],
+        [
+          550,
+          68,
+          89,
+          43
+        ]
+      ]
+    },
+    {
+      "gametypes": [
+        "advanced"
+      ],
+      "origin": [
+        500,
+        152,
+        50,
+        111
+      ],
+      "weight": 3,
+      "destinations": [
+        [
+          426,
+          152,
+          72,
+          86
+        ],
+        [
+          551,
+          124,
+          88,
+          103
+        ],
+        [
+          389,
+          119,
+          84,
+          59
+        ],
+        [
+          414,
+          137,
+          76,
+          49
         ]
       ]
     }

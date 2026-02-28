@@ -18,9 +18,11 @@ class Document(QtCore.QObject):
         self.selection: Selection = Selection()
         self.navigator: Navigator = Navigator()
         self.gameroot = gameroot.replace('\\', '/')
-        self.elements_to_render = []
 
+        self.elements_to_render = []
+        self.gametypes_display_filters = ['basic', 'advanced']
         self.veil_alpha = 10
+
         self.overlays = []
         self.props = []
         self.backgrounds = []

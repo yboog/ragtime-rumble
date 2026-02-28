@@ -112,9 +112,11 @@ class ShadowEditor(BaseEditor):
         if not self.document:
             return
         try:
-            color = [int(v) for v in self.color.text().strip('[]()').split(',')]
+            color = [
+                int(v) for v in self.color.text().strip('[]()').split(',')]
         except ValueError:
-            QtWidgets.QMessageBox.critical(self, 'Invalid color, please write tuple')
+            QtWidgets.QMessageBox.critical(
+                self, 'Invalid color, please write tuple')
             return
         data = self.document.data['shadow_zones'][self.document.selection.data]
         data['color'] = color

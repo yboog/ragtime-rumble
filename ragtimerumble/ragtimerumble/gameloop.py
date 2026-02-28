@@ -18,11 +18,15 @@ from ragtimerumble.scores import VIRGIN_SCORES
 
 
 class GameLoop:
-    def __init__(self, unlocked_fps=False):
+    def __init__(
+            self, unlocked_fps=False,
+            default_scene=None,
+            loop_on_default_scene=False):
         self.status = LOOP_STATUSES.MENU
         self.unlocked_fps = unlocked_fps
         self.scene_path = None
-        self.scenes_iterator = scene_iterator()
+        self.scenes_iterator = scene_iterator(
+            default_scene, loop_on_default_scene)
         self.scenes_cache = {}
         self.scene = None
         self.dispatcher = None

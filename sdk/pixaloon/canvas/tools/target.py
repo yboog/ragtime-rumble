@@ -50,7 +50,11 @@ class TargetTool(NavigationTool):
             return
         rect = start_end_to_rect_data(*self.new_shape_data[1])
         if self.new_shape_data[0] == 'origin':
-            data = {'origin': rect, 'weight': 3, 'destinations': []}
+            data = {
+                'gametypes': self.document.gametypes_display_filters,
+                'origin': rect,
+                'weight': 3,
+                'destinations': []}
             self.document.data['targets'].append(data)
             self.selection.tool = Selection.TARGET
             self.selection.data = len(self.document.data['targets']) - 1, None

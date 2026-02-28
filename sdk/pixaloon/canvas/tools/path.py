@@ -29,9 +29,11 @@ class PathTool(NavigationTool):
         super().keyPressEvent(event)
         if event.key() != QtCore.Qt.Key.Key_Return or self.path_data is None:
             return
+
         self.document.data['paths'].append({
+            'gametypes': self.document.gametypes_display_filters,
             'points': [[int(p.x()), int(p.y())] for p in self.path_data],
-            'hard': True})
+            'hard': self.navigator.shift_pressed})
         self.document.edited.emit()
         self.selection.data = [len(self.document.data['paths']) - 1, None]
         self.selection.tool = Selection.PATH

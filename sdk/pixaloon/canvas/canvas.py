@@ -136,6 +136,7 @@ class LevelCanvas(QtWidgets.QWidget):
                     painter, self.document, self.document.viewportmapper)
         except BaseException as e:
             print('popspot', e)
+            raise
 
         try:
             if 'props' in self.document.elements_to_render:
@@ -167,7 +168,10 @@ class LevelCanvas(QtWidgets.QWidget):
 
         try:
             if 'targets' in self.document.elements_to_render:
+                filters = self.document.gametypes_display_filters
                 for target in self.document.data['targets']:
+                    if not any(gt in filters for gt in target['gametypes']):
+                        continue
                     paint_canvas_target(
                         painter=painter,
                         target=target,

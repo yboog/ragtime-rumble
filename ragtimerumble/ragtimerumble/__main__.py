@@ -10,13 +10,13 @@ from ragtimerumble.config import DISPLAY_MODES, LOOP_STATUSES
 from ragtimerumble.display import set_screen_display_mode, get_screen
 from ragtimerumble.gameloop import GameLoop
 from ragtimerumble.render import render_game
-from ragtimerumble.scene import scene_iterator
 from ragtimerumble import debug
 
 import argparse
 
 parser = argparse.ArgumentParser()
-parser.add_argument('-ds', '--default_scene', type=str)
+parser.add_argument('-ds', '--default_scene', type=str, default=None)
+parser.add_argument('-lods', '--loop_on_default_scene', action='store_true', default=False)
 parser.add_argument('-w', '--windowed', action='store_true', default=False)
 parser.add_argument('-ufps', '--unlocked_fps', action='store_true', default=False)
 parser.add_argument('-r', '--record_replay_filepath', type=str)
@@ -29,12 +29,12 @@ set_screen_display_mode(
 pygame.joystick.init()
 load_skins()
 load_main_resources()
-loop = GameLoop(unlocked_fps=arguments.unlocked_fps)
+loop = GameLoop(
+    unlocked_fps=arguments.unlocked_fps,
+    default_scene=arguments.default_scene,
+    loop_on_default_scene=arguments.loop_on_default_scene)
 
-loop.set_scene(
-    arguments.default_scene if
-    arguments.default_scene else
-    next(scene_iterator()))
+loop.set_scene(next(loop.scenes_iterator))
 
 replay = []
 while not loop.done:

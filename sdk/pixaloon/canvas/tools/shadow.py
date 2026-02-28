@@ -33,7 +33,7 @@ class ShadowTool(NavigationTool):
         data = {
             'color': (0, 0, 0, 100),
             'polygon': self.new_shape_data,
-            'gametypes': ['advanced', 'basic']}
+            'gametypes': self.document.gametypes_display_filters}
         self.document.data['shadow_zones'].append(data)
         self.document.edited.emit()
         self.selection.tool = Selection.SHADOW

@@ -327,6 +327,9 @@ class RunGameDialog(QtWidgets.QDialog):
         self.document = document
         self.default_scene = QtWidgets.QCheckBox('Test with current scene')
         self.default_scene.setChecked(True)
+        self.loop_on_default_scene = QtWidgets.QCheckBox('Loop on current scene')
+        self.loop_on_default_scene.setChecked(True)
+
 
         self.windowed = QtWidgets.QCheckBox('Windowed')
         self.windowed.setChecked(True)
@@ -359,6 +362,7 @@ class RunGameDialog(QtWidgets.QDialog):
         layout = QtWidgets.QVBoxLayout(self)
         layout.setContentsMargins(0, 0, 0, 0)
         layout.addWidget(self.default_scene)
+        layout.addWidget(self.loop_on_default_scene)
         layout.addWidget(self.windowed)
         layout.addWidget(self.record_replay)
         layout.addLayout(replay_layout)
@@ -377,6 +381,7 @@ class RunGameDialog(QtWidgets.QDialog):
             replay_path = replay_path if self.record_replay.isChecked() else None
             run_game(
                 document=self.document,
+                loop_on_default_scene=self.loop_on_default_scene.isChecked(),
                 windowed=self.windowed.isChecked(),
                 use_document_as_default_scene=self.default_scene.isChecked(),
                 record_replay_filepath=replay_path)

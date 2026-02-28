@@ -24,6 +24,10 @@ def paint_canvas_base(painter, document, viewportmapper, rect):
             img_rect = viewportmapper.to_viewport_rect(img_rect)
             painter.drawImage(img_rect, image)
         for prop, image in zip(document.data['props'], document.props):
+            filters = document.gametypes_display_filters
+            if not any(gt in filters for gt in prop['gametypes']):
+                continue
+
             x = prop['position'][0] - prop['center'][0]
             y = prop['position'][1] - prop['center'][1]
             point = QtCore.QPoint(x, y)
@@ -85,7 +89,7 @@ def paint_canvas_selection(painter, document, viewportmapper):
             painter.setPen(QtCore.Qt.white)
             painter.setBrush(QtCore.Qt.white)
             for row in document.selection.data:
-                x, y = document.data['popspots'][row]
+                x, y = document.data['popspots'][row]['position']
                 point = QtCore.QPoint(x, y)
                 point = viewportmapper.to_viewport_coords(point)
                 painter.drawEllipse(point, 4, 4)
@@ -214,7 +218,11 @@ def paint_scores(painter, document, viewportmapper):
 def paint_canvas_popspots(painter, document, viewportmapper):
     painter.setPen(QtCore.Qt.yellow)
     painter.setBrush(QtCore.Qt.yellow)
-    for x, y in document.data['popspots']:
+    for popspot in document.data['popspots']:
+        filters = document.gametypes_display_filters
+        if not any(gt in filters for gt in popspot['gametypes']):
+            continue
+        x, y = popspot['position']
         point = QtCore.QPoint(x, y)
         point = viewportmapper.to_viewport_coords(point)
         painter.drawEllipse(point, 2, 2)
@@ -222,6 +230,9 @@ def paint_canvas_popspots(painter, document, viewportmapper):
 
 def paint_canvas_props(painter, document, viewportmapper):
     for prop in document.data['props']:
+        filters = document.gametypes_display_filters
+        if not any(gt in filters for gt in prop['gametypes']):
+            continue
         color = QtGui.QColor('pink')
         pen = QtGui.QPen()
         pen.setWidth(viewportmapper.to_viewport(1))
@@ -268,6 +279,9 @@ def paint_selected_prop(painter, prop, image, viewportmapper):
 
 def paint_canvas_shadow_zones(painter, document, viewportmapper):
     for data in document.data['shadow_zones']:
+        filters = document.gametypes_display_filters
+        if not any(gt in filters for gt in data['gametypes']):
+            continue
         color = QtGui.QColor(*data['color'])
         paint_polygon(painter, data['polygon'], viewportmapper, color)
 
@@ -488,6 +502,9 @@ def paint_canvas_startups(painter, document, viewportmapper):
 def paint_canvas_paths(painter, document, viewportmapper):
     painter.setBrush(QtCore.Qt.NoBrush)
     for path in document.data['paths']:
+        filters = document.gametypes_display_filters
+        if not any(gt in filters for gt in path['gametypes']):
+            continue
         if path['hard']:
             pen = QtGui.QPen(QtCore.Qt.blue)
             pen.setWidth(2)

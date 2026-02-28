@@ -3,11 +3,15 @@ from pixaloon.selection import Selection
 from pixaloon.intlisteditor import IntListEditor
 from pixaloon.intarrayeditor import IntArrayListEditor
 from pixaloon.editors.base import BaseEditor
+from pixaloon.widgets import GameTypesSelector
 
 
 class TargetEditor(BaseEditor):
     def __init__(self, parent=None):
         super().__init__(parent)
+        self.gametypes = GameTypesSelector()
+        self.gametypes.edited.connect(self.values_changed)
+
         self.weight = QtWidgets.QSpinBox()
         self.weight.setMaximum(1_000_000_000)
 
@@ -21,6 +25,7 @@ class TargetEditor(BaseEditor):
         self.add_row('Weight', self.weight)
         self.add_row('Origin', self.origin)
         self.add_row('Destinations', self.destinations)
+        self.add_row('Game types', self.gametypes)
         self.old_selection = None
 
     def destination_selected(self, row):
@@ -47,12 +52,14 @@ class TargetEditor(BaseEditor):
         self.weight.setValue(target['weight'])
         self.origin.set_values(target['origin'])
         self.destinations.set_values(target['destinations'])
+        self.gametypes.set_game_types(target['gametypes'])
         self.block_signals(False)
 
     def values_changed(self):
         index = self.document.selection.data[0]
         target = self.document.data['targets'][index]
         target.update({
+            'gametypes': self.gametypes.game_types(),
             'origin': self.origin.values(),
             'weight': self.weight.value()})
         self.document.edited.emit()

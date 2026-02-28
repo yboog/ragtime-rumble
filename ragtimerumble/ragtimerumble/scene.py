@@ -36,12 +36,18 @@ NPC_TYPES = {
 }
 
 
-def scene_iterator():
+def scene_iterator(default_scene=None, loop_on_default_scene=False):
     scene_filepaths = [
         f'resources/scenes/{f}'
         for f in os.listdir(f'{GAMEROOT}/resources/scenes')
         if not f.startswith('_')]
+    if loop_on_default_scene and default_scene:
+        scene_filepaths = [default_scene]
     shuffle(scene_filepaths)
+    if default_scene and not loop_on_default_scene:
+        scene_filepaths.insert(0, default_scene)
+    import pprint
+    pprint.pprint(scene_filepaths)
     return itertools.cycle(scene_filepaths)
 
 
@@ -61,15 +67,9 @@ def load_scene(filename):
     scene.vfx = data['vfx']
     scene.no_go_zones = data['no_go_zones']
     scene.walls = data['walls']
-    scene.stairs = data['stairs']
-    scene.targets = data['targets']
     scene.fences = data['fences']
     scene.startups = data['startups']
-    scene.smooth_paths = [p['points'] for p in data['paths'] if not p['hard']]
-    scene.hard_paths = [p['points'] for p in data['paths'] if p['hard']]
-    popspots = data['popspots'][:]
-    random.shuffle(popspots)
-    scene.popspot_generator = itertools.cycle(popspots)
+    scene.stairs = data['stairs']
     scene.character_generator = itertools.cycle(data['characters'])
 
     position = data['score']['ol']['position']
@@ -94,6 +94,10 @@ def depopulate_scene(scene, clear_players=True):
         scene.life_positions.clear()
         scene.life_images.clear()
         scene.bullet_images.clear()
+
+    scene.targets.clear()
+    scene.smooth_paths.clear()
+    scene.hard_paths.clear()
     scene.secondary_npcs.clear()
     scene.shadow_zones.clear()
     scene.interaction_zones.clear()
@@ -153,6 +157,19 @@ def populate_scene(filename, scene, gametype):
         visible_at_dispatch = prop['visible_at_dispatch']
         prop = Prop(image, position, center, box, visible_at_dispatch, scene)
         scene.props.append(prop)
+
+    popspots = [
+        p['position'] for p in data['popspots'] if gametype in p['gametypes']]
+    random.shuffle(popspots)
+    scene.popspot_generator = itertools.cycle(popspots)
+
+    scene.targets = [t for t in data['targets'] if gametype in t['gametypes']]
+    scene.smooth_paths = [
+        p['points'] for p in data['paths'] if
+        not p['hard'] and gametype in p['gametypes']]
+    scene.hard_paths = [
+        p['points'] for p in data['paths'] if
+        p['hard'] and gametype in p['gametypes']]
 
     return scene
 

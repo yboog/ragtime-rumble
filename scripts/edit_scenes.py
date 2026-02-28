@@ -16,3 +16,7 @@ for file in files:
         target['gametypes'] = ['advanced', 'basic']
 
     popspots = [{'gametypes': ['advanced', 'basic'], 'position': p} for p in data['popspots']]
+    data['popspots'] = popspots
+
+    with open(file, 'w') as f:
+        json.dump(data, f, indent=2)
