@@ -17,7 +17,7 @@ class Document(QtCore.QObject):
         self.viewportmapper: ViewportMapper = ViewportMapper()
         self.selection: Selection = Selection()
         self.navigator: Navigator = Navigator()
-        self.gameroot = gameroot
+        self.gameroot = gameroot.replace('\\', '/')
         self.elements_to_render = []
 
         self.veil_alpha = 10
@@ -28,7 +28,7 @@ class Document(QtCore.QObject):
         self.update_qimages()
 
     def set_gameroot(self, gameroot):
-        self.gameroot = gameroot
+        self.gameroot = gameroot.replace('\\', '/')
         self.update_qimages()
 
     @staticmethod
@@ -71,6 +71,16 @@ class Document(QtCore.QObject):
             path = f'{self.gameroot}/{self.data["score"][p]["bullet"]["on"]}'
             self.scores[p]['bullet'] = remove_key_color(path)
 
+    def get_placeholder_path(self):
+        return f'/resources/placeholder/{self.data["name"]}.png'
+
+    def update_placeholder(self):
+        backgrounds = [bg['file'] for bg in self.data['backgrounds']]
+        if self.get_placeholder_path() not in backgrounds:
+            ph = {"file": self.get_placeholder_path(), "position": [0, 0]}
+            self.data['backgrounds'].insert(0, ph)
+        self.update_qimages()
+
     def delete_selection(self):
         if not self.selection:
             return
@@ -83,6 +93,9 @@ class Document(QtCore.QObject):
                 del self.data['paths'][index]
             case Selection.WALL:
                 del self.data['walls'][self.selection.data]
+            case Selection.BGPH:
+                data = self.data['edit_data']
+                del data['background_placeholders'][self.selection.data]
             case Selection.SHADOW:
                 del self.data['shadow_zones'][self.selection.data]
             case Selection.TARGET:

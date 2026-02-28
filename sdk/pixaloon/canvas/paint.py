@@ -1,6 +1,8 @@
 from PySide6 import QtCore, QtGui
 from pixaloon.data import get_stair_line, get_interaction_text
+from pixaloon.canvas.viewport import ViewportMapper
 from pixaloon.selection import Selection
+from pixaloon.io import get_image
 
 
 def paint_canvas_base(painter, document, viewportmapper, rect):
@@ -36,6 +38,46 @@ def paint_canvas_base(painter, document, viewportmapper, rect):
             painter.drawRect(rect)
 
 
+def paint_background_placeholder(
+        painter, placeholder, viewportmapper, selected=False, no_border=False):
+    color = QtGui.QColor(*placeholder['color'])
+
+    if placeholder['type'] == 'polygon':
+        paint_polygon(
+            painter=painter,
+            polygon=placeholder['data'],
+            viewportmapper=viewportmapper,
+            color=color,
+            selected=selected,
+            no_border=no_border)
+    else:
+        paint_rect_object(
+            painter=painter,
+            color=color,
+            rect=placeholder['data'],
+            viewportmapper=viewportmapper,
+            selected=selected,
+            use_color_alpha=True,
+            no_border=no_border)
+
+
+def render_placeholder_image(document):
+    pixmap = QtGui.QPixmap(640, 360)
+    pixmap.fill(QtCore.Qt.black)
+    painter = QtGui.QPainter(pixmap)
+    viewportmapper = ViewportMapper()
+    placeholders = document.data['edit_data']['background_placeholders']
+    for placeholder in placeholders:
+        paint_background_placeholder(
+            painter=painter,
+            placeholder=placeholder,
+            viewportmapper=viewportmapper,
+            selected=False,
+            no_border=True)
+    painter.end()
+    return pixmap.toImage()
+
+
 def paint_canvas_selection(painter, document, viewportmapper):
     selection = document.selection
     match selection.tool:
@@ -48,13 +90,21 @@ def paint_canvas_selection(painter, document, viewportmapper):
                 point = viewportmapper.to_viewport_coords(point)
                 painter.drawEllipse(point, 4, 4)
         case Selection.STAIR:
-            paint_selected_rect_object(
+            paint_rect_object(
                 painter=painter,
                 rect=document.data['stairs'][selection.data]['zone'],
                 viewportmapper=viewportmapper,
                 selected=True)
+        case Selection.PROP:
+            prop = document.data['props'][selection.data]
+            image = document.props[selection.data]
+            paint_selected_prop(painter, prop, image, viewportmapper)
+        case Selection.BGPH:
+            edit_data = document.data['edit_data']
+            d = edit_data['background_placeholders'][selection.data]
+            paint_background_placeholder(painter, d, viewportmapper, True)
         case Selection.WALL:
-            paint_wall(
+            paint_polygon(
                 painter=painter,
                 polygon=document.data['walls'][selection.data],
                 viewportmapper=viewportmapper,
@@ -67,7 +117,7 @@ def paint_canvas_selection(painter, document, viewportmapper):
                 point_selected_index=selection.data[1],
                 viewportmapper=viewportmapper)
         case Selection.NO_GO_ZONE:
-            paint_selected_rect_object(
+            paint_rect_object(
                 painter=painter,
                 rect=document.data['no_go_zones'][selection.data],
                 viewportmapper=viewportmapper,
@@ -78,21 +128,27 @@ def paint_canvas_selection(painter, document, viewportmapper):
                 document.data['interactions'][selection.data]['attraction'])
             if zone is None:
                 return
-            paint_selected_rect_object(
+            paint_rect_object(
                 painter=painter,
                 rect=zone,
                 viewportmapper=viewportmapper,
                 selected=True)
         case Selection.FENCE:
-            paint_selected_rect_object(
+            paint_rect_object(
                 painter=painter,
                 rect=document.data['fences'][selection.data],
                 viewportmapper=viewportmapper,
                 selected=True)
         case Selection.SHADOW:
-            paint_wall(
+            paint_polygon(
                 painter=painter,
                 polygon=document.data['shadow_zones'][selection.data]['polygon'],
+                viewportmapper=viewportmapper,
+                selected=True)
+        case Selection.NPC:
+            paint_npc(
+                painter=painter,
+                npc=document.data['npcs'][selection.data],
                 viewportmapper=viewportmapper,
                 selected=True)
         case Selection.TARGET:
@@ -166,50 +222,86 @@ def paint_canvas_popspots(painter, document, viewportmapper):
 
 def paint_canvas_props(painter, document, viewportmapper):
     for prop in document.data['props']:
-        x = prop['position'][0] + prop['center'][0]
-        y = prop['position'][1] + prop['center'][1]
-        width = prop['position'][0] + prop['box'][0]
-        height = prop['position'][1] + prop['box'][1]
+        color = QtGui.QColor('pink')
+        pen = QtGui.QPen()
+        pen.setWidth(viewportmapper.to_viewport(1))
+        pen.setColor(color)
+        painter.setPen(pen)
+        position = prop['position'][0], prop['position'][1]
+        center = prop['center'][0], prop['center'][1]
+        p1 = QtCore.QPointF(*position)
+        p2 = QtCore.QPointF(*center)
+        p = viewportmapper.to_viewport_coords(p1 - p2)
+        painter.drawPoint(p)
         color = QtGui.QColor('pink')
         painter.setPen(color)
         color.setAlpha(50)
         painter.setBrush(color)
-        rect = QtCore.QRect(x, y, width, height)
-        rect = viewportmapper.to_viewport_rect(rect)
+        box = [
+            prop['box'][0] + prop['position'][0],
+            prop['box'][1] + prop['position'][1],
+            prop['box'][2],
+            prop['box'][3]]
+        rect = viewportmapper.to_viewport_rect(QtCore.QRectF(*box))
         painter.drawRect(rect)
-        painter.setPen(QtCore.Qt.white)
-        painter.setBrush(QtCore.Qt.white)
-        painter.drawEllipse(rect.left(), rect.top(), 2, 2)
+
+
+def paint_selected_prop(painter, prop, image, viewportmapper):
+        x = prop['position'][0] - prop['center'][0]
+        y = prop['position'][1] - prop['center'][1]
+        point = QtCore.QPoint(x, y)
+        img_rect = QtCore.QRect(point, image.size())
+        img_rect = viewportmapper.to_viewport_rect(img_rect)
+        pen = QtGui.QPen(QtCore.Qt.white)
+        pen.setWidth(3)
+        painter.setPen(pen)
+        painter.setBrush(QtCore.Qt.NoBrush)
+        painter.drawRect(img_rect)
+        pen.setWidth(2)
+        painter.setPen(pen)
+        p1 = QtCore.QPointF(-100_000, prop['position'][1])
+        p1 = viewportmapper.to_viewport_coords(p1)
+        p2 = QtCore.QPointF(100_000, prop['position'][1])
+        p2 = viewportmapper.to_viewport_coords(p2)
+        painter.drawLine(p1, p2)
 
 
 def paint_canvas_shadow_zones(painter, document, viewportmapper):
     for data in document.data['shadow_zones']:
         color = QtGui.QColor(*data['color'])
-        paint_wall(painter, data['polygon'], viewportmapper, color)
+        paint_polygon(painter, data['polygon'], viewportmapper, color)
 
 
 def paint_canvas_walls(painter, document, viewportmapper):
     for rect in document.data['no_go_zones']:
-        paint_selected_rect_object(painter, rect, viewportmapper, selected=False)
+        paint_rect_object(
+            painter, rect, viewportmapper, color=None, selected=False)
     for polygon in document.data['walls']:
-        paint_wall(painter, polygon, viewportmapper, color=None, selected=False)
+        paint_polygon(
+            painter, polygon, viewportmapper, color=None, selected=False)
 
 
-def paint_selected_rect_object(painter, rect, viewportmapper, selected=False):
+def paint_rect_object(
+        painter, rect, viewportmapper,
+        color=None, selected=False,
+        use_color_alpha=False, no_border=False):
     pen = QtGui.QPen(QtCore.Qt.yellow if selected else QtCore.Qt.red)
     pen.setWidth(2 if selected else 1)
-    painter.setPen(pen)
-    color = QtGui.QColor(QtCore.Qt.red)
-    color.setAlpha(125 if selected else 50)
+    painter.setPen(pen if not no_border else QtCore.Qt.NoPen)
+    color = QtGui.QColor(color or QtCore.Qt.red)
+    if not use_color_alpha:
+        color.setAlpha(125 if selected else 50)
     painter.setBrush(color)
     rect = QtCore.QRect(*rect)
     painter.drawRect(viewportmapper.to_viewport_rect(rect))
 
 
-def paint_wall(painter, polygon, viewportmapper, color=None, selected=False):
+def paint_polygon(
+        painter, polygon, viewportmapper,
+        color=None, selected=False, no_border=False):
     pen = QtGui.QPen(QtCore.Qt.yellow if selected else QtCore.Qt.red)
     pen.setWidth(2 if selected else 1)
-    painter.setPen(pen)
+    painter.setPen(pen if not no_border else QtCore.Qt.NoPen)
     if not color:
         color = QtGui.QColor(QtCore.Qt.red)
         color.setAlpha(125 if selected else 50)
@@ -475,3 +567,29 @@ def paint_selected_path(painter, path, point_selected_index, viewportmapper):
             painter.setPen(QtCore.Qt.NoPen)
             painter.setBrush(QtCore.Qt.yellow)
             painter.drawEllipse(points[point_selected_index], 5, 5)
+
+
+def paint_npc(painter, npc, viewportmapper, selected=False):
+    image = {
+        'dog': 'dogo-bark-03.png',
+        'sniper': 'sniper-aim-idle-00.png',
+        'pianist': 'pianiste-fast-01-00.png',
+        'saloon-door': 'saloondoorA-14.png',
+        'barman': 'barman-iddle-01.png',
+        'banjo': 'bandjo-loop-001.png',
+        'loop': 'bandjo-loop-001.png',
+        'chicken': 'paulette-idle-A-01.png'}.get(npc['type'])
+    offset = {'chicken': [32, 55]}.get(npc['type'], (0, 0))
+    image = get_image(image)
+    pos = npc.get('startposition') or npc.get('position')
+    pos = pos[0] - offset[0], pos[1] - offset[1]
+    rect = QtCore.QRectF(QtCore.QPointF(*pos), image.size())
+    rect = viewportmapper.to_viewport_rect(rect)
+    painter.drawImage(rect.toRect(), image)
+    if selected is False:
+        return
+    pen = QtGui.QPen(QtCore.Qt.white)
+    pen.setWidth(2)
+    painter.setPen(pen)
+    painter.setBrush(QtCore.Qt.NoBrush)
+    painter.drawRect(rect)

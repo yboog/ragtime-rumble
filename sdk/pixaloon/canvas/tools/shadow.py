@@ -30,7 +30,10 @@ class ShadowTool(NavigationTool):
         if not self.close_new_shape:
             self.new_shape_data.append(point)
             return
-        data = {'color': (0, 0, 0, 100), 'polygon': self.new_shape_data}
+        data = {
+            'color': (0, 0, 0, 100),
+            'polygon': self.new_shape_data,
+            'gametypes': ['advanced', 'basic']}
         self.document.data['shadow_zones'].append(data)
         self.document.edited.emit()
         self.selection.tool = Selection.SHADOW

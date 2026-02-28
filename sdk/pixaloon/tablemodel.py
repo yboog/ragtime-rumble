@@ -1,6 +1,7 @@
+import os
 import json
 from PySide6 import QtCore, QtWidgets
-from pixaloon.data import is_point, is_zone
+from pixaloon.data import is_zone
 from pixaloon.selection import Selection
 
 
@@ -58,6 +59,24 @@ class StartupsModel(AbstractTableModel):
             if not index.row():
                 return 'Unassigned spot positions'
             return f'Player {index.row()}'
+
+
+class BackgroundPlaceHolderModel(AbstractTableModel):
+    HEADERS = 'Type', 'Color'
+    SELECTION_TOOL = Selection.BGPH
+
+    def rowCount(self, *_):
+        return len(self.document.data['edit_data']['background_placeholders'])
+
+    def data(self, index, role):
+        if not index.isValid():
+            return
+        if role == QtCore.Qt.DisplayRole:
+            ph = self.document.data['edit_data']['background_placeholders']
+            if index.column() == 0:
+                return ph[index.row()]['type']
+            if index.column() == 1:
+                return str(ph[index.row()]['color'])
 
 
 class ShadowModel(AbstractTableModel):
@@ -205,6 +224,23 @@ class BackgroundsModel(AbstractTableModel):
 
         if role in (QtCore.Qt.DisplayRole, QtCore.Qt.EditRole):
             return self.document.data['backgrounds'][index.row()]['file']
+
+
+class NpcsModel(AbstractTableModel):
+    HEADERS = 'Name', 'Type'
+    DATAKEY = 'npcs'
+    SELECTION_TOOL = Selection.NPC
+
+    def data(self, index, role):
+        if not index.isValid():
+            return
+
+        if role in (QtCore.Qt.DisplayRole, QtCore.Qt.EditRole):
+            npc =  self.document.data['npcs'][index.row()]
+            if index.column() == 0:
+                return os.path.basename(npc['file'])
+            if index.column() == 1:
+                return npc['type']
 
 
 class WallsModel(AbstractTableModel):

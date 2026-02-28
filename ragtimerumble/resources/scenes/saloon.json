@@ -7,6 +7,7 @@
     "resources/sounds/ragtime_3_MA_EmilioMerone_JamNCheeseRag_Main.ogg"
   ],
   "ambiance": "resources/sounds/ambiance_saloon.ogg",
+  "edit_data": {"background_placeholders": []},
   "paths": [
     {
       "points": [
@@ -4932,6 +4933,7 @@
   ],
   "props": [
     {
+      "gametypes": ["advanced", "basic"],
       "file": "resources/props/poker-droite-bas.png",
       "visible_at_dispatch": true,
       "position": [
@@ -4951,6 +4953,7 @@
     },
     {
       "file": "resources/props/poker-droite-haut.png",
+      "gametypes": ["advanced", "basic"],
       "visible_at_dispatch": true,
       "position": [
         550,
@@ -4969,6 +4972,7 @@
     },
     {
       "file": "resources/props/poker-gauche-bas.png",
+      "gametypes": ["advanced", "basic"],
       "visible_at_dispatch": true,
       "position": [
         60,
@@ -4987,6 +4991,7 @@
     },
     {
       "file": "resources/props/poker-gauche-haut.png",
+      "gametypes": ["advanced", "basic"],
       "visible_at_dispatch": true,
       "position": [
         130,
@@ -5005,7 +5010,8 @@
     },
     {
       "file": "resources/props/machine-a-sous.png",
-      "visible_at_dispatch": false,
+      "gametypes": ["advanced"],
+      "visible_at_dispatch": true,
       "position": [
         370,
         130

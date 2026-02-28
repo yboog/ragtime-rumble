@@ -4,6 +4,9 @@
   "musics": [
     "resources/sounds/ragtime_cripple_creek_tracy_newman .ogg"
   ],
+  "edit_data": {
+    "background_placeholders": []
+  },
   "ambiance": "resources/sounds/ambiance_saloon.ogg",
   "paths": [
     {
@@ -463,11 +466,11 @@
           334
         ],
         [
-          261,
+          210,
           334
         ],
         [
-          261,
+          210,
           170
         ],
         [
@@ -2072,8 +2075,8 @@
     [
       0,
       0,
-      95,
-      91
+      94,
+      92
     ],
     [
       0,
@@ -2104,12 +2107,6 @@
       0,
       207,
       61
-    ],
-    [
-      437,
-      239,
-      56,
-      31
     ],
     [
       640,
@@ -2201,24 +2198,6 @@
       [
         409,
         0
-      ]
-    ],
-    [
-      [
-        493,
-        239
-      ],
-      [
-        508,
-        250
-      ],
-      [
-        508,
-        259
-      ],
-      [
-        493,
-        270
       ]
     ],
     [
@@ -3348,6 +3327,10 @@
         0,
         100
       ],
+      "gametypes": [
+        "advanced",
+        "basic"
+      ],
       "polygon": [
         [
           140,
@@ -3369,6 +3352,39 @@
           267,
           90
         ]
+      ]
+    },
+    {
+      "color": [
+        0,
+        0,
+        0,
+        100
+      ],
+      "polygon": [
+        [
+          533,
+          270
+        ],
+        [
+          533,
+          210
+        ],
+        [
+          591,
+          210
+        ],
+        [
+          615,
+          222
+        ],
+        [
+          615,
+          270
+        ]
+      ],
+      "gametypes": [
+        "advanced"
       ]
     }
   ],
@@ -3394,10 +3410,16 @@
       ],
       "type": "saloon-door",
       "position": [
-        0, 0
+        0,
+        0
       ],
       "switch": 94,
-      "zone": [95, 83, 47, 9]
+      "zone": [
+        95,
+        83,
+        47,
+        9
+      ]
     },
     {
       "file": "resources/animdata/chicken.json",
@@ -3463,15 +3485,6 @@
     },
     {
       "type": "props",
-      "file": "resources/sets/street/OL-fontaine01.png",
-      "position": [
-        436,
-        220
-      ],
-      "y": 234
-    },
-    {
-      "type": "props",
       "file": "resources/sets/street/OL-score.png",
       "position": [
         0,
@@ -3534,5 +3547,48 @@
       "lockable": false
     }
   ],
-  "props": []
+  "props": [
+    {
+      "gametypes": [
+        "advanced"
+      ],
+      "visible_at_dispatch": false,
+      "file": "resources/props/drmiracle.png",
+      "center": [
+        0,
+        84
+      ],
+      "position": [
+        462,
+        270
+      ],
+      "box": [
+        0,
+        -3,
+        178,
+        93
+      ]
+    },
+    {
+      "gametypes": [
+        "basic"
+      ],
+      "visible_at_dispatch": false,
+      "file": "resources/props/OL-fontaine01.png",
+      "center": [
+        0,
+        18
+      ],
+      "position": [
+        435,
+        238
+      ],
+      "box": [
+        2,
+        1,
+        69,
+        36
+      ]
+    }
+  ]
 }

@@ -1,15 +1,18 @@
 import os
 import json
+import shutil
 from functools import partial
 
 from PySide6 import QtWidgets, QtCore, QtGui
 from pixaloon.actions import TOOL_ACTIONS
 from pixaloon.attributeeditor import AttributeEditor
 from pixaloon.canvas.canvas import LevelCanvas
+from pixaloon.canvas.paint import render_placeholder_image
 from pixaloon.document import Document
 from pixaloon.io import get_icon
 from pixaloon.heatmap import HeatmapDisplayWidget
 from pixaloon.options import OptionsEditor
+from pixaloon.path import relative_normpath
 from pixaloon.pop import run_game
 from pixaloon.objectlist import ObjectsList
 from pixaloon.sceneeditor import SceneEditor
@@ -142,17 +145,55 @@ class Pixaloon(QtWidgets.QMainWindow):
 
         self.menuBar().addMenu(filemenu)
 
+        import_prop = QtGui.QAction('Prop', self)
+        import_prop.triggered.connect(self.import_prop)
+
+        import_menu = QtWidgets.QMenu('Import')
+        import_menu.addAction(import_prop)
+
+        self.menuBar().addMenu(import_menu)
+
         run_game = QtGui.QAction('Run game', self)
         run_game.triggered.connect(
             lambda: RunGameDialog(self.current_canvas().document).exec())
         heatmap_analytics = QtGui.QAction('Heat map analytics', self)
         heatmap_analytics.triggered.connect(self.open_hitmap_display)
+        txt = 'Render placeholder background'
+        render_placeholder = QtGui.QAction(txt, self)
+        render_placeholder.triggered.connect(self.render_placeholders)
 
         tools_menu = QtWidgets.QMenu('Tools')
         tools_menu.addAction(run_game)
         tools_menu.addAction(heatmap_analytics)
+        tools_menu.addAction(render_placeholder)
 
         self.menuBar().addMenu(tools_menu)
+
+    def import_prop(self):
+        document = self.current_canvas().document
+        filepath, _ = QtWidgets.QFileDialog.getOpenFileName(
+            self, 'Import prop',
+            document.gameroot, '*.png')
+        if not filepath:
+            return
+        image = QtGui.QImage(filepath)
+
+        if not filepath.replace('\\', '/').startswith(document.gameroot):
+            dst = f'{document.gameroot}/props/{os.path.basename(filepath)}'
+            shutil.copy(filepath, dst)
+            filepath = relative_normpath(dst, document)
+        else:
+            filepath = relative_normpath(filepath, document)
+
+        document.data['props'].append({
+            'gametypes': ['advanced', 'basic'],
+            'visible_at_dispatch': True,
+            'file': filepath,
+            'center': [0, 0],
+            'position': [0, 0],
+            'box': [0, 0, *image.size().toTuple()]})
+        document.update_qimages()
+        document.edited.emit()
 
     def sub_window_changed(self, window):
         canvas = window.widget() if window else None
@@ -271,6 +312,12 @@ class Pixaloon(QtWidgets.QMainWindow):
         window = HeatmapDisplayWidget(filepath, self)
         self.tools_windows.append(window)
         window.show()
+
+    def render_placeholders(self):
+        document = self.current_canvas().document
+        image = render_placeholder_image(document)
+        image.save(f'{document.gameroot}/{document.get_placeholder_path()}')
+        document.update_placeholder()
 
 
 class RunGameDialog(QtWidgets.QDialog):

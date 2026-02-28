@@ -169,7 +169,6 @@ class IntArrayEditor(QtWidgets.QWidget):
         layout.setContentsMargins(0, 0, 0, 0)
         for spin in self.spins:
             layout.addWidget(spin)
-        self.setMinimumHeight(75)
 
     def value(self):
         return [spin.value() for spin in self.spins]

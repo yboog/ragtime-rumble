@@ -2,9 +2,10 @@
 from PySide6 import QtWidgets, QtCore
 from pixaloon.selection import Selection
 from pixaloon.tablemodel import (
-    PopspotsModel, WallsModel, InteractionModel, StairModel, OverlaysModel,
-    PathsModel, FencesModel, PropsModel, StartupsModel, TargetsModel,
-    BackgroundsModel, ShadowModel)
+    PopspotsModel, WallsModel, InteractionModel, StairModel, NpcsModel,
+    OverlaysModel, PathsModel, FencesModel, PropsModel, StartupsModel,
+    TargetsModel, BackgroundsModel, ShadowModel,
+    BackgroundPlaceHolderModel)
 
 
 class TableView(QtWidgets.QTableView):
@@ -36,8 +37,11 @@ class ObjectsList(QtWidgets.QWidget):
         self.document = document
 
         self.backgrounds_model = BackgroundsModel(self.document)
+        self.backgrounds_placeholder_model = BackgroundPlaceHolderModel(
+            self.document)
         self.fences_model = FencesModel(self.document)
         self.interactions_model = InteractionModel(self.document)
+        self.npcs_model = NpcsModel(self.document)
         self.overlays_model = OverlaysModel(self.document)
         self.paths_model = PathsModel(self.document)
         self.popspotsmodel = PopspotsModel(self.document)
@@ -52,33 +56,41 @@ class ObjectsList(QtWidgets.QWidget):
         self.table.setModel(self.popspotsmodel)
         self.table.selectionModel().selectionChanged.connect(
             self.table_selection_changed)
-
+        self.setMinimumWidth(300)
         layout = QtWidgets.QHBoxLayout(self)
         layout.setContentsMargins(0, 0, 0, 0)
         layout.addWidget(self.table)
 
+    def sizeHint(self):
+        return QtCore.QSize(500, 600)
+
     def set_document(self, document):
         self.document = document
         self.document.selection.changed.connect(self.selection_changed)
-        self.popspotsmodel.set_document(document)
-        self.startups_model.set_document(document)
-        self.walls_model.set_document(document)
-        self.stairs_model.set_document(document)
+
         self.backgrounds_model.set_document(document)
-        self.overlays_model.set_document(document)
-        self.shadow_model.set_document(document)
+        self.backgrounds_placeholder_model.set_document(document)
         self.fences_model.set_document(document)
-        self.props_model.set_document(document)
-        self.paths_model.set_document(document)
-        self.targets_model.set_document(document)
         self.interactions_model.set_document(document)
+        self.npcs_model.set_document(document)
+        self.popspotsmodel.set_document(document)
+        self.overlays_model.set_document(document)
+        self.paths_model.set_document(document)
+        self.props_model.set_document(document)
+        self.shadow_model.set_document(document)
+        self.stairs_model.set_document(document)
+        self.startups_model.set_document(document)
+        self.targets_model.set_document(document)
+        self.walls_model.set_document(document)
 
     def set_element_type(self, element_type):
         self.clear_selection()
         types_and_models = {
             'backgrounds': self.backgrounds_model,
+            'bgph': self.backgrounds_placeholder_model,
             'fences': self.fences_model,
             'interactions': self.interactions_model,
+            'npcs': self.npcs_model,
             'overlays': self.overlays_model,
             'paths': self.paths_model,
             'shadows': self.shadow_model,
@@ -143,7 +155,11 @@ class ObjectsList(QtWidgets.QWidget):
                 self.table.select_row(seldata[0])
             case Selection.NO_GO_ZONE:
                 self.table.select_row(seldata)
+            case Selection.PROP:
+                self.table.select_row(seldata)
             case Selection.INTERACTION:
+                self.table.select_row(seldata)
+            case Selection.BGPH:
                 self.table.select_row(seldata)
             case Selection.SHADOW:
                 self.table.select_row(seldata)

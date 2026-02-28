@@ -6,6 +6,8 @@
     ],
     "ambiance": "resources/sounds/ambiance_saloon.ogg",
     "paths": [],
+    "edit_data": {"background_placeholders": []},
+    "shadow_zones": [],
     "startups": {
         "unassigned": [
             [

@@ -1,6 +1,8 @@
 from pixaloon.canvas.tools.interaction import InteractionTool
 from pixaloon.canvas.tools.overlays import OverlayTool
+from pixaloon.canvas.tools.npc import NpcTool
 from pixaloon.canvas.tools.path import PathTool
+from pixaloon.canvas.tools.placeholder import PlaceHolderTool
 from pixaloon.canvas.tools.popspots import PopSpotTool
 from pixaloon.canvas.tools.square import FenceTool, StairTool
 from pixaloon.canvas.tools.score import ScoreTool
@@ -66,6 +68,7 @@ TOOL_ACTIONS = [
         'tooltip': 'Props',
         'element_type': 'props',
         'checkable': True,
+        'tool_cls': None,
     },
     {
         'icon': 'interaction.png',
@@ -96,9 +99,23 @@ TOOL_ACTIONS = [
         'checkable': True,
     },
     {
+        'icon': 'npc.png',
+        'tooltip': 'NPC/Behavior',
+        'element_type': 'npcs',
+        'tool_cls': NpcTool,
+        'checkable': True,
+    },
+    {
         'icon': 'coin.png',
         'tooltip': 'Coin',
         'element_type': 'score',
         'tool_cls': ScoreTool,
+        'checkable': True,
+    },
+    {
+        'icon': 'shape.png',
+        'tooltip': 'Background placeholders',
+        'element_type': 'bgph',
+        'tool_cls': PlaceHolderTool,
         'checkable': True,
     }]

@@ -1,3 +1,4 @@
+from functools import lru_cache
 import math
 import colorsys
 import numpy as np
@@ -6,6 +7,7 @@ from collections import Counter
 from PySide6 import QtGui, QtCore
 
 
+@lru_cache()
 def remove_key_color(filename):
     orig_color = [0, 255, 0, 255]
     replacement_color = (0, 0, 0, 0)

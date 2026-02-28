@@ -1,0 +1,2782 @@
+{
+  "character_number": 35,
+  "name": "No name",
+  "musics": [
+    "resources/sounds/ragtime_1_MA_BrunoFreitas_OldWestSaloon_HonkyTonk.ogg"
+  ],
+  "ambiance": "resources/sounds/ambiance_saloon.ogg",
+  "paths": [
+    {
+      "points": [
+        [
+          59,
+          67
+        ],
+        [
+          96,
+          37
+        ],
+        [
+          184,
+          46
+        ],
+        [
+          286,
+          39
+        ],
+        [
+          484,
+          56
+        ],
+        [
+          522,
+          33
+        ],
+        [
+          572,
+          68
+        ],
+        [
+          560,
+          151
+        ],
+        [
+          591,
+          198
+        ],
+        [
+          556,
+          265
+        ],
+        [
+          589,
+          322
+        ],
+        [
+          460,
+          317
+        ],
+        [
+          388,
+          291
+        ],
+        [
+          309,
+          331
+        ],
+        [
+          254,
+          291
+        ]
+      ],
+      "hard": false
+    },
+    {
+      "points": [
+        [
+          96,
+          329
+        ],
+        [
+          42,
+          286
+        ],
+        [
+          86,
+          205
+        ],
+        [
+          69,
+          141
+        ],
+        [
+          37,
+          54
+        ],
+        [
+          126,
+          22
+        ],
+        [
+          196,
+          28
+        ]
+      ],
+      "hard": false
+    },
+    {
+      "points": [
+        [
+          108,
+          61
+        ],
+        [
+          236,
+          25
+        ],
+        [
+          266,
+          55
+        ],
+        [
+          352,
+          29
+        ],
+        [
+          484,
+          30
+        ],
+        [
+          486,
+          49
+        ],
+        [
+          437,
+          59
+        ],
+        [
+          312,
+          47
+        ],
+        [
+          266,
+          34
+        ],
+        [
+          200,
+          49
+        ],
+        [
+          111,
+          48
+        ]
+      ],
+      "hard": false
+    },
+    {
+      "points": [
+        [
+          83,
+          60
+        ],
+        [
+          50,
+          103
+        ],
+        [
+          27,
+          193
+        ],
+        [
+          71,
+          250
+        ],
+        [
+          54,
+          295
+        ],
+        [
+          62,
+          324
+        ],
+        [
+          129,
+          308
+        ],
+        [
+          179,
+          334
+        ],
+        [
+          234,
+          306
+        ]
+      ],
+      "hard": false
+    },
+    {
+      "points": [
+        [
+          192,
+          289
+        ],
+        [
+          251,
+          321
+        ],
+        [
+          348,
+          329
+        ],
+        [
+          375,
+          283
+        ],
+        [
+          443,
+          283
+        ],
+        [
+          473,
+          321
+        ],
+        [
+          541,
+          330
+        ],
+        [
+          574,
+          285
+        ],
+        [
+          606,
+          224
+        ],
+        [
+          559,
+          191
+        ],
+        [
+          568,
+          123
+        ]
+      ],
+      "hard": false
+    },
+    {
+      "points": [
+        [
+          496,
+          23
+        ],
+        [
+          590,
+          24
+        ],
+        [
+          594,
+          74
+        ],
+        [
+          549,
+          86
+        ],
+        [
+          519,
+          46
+        ],
+        [
+          423,
+          46
+        ],
+        [
+          300,
+          40
+        ],
+        [
+          227,
+          51
+        ],
+        [
+          224,
+          29
+        ],
+        [
+          281,
+          21
+        ],
+        [
+          378,
+          26
+        ],
+        [
+          391,
+          52
+        ],
+        [
+          434,
+          52
+        ],
+        [
+          445,
+          35
+        ]
+      ],
+      "hard": false
+    },
+    {
+      "points": [
+        [
+          192,
+          152
+        ],
+        [
+          252,
+          149
+        ],
+        [
+          269,
+          176
+        ],
+        [
+          207,
+          196
+        ],
+        [
+          213,
+          174
+        ],
+        [
+          256,
+          201
+        ],
+        [
+          255,
+          230
+        ],
+        [
+          290,
+          229
+        ],
+        [
+          308,
+          194
+        ],
+        [
+          353,
+          183
+        ],
+        [
+          361,
+          209
+        ],
+        [
+          326,
+          213
+        ],
+        [
+          311,
+          166
+        ]
+      ],
+      "hard": false
+    },
+    {
+      "points": [
+        [
+          345,
+          158
+        ],
+        [
+          282,
+          184
+        ],
+        [
+          282,
+          221
+        ],
+        [
+          325,
+          230
+        ],
+        [
+          370,
+          219
+        ],
+        [
+          368,
+          184
+        ],
+        [
+          316,
+          182
+        ],
+        [
+          284,
+          211
+        ],
+        [
+          231,
+          217
+        ]
+      ],
+      "hard": false
+    },
+    {
+      "points": [
+        [
+          87,
+          304
+        ],
+        [
+          95,
+          201
+        ],
+        [
+          57,
+          154
+        ],
+        [
+          55,
+          103
+        ],
+        [
+          89,
+          94
+        ],
+        [
+          88,
+          146
+        ],
+        [
+          29,
+          217
+        ],
+        [
+          28,
+          314
+        ],
+        [
+          133,
+          342
+        ],
+        [
+          221,
+          326
+        ]
+      ],
+      "hard": false
+    },
+    {
+      "points": [
+        [
+          157,
+          299
+        ],
+        [
+          274,
+          285
+        ],
+        [
+          360,
+          302
+        ],
+        [
+          402,
+          330
+        ],
+        [
+          486,
+          306
+        ],
+        [
+          534,
+          296
+        ],
+        [
+          565,
+          307
+        ],
+        [
+          514,
+          329
+        ],
+        [
+          461,
+          302
+        ],
+        [
+          416,
+          310
+        ]
+      ],
+      "hard": false
+    },
+    {
+      "points": [
+        [
+          508,
+          34
+        ],
+        [
+          583,
+          60
+        ],
+        [
+          569,
+          114
+        ],
+        [
+          547,
+          136
+        ],
+        [
+          546,
+          171
+        ],
+        [
+          584,
+          208
+        ],
+        [
+          573,
+          238
+        ],
+        [
+          550,
+          228
+        ],
+        [
+          562,
+          198
+        ],
+        [
+          596,
+          193
+        ],
+        [
+          599,
+          231
+        ],
+        [
+          599,
+          294
+        ],
+        [
+          573,
+          304
+        ],
+        [
+          572,
+          280
+        ],
+        [
+          554,
+          279
+        ],
+        [
+          520,
+          303
+        ],
+        [
+          465,
+          332
+        ],
+        [
+          431,
+          318
+        ],
+        [
+          384,
+          287
+        ],
+        [
+          355,
+          286
+        ],
+        [
+          310,
+          298
+        ]
+      ],
+      "hard": false
+    },
+    {
+      "points": [
+        [
+          551,
+          32
+        ],
+        [
+          533,
+          97
+        ],
+        [
+          540,
+          141
+        ],
+        [
+          547,
+          200
+        ],
+        [
+          532,
+          252
+        ],
+        [
+          551,
+          281
+        ],
+        [
+          590,
+          269
+        ],
+        [
+          609,
+          204
+        ],
+        [
+          579,
+          167
+        ],
+        [
+          565,
+          129
+        ],
+        [
+          592,
+          94
+        ],
+        [
+          573,
+          51
+        ],
+        [
+          493,
+          45
+        ],
+        [
+          426,
+          34
+        ],
+        [
+          364,
+          33
+        ],
+        [
+          325,
+          57
+        ]
+      ],
+      "hard": false
+    },
+    {
+      "points": [
+        [
+          97,
+          79
+        ],
+        [
+          56,
+          145
+        ],
+        [
+          39,
+          214
+        ],
+        [
+          67,
+          280
+        ],
+        [
+          134,
+          320
+        ],
+        [
+          250,
+          333
+        ],
+        [
+          279,
+          303
+        ],
+        [
+          346,
+          315
+        ],
+        [
+          380,
+          328
+        ]
+      ],
+      "hard": false
+    },
+    {
+      "points": [
+        [
+          67,
+          209
+        ],
+        [
+          69,
+          255
+        ],
+        [
+          105,
+          291
+        ],
+        [
+          185,
+          311
+        ],
+        [
+          437,
+          324
+        ],
+        [
+          534,
+          315
+        ],
+        [
+          576,
+          271
+        ],
+        [
+          573,
+          221
+        ]
+      ],
+      "hard": false
+    },
+    {
+      "points": [
+        [
+          375,
+          304
+        ],
+        [
+          314,
+          333
+        ],
+        [
+          257,
+          312
+        ],
+        [
+          269,
+          300
+        ],
+        [
+          346,
+          293
+        ],
+        [
+          434,
+          291
+        ],
+        [
+          485,
+          316
+        ],
+        [
+          526,
+          308
+        ],
+        [
+          548,
+          274
+        ],
+        [
+          549,
+          246
+        ],
+        [
+          567,
+          170
+        ],
+        [
+          593,
+          123
+        ],
+        [
+          576,
+          96
+        ]
+      ],
+      "hard": false
+    },
+    {
+      "points": [
+        [
+          70,
+          164
+        ],
+        [
+          40,
+          129
+        ],
+        [
+          41,
+          87
+        ],
+        [
+          81,
+          102
+        ],
+        [
+          73,
+          164
+        ],
+        [
+          23,
+          203
+        ],
+        [
+          28,
+          244
+        ],
+        [
+          71,
+          256
+        ],
+        [
+          88,
+          201
+        ],
+        [
+          58,
+          192
+        ]
+      ],
+      "hard": false
+    },
+    {
+      "points": [
+        [
+          307,
+          51
+        ],
+        [
+          233,
+          40
+        ],
+        [
+          158,
+          45
+        ],
+        [
+          137,
+          51
+        ],
+        [
+          94,
+          34
+        ],
+        [
+          41,
+          41
+        ],
+        [
+          37,
+          73
+        ],
+        [
+          60,
+          165
+        ],
+        [
+          27,
+          191
+        ],
+        [
+          53,
+          242
+        ],
+        [
+          54,
+          282
+        ],
+        [
+          93,
+          326
+        ],
+        [
+          187,
+          325
+        ]
+      ],
+      "hard": false
+    },
+    {
+      "points": [
+        [
+          437,
+          300
+        ],
+        [
+          536,
+          300
+        ],
+        [
+          574,
+          263
+        ],
+        [
+          574,
+          143
+        ],
+        [
+          562,
+          126
+        ],
+        [
+          562,
+          107
+        ],
+        [
+          520,
+          107
+        ],
+        [
+          399,
+          156
+        ],
+        [
+          302,
+          156
+        ]
+      ],
+      "hard": true
+    },
+    {
+      "points": [
+        [
+          204,
+          49
+        ],
+        [
+          305,
+          49
+        ],
+        [
+          337,
+          32
+        ],
+        [
+          452,
+          32
+        ],
+        [
+          480,
+          51
+        ],
+        [
+          563,
+          52
+        ],
+        [
+          563,
+          77
+        ],
+        [
+          546,
+          90
+        ],
+        [
+          533,
+          91
+        ],
+        [
+          533,
+          113
+        ],
+        [
+          521,
+          113
+        ],
+        [
+          454,
+          139
+        ],
+        [
+          454,
+          134
+        ],
+        [
+          486,
+          121
+        ],
+        [
+          486,
+          116
+        ],
+        [
+          521,
+          102
+        ],
+        [
+          552,
+          102
+        ],
+        [
+          589,
+          102
+        ]
+      ],
+      "hard": true
+    },
+    {
+      "points": [
+        [
+          538,
+          209
+        ],
+        [
+          538,
+          147
+        ],
+        [
+          557,
+          147
+        ],
+        [
+          557,
+          127
+        ],
+        [
+          537,
+          127
+        ],
+        [
+          537,
+          119
+        ],
+        [
+          521,
+          119
+        ],
+        [
+          417,
+          158
+        ],
+        [
+          417,
+          149
+        ],
+        [
+          399,
+          156
+        ],
+        [
+          346,
+          156
+        ],
+        [
+          346,
+          180
+        ]
+      ],
+      "hard": true
+    },
+    {
+      "points": [
+        [
+          264,
+          189
+        ],
+        [
+          367,
+          189
+        ],
+        [
+          367,
+          172
+        ],
+        [
+          377,
+          165
+        ],
+        [
+          386,
+          165
+        ],
+        [
+          386,
+          149
+        ],
+        [
+          397,
+          149
+        ],
+        [
+          520,
+          98
+        ],
+        [
+          548,
+          98
+        ],
+        [
+          559,
+          86
+        ],
+        [
+          559,
+          66
+        ],
+        [
+          544,
+          55
+        ],
+        [
+          461,
+          55
+        ]
+      ],
+      "hard": true
+    },
+    {
+      "points": [
+        [
+          214,
+          231
+        ],
+        [
+          326,
+          231
+        ],
+        [
+          369,
+          203
+        ],
+        [
+          369,
+          160
+        ],
+        [
+          399,
+          160
+        ],
+        [
+          467,
+          132
+        ],
+        [
+          467,
+          138
+        ],
+        [
+          521,
+          116
+        ],
+        [
+          533,
+          116
+        ],
+        [
+          546,
+          130
+        ],
+        [
+          546,
+          228
+        ],
+        [
+          559,
+          228
+        ],
+        [
+          558,
+          299
+        ]
+      ],
+      "hard": true
+    }
+  ],
+  "edit_data": {
+    "background_placeholders": [
+      {
+        "type": "rect",
+        "data": [
+          -1,
+          2,
+          11,
+          358
+        ],
+        "color": [
+          80,
+          80,
+          80,
+          255
+        ]
+      },
+      {
+        "type": "rect",
+        "data": [
+          11,
+          350,
+          628,
+          10
+        ],
+        "color": [
+          80,
+          80,
+          80,
+          255
+        ]
+      },
+      {
+        "type": "rect",
+        "data": [
+          626,
+          1,
+          13,
+          355
+        ],
+        "color": [
+          80,
+          80,
+          80,
+          255
+        ]
+      },
+      {
+        "type": "rect",
+        "data": [
+          -3,
+          -1,
+          663,
+          10
+        ],
+        "color": [
+          80,
+          80,
+          80,
+          255
+        ]
+      },
+      {
+        "type": "polygon",
+        "data": [
+          [
+            400,
+            139
+          ],
+          [
+            521,
+            89
+          ],
+          [
+            521,
+            129
+          ],
+          [
+            400,
+            173
+          ]
+        ],
+        "color": [
+          30,
+          30,
+          30,
+          255
+        ]
+      },
+      {
+        "type": "rect",
+        "data": [
+          116,
+          246,
+          404,
+          23
+        ],
+        "color": [
+          100,
+          80,
+          50,
+          70
+        ]
+      },
+      {
+        "type": "rect",
+        "data": [
+          115,
+          69,
+          407,
+          21
+        ],
+        "color": [
+          100,
+          80,
+          50,
+          70
+        ]
+      },
+      {
+        "type": "rect",
+        "data": [
+          520,
+          129,
+          2,
+          140
+        ],
+        "color": [
+          100,
+          80,
+          50,
+          70
+        ]
+      },
+      {
+        "type": "rect",
+        "data": [
+          113,
+          69,
+          4,
+          201
+        ],
+        "color": [
+          100,
+          80,
+          50,
+          70
+        ]
+      },
+      {
+        "type": "rect",
+        "data": [
+          400,
+          173,
+          32,
+          96
+        ],
+        "color": [
+          100,
+          80,
+          50,
+          70
+        ]
+      },
+      {
+        "type": "polygon",
+        "data": [
+          [
+            400,
+            172
+          ],
+          [
+            519,
+            172
+          ],
+          [
+            520,
+            129
+          ]
+        ],
+        "color": [
+          100,
+          80,
+          50,
+          120
+        ]
+      },
+      {
+        "type": "polygon",
+        "data": [
+          [
+            400,
+            139
+          ],
+          [
+            119,
+            139
+          ],
+          [
+            117,
+            139
+          ],
+          [
+            117,
+            90
+          ],
+          [
+            518,
+            90
+          ]
+        ],
+        "color": [
+          100,
+          80,
+          50,
+          120
+        ]
+      },
+      {
+        "type": "rect",
+        "data": [
+          117,
+          103,
+          57,
+          142
+        ],
+        "color": [
+          80,
+          50,
+          80,
+          255
+        ]
+      }
+    ]
+  },
+  "startups": {
+    "unassigned": [
+      [
+        320,
+        50
+      ],
+      [
+        320,
+        80
+      ],
+      [
+        320,
+        110
+      ],
+      [
+        320,
+        140
+      ]
+    ],
+    "groups": [
+      {
+        "popspots": {
+          "left": [
+            36,
+            316
+          ],
+          "right": [
+            70,
+            315
+          ],
+          "up": [
+            54,
+            299
+          ],
+          "down": [
+            54,
+            329
+          ]
+        },
+        "assigned": [
+          [
+            126,
+            317
+          ],
+          [
+            160,
+            317
+          ],
+          [
+            183,
+            317
+          ],
+          [
+            209,
+            318
+          ]
+        ],
+        "interactions": {
+          "left": "startup-1-left",
+          "right": "startup-1-right",
+          "up": "startup-1-up",
+          "down": "startup-1-down"
+        }
+      },
+      {
+        "popspots": {
+          "left": [
+            34,
+            45
+          ],
+          "right": [
+            72,
+            45
+          ],
+          "up": [
+            53,
+            33
+          ],
+          "down": [
+            53,
+            64
+          ]
+        },
+        "assigned": [
+          [
+            115,
+            46
+          ],
+          [
+            149,
+            45
+          ],
+          [
+            182,
+            45
+          ],
+          [
+            213,
+            44
+          ]
+        ],
+        "interactions": {
+          "left": "startup-2-left",
+          "right": "startup-2-right",
+          "up": "startup-2-up",
+          "down": "startup-2-down"
+        }
+      },
+      {
+        "popspots": {
+          "left": [
+            543,
+            43
+          ],
+          "right": [
+            574,
+            42
+          ],
+          "up": [
+            559,
+            29
+          ],
+          "down": [
+            561,
+            56
+          ]
+        },
+        "assigned": [
+          [
+            515,
+            44
+          ],
+          [
+            491,
+            44
+          ],
+          [
+            459,
+            44
+          ],
+          [
+            430,
+            45
+          ]
+        ],
+        "interactions": {
+          "left": "startup-3-left",
+          "right": "startup-3-right",
+          "up": "startup-3-up",
+          "down": "startup-3-down"
+        }
+      },
+      {
+        "popspots": {
+          "left": [
+            563,
+            306
+          ],
+          "right": [
+            596,
+            308
+          ],
+          "up": [
+            580,
+            291
+          ],
+          "down": [
+            576,
+            324
+          ]
+        },
+        "assigned": [
+          [
+            530,
+            307
+          ],
+          [
+            503,
+            306
+          ],
+          [
+            474,
+            306
+          ],
+          [
+            444,
+            307
+          ]
+        ],
+        "interactions": {
+          "left": "startup-4-left",
+          "right": "startup-4-right",
+          "up": "startup-4-up",
+          "down": "startup-4-down"
+        }
+      }
+    ]
+  },
+  "shadow_zones": [],
+  "score": {
+    "ol": {
+      "file": "resources/sets/street/OL-score.png",
+      "position": [
+        -43.89241343235169,
+        480.57804799089485
+      ]
+    },
+    "player1": {
+      "life": {
+        "position": [
+          109.10202345646573,
+          107.76500820276418
+        ],
+        "file4": "/resources/ui/saloon/player-1/player-1-00.png",
+        "file3": "/resources/ui/saloon/player-1/player-1-01.png",
+        "file2": "/resources/ui/saloon/player-1/player-1-02.png",
+        "file1": "/resources/ui/saloon/player-1/player-1-03.png"
+      },
+      "coins_position": [
+        125.73861238205448,
+        122.50803031649743
+      ],
+      "bullet": {
+        "position": [
+          125.10808496295896,
+          108.76237970688044
+        ],
+        "on": "/resources/ui/saloon/bullet.png",
+        "off": "/resources/ui/saloon/bullet_off.png"
+      }
+    },
+    "player2": {
+      "life": {
+        "position": [
+          115.07462626648817,
+          141.97173338743818
+        ],
+        "file4": "/resources/ui/saloon/player-2/player-2-00.png",
+        "file3": "/resources/ui/saloon/player-2/player-2-01.png",
+        "file2": "/resources/ui/saloon/player-2/player-2-02.png",
+        "file1": "/resources/ui/saloon/player-2/player-2-03.png"
+      },
+      "coins_position": [
+        125.67213480620678,
+        156.19424424341642
+      ],
+      "bullet": {
+        "position": [
+          125.0543442696147,
+          142.9795290591786
+        ],
+        "on": "/resources/ui/saloon/bullet.png",
+        "off": "/resources/ui/saloon/bullet_off.png"
+      }
+    },
+    "player3": {
+      "life": {
+        "position": [
+          123.49056658970161,
+          175.63549468029194
+        ],
+        "file4": "/resources/ui/saloon/player-3/player-3-00.png",
+        "file3": "/resources/ui/saloon/player-3/player-3-01.png",
+        "file2": "/resources/ui/saloon/player-3/player-3-02.png",
+        "file1": "/resources/ui/saloon/player-3/player-3-03.png"
+      },
+      "coins_position": [
+        125.45310243232784,
+        190.74018571315278
+      ],
+      "bullet": {
+        "position": [
+          125.24305087122862,
+          177.51304971669663
+        ],
+        "on": "/resources/ui/saloon/bullet.png",
+        "off": "/resources/ui/saloon/bullet_off.png"
+      }
+    },
+    "player4": {
+      "life": {
+        "position": [
+          123.2190846437915,
+          210.92814764860637
+        ],
+        "file4": "/resources/ui/saloon/player-4/player-4-00.png",
+        "file3": "/resources/ui/saloon/player-4/player-4-01.png",
+        "file2": "/resources/ui/saloon/player-4/player-4-02.png",
+        "file1": "/resources/ui/saloon/player-4/player-4-03.png"
+      },
+      "coins_position": [
+        125.93390410289261,
+        225.58817272775238
+      ],
+      "bullet": {
+        "position": [
+          125.93390410289261,
+          211.74259348633672
+        ],
+        "on": "/resources/ui/saloon/bullet.png",
+        "off": "/resources/ui/saloon/bullet_off.png"
+      }
+    }
+  },
+  "fences": [
+    [
+      112,
+      70,
+      409,
+      20
+    ],
+    [
+      397,
+      89,
+      124,
+      84
+    ],
+    [
+      521,
+      173,
+      1,
+      95
+    ],
+    [
+      112,
+      244,
+      411,
+      25
+    ],
+    [
+      111,
+      70,
+      5,
+      199
+    ]
+  ],
+  "no_go_zones": [
+    [
+      -80,
+      -32,
+      91,
+      413
+    ],
+    [
+      -22,
+      -55,
+      669,
+      64
+    ],
+    [
+      626,
+      -5,
+      38,
+      384
+    ],
+    [
+      -4,
+      350,
+      716,
+      67
+    ],
+    [
+      114,
+      268,
+      408,
+      2
+    ],
+    [
+      112,
+      69,
+      4,
+      200
+    ],
+    [
+      116,
+      69,
+      284,
+      70
+    ],
+    [
+      400,
+      173,
+      122,
+      97
+    ],
+    [
+      115,
+      85,
+      64,
+      185
+    ]
+  ],
+  "walls": [
+    [
+      [
+        400,
+        69
+      ],
+      [
+        400,
+        138
+      ],
+      [
+        521,
+        90
+      ],
+      [
+        521,
+        70
+      ]
+    ],
+    [
+      [
+        400,
+        172
+      ],
+      [
+        522,
+        129
+      ],
+      [
+        522,
+        173
+      ],
+      [
+        400,
+        179
+      ]
+    ]
+  ],
+  "interactions": [
+    {
+      "gametypes": [
+        "basic",
+        "advanced"
+      ],
+      "play_once": true,
+      "action": "startup",
+      "id": "startup-2-left",
+      "busy": false,
+      "lockable": true,
+      "direction": "right",
+      "insound": null,
+      "outsound": null,
+      "zone": [
+        17,
+        34,
+        23,
+        22
+      ],
+      "target": [
+        50,
+        50
+      ],
+      "attraction": [
+        17,
+        34,
+        23,
+        22
+      ],
+      "position": [
+        28,
+        45
+      ]
+    },
+    {
+      "gametypes": [
+        "basic",
+        "advanced"
+      ],
+      "play_once": true,
+      "action": "startup",
+      "id": "startup-2-up",
+      "busy": false,
+      "lockable": true,
+      "direction": "down",
+      "insound": null,
+      "outsound": null,
+      "zone": [
+        39,
+        14,
+        26,
+        16
+      ],
+      "target": [
+        50,
+        50
+      ],
+      "attraction": [
+        39,
+        14,
+        26,
+        16
+      ],
+      "position": [
+        52,
+        22
+      ]
+    },
+    {
+      "gametypes": [
+        "basic",
+        "advanced"
+      ],
+      "play_once": true,
+      "action": "startup",
+      "id": "startup-2-right",
+      "busy": false,
+      "lockable": true,
+      "direction": "right",
+      "insound": null,
+      "outsound": null,
+      "zone": [
+        67,
+        31,
+        22,
+        24
+      ],
+      "target": [
+        50,
+        50
+      ],
+      "attraction": [
+        67,
+        31,
+        22,
+        24
+      ],
+      "position": [
+        78,
+        43
+      ]
+    },
+    {
+      "gametypes": [
+        "basic",
+        "advanced"
+      ],
+      "play_once": true,
+      "action": "startup",
+      "id": "startup-2-down",
+      "busy": false,
+      "lockable": true,
+      "direction": "up",
+      "insound": null,
+      "outsound": null,
+      "zone": [
+        37,
+        57,
+        31,
+        27
+      ],
+      "target": [
+        50,
+        50
+      ],
+      "attraction": [
+        37,
+        57,
+        31,
+        27
+      ],
+      "position": [
+        52,
+        70
+      ]
+    },
+    {
+      "gametypes": [
+        "basic",
+        "advanced"
+      ],
+      "play_once": true,
+      "action": "startup",
+      "id": "startup-1-up",
+      "busy": false,
+      "lockable": true,
+      "direction": "down",
+      "insound": null,
+      "outsound": null,
+      "zone": [
+        43,
+        281,
+        24,
+        16
+      ],
+      "target": [
+        50,
+        50
+      ],
+      "attraction": [
+        43,
+        281,
+        24,
+        16
+      ],
+      "position": [
+        55,
+        289
+      ]
+    },
+    {
+      "gametypes": [
+        "basic",
+        "advanced"
+      ],
+      "play_once": true,
+      "action": "startup",
+      "id": "startup-1-right",
+      "busy": false,
+      "lockable": true,
+      "direction": "left",
+      "insound": null,
+      "outsound": null,
+      "zone": [
+        67,
+        301,
+        31,
+        24
+      ],
+      "target": [
+        50,
+        50
+      ],
+      "attraction": [
+        67,
+        301,
+        31,
+        24
+      ],
+      "position": [
+        82,
+        313
+      ]
+    },
+    {
+      "gametypes": [
+        "basic",
+        "advanced"
+      ],
+      "play_once": true,
+      "action": "startup",
+      "id": "startup-1-left",
+      "busy": false,
+      "lockable": true,
+      "direction": "right",
+      "insound": null,
+      "outsound": null,
+      "zone": [
+        20,
+        303,
+        25,
+        22
+      ],
+      "target": [
+        50,
+        50
+      ],
+      "attraction": [
+        20,
+        303,
+        25,
+        22
+      ],
+      "position": [
+        32,
+        314
+      ]
+    },
+    {
+      "gametypes": [
+        "basic",
+        "advanced"
+      ],
+      "play_once": true,
+      "action": "startup",
+      "id": "startup-1-down",
+      "busy": false,
+      "lockable": true,
+      "direction": "up",
+      "insound": null,
+      "outsound": null,
+      "zone": [
+        39,
+        326,
+        31,
+        20
+      ],
+      "target": [
+        50,
+        50
+      ],
+      "attraction": [
+        39,
+        326,
+        31,
+        20
+      ],
+      "position": [
+        54,
+        336
+      ]
+    },
+    {
+      "gametypes": [
+        "basic",
+        "advanced"
+      ],
+      "play_once": true,
+      "action": "startup",
+      "id": "startup-3-up",
+      "busy": false,
+      "lockable": true,
+      "direction": "down",
+      "insound": null,
+      "outsound": null,
+      "zone": [
+        538,
+        11,
+        43,
+        29
+      ],
+      "target": [
+        50,
+        50
+      ],
+      "attraction": [
+        538,
+        11,
+        43,
+        29
+      ],
+      "position": [
+        559,
+        25
+      ]
+    },
+    {
+      "gametypes": [
+        "basic",
+        "advanced"
+      ],
+      "play_once": true,
+      "action": "startup",
+      "id": "startup-3-right",
+      "busy": false,
+      "lockable": true,
+      "direction": "left",
+      "insound": null,
+      "outsound": null,
+      "zone": [
+        583,
+        32,
+        30,
+        37
+      ],
+      "target": [
+        50,
+        50
+      ],
+      "attraction": [
+        583,
+        32,
+        30,
+        37
+      ],
+      "position": [
+        598,
+        50
+      ]
+    },
+    {
+      "gametypes": [
+        "basic",
+        "advanced"
+      ],
+      "play_once": false,
+      "action": "startup",
+      "id": "startup-3-down",
+      "busy": false,
+      "lockable": true,
+      "direction": "up",
+      "insound": null,
+      "outsound": null,
+      "zone": [
+        538,
+        56,
+        43,
+        33
+      ],
+      "target": [
+        50,
+        50
+      ],
+      "attraction": [
+        538,
+        56,
+        43,
+        33
+      ],
+      "position": [
+        559,
+        72
+      ]
+    },
+    {
+      "gametypes": [
+        "basic",
+        "advanced"
+      ],
+      "play_once": true,
+      "action": "startup",
+      "id": "startup-3-left",
+      "busy": false,
+      "lockable": true,
+      "direction": "right",
+      "insound": null,
+      "outsound": null,
+      "zone": [
+        488,
+        24,
+        49,
+        41
+      ],
+      "target": [
+        50,
+        50
+      ],
+      "attraction": [
+        488,
+        24,
+        49,
+        41
+      ],
+      "position": [
+        512,
+        44
+      ]
+    },
+    {
+      "gametypes": [
+        "basic",
+        "advanced"
+      ],
+      "play_once": true,
+      "action": "startup",
+      "id": "startup-4-up",
+      "busy": false,
+      "lockable": true,
+      "direction": "down",
+      "insound": null,
+      "outsound": null,
+      "zone": [
+        539,
+        281,
+        51,
+        26
+      ],
+      "target": [
+        50,
+        50
+      ],
+      "attraction": [
+        539,
+        281,
+        51,
+        26
+      ],
+      "position": [
+        564,
+        294
+      ]
+    },
+    {
+      "gametypes": [
+        "basic",
+        "advanced"
+      ],
+      "play_once": true,
+      "action": "startup",
+      "id": "startup-4-right",
+      "busy": false,
+      "lockable": true,
+      "direction": "left",
+      "insound": null,
+      "outsound": null,
+      "zone": [
+        591,
+        292,
+        22,
+        37
+      ],
+      "target": [
+        50,
+        50
+      ],
+      "attraction": [
+        591,
+        292,
+        22,
+        37
+      ],
+      "position": [
+        602,
+        310
+      ]
+    },
+    {
+      "gametypes": [
+        "basic",
+        "advanced"
+      ],
+      "play_once": true,
+      "action": "startup",
+      "id": "startup-4-down",
+      "busy": false,
+      "lockable": true,
+      "direction": "up",
+      "insound": null,
+      "outsound": null,
+      "zone": [
+        538,
+        310,
+        52,
+        32
+      ],
+      "target": [
+        50,
+        50
+      ],
+      "attraction": [
+        538,
+        310,
+        52,
+        32
+      ],
+      "position": [
+        564,
+        326
+      ]
+    },
+    {
+      "gametypes": [
+        "basic",
+        "advanced"
+      ],
+      "play_once": true,
+      "action": "startup",
+      "id": "startup-4-left",
+      "busy": false,
+      "lockable": true,
+      "direction": "right",
+      "insound": null,
+      "outsound": null,
+      "zone": [
+        500,
+        289,
+        35,
+        34
+      ],
+      "target": [
+        50,
+        50
+      ],
+      "attraction": [
+        500,
+        289,
+        35,
+        34
+      ],
+      "position": [
+        517,
+        306
+      ]
+    }
+  ],
+  "popspots": [
+    [
+      199,
+      161
+    ],
+    [
+      201,
+      204
+    ],
+    [
+      261,
+      166
+    ],
+    [
+      298,
+      208
+    ],
+    [
+      367,
+      168
+    ],
+    [
+      557,
+      130
+    ],
+    [
+      600,
+      159
+    ],
+    [
+      561,
+      208
+    ],
+    [
+      421,
+      306
+    ],
+    [
+      342,
+      332
+    ],
+    [
+      262,
+      291
+    ],
+    [
+      172,
+      334
+    ],
+    [
+      44,
+      241
+    ],
+    [
+      76,
+      180
+    ],
+    [
+      35,
+      119
+    ],
+    [
+      90,
+      88
+    ],
+    [
+      122,
+      24
+    ],
+    [
+      168,
+      49
+    ],
+    [
+      255,
+      24
+    ],
+    [
+      291,
+      49
+    ],
+    [
+      368,
+      29
+    ],
+    [
+      457,
+      44
+    ],
+    [
+      510,
+      27
+    ],
+    [
+      224,
+      78
+    ],
+    [
+      153,
+      293
+    ],
+    [
+      379,
+      72
+    ],
+    [
+      359,
+      230
+    ],
+    [
+      318,
+      162
+    ],
+    [
+      248,
+      226
+    ],
+    [
+      82,
+      136
+    ],
+    [
+      32,
+      193
+    ],
+    [
+      603,
+      91
+    ],
+    [
+      601,
+      244
+    ],
+    [
+      551,
+      171
+    ],
+    [
+      360,
+      291
+    ],
+    [
+      253,
+      335
+    ],
+    [
+      204,
+      293
+    ],
+    [
+      306,
+      302
+    ],
+    [
+      439,
+      64
+    ]
+  ],
+  "stairs": [
+    {
+      "zone": [
+        398,
+        90,
+        124,
+        89
+      ],
+      "inclination": -0.4
+    },
+    {
+      "zone": [
+        569,
+        46,
+        1,
+        1
+      ],
+      "inclination": 0.5
+    }
+  ],
+  "backgrounds": [
+    {
+      "file": "/resources/placeholder/No name.png",
+      "position": [
+        0,
+        0
+      ]
+    }
+  ],
+  "targets": [
+    {
+      "origin": [
+        13,
+        9,
+        99,
+        79
+      ],
+      "weight": 3,
+      "destinations": [
+        [
+          114,
+          10,
+          508,
+          79
+        ],
+        [
+          12,
+          89,
+          96,
+          260
+        ]
+      ]
+    },
+    {
+      "origin": [
+        12,
+        90,
+        99,
+        181
+      ],
+      "weight": 3,
+      "destinations": [
+        [
+          21,
+          12,
+          82,
+          69
+        ],
+        [
+          24,
+          280,
+          76,
+          59
+        ]
+      ]
+    },
+    {
+      "origin": [
+        11,
+        270,
+        97,
+        79
+      ],
+      "weight": 3,
+      "destinations": [
+        [
+          109,
+          271,
+          516,
+          78
+        ],
+        [
+          10,
+          8,
+          99,
+          261
+        ]
+      ]
+    },
+    {
+      "origin": [
+        108,
+        271,
+        412,
+        78
+      ],
+      "weight": 3,
+      "destinations": [
+        [
+          520,
+          271,
+          105,
+          77
+        ],
+        [
+          10,
+          268,
+          97,
+          80
+        ]
+      ]
+    },
+    {
+      "origin": [
+        521,
+        87,
+        103,
+        184
+      ],
+      "weight": 3,
+      "destinations": [
+        [
+          520,
+          271,
+          104,
+          76
+        ],
+        [
+          520,
+          10,
+          102,
+          76
+        ]
+      ]
+    },
+    {
+      "origin": [
+        521,
+        10,
+        103,
+        76
+      ],
+      "weight": 3,
+      "destinations": [
+        [
+          524,
+          89,
+          100,
+          259
+        ],
+        [
+          14,
+          10,
+          505,
+          78
+        ]
+      ]
+    },
+    {
+      "origin": [
+        113,
+        10,
+        405,
+        78
+      ],
+      "weight": 3,
+      "destinations": [
+        [
+          520,
+          10,
+          103,
+          77
+        ],
+        [
+          10,
+          8,
+          101,
+          81
+        ]
+      ]
+    },
+    {
+      "origin": [
+        283,
+        140,
+        115,
+        106
+      ],
+      "weight": 3,
+      "destinations": [
+        [
+          174,
+          140,
+          109,
+          105
+        ]
+      ]
+    },
+    {
+      "origin": [
+        174,
+        139,
+        109,
+        105
+      ],
+      "weight": 3,
+      "destinations": [
+        [
+          282,
+          141,
+          114,
+          103
+        ]
+      ]
+    }
+  ],
+  "npcs": [],
+  "characters": [
+    "resources/animdata/smith.json",
+    "resources/animdata/kate.json",
+    "resources/animdata/janet.json",
+    "resources/animdata/jo.json"
+  ],
+  "overlays": [],
+  "vfx": [],
+  "interactive_props": [],
+  "props": []
+}

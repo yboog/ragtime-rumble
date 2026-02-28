@@ -52,6 +52,7 @@ def load_scene(filename):
     filepath = f'{GAMEROOT}/{filename}'
     with open(filepath, 'r') as f:
         data = json.load(f)
+
     scene = Scene(data)
     scene.ambiance = data['ambiance']
     scene.musics = data['musics']
@@ -61,7 +62,6 @@ def load_scene(filename):
     scene.no_go_zones = data['no_go_zones']
     scene.walls = data['walls']
     scene.stairs = data['stairs']
-    scene.shadow_zones = data['shadow_zones']
     scene.targets = data['targets']
     scene.fences = data['fences']
     scene.startups = data['startups']
@@ -84,15 +84,6 @@ def load_scene(filename):
         image = load_image(ol['file'], (0, 255, 0))
         scene.overlays.append(Overlay(image, ol['position'], ol['y']))
 
-    for prop in data['props']:
-        image = load_image(prop['file'])
-        position = prop['position']
-        center = prop['center']
-        box = prop['box']
-        visible_at_dispatch = prop['visible_at_dispatch']
-        prop = Prop(image, position, center, box, visible_at_dispatch, scene)
-        scene.props.append(prop)
-
     return scene
 
 
@@ -104,7 +95,9 @@ def depopulate_scene(scene, clear_players=True):
         scene.life_images.clear()
         scene.bullet_images.clear()
     scene.secondary_npcs.clear()
+    scene.shadow_zones.clear()
     scene.interaction_zones.clear()
+    scene.props.clear()
     scene.possible_duels.clear()
     scene.characters.clear()
     scene.sniperreticles.clear()
@@ -144,6 +137,22 @@ def populate_scene(filename, scene, gametype):
             continue
         zone = InteractionZone(interaction_zone)
         scene.interaction_zones.append(zone)
+
+    for zone in data['shadow_zones']:
+        if gametype not in zone['gametypes']:
+            continue
+        scene.shadow_zones.append(zone)
+
+    for prop in data['props']:
+        if gametype not in prop['gametypes']:
+            continue
+        image = load_image(prop['file'])
+        position = prop['position']
+        center = prop['center']
+        box = prop['box']
+        visible_at_dispatch = prop['visible_at_dispatch']
+        prop = Prop(image, position, center, box, visible_at_dispatch, scene)
+        scene.props.append(prop)
 
     return scene
 

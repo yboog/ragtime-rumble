@@ -1,9 +1,10 @@
-from PySide6 import QtWidgets, QtCore
+from PySide6 import QtWidgets
 from pixaloon.editors.base import BaseEditor
 from pixaloon.intlisteditor import IntListEditor
 from pixaloon.filewidget import FileLineEdit
 from pixaloon.selection import Selection
 from pixaloon.intarrayeditor import IntArrayEditor
+from pixaloon.widgets import GameTypesSelector
 
 
 class InteractionEditor(BaseEditor):
@@ -108,28 +109,3 @@ class InteractionEditor(BaseEditor):
             'outsound': self.outsound.filepath(),
             'lockable': bool(self.lockable.currentIndex()),
             'gametypes': self.gametypes.game_types()}
-
-
-class GameTypesSelector(QtWidgets.QListWidget):
-    edited = QtCore.Signal()
-
-    def __init__(self, parent=None):
-        super().__init__(parent)
-        for text in ['basic', 'advanced']:
-            item = QtWidgets.QListWidgetItem()
-            item.setText(text)
-            item.setCheckState(QtCore.Qt.Checked)
-            self.addItem(item)
-        self.itemChanged.connect(lambda _: self.edited.emit())
-
-    def game_types(self):
-        return [
-            self.item(r).text() for r in range(self.count()) if
-            self.item(r).checkState() == QtCore.Qt.Checked]
-
-    def set_game_types(self, game_types):
-        for r in range(self.count()):
-            self.item(r).setCheckState(
-                QtCore.Qt.Checked
-                if self.item(r).text() in game_types else
-                QtCore.Qt.Unchecked)

@@ -8,6 +8,7 @@ class Selection(QtCore.QObject):
     FENCE = 'fences'
     INTERACTION = 'interaction'
     NO_GO_ZONE = 'no_go_zones'
+    NPC = 'npc'
     PATH = 'path'
     POPSPOT = 'popspots'
     PROP = 'prop'
@@ -17,6 +18,7 @@ class Selection(QtCore.QObject):
     STAIR = 'stair'
     TARGET = 'origin_targets'
     WALL = 'wall'
+    BGPH = 'bgph'
 
     def __init__(self):
         super().__init__()

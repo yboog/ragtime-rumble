@@ -1,4 +1,3 @@
-from PySide6 import QtWidgets
 from pixaloon.path import relative_normpath
 from pixaloon.selection import Selection
 from pixaloon.intarrayeditor import IntArrayEditor

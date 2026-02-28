@@ -3,6 +3,7 @@ from pixaloon.selection import Selection
 from pixaloon.intlisteditor import IntListEditor
 from pixaloon.intarrayeditor import IntArrayListEditor
 from pixaloon.editors.base import BaseEditor
+from pixaloon.widgets import GameTypesSelector
 
 
 class NoGoZoneEditor(BaseEditor):
@@ -42,13 +43,65 @@ class WallsEditor(BaseEditor):
         self.polygon.set_values(values)
 
 
-class ShadowEditor(BaseEditor):
+class PlaceHolderEditor(BaseEditor):
     def __init__(self, parent=None):
         super().__init__(parent)
         self.polygon = IntArrayListEditor(resizable=True)
         self.polygon.values_changed.connect(self.values_changed)
         self.color = QtWidgets.QLineEdit()
         self.color.returnPressed.connect(self.values_changed)
+        self.rect = IntListEditor()
+        self.rect.values_changed.connect(self.values_changed)
+        self.add_row('Color', self.color)
+        self.add_row('rect', self.rect)
+        self.add_row('Polygon', self.polygon)
+
+    def values_changed(self, *_):
+        selection = self.document.selection
+        if selection.tool != Selection.BGPH or selection.data is None:
+            return
+        if not self.document:
+            return
+        try:
+            color = [int(v) for v in self.color.text().strip('[]()').split(',')]
+        except ValueError:
+            QtWidgets.QMessageBox.critical(self, 'Invalid color, please write tuple')
+            return
+        phs = self.document.data['edit_data']['background_placeholders']
+        placeholder = phs[selection.data]
+        placeholder['color'] = color
+        self.document.edited.emit()
+
+    def selection_changed(self):
+        selection = self.document.selection
+        if selection.tool != Selection.BGPH or selection.data is None:
+            return self.polygon.clear()
+        phs = self.document.data['edit_data']['background_placeholders']
+        placeholder = phs[selection.data]
+
+        self.block_signals(True)
+        self.rect.setEnabled(placeholder['type'] == 'rect')
+        self.polygon.setEnabled(placeholder['type'] != 'rect')
+        if placeholder['type'] == 'rect':
+            self.polygon.clear()
+            self.rect.set_values(placeholder['data'])
+        else:
+            self.rect.clear()
+            self.polygon.set_values(placeholder['data'])
+        self.color.setText(str(placeholder['color']))
+        self.block_signals(False)
+
+
+class ShadowEditor(BaseEditor):
+    def __init__(self, parent=None):
+        super().__init__(parent)
+        self.gametypes = GameTypesSelector()
+        self.gametypes.edited.connect(self.values_changed)
+        self.polygon = IntArrayListEditor(resizable=True)
+        self.polygon.values_changed.connect(self.values_changed)
+        self.color = QtWidgets.QLineEdit()
+        self.color.returnPressed.connect(self.values_changed)
+        self.add_row('Game types', self.gametypes)
         self.add_row('Color', self.color)
         self.add_row('Polygon', self.polygon)
 
@@ -65,6 +118,7 @@ class ShadowEditor(BaseEditor):
             return
         data = self.document.data['shadow_zones'][self.document.selection.data]
         data['color'] = color
+        data['gametypes'] = self.gametypes.game_types()
         self.document.edited.emit()
 
     def selection_changed(self):
@@ -74,6 +128,7 @@ class ShadowEditor(BaseEditor):
         index = self.document.selection.data
         data = self.document.data['shadow_zones'][index]
         self.block_signals(True)
+        self.gametypes.set_game_types(data['gametypes'])
         self.polygon.set_values(data['polygon'])
         self.color.setText(str(data['color']))
         self.block_signals(False)

@@ -5,8 +5,9 @@ from pixaloon.canvas.paint import (
     paint_canvas_popspots, paint_canvas_base, paint_canvas_fences,
     paint_canvas_interactions, paint_canvas_paths, paint_canvas_props,
     paint_canvas_stairs, paint_canvas_startups, paint_canvas_switchs,
-    paint_scores, paint_canvas_target, paint_canvas_walls,
-    paint_canvas_shadow_zones, paint_canvas_selection)
+    paint_scores, paint_canvas_target, paint_canvas_walls, paint_npc,
+    paint_canvas_shadow_zones, paint_canvas_selection,
+    paint_background_placeholder)
 from pixaloon.canvas.tools.basetool import NavigationTool
 from pixaloon.toolmode import ToolMode
 
@@ -135,7 +136,6 @@ class LevelCanvas(QtWidgets.QWidget):
                     painter, self.document, self.document.viewportmapper)
         except BaseException as e:
             print('popspot', e)
-            ...
 
         try:
             if 'props' in self.document.elements_to_render:
@@ -143,7 +143,6 @@ class LevelCanvas(QtWidgets.QWidget):
                     painter, self.document, self.document.viewportmapper)
         except BaseException:
             print('props')
-            ...
 
         try:
             if 'walls' in self.document.elements_to_render:
@@ -151,7 +150,6 @@ class LevelCanvas(QtWidgets.QWidget):
                     painter, self.document, self.document.viewportmapper)
         except BaseException as e:
             print('walls', e)
-            ...
 
         try:
             if 'shadows' in self.document.elements_to_render:
@@ -159,7 +157,6 @@ class LevelCanvas(QtWidgets.QWidget):
                     painter, self.document, self.document.viewportmapper)
         except BaseException as e:
             print('shadows', str(e))
-            ...
 
         try:
             if 'stairs' in self.document.elements_to_render:
@@ -167,7 +164,6 @@ class LevelCanvas(QtWidgets.QWidget):
                     painter, self.document, self.document.viewportmapper)
         except BaseException:
             print('stairs')
-            ...
 
         try:
             if 'targets' in self.document.elements_to_render:
@@ -178,14 +174,12 @@ class LevelCanvas(QtWidgets.QWidget):
                         viewportmapper=self.document.viewportmapper)
         except BaseException as e:
             print('targets', e)
-            ...
 
         try:
             if 'fences' in self.document.elements_to_render:
                 paint_canvas_fences(painter, self.document, self.document.viewportmapper)
         except BaseException:
             print('fences')
-            ...
 
         try:
             if 'interactions' in self.document.elements_to_render:
@@ -193,7 +187,6 @@ class LevelCanvas(QtWidgets.QWidget):
                     painter, self.document, self.document.viewportmapper)
         except BaseException:
             print('interactions')
-            ...
 
         try:
             if 'startups' in self.document.elements_to_render:
@@ -201,7 +194,24 @@ class LevelCanvas(QtWidgets.QWidget):
                     painter, self.document, self.document.viewportmapper)
         except BaseException as e:
             print('startups', str(e))
-            ...
+
+        try:
+            if 'bgph' in self.document.elements_to_render:
+                d = self.document.data['edit_data']['background_placeholders']
+                for bgph in d:
+                    paint_background_placeholder(
+                        painter, bgph, self.document.viewportmapper)
+        except BaseException as e:
+            print('bgphs', str(e))
+            raise
+
+        try:
+            if 'npcs' in self.document.elements_to_render:
+                for npc in self.document.data['npcs']:
+                    paint_npc(painter, npc, self.document.viewportmapper)
+        except BaseException as e:
+            print('npcs', str(e))
+            raise
 
         try:
             if 'paths' in self.document.elements_to_render:
@@ -213,7 +223,7 @@ class LevelCanvas(QtWidgets.QWidget):
                     painter, self.document, self.document.viewportmapper)
         except BaseException:
             print('paths')
-            ...
+
         paint_canvas_selection(
             painter,
             self.document,
