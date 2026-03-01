@@ -6,14 +6,15 @@ from PySide6 import QtCore, QtGui
 from pixaloon.imgutils import remove_key_color
 
 
+here = os.path.dirname(__file__)
+
+
 def get_icon(filename):
-    here = os.path.dirname(__file__)
     return QtGui.QIcon(f'{here}/resources/icons/{filename}')
 
 
 @lru_cache()
 def get_image(filename):
-    here = os.path.dirname(__file__)
     return remove_key_color(f'{here}/resources/images/{filename}')
 
 
@@ -34,3 +35,14 @@ def bytes_to_qimage(image_bytes):
 
 def bytes_to_image(image_bytes):
     return Image.open(io.BytesIO(image_bytes))
+
+
+def list_tiles():
+    return os.listdir(f'{here}/resources/tiles')
+
+
+def get_tile(filename):
+    return get_image(f'../tiles/{filename}')
+
+
+

@@ -120,7 +120,16 @@ class LevelCanvas(QtWidgets.QWidget):
         painter.setPen(QtCore.Qt.NoPen)
         painter.setBrush(color)
         painter.drawRect(rect)
-        paint_scores(painter, self.document, self.document.viewportmapper)
+
+        try:
+            if 'bgph' in self.document.elements_to_render:
+                d = self.document.data['edit_data']['background_placeholders']
+                for bgph in d:
+                    paint_background_placeholder(
+                        painter, bgph, self.document.viewportmapper)
+        except BaseException as e:
+            print('bgphs', str(e))
+            raise
 
         try:
             if 'switchs' in self.document.elements_to_render:
@@ -200,16 +209,6 @@ class LevelCanvas(QtWidgets.QWidget):
             print('startups', str(e))
 
         try:
-            if 'bgph' in self.document.elements_to_render:
-                d = self.document.data['edit_data']['background_placeholders']
-                for bgph in d:
-                    paint_background_placeholder(
-                        painter, bgph, self.document.viewportmapper)
-        except BaseException as e:
-            print('bgphs', str(e))
-            raise
-
-        try:
             if 'npcs' in self.document.elements_to_render:
                 filters = self.document.gametypes_display_filters
                 for npc in self.document.data['npcs']:
@@ -231,6 +230,14 @@ class LevelCanvas(QtWidgets.QWidget):
         except BaseException:
             print('paths')
 
+        paint_scores(painter, self.document, self.document.viewportmapper)
+        painter.setBrush(QtCore.Qt.NoBrush)
+        pen = QtGui.QPen()
+        pen.setStyle(QtCore.Qt.DashLine)
+        painter.setPen(pen)
+        rect = QtCore.QRect(0, 0, 640, 360)
+        rect = self.document.viewportmapper.to_viewport_rect(rect)
+        painter.drawRect(rect)
         paint_canvas_selection(
             painter,
             self.document,

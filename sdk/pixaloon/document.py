@@ -95,6 +95,8 @@ class Document(QtCore.QObject):
                 del self.data['paths'][index]
             case Selection.WALL:
                 del self.data['walls'][self.selection.data]
+            case Selection.STAIR:
+                del self.data['stairs'][self.selection.data]
             case Selection.BGPH:
                 data = self.data['edit_data']
                 del data['background_placeholders'][self.selection.data]

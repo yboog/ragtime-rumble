@@ -1276,7 +1276,8 @@
           80,
           80,
           255
-        ]
+        ],
+        "tile": null
       },
       {
         "type": "rect",
@@ -1291,7 +1292,8 @@
           80,
           80,
           255
-        ]
+        ],
+        "tile": null
       },
       {
         "type": "rect",
@@ -1306,7 +1308,8 @@
           80,
           80,
           255
-        ]
+        ],
+        "tile": null
       },
       {
         "type": "rect",
@@ -1321,7 +1324,8 @@
           80,
           80,
           255
-        ]
+        ],
+        "tile": null
       },
       {
         "type": "polygon",
@@ -1348,7 +1352,8 @@
           30,
           30,
           255
-        ]
+        ],
+        "tile": null
       },
       {
         "type": "rect",
@@ -1363,7 +1368,8 @@
           80,
           50,
           70
-        ]
+        ],
+        "tile": null
       },
       {
         "type": "rect",
@@ -1378,7 +1384,8 @@
           80,
           50,
           70
-        ]
+        ],
+        "tile": null
       },
       {
         "type": "rect",
@@ -1393,7 +1400,8 @@
           80,
           50,
           70
-        ]
+        ],
+        "tile": null
       },
       {
         "type": "rect",
@@ -1408,7 +1416,8 @@
           80,
           50,
           70
-        ]
+        ],
+        "tile": null
       },
       {
         "type": "rect",
@@ -1423,7 +1432,8 @@
           80,
           50,
           70
-        ]
+        ],
+        "tile": null
       },
       {
         "type": "polygon",
@@ -1446,7 +1456,8 @@
           80,
           50,
           120
-        ]
+        ],
+        "tile": null
       },
       {
         "type": "polygon",
@@ -1477,7 +1488,8 @@
           80,
           50,
           120
-        ]
+        ],
+        "tile": null
       },
       {
         "type": "rect",
@@ -1492,7 +1504,8 @@
           50,
           80,
           255
-        ]
+        ],
+        "tile": null
       }
     ]
   },
@@ -3148,7 +3161,7 @@
     }
   ],
   "interactive_props": [
-        {
+    {
       "name": "bottle",
       "action": "drink",
       "insound": "resources/sounds/glouglou.wav",

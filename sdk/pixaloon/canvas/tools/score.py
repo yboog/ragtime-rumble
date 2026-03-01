@@ -57,13 +57,6 @@ class ScoreTool(NavigationTool):
     def get_interaction(self, pos):
         for r in range(4):
             p = f'player{r + 1}'
-            # P1 P2 P3
-            image = self.document.scores[p]['life']
-            position = self.document.data['score'][p]['life']['position']
-            rect = QtCore.QRectF(QtCore.QPoint(*position), image.size())
-            rect = self.viewportmapper.to_viewport_rect(rect)
-            if rect.contains(pos):
-                return 'life', r, pos - rect.topLeft().toPoint()
             # Bullet image
             image = self.document.scores[p]['bullet']
             position = self.document.data['score'][p]['bullet']['position']
@@ -78,6 +71,17 @@ class ScoreTool(NavigationTool):
             rect = self.viewportmapper.to_viewport_rect(rect)
             if rect.contains(pos):
                 return 'coin', r, pos - rect.topLeft().toPoint()
+
+        for r in range(4):
+            p = f'player{r + 1}'
+            # P1 P2 P3
+            image = self.document.scores[p]['life']
+            position = self.document.data['score'][p]['life']['position']
+            rect = QtCore.QRectF(QtCore.QPoint(*position), image.size())
+            rect = self.viewportmapper.to_viewport_rect(rect)
+            if rect.contains(pos):
+                return 'life', r, pos - rect.topLeft().toPoint()
+
         image = self.document.scores['overlay']
         position = self.document.data['score']['ol']['position']
         rect = QtCore.QRectF(QtCore.QPoint(*position), image.size())

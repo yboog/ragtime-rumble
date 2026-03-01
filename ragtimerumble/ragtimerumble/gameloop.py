@@ -101,9 +101,6 @@ class GameLoop:
                 self.pause_menu = PauseMenu(self.joysticks)
                 return
         next(self.scene)
-        if not self.unlocked_fps:
-            self.clock.tick(60)
-            return
         if self.scene.ultime_showdown:
             stop_sound(self.scene.ambiance)
             stop_scene_music()
@@ -112,6 +109,8 @@ class GameLoop:
             stop_sound(self.scene.ambiance)
             stop_scene_music()
             self.show_score()
+        if not self.unlocked_fps:
+            self.clock.tick(60)
 
     def evaluate_dispatching(self):
         next(self.dispatcher)

@@ -1,0 +1,3826 @@
+{
+  "character_number": 35,
+  "name": "No name",
+  "musics": [
+    "resources/sounds/ragtime_1_MA_BrunoFreitas_OldWestSaloon_HonkyTonk.ogg"
+  ],
+  "ambiance": "resources/sounds/ambiance_saloon.ogg",
+  "paths": [
+    {
+      "gametypes": [
+        "basic",
+        "advanced"
+      ],
+      "points": [
+        [
+          40,
+          96
+        ],
+        [
+          59,
+          67
+        ],
+        [
+          138,
+          64
+        ],
+        [
+          230,
+          59
+        ],
+        [
+          279,
+          60
+        ],
+        [
+          320,
+          74
+        ],
+        [
+          416,
+          57
+        ],
+        [
+          493,
+          55
+        ],
+        [
+          567,
+          83
+        ],
+        [
+          591,
+          110
+        ],
+        [
+          592,
+          154
+        ],
+        [
+          579,
+          176
+        ]
+      ],
+      "hard": false
+    },
+    {
+      "gametypes": [
+        "basic",
+        "advanced"
+      ],
+      "points": [
+        [
+          527,
+          90
+        ],
+        [
+          572,
+          148
+        ],
+        [
+          561,
+          233
+        ],
+        [
+          532,
+          284
+        ],
+        [
+          509,
+          318
+        ],
+        [
+          464,
+          330
+        ],
+        [
+          387,
+          338
+        ]
+      ],
+      "hard": false
+    },
+    {
+      "gametypes": [
+        "basic",
+        "advanced"
+      ],
+      "points": [
+        [
+          432,
+          302
+        ],
+        [
+          336,
+          326
+        ],
+        [
+          279,
+          332
+        ],
+        [
+          243,
+          319
+        ],
+        [
+          208,
+          313
+        ],
+        [
+          167,
+          327
+        ],
+        [
+          121,
+          327
+        ],
+        [
+          74,
+          314
+        ],
+        [
+          48,
+          289
+        ],
+        [
+          43,
+          238
+        ],
+        [
+          38,
+          173
+        ]
+      ],
+      "hard": false
+    },
+    {
+      "gametypes": [
+        "basic",
+        "advanced"
+      ],
+      "points": [
+        [
+          613,
+          202
+        ],
+        [
+          598,
+          280
+        ],
+        [
+          551,
+          315
+        ],
+        [
+          502,
+          329
+        ],
+        [
+          421,
+          330
+        ],
+        [
+          365,
+          319
+        ],
+        [
+          316,
+          308
+        ],
+        [
+          264,
+          311
+        ]
+      ],
+      "hard": false
+    },
+    {
+      "gametypes": [
+        "basic",
+        "advanced"
+      ],
+      "points": [
+        [
+          461,
+          65
+        ],
+        [
+          342,
+          55
+        ],
+        [
+          247,
+          67
+        ],
+        [
+          138,
+          61
+        ],
+        [
+          83,
+          58
+        ],
+        [
+          42,
+          79
+        ],
+        [
+          27,
+          123
+        ],
+        [
+          25,
+          167
+        ]
+      ],
+      "hard": false
+    },
+    {
+      "gametypes": [
+        "basic",
+        "advanced"
+      ],
+      "points": [
+        [
+          584,
+          215
+        ],
+        [
+          602,
+          150
+        ],
+        [
+          573,
+          104
+        ],
+        [
+          511,
+          71
+        ],
+        [
+          447,
+          70
+        ],
+        [
+          377,
+          72
+        ],
+        [
+          333,
+          65
+        ]
+      ],
+      "hard": false
+    },
+    {
+      "gametypes": [
+        "basic",
+        "advanced"
+      ],
+      "points": [
+        [
+          45,
+          147
+        ],
+        [
+          20,
+          232
+        ],
+        [
+          33,
+          303
+        ],
+        [
+          73,
+          325
+        ],
+        [
+          163,
+          329
+        ],
+        [
+          172,
+          312
+        ],
+        [
+          247,
+          311
+        ],
+        [
+          278,
+          321
+        ]
+      ],
+      "hard": false
+    },
+    {
+      "gametypes": [
+        "basic",
+        "advanced"
+      ],
+      "points": [
+        [
+          213,
+          161
+        ],
+        [
+          255,
+          157
+        ],
+        [
+          294,
+          179
+        ],
+        [
+          292,
+          224
+        ],
+        [
+          265,
+          252
+        ],
+        [
+          220,
+          260
+        ],
+        [
+          200,
+          251
+        ]
+      ],
+      "hard": false
+    },
+    {
+      "gametypes": [
+        "basic",
+        "advanced"
+      ],
+      "points": [
+        [
+          215,
+          170
+        ],
+        [
+          282,
+          176
+        ],
+        [
+          308,
+          202
+        ],
+        [
+          318,
+          233
+        ],
+        [
+          347,
+          259
+        ],
+        [
+          380,
+          268
+        ],
+        [
+          397,
+          263
+        ]
+      ],
+      "hard": false
+    },
+    {
+      "gametypes": [
+        "basic",
+        "advanced"
+      ],
+      "points": [
+        [
+          400,
+          204
+        ],
+        [
+          345,
+          191
+        ],
+        [
+          334,
+          174
+        ],
+        [
+          299,
+          177
+        ],
+        [
+          289,
+          228
+        ],
+        [
+          306,
+          256
+        ],
+        [
+          329,
+          259
+        ]
+      ],
+      "hard": false
+    },
+    {
+      "gametypes": [
+        "basic",
+        "advanced"
+      ],
+      "points": [
+        [
+          198,
+          264
+        ],
+        [
+          264,
+          262
+        ],
+        [
+          281,
+          231
+        ],
+        [
+          318,
+          210
+        ],
+        [
+          354,
+          218
+        ],
+        [
+          376,
+          239
+        ],
+        [
+          392,
+          258
+        ]
+      ],
+      "hard": false
+    },
+    {
+      "gametypes": [
+        "basic",
+        "advanced"
+      ],
+      "points": [
+        [
+          232,
+          242
+        ],
+        [
+          271,
+          257
+        ],
+        [
+          298,
+          262
+        ],
+        [
+          318,
+          246
+        ],
+        [
+          326,
+          220
+        ],
+        [
+          315,
+          195
+        ],
+        [
+          327,
+          172
+        ],
+        [
+          340,
+          169
+        ]
+      ],
+      "hard": false
+    },
+    {
+      "gametypes": [
+        "basic",
+        "advanced"
+      ],
+      "points": [
+        [
+          293,
+          153
+        ],
+        [
+          232,
+          150
+        ],
+        [
+          222,
+          162
+        ],
+        [
+          235,
+          171
+        ],
+        [
+          265,
+          176
+        ],
+        [
+          278,
+          203
+        ],
+        [
+          271,
+          221
+        ]
+      ],
+      "hard": false
+    },
+    {
+      "gametypes": [
+        "basic",
+        "advanced"
+      ],
+      "points": [
+        [
+          326,
+          156
+        ],
+        [
+          322,
+          198
+        ],
+        [
+          345,
+          224
+        ],
+        [
+          386,
+          242
+        ],
+        [
+          398,
+          226
+        ]
+      ],
+      "hard": false
+    },
+    {
+      "gametypes": [
+        "basic",
+        "advanced"
+      ],
+      "points": [
+        [
+          383,
+          206
+        ],
+        [
+          345,
+          206
+        ],
+        [
+          345,
+          174
+        ],
+        [
+          364,
+          174
+        ],
+        [
+          417,
+          138
+        ],
+        [
+          417,
+          120
+        ],
+        [
+          435,
+          106
+        ],
+        [
+          507,
+          106
+        ],
+        [
+          541,
+          140
+        ],
+        [
+          541,
+          214
+        ]
+      ],
+      "hard": true
+    },
+    {
+      "gametypes": [
+        "basic",
+        "advanced"
+      ],
+      "points": [
+        [
+          566,
+          115
+        ],
+        [
+          438,
+          115
+        ],
+        [
+          406,
+          136
+        ],
+        [
+          406,
+          130
+        ],
+        [
+          365,
+          158
+        ],
+        [
+          298,
+          158
+        ]
+      ],
+      "hard": true
+    },
+    {
+      "gametypes": [
+        "basic",
+        "advanced"
+      ],
+      "points": [
+        [
+          283,
+          249
+        ],
+        [
+          329,
+          249
+        ],
+        [
+          346,
+          233
+        ],
+        [
+          346,
+          166
+        ],
+        [
+          364,
+          166
+        ],
+        [
+          435,
+          115
+        ],
+        [
+          483,
+          115
+        ],
+        [
+          493,
+          106
+        ],
+        [
+          521,
+          106
+        ],
+        [
+          521,
+          71
+        ],
+        [
+          296,
+          71
+        ]
+      ],
+      "hard": true
+    },
+    {
+      "gametypes": [
+        "basic",
+        "advanced"
+      ],
+      "points": [
+        [
+          402,
+          248
+        ],
+        [
+          302,
+          248
+        ],
+        [
+          280,
+          226
+        ],
+        [
+          280,
+          176
+        ],
+        [
+          331,
+          176
+        ],
+        [
+          352,
+          154
+        ],
+        [
+          364,
+          154
+        ],
+        [
+          435,
+          106
+        ],
+        [
+          478,
+          106
+        ],
+        [
+          489,
+          116
+        ],
+        [
+          514,
+          116
+        ],
+        [
+          514,
+          74
+        ],
+        [
+          391,
+          74
+        ]
+      ],
+      "hard": true
+    },
+    {
+      "gametypes": [
+        "basic",
+        "advanced"
+      ],
+      "points": [
+        [
+          595,
+          103
+        ],
+        [
+          512,
+          103
+        ],
+        [
+          501,
+          113
+        ],
+        [
+          436,
+          113
+        ],
+        [
+          366,
+          161
+        ],
+        [
+          305,
+          161
+        ],
+        [
+          305,
+          239
+        ]
+      ],
+      "hard": true
+    },
+    {
+      "gametypes": [
+        "basic",
+        "advanced"
+      ],
+      "points": [
+        [
+          584,
+          70
+        ],
+        [
+          488,
+          53
+        ],
+        [
+          443,
+          69
+        ],
+        [
+          388,
+          59
+        ],
+        [
+          351,
+          71
+        ],
+        [
+          320,
+          57
+        ],
+        [
+          263,
+          69
+        ],
+        [
+          232,
+          73
+        ],
+        [
+          192,
+          57
+        ]
+      ],
+      "hard": false
+    },
+    {
+      "gametypes": [
+        "basic",
+        "advanced"
+      ],
+      "points": [
+        [
+          465,
+          310
+        ],
+        [
+          519,
+          330
+        ],
+        [
+          603,
+          322
+        ],
+        [
+          580,
+          288
+        ],
+        [
+          542,
+          258
+        ],
+        [
+          587,
+          229
+        ],
+        [
+          608,
+          193
+        ]
+      ],
+      "hard": false
+    },
+    {
+      "gametypes": [
+        "basic",
+        "advanced"
+      ],
+      "points": [
+        [
+          375,
+          227
+        ],
+        [
+          336,
+          188
+        ],
+        [
+          365,
+          159
+        ],
+        [
+          436,
+          111
+        ],
+        [
+          471,
+          111
+        ],
+        [
+          479,
+          103
+        ],
+        [
+          530,
+          103
+        ],
+        [
+          550,
+          123
+        ],
+        [
+          574,
+          123
+        ],
+        [
+          574,
+          167
+        ]
+      ],
+      "hard": true
+    }
+  ],
+  "edit_data": {
+    "background_placeholders": [
+      {
+        "type": "rect",
+        "data": [
+          0,
+          0,
+          640,
+          45
+        ],
+        "tile": "wall-green.png",
+        "color": [
+          255,
+          255,
+          255,
+          255
+        ]
+      },
+      {
+        "type": "rect",
+        "data": [
+          0,
+          -34,
+          640,
+          80
+        ],
+        "tile": "guardrail_column.png",
+        "color": [
+          255,
+          255,
+          255,
+          255
+        ]
+      },
+      {
+        "type": "rect",
+        "data": [
+          0,
+          46,
+          641,
+          50
+        ],
+        "tile": "carpet-brown.png",
+        "color": [
+          255,
+          255,
+          255,
+          255
+        ]
+      },
+      {
+        "type": "rect",
+        "data": [
+          0,
+          296,
+          640,
+          66
+        ],
+        "tile": "carpet-brown.png",
+        "color": [
+          255,
+          255,
+          255,
+          255
+        ]
+      },
+      {
+        "type": "rect",
+        "data": [
+          0,
+          339,
+          640,
+          22
+        ],
+        "tile": "gardrail.png",
+        "color": [
+          255,
+          255,
+          255,
+          255
+        ]
+      },
+      {
+        "type": "rect",
+        "data": [
+          0,
+          96,
+          75,
+          200
+        ],
+        "tile": "carpet-brown.png",
+        "color": [
+          255,
+          255,
+          255,
+          255
+        ]
+      },
+      {
+        "type": "rect",
+        "data": [
+          500,
+          96,
+          140,
+          200
+        ],
+        "tile": "carpet-brown.png",
+        "color": [
+          255,
+          255,
+          255,
+          255
+        ]
+      },
+      {
+        "type": "rect",
+        "data": [
+          75,
+          96,
+          425,
+          48
+        ],
+        "tile": "wall-blue.png",
+        "color": [
+          255,
+          255,
+          255,
+          255
+        ]
+      },
+      {
+        "type": "rect",
+        "data": [
+          75,
+          79,
+          425,
+          24
+        ],
+        "tile": "gardrail.png",
+        "color": [
+          255,
+          255,
+          255,
+          255
+        ]
+      },
+      {
+        "type": "rect",
+        "data": [
+          79,
+          -100,
+          1,
+          1
+        ],
+        "tile": null,
+        "color": [
+          255,
+          255,
+          255,
+          255
+        ]
+      },
+      {
+        "type": "rect",
+        "data": [
+          75,
+          144,
+          425,
+          152
+        ],
+        "tile": "woodfloor-horizontal.png",
+        "color": [
+          255,
+          255,
+          255,
+          255
+        ]
+      },
+      {
+        "type": "rect",
+        "data": [
+          74,
+          130,
+          101,
+          166
+        ],
+        "tile": "woodfloor-dark-vertical.png",
+        "color": [
+          255,
+          255,
+          255,
+          255
+        ]
+      },
+      {
+        "type": "rect",
+        "data": [
+          175,
+          130,
+          2,
+          166
+        ],
+        "tile": null,
+        "color": [
+          65,
+          65,
+          50,
+          255
+        ]
+      },
+      {
+        "type": "rect",
+        "data": [
+          436,
+          96,
+          64,
+          37
+        ],
+        "tile": "carpet-brown.png",
+        "color": [
+          255,
+          255,
+          255,
+          255
+        ]
+      },
+      {
+        "type": "polygon",
+        "data": [
+          [
+            436,
+            96
+          ],
+          [
+            365,
+            144
+          ],
+          [
+            365,
+            181
+          ],
+          [
+            436,
+            133
+          ]
+        ],
+        "tile": null,
+        "color": [
+          115,
+          72,
+          35,
+          255
+        ]
+      },
+      {
+        "type": "polygon",
+        "data": [
+          [
+            436,
+            133
+          ],
+          [
+            500,
+            133
+          ],
+          [
+            500,
+            181
+          ],
+          [
+            365,
+            181
+          ]
+        ],
+        "tile": "wall-blue.png",
+        "color": [
+          255,
+          255,
+          255,
+          255
+        ]
+      },
+      {
+        "type": "rect",
+        "data": [
+          71,
+          79,
+          4,
+          217
+        ],
+        "tile": null,
+        "color": [
+          85,
+          53,
+          27
+        ]
+      },
+      {
+        "type": "rect",
+        "data": [
+          415,
+          166,
+          26,
+          130
+        ],
+        "tile": null,
+        "color": [
+          85,
+          53,
+          27
+        ]
+      },
+      {
+        "type": "rect",
+        "data": [
+          436,
+          115,
+          64,
+          24
+        ],
+        "tile": "gardrail.png",
+        "color": [
+          255,
+          255,
+          255,
+          255
+        ]
+      },
+      {
+        "type": "rect",
+        "data": [
+          500,
+          115,
+          3,
+          181
+        ],
+        "tile": null,
+        "color": [
+          115,
+          72,
+          35
+        ]
+      },
+      {
+        "type": "rect",
+        "data": [
+          441,
+          181,
+          59,
+          115
+        ],
+        "tile": "woodfloor-vertical.png",
+        "color": [
+          255,
+          255,
+          255,
+          255
+        ]
+      },
+      {
+        "type": "rect",
+        "data": [
+          75,
+          103,
+          47,
+          120
+        ],
+        "tile": null,
+        "color": [
+          60,
+          40,
+          20
+        ]
+      },
+      {
+        "type": "rect",
+        "data": [
+          75,
+          216,
+          48,
+          44
+        ],
+        "tile": "wall-blue.png",
+        "color": [
+          255,
+          255,
+          255,
+          255
+        ]
+      },
+      {
+        "type": "rect",
+        "data": [
+          74,
+          277,
+          426,
+          19
+        ],
+        "tile": "gardrail.png",
+        "color": [
+          255,
+          255,
+          255,
+          255
+        ]
+      },
+      {
+        "type": "rect",
+        "data": [
+          127,
+          133,
+          45,
+          123
+        ],
+        "tile": "carpet-red.png",
+        "color": [
+          255,
+          255,
+          255,
+          255
+        ]
+      },
+      {
+        "type": "rect",
+        "data": [
+          119,
+          79,
+          4,
+          137
+        ],
+        "tile": null,
+        "color": [
+          87,
+          53,
+          27
+        ]
+      },
+      {
+        "type": "rect",
+        "data": [
+          72,
+          211,
+          48,
+          5
+        ],
+        "tile": null,
+        "color": [
+          87,
+          53,
+          27
+        ]
+      },
+      {
+        "type": "rect",
+        "data": [
+          174,
+          181,
+          75,
+          40
+        ],
+        "tile": "woodfloor-dark-horizontal.png",
+        "color": [
+          255,
+          255,
+          255,
+          255
+        ]
+      },
+      {
+        "type": "rect",
+        "data": [
+          172,
+          185,
+          72,
+          30
+        ],
+        "tile": "carpet-red.png",
+        "color": [
+          255,
+          255,
+          255,
+          255
+        ]
+      },
+      {
+        "type": "rect",
+        "data": [
+          177,
+          221,
+          72,
+          13
+        ],
+        "tile": "woodfloor-dark-vertical.png",
+        "color": [
+          255,
+          255,
+          255,
+          255
+        ]
+      },
+      {
+        "type": "rect",
+        "data": [
+          175,
+          219,
+          74,
+          2
+        ],
+        "tile": null,
+        "color": [
+          65,
+          65,
+          50,
+          255
+        ]
+      },
+      {
+        "type": "rect",
+        "data": [
+          175,
+          181,
+          74,
+          2
+        ],
+        "tile": null,
+        "color": [
+          65,
+          65,
+          50,
+          255
+        ]
+      },
+      {
+        "type": "rect",
+        "data": [
+          247,
+          183,
+          2,
+          37
+        ],
+        "tile": null,
+        "color": [
+          65,
+          65,
+          50,
+          255
+        ]
+      }
+    ]
+  },
+  "startups": {
+    "unassigned": [
+      [
+        304,
+        162
+      ],
+      [
+        304,
+        186
+      ],
+      [
+        304,
+        207
+      ],
+      [
+        304,
+        231
+      ]
+    ],
+    "groups": [
+      {
+        "popspots": {
+          "left": [
+            20,
+            316
+          ],
+          "right": [
+            52,
+            316
+          ],
+          "up": [
+            36,
+            300
+          ],
+          "down": [
+            36,
+            332
+          ]
+        },
+        "assigned": [
+          [
+            93,
+            329
+          ],
+          [
+            120,
+            329
+          ],
+          [
+            148,
+            329
+          ],
+          [
+            179,
+            329
+          ]
+        ],
+        "interactions": {
+          "left": "startup-1-left",
+          "right": "startup-1-right",
+          "up": "startup-1-up",
+          "down": "startup-1-down"
+        }
+      },
+      {
+        "popspots": {
+          "left": [
+            17,
+            76
+          ],
+          "right": [
+            49,
+            76
+          ],
+          "up": [
+            33,
+            60
+          ],
+          "down": [
+            33,
+            92
+          ]
+        },
+        "assigned": [
+          [
+            81,
+            61
+          ],
+          [
+            112,
+            61
+          ],
+          [
+            142,
+            61
+          ],
+          [
+            167,
+            61
+          ]
+        ],
+        "interactions": {
+          "left": "startup-2-left",
+          "right": "startup-2-right",
+          "up": "startup-2-up",
+          "down": "startup-2-down"
+        }
+      },
+      {
+        "popspots": {
+          "left": [
+            564,
+            75
+          ],
+          "right": [
+            596,
+            75
+          ],
+          "up": [
+            580,
+            59
+          ],
+          "down": [
+            580,
+            91
+          ]
+        },
+        "assigned": [
+          [
+            546,
+            61
+          ],
+          [
+            527,
+            61
+          ],
+          [
+            507,
+            61
+          ],
+          [
+            486,
+            61
+          ]
+        ],
+        "interactions": {
+          "left": "startup-3-left",
+          "right": "startup-3-right",
+          "up": "startup-3-up",
+          "down": "startup-3-down"
+        }
+      },
+      {
+        "popspots": {
+          "left": [
+            562,
+            314
+          ],
+          "right": [
+            598,
+            314
+          ],
+          "up": [
+            580,
+            296
+          ],
+          "down": [
+            580,
+            332
+          ]
+        },
+        "assigned": [
+          [
+            552,
+            329
+          ],
+          [
+            528,
+            329
+          ],
+          [
+            501,
+            329
+          ],
+          [
+            478,
+            329
+          ]
+        ],
+        "interactions": {
+          "left": "startup-4-left",
+          "right": "startup-4-right",
+          "up": "startup-4-up",
+          "down": "startup-4-down"
+        }
+      }
+    ]
+  },
+  "shadow_zones": [],
+  "score": {
+    "ol": {
+      "file": "resources/sets/street/OL-score.png",
+      "position": [
+        -43.89241343235169,
+        480.57804799089485
+      ]
+    },
+    "player1": {
+      "life": {
+        "position": [
+          61.652990218522596,
+          102.88912953437031
+        ],
+        "file4": "/resources/ui/saloon/player-1/player-1-00.png",
+        "file3": "/resources/ui/saloon/player-1/player-1-01.png",
+        "file2": "/resources/ui/saloon/player-1/player-1-02.png",
+        "file1": "/resources/ui/saloon/player-1/player-1-03.png"
+      },
+      "coins_position": [
+        77.48183203013785,
+        116.69726813599213
+      ],
+      "bullet": {
+        "position": [
+          77.22964826953066,
+          105.4061174527381
+        ],
+        "on": "/resources/ui/saloon/bullet.png",
+        "off": "/resources/ui/saloon/bullet_off.png"
+      }
+    },
+    "player2": {
+      "life": {
+        "position": [
+          66.36796437517395,
+          129.83183900094946
+        ],
+        "file4": "/resources/ui/saloon/player-2/player-2-00.png",
+        "file3": "/resources/ui/saloon/player-2/player-2-01.png",
+        "file2": "/resources/ui/saloon/player-2/player-2-02.png",
+        "file1": "/resources/ui/saloon/player-2/player-2-03.png"
+      },
+      "coins_position": [
+        77.1450481618056,
+        144.31354533923576
+      ],
+      "bullet": {
+        "position": [
+          77.64348828693731,
+          133.82313198132846
+        ],
+        "on": "/resources/ui/saloon/bullet.png",
+        "off": "/resources/ui/saloon/bullet_off.png"
+      }
+    },
+    "player3": {
+      "life": {
+        "position": [
+          74.47071482015296,
+          156.58433293869453
+        ],
+        "file4": "/resources/ui/saloon/player-3/player-3-00.png",
+        "file3": "/resources/ui/saloon/player-3/player-3-01.png",
+        "file2": "/resources/ui/saloon/player-3/player-3-02.png",
+        "file1": "/resources/ui/saloon/player-3/player-3-03.png"
+      },
+      "coins_position": [
+        77.91938163187508,
+        171.62052023780302
+      ],
+      "bullet": {
+        "position": [
+          77.50554161446843,
+          160.17094642288555
+        ],
+        "on": "/resources/ui/saloon/bullet.png",
+        "off": "/resources/ui/saloon/bullet_off.png"
+      }
+    },
+    "player4": {
+      "life": {
+        "position": [
+          74.05687480274631,
+          183.34598739765826
+        ],
+        "file4": "/resources/ui/saloon/player-4/player-4-00.png",
+        "file3": "/resources/ui/saloon/player-4/player-4-01.png",
+        "file2": "/resources/ui/saloon/player-4/player-4-02.png",
+        "file1": "/resources/ui/saloon/player-4/player-4-03.png"
+      },
+      "coins_position": [
+        77.64348828693731,
+        198.10628135182898
+      ],
+      "bullet": {
+        "position": [
+          77.22964826953066,
+          187.7602809166626
+        ],
+        "on": "/resources/ui/saloon/bullet.png",
+        "off": "/resources/ui/saloon/bullet_off.png"
+      }
+    }
+  },
+  "fences": [
+    [
+      71,
+      294,
+      431,
+      2
+    ],
+    [
+      415,
+      167,
+      87,
+      129
+    ],
+    [
+      437,
+      132,
+      65,
+      35
+    ],
+    [
+      314,
+      134,
+      1,
+      1
+    ],
+    [
+      75,
+      97,
+      101,
+      197
+    ],
+    [
+      176,
+      192,
+      72,
+      42
+    ],
+    [
+      176,
+      95,
+      322,
+      2
+    ]
+  ],
+  "no_go_zones": [
+    [
+      72,
+      96,
+      293,
+      48
+    ],
+    [
+      71,
+      144,
+      105,
+      150
+    ],
+    [
+      176,
+      193,
+      72,
+      41
+    ],
+    [
+      415,
+      166,
+      29,
+      129
+    ],
+    [
+      175,
+      293,
+      327,
+      2
+    ],
+    [
+      437,
+      131,
+      65,
+      50
+    ],
+    [
+      500,
+      181,
+      3,
+      114
+    ],
+    [
+      71,
+      95,
+      428,
+      1
+    ],
+    [
+      0,
+      0,
+      640,
+      45
+    ],
+    [
+      640,
+      -1,
+      153,
+      361
+    ],
+    [
+      -90,
+      -2,
+      90,
+      380
+    ],
+    [
+      -2,
+      359,
+      659,
+      39
+    ]
+  ],
+  "walls": [
+    [
+      [
+        365,
+        181
+      ],
+      [
+        437,
+        181
+      ],
+      [
+        437,
+        131
+      ]
+    ],
+    [
+      [
+        436,
+        95
+      ],
+      [
+        365,
+        95
+      ],
+      [
+        365,
+        144
+      ]
+    ]
+  ],
+  "interactions": [
+    {
+      "gametypes": [
+        "basic",
+        "advanced"
+      ],
+      "play_once": true,
+      "action": "startup",
+      "id": "startup-2-left",
+      "busy": true,
+      "lockable": true,
+      "direction": "right",
+      "insound": null,
+      "outsound": null,
+      "zone": [
+        5,
+        63,
+        25,
+        25
+      ],
+      "target": [
+        17,
+        76
+      ],
+      "attraction": [
+        0,
+        57,
+        23,
+        40
+      ],
+      "position": [
+        28,
+        45
+      ]
+    },
+    {
+      "gametypes": [
+        "basic",
+        "advanced"
+      ],
+      "play_once": true,
+      "action": "startup",
+      "id": "startup-2-up",
+      "busy": true,
+      "lockable": true,
+      "direction": "down",
+      "insound": null,
+      "outsound": null,
+      "zone": [
+        21,
+        48,
+        25,
+        25
+      ],
+      "target": [
+        33,
+        60
+      ],
+      "attraction": [
+        13,
+        48,
+        46,
+        16
+      ],
+      "position": [
+        52,
+        22
+      ]
+    },
+    {
+      "gametypes": [
+        "basic",
+        "advanced"
+      ],
+      "play_once": true,
+      "action": "startup",
+      "id": "startup-2-right",
+      "busy": true,
+      "lockable": true,
+      "direction": "left",
+      "insound": null,
+      "outsound": null,
+      "zone": [
+        37,
+        63,
+        25,
+        25
+      ],
+      "target": [
+        49,
+        76
+      ],
+      "attraction": [
+        37,
+        59,
+        39,
+        32
+      ],
+      "position": [
+        78,
+        43
+      ]
+    },
+    {
+      "gametypes": [
+        "basic",
+        "advanced"
+      ],
+      "play_once": true,
+      "action": "startup",
+      "id": "startup-2-down",
+      "busy": true,
+      "lockable": true,
+      "direction": "up",
+      "insound": null,
+      "outsound": null,
+      "zone": [
+        21,
+        81,
+        25,
+        25
+      ],
+      "target": [
+        33,
+        92
+      ],
+      "attraction": [
+        17,
+        83,
+        37,
+        30
+      ],
+      "position": [
+        52,
+        70
+      ]
+    },
+    {
+      "gametypes": [
+        "basic",
+        "advanced"
+      ],
+      "play_once": true,
+      "action": "startup",
+      "id": "startup-1-up",
+      "busy": true,
+      "lockable": true,
+      "direction": "down",
+      "insound": null,
+      "outsound": null,
+      "zone": [
+        24,
+        287,
+        25,
+        25
+      ],
+      "target": [
+        36,
+        300
+      ],
+      "attraction": [
+        16,
+        279,
+        42,
+        24
+      ],
+      "position": [
+        55,
+        289
+      ]
+    },
+    {
+      "gametypes": [
+        "basic",
+        "advanced"
+      ],
+      "play_once": true,
+      "action": "startup",
+      "id": "startup-1-right",
+      "busy": true,
+      "lockable": true,
+      "direction": "left",
+      "insound": null,
+      "outsound": null,
+      "zone": [
+        41,
+        303,
+        25,
+        25
+      ],
+      "target": [
+        53,
+        316
+      ],
+      "attraction": [
+        50,
+        299,
+        29,
+        33
+      ],
+      "position": [
+        82,
+        313
+      ]
+    },
+    {
+      "gametypes": [
+        "basic",
+        "advanced"
+      ],
+      "play_once": true,
+      "action": "startup",
+      "id": "startup-1-left",
+      "busy": true,
+      "lockable": true,
+      "direction": "right",
+      "insound": null,
+      "outsound": null,
+      "zone": [
+        8,
+        303,
+        25,
+        25
+      ],
+      "target": [
+        20,
+        316
+      ],
+      "attraction": [
+        0,
+        297,
+        35,
+        39
+      ],
+      "position": [
+        32,
+        314
+      ]
+    },
+    {
+      "gametypes": [
+        "basic",
+        "advanced"
+      ],
+      "play_once": true,
+      "action": "startup",
+      "id": "startup-1-down",
+      "busy": true,
+      "lockable": true,
+      "direction": "up",
+      "insound": null,
+      "outsound": null,
+      "zone": [
+        25,
+        318,
+        25,
+        25
+      ],
+      "target": [
+        37,
+        332
+      ],
+      "attraction": [
+        20,
+        332,
+        38,
+        20
+      ],
+      "position": [
+        54,
+        336
+      ]
+    },
+    {
+      "gametypes": [
+        "basic",
+        "advanced"
+      ],
+      "play_once": true,
+      "action": "startup",
+      "id": "startup-3-up",
+      "busy": true,
+      "lockable": true,
+      "direction": "down",
+      "insound": null,
+      "outsound": null,
+      "zone": [
+        568,
+        45,
+        25,
+        25
+      ],
+      "target": [
+        580,
+        59
+      ],
+      "attraction": [
+        563,
+        33,
+        35,
+        35
+      ],
+      "position": [
+        559,
+        25
+      ]
+    },
+    {
+      "gametypes": [
+        "basic",
+        "advanced"
+      ],
+      "play_once": true,
+      "action": "startup",
+      "id": "startup-3-right",
+      "busy": true,
+      "lockable": true,
+      "direction": "left",
+      "insound": null,
+      "outsound": null,
+      "zone": [
+        585,
+        62,
+        25,
+        25
+      ],
+      "target": [
+        596,
+        75
+      ],
+      "attraction": [
+        595,
+        59,
+        35,
+        35
+      ],
+      "position": [
+        598,
+        50
+      ]
+    },
+    {
+      "gametypes": [
+        "basic",
+        "advanced"
+      ],
+      "play_once": false,
+      "action": "startup",
+      "id": "startup-3-down",
+      "busy": true,
+      "lockable": true,
+      "direction": "up",
+      "insound": null,
+      "outsound": null,
+      "zone": [
+        568,
+        80,
+        25,
+        25
+      ],
+      "target": [
+        580,
+        92
+      ],
+      "attraction": [
+        564,
+        85,
+        35,
+        35
+      ],
+      "position": [
+        559,
+        72
+      ]
+    },
+    {
+      "gametypes": [
+        "basic",
+        "advanced"
+      ],
+      "play_once": true,
+      "action": "startup",
+      "id": "startup-3-left",
+      "busy": true,
+      "lockable": true,
+      "direction": "right",
+      "insound": null,
+      "outsound": null,
+      "zone": [
+        552,
+        62,
+        25,
+        25
+      ],
+      "target": [
+        564,
+        75
+      ],
+      "attraction": [
+        541,
+        57,
+        35,
+        35
+      ],
+      "position": [
+        512,
+        44
+      ]
+    },
+    {
+      "gametypes": [
+        "basic",
+        "advanced"
+      ],
+      "play_once": true,
+      "action": "startup",
+      "id": "startup-4-up",
+      "busy": true,
+      "lockable": true,
+      "direction": "down",
+      "insound": null,
+      "outsound": null,
+      "zone": [
+        568,
+        283,
+        25,
+        25
+      ],
+      "target": [
+        580,
+        296
+      ],
+      "attraction": [
+        555,
+        272,
+        51,
+        26
+      ],
+      "position": [
+        564,
+        294
+      ]
+    },
+    {
+      "gametypes": [
+        "basic",
+        "advanced"
+      ],
+      "play_once": true,
+      "action": "startup",
+      "id": "startup-4-right",
+      "busy": true,
+      "lockable": true,
+      "direction": "left",
+      "insound": null,
+      "outsound": null,
+      "zone": [
+        586,
+        301,
+        23,
+        25
+      ],
+      "target": [
+        598,
+        314
+      ],
+      "attraction": [
+        596,
+        294,
+        22,
+        37
+      ],
+      "position": [
+        602,
+        310
+      ]
+    },
+    {
+      "gametypes": [
+        "basic",
+        "advanced"
+      ],
+      "play_once": true,
+      "action": "startup",
+      "id": "startup-4-down",
+      "busy": true,
+      "lockable": true,
+      "direction": "up",
+      "insound": null,
+      "outsound": null,
+      "zone": [
+        568,
+        320,
+        25,
+        25
+      ],
+      "target": [
+        580,
+        332
+      ],
+      "attraction": [
+        556,
+        326,
+        50,
+        26
+      ],
+      "position": [
+        564,
+        326
+      ]
+    },
+    {
+      "gametypes": [
+        "basic",
+        "advanced"
+      ],
+      "play_once": true,
+      "action": "startup",
+      "id": "startup-4-left",
+      "busy": true,
+      "lockable": true,
+      "direction": "right",
+      "insound": null,
+      "outsound": null,
+      "zone": [
+        549,
+        300,
+        25,
+        26
+      ],
+      "target": [
+        562,
+        314
+      ],
+      "attraction": [
+        536,
+        297,
+        35,
+        34
+      ],
+      "position": [
+        517,
+        306
+      ]
+    },
+    {
+      "gametypes": [
+        "advanced"
+      ],
+      "play_once": false,
+      "action": "order",
+      "id": "order-1",
+      "busy": false,
+      "lockable": true,
+      "direction": "right",
+      "insound": null,
+      "outsound": null,
+      "zone": [
+        388,
+        192,
+        27,
+        92
+      ],
+      "target": [
+        406,
+        null
+      ],
+      "attraction": [
+        388,
+        192,
+        27,
+        92
+      ],
+      "position": [
+        401,
+        238
+      ]
+    },
+    {
+      "gametypes": [
+        "basic",
+        "advanced"
+      ],
+      "play_once": false,
+      "action": "balcony",
+      "id": "balcony-1",
+      "busy": false,
+      "lockable": false,
+      "direction": "left",
+      "insound": null,
+      "outsound": null,
+      "zone": [
+        124,
+        80,
+        374,
+        16
+      ],
+      "target": [
+        null,
+        90
+      ],
+      "attraction": [
+        117,
+        65,
+        390,
+        16
+      ],
+      "position": [
+        311,
+        88
+      ]
+    },
+    {
+      "gametypes": [
+        "basic",
+        "advanced"
+      ],
+      "play_once": false,
+      "action": "balcony",
+      "id": "balcony-2",
+      "busy": false,
+      "lockable": false,
+      "direction": "left",
+      "insound": null,
+      "outsound": null,
+      "zone": [
+        0,
+        341,
+        640,
+        18
+      ],
+      "target": [
+        null,
+        353
+      ],
+      "attraction": [
+        0,
+        332,
+        640,
+        18
+      ],
+      "position": [
+        320,
+        350
+      ]
+    }
+  ],
+  "popspots": [
+    {
+      "gametypes": [
+        "basic",
+        "advanced"
+      ],
+      "position": [
+        24,
+        141
+      ]
+    },
+    {
+      "gametypes": [
+        "basic",
+        "advanced"
+      ],
+      "position": [
+        54,
+        166
+      ]
+    },
+    {
+      "gametypes": [
+        "basic",
+        "advanced"
+      ],
+      "position": [
+        24,
+        202
+      ]
+    },
+    {
+      "gametypes": [
+        "basic",
+        "advanced"
+      ],
+      "position": [
+        55,
+        240
+      ]
+    },
+    {
+      "gametypes": [
+        "basic",
+        "advanced"
+      ],
+      "position": [
+        16,
+        272
+      ]
+    },
+    {
+      "gametypes": [
+        "basic",
+        "advanced"
+      ],
+      "position": [
+        111,
+        308
+      ]
+    },
+    {
+      "gametypes": [
+        "basic",
+        "advanced"
+      ],
+      "position": [
+        152,
+        339
+      ]
+    },
+    {
+      "gametypes": [
+        "basic",
+        "advanced"
+      ],
+      "position": [
+        199,
+        312
+      ]
+    },
+    {
+      "gametypes": [
+        "basic",
+        "advanced"
+      ],
+      "position": [
+        235,
+        344
+      ]
+    },
+    {
+      "gametypes": [
+        "basic",
+        "advanced"
+      ],
+      "position": [
+        300,
+        316
+      ]
+    },
+    {
+      "gametypes": [
+        "basic",
+        "advanced"
+      ],
+      "position": [
+        328,
+        337
+      ]
+    },
+    {
+      "gametypes": [
+        "basic",
+        "advanced"
+      ],
+      "position": [
+        388,
+        311
+      ]
+    },
+    {
+      "gametypes": [
+        "basic",
+        "advanced"
+      ],
+      "position": [
+        457,
+        344
+      ]
+    },
+    {
+      "gametypes": [
+        "basic",
+        "advanced"
+      ],
+      "position": [
+        546,
+        219
+      ]
+    },
+    {
+      "gametypes": [
+        "basic",
+        "advanced"
+      ],
+      "position": [
+        614,
+        183
+      ]
+    },
+    {
+      "gametypes": [
+        "basic",
+        "advanced"
+      ],
+      "position": [
+        613,
+        253
+      ]
+    },
+    {
+      "gametypes": [
+        "basic",
+        "advanced"
+      ],
+      "position": [
+        548,
+        179
+      ]
+    },
+    {
+      "gametypes": [
+        "basic",
+        "advanced"
+      ],
+      "position": [
+        618,
+        131
+      ]
+    },
+    {
+      "gametypes": [
+        "basic",
+        "advanced"
+      ],
+      "position": [
+        551,
+        119
+      ]
+    },
+    {
+      "gametypes": [
+        "basic",
+        "advanced"
+      ],
+      "position": [
+        468,
+        111
+      ]
+    },
+    {
+      "gametypes": [
+        "basic",
+        "advanced"
+      ],
+      "position": [
+        332,
+        164
+      ]
+    },
+    {
+      "gametypes": [
+        "basic",
+        "advanced"
+      ],
+      "position": [
+        267,
+        156
+      ]
+    },
+    {
+      "gametypes": [
+        "basic",
+        "advanced"
+      ],
+      "position": [
+        208,
+        168
+      ]
+    },
+    {
+      "gametypes": [
+        "basic",
+        "advanced"
+      ],
+      "position": [
+        285,
+        192
+      ]
+    },
+    {
+      "gametypes": [
+        "basic",
+        "advanced"
+      ],
+      "position": [
+        349,
+        214
+      ]
+    },
+    {
+      "gametypes": [
+        "basic",
+        "advanced"
+      ],
+      "position": [
+        313,
+        250
+      ]
+    },
+    {
+      "gametypes": [
+        "basic",
+        "advanced"
+      ],
+      "position": [
+        227,
+        266
+      ]
+    },
+    {
+      "gametypes": [
+        "basic",
+        "advanced"
+      ],
+      "position": [
+        278,
+        239
+      ]
+    },
+    {
+      "gametypes": [
+        "basic",
+        "advanced"
+      ],
+      "position": [
+        352,
+        274
+      ]
+    },
+    {
+      "gametypes": [
+        "basic",
+        "advanced"
+      ],
+      "position": [
+        397,
+        238
+      ]
+    },
+    {
+      "gametypes": [
+        "basic",
+        "advanced"
+      ],
+      "position": [
+        586,
+        206
+      ]
+    },
+    {
+      "gametypes": [
+        "basic",
+        "advanced"
+      ],
+      "position": [
+        582,
+        154
+      ]
+    },
+    {
+      "gametypes": [
+        "basic",
+        "advanced"
+      ],
+      "position": [
+        529,
+        147
+      ]
+    },
+    {
+      "gametypes": [
+        "basic",
+        "advanced"
+      ],
+      "position": [
+        405,
+        61
+      ]
+    },
+    {
+      "gametypes": [
+        "basic",
+        "advanced"
+      ],
+      "position": [
+        362,
+        77
+      ]
+    },
+    {
+      "gametypes": [
+        "basic",
+        "advanced"
+      ],
+      "position": [
+        303,
+        59
+      ]
+    },
+    {
+      "gametypes": [
+        "basic",
+        "advanced"
+      ],
+      "position": [
+        260,
+        82
+      ]
+    },
+    {
+      "gametypes": [
+        "basic",
+        "advanced"
+      ],
+      "position": [
+        209,
+        61
+      ]
+    },
+    {
+      "gametypes": [
+        "basic",
+        "advanced"
+      ],
+      "position": [
+        165,
+        77
+      ]
+    },
+    {
+      "gametypes": [
+        "basic",
+        "advanced"
+      ],
+      "position": [
+        131,
+        55
+      ]
+    },
+    {
+      "gametypes": [
+        "basic",
+        "advanced"
+      ],
+      "position": [
+        90,
+        77
+      ]
+    }
+  ],
+  "stairs": [
+    {
+      "zone": [
+        365,
+        96,
+        71,
+        85
+      ],
+      "inclination": -0.65
+    }
+  ],
+  "backgrounds": [
+    {
+      "file": "/resources/placeholder/No name.png",
+      "position": [
+        0,
+        0
+      ]
+    }
+  ],
+  "targets": [
+    {
+      "gametypes": [
+        "basic",
+        "advanced"
+      ],
+      "origin": [
+        0,
+        46,
+        71,
+        51
+      ],
+      "weight": 3,
+      "destinations": [
+        [
+          6,
+          105,
+          59,
+          192
+        ],
+        [
+          5,
+          300,
+          59,
+          51
+        ],
+        [
+          74,
+          47,
+          564,
+          42
+        ],
+        [
+          508,
+          51,
+          127,
+          35
+        ],
+        [
+          10,
+          306,
+          48,
+          38
+        ]
+      ]
+    },
+    {
+      "gametypes": [
+        "basic",
+        "advanced"
+      ],
+      "origin": [
+        75,
+        47,
+        446,
+        37
+      ],
+      "weight": 3,
+      "destinations": [
+        [
+          6,
+          51,
+          628,
+          31
+        ],
+        [
+          3,
+          48,
+          69,
+          36
+        ],
+        [
+          523,
+          49,
+          115,
+          37
+        ]
+      ]
+    },
+    {
+      "gametypes": [
+        "basic",
+        "advanced"
+      ],
+      "origin": [
+        0,
+        97,
+        71,
+        200
+      ],
+      "weight": 3,
+      "destinations": [
+        [
+          3,
+          48,
+          61,
+          301
+        ],
+        [
+          10,
+          303,
+          51,
+          44
+        ],
+        [
+          5,
+          50,
+          66,
+          43
+        ]
+      ]
+    },
+    {
+      "gametypes": [
+        "basic",
+        "advanced"
+      ],
+      "origin": [
+        68,
+        296,
+        432,
+        60
+      ],
+      "weight": 3,
+      "destinations": [
+        [
+          7,
+          302,
+          625,
+          52
+        ],
+        [
+          8,
+          302,
+          57,
+          50
+        ],
+        [
+          504,
+          304,
+          130,
+          49
+        ]
+      ]
+    },
+    {
+      "gametypes": [
+        "basic",
+        "advanced"
+      ],
+      "origin": [
+        511,
+        48,
+        125,
+        38
+      ],
+      "weight": 3,
+      "destinations": [
+        [
+          2,
+          47,
+          508,
+          39
+        ],
+        [
+          4,
+          48,
+          67,
+          37
+        ],
+        [
+          511,
+          47,
+          127,
+          308
+        ],
+        [
+          507,
+          99,
+          130,
+          257
+        ]
+      ]
+    },
+    {
+      "gametypes": [
+        "basic",
+        "advanced"
+      ],
+      "origin": [
+        505,
+        299,
+        131,
+        55
+      ],
+      "weight": 3,
+      "destinations": [
+        [
+          5,
+          300,
+          631,
+          54
+        ],
+        [
+          513,
+          48,
+          123,
+          306
+        ],
+        [
+          4,
+          299,
+          271,
+          57
+        ],
+        [
+          511,
+          48,
+          123,
+          246
+        ]
+      ]
+    },
+    {
+      "gametypes": [
+        "basic",
+        "advanced"
+      ],
+      "origin": [
+        178,
+        144,
+        71,
+        38
+      ],
+      "weight": 3,
+      "destinations": [
+        [
+          185,
+          151,
+          175,
+          29
+        ],
+        [
+          306,
+          150,
+          53,
+          30
+        ]
+      ]
+    },
+    {
+      "gametypes": [
+        "basic",
+        "advanced"
+      ],
+      "origin": [
+        248,
+        145,
+        115,
+        38
+      ],
+      "weight": 3,
+      "destinations": [
+        [
+          250,
+          185,
+          115,
+          104
+        ],
+        [
+          253,
+          235,
+          112,
+          53
+        ]
+      ]
+    },
+    {
+      "gametypes": [
+        "basic",
+        "advanced"
+      ],
+      "origin": [
+        251,
+        186,
+        113,
+        50
+      ],
+      "weight": 3,
+      "destinations": [
+        [
+          255,
+          151,
+          105,
+          28
+        ],
+        [
+          257,
+          241,
+          105,
+          45
+        ]
+      ]
+    },
+    {
+      "gametypes": [
+        "basic",
+        "advanced"
+      ],
+      "origin": [
+        251,
+        186,
+        113,
+        104
+      ],
+      "weight": 3,
+      "destinations": [
+        [
+          366,
+          186,
+          45,
+          104
+        ],
+        [
+          249,
+          186,
+          163,
+          105
+        ]
+      ]
+    },
+    {
+      "gametypes": [
+        "basic",
+        "advanced"
+      ],
+      "origin": [
+        251,
+        234,
+        161,
+        57
+      ],
+      "weight": 3,
+      "destinations": [
+        [
+          177,
+          235,
+          71,
+          54
+        ],
+        [
+          251,
+          186,
+          159,
+          46
+        ]
+      ]
+    },
+    {
+      "gametypes": [
+        "basic",
+        "advanced"
+      ],
+      "origin": [
+        513,
+        91,
+        122,
+        204
+      ],
+      "weight": 3,
+      "destinations": [
+        [
+          442,
+          100,
+          62,
+          21
+        ],
+        [
+          527,
+          55,
+          97,
+          27
+        ],
+        [
+          519,
+          310,
+          105,
+          35
+        ]
+      ]
+    },
+    {
+      "gametypes": [
+        "basic",
+        "advanced"
+      ],
+      "origin": [
+        438,
+        98,
+        67,
+        30
+      ],
+      "weight": 3,
+      "destinations": [
+        [
+          512,
+          94,
+          119,
+          203
+        ]
+      ]
+    },
+    {
+      "gametypes": [
+        "basic",
+        "advanced"
+      ],
+      "origin": [
+        364,
+        186,
+        47,
+        46
+      ],
+      "weight": 3,
+      "destinations": [
+        [
+          251,
+          185,
+          111,
+          46
+        ]
+      ]
+    },
+    {
+      "gametypes": [
+        "basic",
+        "advanced"
+      ],
+      "origin": [
+        178,
+        236,
+        69,
+        52
+      ],
+      "weight": 3,
+      "destinations": [
+        [
+          331,
+          236,
+          59,
+          46
+        ],
+        [
+          272,
+          240,
+          42,
+          35
+        ]
+      ]
+    }
+  ],
+  "npcs": [
+    {
+      "type": "sniper",
+      "file": "resources/animdata/sniper.json",
+      "gametypes": [
+        "advanced"
+      ],
+      "startposition": [
+        61,
+        39
+      ],
+      "y": 402,
+      "zone": [
+        140,
+        130,
+        290,
+        165
+      ],
+      "interaction_zone": [
+        75,
+        60,
+        40,
+        40
+      ]
+    },
+    {
+      "type": "pianist",
+      "file": "resources/animdata/pianist.json",
+      "gametypes": [
+        "basic",
+        "advanced"
+      ],
+      "startposition": [
+        91,
+        221
+      ]
+    },
+    {
+      "type": "barman",
+      "file": "resources/animdata/barman.json",
+      "gametypes": [
+        "advanced"
+      ],
+      "startposition": [
+        432,
+        151
+      ],
+      "direction": "left",
+      "path": [
+        [
+          454,
+          164
+        ],
+        [
+          454,
+          214
+        ]
+      ]
+    },
+    {
+      "type": "dog",
+      "file": "resources/animdata/diego.json",
+      "gametypes": [
+        "basic",
+        "advanced"
+      ],
+      "startposition": [
+        45,
+        220
+      ],
+      "direction": "right",
+      "path": [
+        [
+          45,
+          230
+        ],
+        [
+          45,
+          70
+        ],
+        [
+          300,
+          70
+        ],
+        [
+          550,
+          70
+        ],
+        [
+          550,
+          150
+        ],
+        [
+          570,
+          170
+        ],
+        [
+          590,
+          170
+        ],
+        [
+          590,
+          250
+        ],
+        [
+          570,
+          270
+        ],
+        [
+          550,
+          270
+        ],
+        [
+          550,
+          200
+        ],
+        [
+          590,
+          160
+        ],
+        [
+          590,
+          60
+        ],
+        [
+          540,
+          60
+        ],
+        [
+          360,
+          60
+        ],
+        [
+          230,
+          60
+        ],
+        [
+          100,
+          60
+        ],
+        [
+          35,
+          60
+        ],
+        [
+          25,
+          70
+        ],
+        [
+          25,
+          250
+        ],
+        [
+          45,
+          230
+        ],
+        [
+          45,
+          230
+        ]
+      ]
+    },
+    {
+      "type": "dog",
+      "file": "resources/animdata/diego.json",
+      "gametypes": [
+        "basic",
+        "advanced"
+      ],
+      "startposition": [
+        585,
+        175
+      ],
+      "direction": "right",
+      "path": [
+        [
+          585,
+          175
+        ],
+        [
+          585,
+          160
+        ],
+        [
+          565,
+          140
+        ],
+        [
+          555,
+          140
+        ],
+        [
+          555,
+          310
+        ],
+        [
+          535,
+          330
+        ],
+        [
+          510,
+          330
+        ],
+        [
+          490,
+          310
+        ],
+        [
+          390,
+          310
+        ],
+        [
+          380,
+          320
+        ],
+        [
+          125,
+          320
+        ],
+        [
+          110,
+          335
+        ],
+        [
+          40,
+          335
+        ],
+        [
+          20,
+          315
+        ],
+        [
+          20,
+          120
+        ],
+        [
+          30,
+          130
+        ],
+        [
+          40,
+          130
+        ],
+        [
+          40,
+          250
+        ],
+        [
+          30,
+          260
+        ],
+        [
+          30,
+          315
+        ],
+        [
+          250,
+          315
+        ],
+        [
+          270,
+          335
+        ],
+        [
+          500,
+          335
+        ],
+        [
+          520,
+          315
+        ],
+        [
+          600,
+          315
+        ],
+        [
+          600,
+          200
+        ],
+        [
+          600,
+          100
+        ],
+        [
+          585,
+          115
+        ],
+        [
+          585,
+          175
+        ]
+      ]
+    }
+  ],
+  "characters": [
+    "resources/animdata/smith.json",
+    "resources/animdata/kate.json",
+    "resources/animdata/janet.json",
+    "resources/animdata/jo.json"
+  ],
+  "overlays": [],
+  "vfx": [
+    {
+      "name": "vomit",
+      "type": "static",
+      "file": "resources/props/vomit.png",
+      "y": -1000
+    },
+    {
+      "name": "coin-alert",
+      "type": "animated",
+      "file": "resources/vfx/coin-alert.json"
+    }
+  ],
+  "interactive_props": [
+    {
+      "name": "bottle",
+      "action": "drink",
+      "insound": "resources/sounds/glouglou.wav",
+      "outsound": null,
+      "offset": [
+        20,
+        -20
+      ],
+      "target": [
+        -20,
+        20
+      ],
+      "play_once": false,
+      "zone": [
+        -40,
+        0,
+        40,
+        30
+      ],
+      "image": "resources/props/beer.png",
+      "switch": 15,
+      "attraction": [
+        -100,
+        -30,
+        100,
+        100
+      ],
+      "direction": "right",
+      "lockable": false
+    }
+  ],
+  "props": []
+}

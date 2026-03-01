@@ -341,3 +341,71 @@ class DestinationsModel(QtCore.QAbstractListModel):
         row = index.row()
         target = self.document.data['targets'][self.document.selected_target]
         return str(target['destinations'][row])
+
+
+class VisibilityModel(QtCore.QAbstractListModel):
+    ELEMENTS = [
+        'bgph',
+        'switchs',
+        'popspots',
+        'props',
+        'walls',
+        'shadows',
+        'stairs',
+        'targets',
+        'fences',
+        'interactions',
+        'startups',
+        'npcs',
+        'paths'
+    ]
+
+    def __init__(self, document=None):
+        super().__init__()
+        self.document = document
+
+    def set_document(self, document):
+        self.document = document
+        self.document.edited.connect(self.layoutChanged.emit)
+        self.layoutChanged.emit()
+
+    def rowCount(self, *_):
+        return len(self.ELEMENTS)
+
+    def flags(self, index):
+        if not self.document:
+            return QtCore.Qt.ItemIsEnabled
+        return QtCore.Qt.ItemIsEnabled | QtCore.Qt.ItemIsUserCheckable
+
+    def setData(self, index, value, role):
+        if role != QtCore.Qt.CheckStateRole:
+            return
+        element = self.ELEMENTS[index.row()]
+        if value == 2:
+            if element not in self.document.elements_to_render:
+                self.blockSignals(True)
+                self.document.elements_to_render.append(element)
+                self.document.edited.emit()
+                self.blockSignals(False)
+                return True
+        if value == 0:
+            if element in self.document.elements_to_render:
+                self.blockSignals(True)
+                self.document.elements_to_render.remove(element)
+                self.document.edited.emit()
+                self.blockSignals(False)
+                return True
+        return False
+
+    def data(self, index, role):
+        if not index.isValid():
+            return
+
+        if role == QtCore.Qt.DisplayRole:
+            return self.ELEMENTS[index.row()]
+
+        if role == QtCore.Qt.ItemDataRole.CheckStateRole:
+            if self.document is None:
+                return QtCore.Qt.Unchecked
+            s = self.ELEMENTS[index.row()] in self.document.elements_to_render
+            return QtCore.Qt.Checked if s else QtCore.Qt.Unchecked

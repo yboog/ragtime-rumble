@@ -20,6 +20,11 @@ class ViewportMapper():
     def to_units(self, pixels):
         return pixels / self.zoom
 
+    def to_viewport_size(self, units_size):
+        return QtCore.QSizeF(
+            self.to_viewport(units_size.width()),
+            self.to_viewport(units_size.height()))
+
     def to_viewport_coords(self, units_point):
         return QtCore.QPointF(
             self.to_viewport(units_point.x()) - self.origin.x(),

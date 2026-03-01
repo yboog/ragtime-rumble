@@ -33,6 +33,7 @@ class PlaceHolderTool(NavigationTool):
             d = {
                 'type': 'polygon',
                 'data': self.new_shape_data[1],
+                'tile': None,
                 'color': (255, 255, 255, 255)}
             self.document.data['edit_data']['background_placeholders'].append(d)
             self.document.edited.emit()
@@ -70,6 +71,7 @@ class PlaceHolderTool(NavigationTool):
         d = {
             'type': 'rect',
             'data': rect,
+            'tile': None,
             'color': (255, 255, 255, 255)}
         self.document.data['edit_data']['background_placeholders'].append(d)
         self.selection.tool = Selection.BGPH

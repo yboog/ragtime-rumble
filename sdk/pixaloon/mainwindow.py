@@ -16,6 +16,7 @@ from pixaloon.path import relative_normpath
 from pixaloon.pop import run_game
 from pixaloon.objectlist import ObjectsList
 from pixaloon.sceneeditor import SceneEditor
+from pixaloon.tablemodel import VisibilityModel
 from pixaloon.canvas.tools.basetool import NavigationTool
 
 
@@ -46,6 +47,10 @@ class Pixaloon(QtWidgets.QMainWindow):
         self.edit = QtGui.QAction(get_icon('edit.png'), '', self)
         self.edit.triggered.connect(partial(self.set_tool_mode, 2))
         self.edit.setCheckable(True)
+
+        self.visibility_model = VisibilityModel()
+        self.visibility = QtWidgets.QListView()
+        self.visibility.setModel(self.visibility_model)
 
         self.attributeeditor = AttributeEditor()
 
@@ -100,10 +105,16 @@ class Pixaloon(QtWidgets.QMainWindow):
         self.option_dock.setWidget(self.optioneditor)
         self.addDockWidget(QtCore.Qt.RightDockWidgetArea, self.option_dock)
 
+
         self.scene_dock = QtWidgets.QDockWidget()
         self.scene_dock.setWindowTitle('Scene')
         self.scene_dock.setWidget(self.sceneeditor)
         self.addDockWidget(QtCore.Qt.RightDockWidgetArea, self.scene_dock)
+        self.visibility_dock = QtWidgets.QDockWidget()
+
+        self.visibility_dock.setWindowTitle('Visibility')
+        self.visibility_dock.setWidget(self.visibility)
+        self.addDockWidget(QtCore.Qt.RightDockWidgetArea, self.visibility_dock)
 
         self.data_dock = QtWidgets.QDockWidget()
         self.data_dock.setWindowTitle('Objects')
@@ -224,6 +235,7 @@ class Pixaloon(QtWidgets.QMainWindow):
         self.sceneeditor.set_document(document)
         self.optioneditor.set_document(document)
         self.attributeeditor.set_document(document)
+        self.visibility_model.set_document(document)
 
     def register_actions(self):
         action = QtGui.QAction('Focus', self)

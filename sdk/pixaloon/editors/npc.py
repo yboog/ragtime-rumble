@@ -85,6 +85,26 @@ class SaloonDoorEditor(BaseEditor):
             "position": self.position.value()}
 
 
+class PositionEditor(BaseEditor):
+    def __init__(self, parent=None):
+        super().__init__(parent)
+        self.startposition = IntArrayEditor()
+        self.startposition.value_changed.connect(self.values_changed)
+        self.add_row('Start position', self.startposition)
+
+    def data(self):
+        return {
+            "startposition": self.startposition.value()}
+
+    def values_changed(self, *_):
+        self.changed.emit()
+
+    def set_npc(self, npc):
+        self.block_signals(True)
+        self.startposition.set_value(npc['startposition'])
+        self.block_signals(False)
+
+
 class LoopEditor(BaseEditor):
     def __init__(self, parent=None):
         super().__init__(parent)
@@ -217,6 +237,7 @@ class SniperEditor(BaseEditor):
 
 SUBEDITORS_BY_TYPES = {
     'chicken': ChickenEditor,
+    'pianist': PositionEditor,
     'saloon-door': SaloonDoorEditor,
     'barman': BarmanEditor,
     'dog': BarmanEditor,

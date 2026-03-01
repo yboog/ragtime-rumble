@@ -3,7 +3,7 @@ from pixaloon.selection import Selection
 from pixaloon.intlisteditor import IntListEditor
 from pixaloon.intarrayeditor import IntArrayListEditor
 from pixaloon.editors.base import BaseEditor
-from pixaloon.widgets import GameTypesSelector
+from pixaloon.widgets import GameTypesSelector, TileSelector
 
 
 class NoGoZoneEditor(BaseEditor):
@@ -50,9 +50,12 @@ class PlaceHolderEditor(BaseEditor):
         self.polygon.values_changed.connect(self.values_changed)
         self.color = QtWidgets.QLineEdit()
         self.color.returnPressed.connect(self.values_changed)
+        self.tile = TileSelector()
+        self.tile.edited.connect(self.values_changed)
         self.rect = IntListEditor()
         self.rect.values_changed.connect(self.values_changed)
         self.add_row('Color', self.color)
+        self.add_row('Tile', self.tile)
         self.add_row('rect', self.rect)
         self.add_row('Polygon', self.polygon)
 
@@ -70,6 +73,7 @@ class PlaceHolderEditor(BaseEditor):
         phs = self.document.data['edit_data']['background_placeholders']
         placeholder = phs[selection.data]
         placeholder['color'] = color
+        placeholder['tile'] = self.tile.tile()
         self.document.edited.emit()
 
     def selection_changed(self):
@@ -88,6 +92,7 @@ class PlaceHolderEditor(BaseEditor):
         else:
             self.rect.clear()
             self.polygon.set_values(placeholder['data'])
+        self.tile.set_tile(placeholder['tile'])
         self.color.setText(str(placeholder['color']))
         self.block_signals(False)
 

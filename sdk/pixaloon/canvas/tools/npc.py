@@ -87,8 +87,8 @@ class NpcTool(NavigationTool):
         if data['type'] == 'sniper':
             data['zone'][0] = x
             data['zone'][1] = y
-            data['interactive_zone'][0] += x
-            data['interactive_zone'][1] += y
+            data['interaction_zone'][0] += x
+            data['interaction_zone'][1] += y
         if data['type'] == 'saloon':
             data['zone'][0] += x
             data['zone'][1] += y

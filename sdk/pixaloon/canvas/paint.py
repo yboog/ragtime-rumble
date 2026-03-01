@@ -2,7 +2,7 @@ from PySide6 import QtCore, QtGui
 from pixaloon.data import get_stair_line, get_interaction_text
 from pixaloon.canvas.viewport import ViewportMapper
 from pixaloon.selection import Selection
-from pixaloon.io import get_image
+from pixaloon.io import get_image, get_tile
 
 
 def paint_canvas_base(painter, document, viewportmapper, rect):
@@ -45,19 +45,29 @@ def paint_canvas_base(painter, document, viewportmapper, rect):
 def paint_background_placeholder(
         painter, placeholder, viewportmapper, selected=False, no_border=False):
     color = QtGui.QColor(*placeholder['color'])
-
+    brush = None
+    if placeholder['tile'] is not None:
+        pixmap = QtGui.QPixmap.fromImage(get_tile(placeholder['tile']))
+        pixmap = pixmap.scaled(
+            viewportmapper.to_viewport_size(pixmap.size()).toSize(),
+            QtCore.Qt.KeepAspectRatio,
+            QtCore.Qt.FastTransformation)
+        brush = QtGui.QBrush()
+        brush.setTexture(pixmap)
     if placeholder['type'] == 'polygon':
         paint_polygon(
             painter=painter,
             polygon=placeholder['data'],
             viewportmapper=viewportmapper,
             color=color,
+            brush=brush,
             selected=selected,
             no_border=no_border)
     else:
         paint_rect_object(
             painter=painter,
             color=color,
+            brush=brush,
             rect=placeholder['data'],
             viewportmapper=viewportmapper,
             selected=selected,
@@ -288,7 +298,7 @@ def paint_canvas_walls(painter, document, viewportmapper):
 
 def paint_rect_object(
         painter, rect, viewportmapper,
-        color=None, selected=False,
+        color=None, brush=None, selected=False,
         use_color_alpha=False, no_border=False):
     pen = QtGui.QPen(QtCore.Qt.yellow if selected else QtCore.Qt.red)
     pen.setWidth(2 if selected else 1)
@@ -296,24 +306,33 @@ def paint_rect_object(
     color = QtGui.QColor(color or QtCore.Qt.red)
     if not use_color_alpha:
         color.setAlpha(125 if selected else 50)
-    painter.setBrush(color)
-    rect = QtCore.QRect(*rect)
-    painter.drawRect(viewportmapper.to_viewport_rect(rect))
+    rect = viewportmapper.to_viewport_rect(QtCore.QRect(*rect))
+    if brush:
+        transform = QtGui.QTransform()
+        transform.translate(rect.left(), rect.top())
+        brush.setTransform(transform)
+    painter.setBrush(brush or color)
+    painter.drawRect(rect)
 
 
 def paint_polygon(
         painter, polygon, viewportmapper,
-        color=None, selected=False, no_border=False):
+        color=None, brush=None, selected=False, no_border=False):
     pen = QtGui.QPen(QtCore.Qt.yellow if selected else QtCore.Qt.red)
     pen.setWidth(2 if selected else 1)
     painter.setPen(pen if not no_border else QtCore.Qt.NoPen)
     if not color:
         color = QtGui.QColor(QtCore.Qt.red)
         color.setAlpha(125 if selected else 50)
-    painter.setBrush(color)
-    polygon = QtGui.QPolygonF([
+    points = [
         viewportmapper.to_viewport_coords(QtCore.QPoint(*p))
-        for p in polygon])
+        for p in polygon]
+    if brush:
+        transform = QtGui.QTransform()
+        transform.translate(points[0].x(), points[0].y())
+        brush.setTransform(transform)
+    painter.setBrush(brush or color)
+    polygon = QtGui.QPolygonF(points)
     painter.drawPolygon(polygon)
 
 
