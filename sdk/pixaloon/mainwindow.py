@@ -202,6 +202,7 @@ class Pixaloon(QtWidgets.QMainWindow):
         for action in self.tools_actions:
             action.tool.canvas = canvas
         self.set_document(canvas.document)
+        self.clear_selection()
         self.update_window_title()
 
     def set_tool_mode(self, mode):
@@ -241,6 +242,7 @@ class Pixaloon(QtWidgets.QMainWindow):
         canvas = self.current_canvas()
         if canvas:
             canvas.document.delete_selection()
+            self.clear_selection()
 
     def focus_canvas(self):
         self.current_canvas().focus()
@@ -249,6 +251,10 @@ class Pixaloon(QtWidgets.QMainWindow):
         document = Document.open(filepath)
         name = os.path.basename(filepath)
         self.create_sub_window(document, name)
+
+    def clear_selection(self):
+        self.current_canvas().document.selection.clear()
+        self.current_canvas().document.selection.changed.emit(self)
 
     def open_document_prompt(self):
         filepaths, _ = QtWidgets.QFileDialog.getOpenFileNames(
@@ -271,8 +277,6 @@ class Pixaloon(QtWidgets.QMainWindow):
         if not document.filepath:
             return self.save_current_document_as(self)
         with open(document.filepath, 'w') as f:
-            import pprint
-            pprint.pprint(document.data)
             json.dump(document.data, f, indent=2)
 
     def save_current_document_as(self):

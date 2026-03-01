@@ -7,6 +7,7 @@ from pixaloon.selection import Selection
 from pixaloon.editors.background import BackgroundEditor
 from pixaloon.editors.interaction import InteractionEditor
 from pixaloon.editors.overlay import OverlayEditor
+from pixaloon.editors.npc import NPCEditor
 from pixaloon.editors.path import PathEditor
 from pixaloon.editors.popspot import PopspotEditor
 from pixaloon.editors.prop import PropEditor
@@ -28,6 +29,7 @@ class AttributeEditor(QtWidgets.QWidget):
     def set_document(self, document):
         self.document = document
         self.document.selection.changed.connect(self.selection_changed)
+        self.current_editor.document = document
         self.selection_changed(self)
 
     def selection_changed(self, qobject_source):
@@ -39,6 +41,7 @@ class AttributeEditor(QtWidgets.QWidget):
             Selection.BACKGROUND: BackgroundEditor,
             Selection.INTERACTION: InteractionEditor,
             Selection.POPSPOT: PopspotEditor,
+            Selection.NPC: NPCEditor,
             Selection.STAIR: StairEditor,
             Selection.OVERLAY: OverlayEditor,
             Selection.BGPH: PlaceHolderEditor,

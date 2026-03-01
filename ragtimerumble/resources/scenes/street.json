@@ -3703,6 +3703,39 @@
         518,
         159
       ]
+    },
+    {
+      "gametypes": [
+        "advanced"
+      ],
+      "play_once": false,
+      "action": "order",
+      "id": "order-1",
+      "busy": false,
+      "lockable": true,
+      "direction": "right",
+      "insound": null,
+      "outsound": null,
+      "zone": [
+        433,
+        287,
+        28,
+        56
+      ],
+      "target": [
+        450,
+        null
+      ],
+      "attraction": [
+        400,
+        270,
+        61,
+        90
+      ],
+      "position": [
+        447,
+        315
+      ]
     }
   ],
   "popspots": [
@@ -4963,8 +4996,7 @@
     {
       "file": "resources/animdata/chicken.json",
       "gametypes": [
-        "basic",
-        "advanced"
+        "basic"
       ],
       "type": "chicken",
       "startposition": [
@@ -4976,7 +5008,8 @@
         290,
         50,
         50
-      ]
+      ],
+      "run_radius": 50
     },
     {
       "file": "resources/animdata/chicken.json",
@@ -4994,6 +5027,29 @@
         100,
         20,
         20
+      ],
+      "run_radius": 50
+    },
+    {
+      "type": "barman",
+      "file": "resources/animdata/barman.json",
+      "gametypes": [
+        "advanced"
+      ],
+      "startposition": [
+        466,
+        248
+      ],
+      "direction": "left",
+      "path": [
+        [
+          466,
+          248
+        ],
+        [
+          466,
+          280
+        ]
       ]
     }
   ],
@@ -5061,15 +5117,16 @@
       "insound": "resources/sounds/glouglou.wav",
       "outsound": null,
       "offset": [
-        -20,
+        20,
         -20
       ],
       "target": [
-        20,
+        -20,
         20
       ],
+      "play_once": false,
       "zone": [
-        0,
+        -40,
         0,
         40,
         30
@@ -5077,12 +5134,12 @@
       "image": "resources/props/beer.png",
       "switch": 15,
       "attraction": [
-        0,
+        -100,
         -30,
         100,
         100
       ],
-      "direction": "left",
+      "direction": "right",
       "lockable": false
     }
   ],

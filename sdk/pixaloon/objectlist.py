@@ -147,7 +147,11 @@ class ObjectsList(QtWidgets.QWidget):
         if qobject_source == self:
             return
         seldata = self.document.selection.data
+        if seldata is None:
+            return
         match self.document.selection.tool:
+            case Selection.NONE:
+                self.table.clearSelection()
             case Selection.WALL:
                 row = len(self.document.data['no_go_zones'])
                 self.table.select_row(row + seldata)
@@ -172,4 +176,4 @@ class ObjectsList(QtWidgets.QWidget):
                 self.table.select_row(seldata)
             case _:
                 return
-        self.document.selection.changed.emit(self)
+        # self.document.selection.changed.emit(self)

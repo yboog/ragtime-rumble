@@ -3134,7 +3134,51 @@
     "resources/animdata/jo.json"
   ],
   "overlays": [],
-  "vfx": [],
-  "interactive_props": [],
+  "vfx": [
+    {
+      "name": "vomit",
+      "type": "static",
+      "file": "resources/props/vomit.png",
+      "y": -1000
+    },
+    {
+      "name": "coin-alert",
+      "type": "animated",
+      "file": "resources/vfx/coin-alert.json"
+    }
+  ],
+  "interactive_props": [
+        {
+      "name": "bottle",
+      "action": "drink",
+      "insound": "resources/sounds/glouglou.wav",
+      "outsound": null,
+      "offset": [
+        20,
+        -20
+      ],
+      "target": [
+        -20,
+        20
+      ],
+      "play_once": false,
+      "zone": [
+        -40,
+        0,
+        40,
+        30
+      ],
+      "image": "resources/props/beer.png",
+      "switch": 15,
+      "attraction": [
+        -100,
+        -30,
+        100,
+        100
+      ],
+      "direction": "right",
+      "lockable": false
+    }
+  ],
   "props": []
 }

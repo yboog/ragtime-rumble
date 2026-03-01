@@ -112,17 +112,21 @@ class InteractionTool(NavigationTool):
             return
         rect = start_end_to_rect_data(*self.new_shape_data)
         interaction = DEFAULT_INTERACTION.copy()
+        interaction['gametypes'] = self.document.gametypes_display_filters[:]
         interaction['zone'] = rect
-        interaction['attraction'] = rect
+        interaction['attraction'] = rect.copy()
         x = int(rect[0] + (rect[2] / 2))
         y = int(rect[1] + (rect[3] / 2))
-        interaction['position'] = x, y
+        interaction['position'] = [x, y]
+        x = rect[0] + rect[2] - (rect[2] / 2)
+        y = rect[1] + rect[3] - (rect[3] / 2)
+        interaction['target'] = [x, y]
         self.document.data['interactions'].append(interaction)
         self.selection.tool = Selection.INTERACTION
         self.selection.data = len(self.document.data['interactions']) - 1
         self.new_shape_data = None
         self.document.edited.emit()
-        self.selection.changed.emit(self)
+        self.selection.changed.emit(self.canvas)
         return super().mouseReleaseEvent(event)
 
     def create_new_shape(self, point):

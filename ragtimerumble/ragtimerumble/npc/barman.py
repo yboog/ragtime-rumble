@@ -1,18 +1,21 @@
 import random
 import itertools
 
-from ragtimerumble.config import COUNTDOWNS
+from ragtimerumble.config import COUNTDOWNS, DIRECTIONS
 from ragtimerumble.config import SPEED
 from ragtimerumble.coordinates import Coordinates
-from ragtimerumble.io import load_data
+from ragtimerumble.io import load_data, image_mirror
 from ragtimerumble.pathfinding import points_to_direction, distance
 from ragtimerumble.sprite import SpriteSheet
 
 
 class Barman:
 
-    def __init__(self, file=None, startposition=None, path=None, **_):
+    def __init__(
+            self, file=None, startposition=None,
+            path=None, direction=None, **_):
         self.data = load_data(file)
+        self.direction = direction or DIRECTIONS.LEFT
         self.spritesheet = SpriteSheet(self.data, 'idle')
         self.coordinates = Coordinates((startposition))
         self.idle_cooldown = random.randint(
@@ -27,10 +30,12 @@ class Barman:
 
     @property
     def switch(self):
-        return self.data['y']
+        return 3000
 
     @property
     def image(self):
+        if self.direction in DIRECTIONS.FLIPPED:
+            return image_mirror(self.spritesheet.image(), horizontal=True)
         return self.spritesheet.image()
 
     def walk(self):

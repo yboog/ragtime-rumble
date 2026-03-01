@@ -302,8 +302,8 @@ class Character:
 
     def request_interaction(self):
         zones = [z for z in self.scene.interaction_zones if z.enable]
-        zones += self.scene.interactive_props
-        for zone in zones:
+        zones.extend(self.scene.interactive_props)
+        for zone in reversed(zones):
             if zone.contains(self.coordinates.position) and not zone.busy:
                 self.go_to(zone.target, zone)
                 return True

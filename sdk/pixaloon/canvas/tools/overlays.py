@@ -10,14 +10,14 @@ class OverlayTool(NavigationTool):
     def mousePressEvent(self, event):
         if self.toolmode.mode == ToolMode.SELECTION:
             return self.mouse_press_selection(event)
-        if self.toolmode.mode == ToolMode.CREATE:
-            return self.mouse_press_create(event)
+        # if self.toolmode.mode == ToolMode.CREATE:
+        #     return self.mouse_press_create(event)
 
-    def mouse_press_create(self, event):
-        qpoint = self.document.viewportmapper.to_units_coords(event.pos())
-        qpoint = qpoint.toPoint()
-        point = [int(v) for v in qpoint.toTuple()]
-        print('TODO')
+    # def mouse_press_create(self, event):
+    #     qpoint = self.document.viewportmapper.to_units_coords(event.pos())
+    #     qpoint = qpoint.toPoint()
+    #     point = [int(v) for v in qpoint.toTuple()]
+    #     print('TODO')
 
     def mouse_press_selection(self, event):
         if event.button() != QtCore.Qt.LeftButton:

@@ -67,7 +67,6 @@ class PropEditor(BaseEditor):
 
     def data(self):
         fp = relative_normpath(self.image_filepath.filepath(), self.document)
-        print(self.gametypes.game_types())
         return {
             'gametypes': self.gametypes.game_types(),
             'visible_at_dispatch': self.visible_at_dispatch.state(),

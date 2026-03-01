@@ -5489,6 +5489,7 @@
         110
       ],
       "type": "barman",
+      "direction": "right",
       "path": [
         [
           225,

@@ -4,6 +4,7 @@ from PySide6 import QtCore
 class Selection(QtCore.QObject):
     changed = QtCore.Signal(object)
 
+    NONE = None
     BACKGROUND = 'background'
     FENCE = 'fences'
     INTERACTION = 'interaction'

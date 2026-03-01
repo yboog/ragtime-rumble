@@ -4,7 +4,7 @@ from PySide6 import QtWidgets, QtGui, QtCore
 from pixaloon.canvas.paint import (
     paint_canvas_popspots, paint_canvas_base, paint_canvas_fences,
     paint_canvas_interactions, paint_canvas_paths, paint_canvas_props,
-    paint_canvas_stairs, paint_canvas_startups, paint_canvas_switchs,
+    paint_canvas_stairs, paint_canvas_startups, paint_switch,
     paint_scores, paint_canvas_target, paint_canvas_walls, paint_npc,
     paint_canvas_shadow_zones, paint_canvas_selection,
     paint_background_placeholder)
@@ -124,9 +124,9 @@ class LevelCanvas(QtWidgets.QWidget):
 
         try:
             if 'switchs' in self.document.elements_to_render:
-                paint_canvas_switchs(
-                    painter, self.document, self.document.viewportmapper,
-                    event.rect().left(), event.rect().right())
+                for ol in self.document.data['overlays']:
+                    paint_switch(painter, ol['y'], self.document.viewportmapper)
+
         except BaseException as e:
             print('fail, switchs', e)
 
@@ -211,7 +211,10 @@ class LevelCanvas(QtWidgets.QWidget):
 
         try:
             if 'npcs' in self.document.elements_to_render:
+                filters = self.document.gametypes_display_filters
                 for npc in self.document.data['npcs']:
+                    if not any(gt in filters for gt in npc['gametypes']):
+                        continue
                     paint_npc(painter, npc, self.document.viewportmapper)
         except BaseException as e:
             print('npcs', str(e))

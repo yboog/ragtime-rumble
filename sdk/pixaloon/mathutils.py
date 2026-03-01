@@ -13,5 +13,5 @@ def start_end_to_rect_data(start, end):
     y = min((start[1], end[1]))
     w = max((start[0], end[0])) - x
     h = max((start[1], end[1])) - y
-    return x, y, w, h
+    return [x, y, w, h]
 

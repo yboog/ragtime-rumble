@@ -1,0 +1,4 @@
+pygame==2.6.0
+cx_Freeze==8.6.0
+msgpack==1.0.8
+matplotlib==3.9.0

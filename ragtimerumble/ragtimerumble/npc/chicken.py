@@ -32,12 +32,14 @@ class Chicken:
     }
 
     def __init__(
-            self, scene=None, file=None, startposition=None, zone=None, **_):
+            self, scene=None, file=None, startposition=None,
+            zone=None, run_radius=50, **_):
         self.data = load_data(file)
         self.scene = scene
         self.spritesheet = SpriteSheet(self.data, 'idle-a')
         self.startposition = startposition
         self.coordinates = Coordinates((startposition))
+        self.run_radius = run_radius
         self.path = None
         self.direction = DIRECTIONS.LEFT
         self.destination = None
@@ -81,7 +83,7 @@ class Chicken:
         coordinates = player.character.coordinates
         x = coordinates.position[0] - self.coordinates.position[0]
         y = coordinates.position[1] - self.coordinates.position[1]
-        v = set_vector_length([x, y], 50)
+        v = set_vector_length([x, y], self.run_radius)
         dst = self.startposition[0] - v[0], self.startposition[1] - v[1]
 
         self.path = iter(shortest_path(self.coordinates.position, dst))

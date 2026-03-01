@@ -502,6 +502,9 @@ def create_interactive_prop(prop, position):
 class InteractionZone:
     def __init__(self, data):
         self.data = data
+        self.switch = None
+        self.image = None
+        self.render_position = None
         self.id = data['id']
         self.in_sound = data['insound']
         self.out_sound = data['outsound']

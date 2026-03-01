@@ -150,11 +150,12 @@ def paint_canvas_selection(painter, document, viewportmapper):
                 viewportmapper=viewportmapper,
                 selected=True)
         case Selection.NPC:
-            paint_npc(
-                painter=painter,
-                npc=document.data['npcs'][selection.data],
-                viewportmapper=viewportmapper,
-                selected=True)
+            if selection.data is not None:
+                paint_npc(
+                    painter=painter,
+                    npc=document.data['npcs'][selection.data],
+                    viewportmapper=viewportmapper,
+                    selected=True)
         case Selection.TARGET:
             paint_canvas_target(
                 painter=painter,
@@ -173,21 +174,17 @@ def paint_canvas_selection(painter, document, viewportmapper):
             painter.setBrush(QtCore.Qt.NoBrush)
             painter.drawRect(img_rect)
             y = document.data['overlays'][selection.data]['y']
-            y = viewportmapper.to_viewport_coords(QtCore.QPoint(0, y)).y()
-            x = viewportmapper.to_viewport(-1000)
-            x2 = viewportmapper.to_viewport(1000)
-            painter.drawLine(QtCore.QLine(x, y, x2, y))
+            paint_switch(painter, y, viewportmapper)
 
 
-def paint_canvas_switchs(painter, document, viewportmapper, left, right):
-    for ol in document.data['overlays']:
-        p1 = QtCore.QPoint(left, ol['y'])
-        p1 = viewportmapper.to_viewport_coords(p1)
-        p2 = QtCore.QPoint(right, ol['y'])
-        p2 = viewportmapper.to_viewport_coords(p2)
-        line = QtCore.QLineF(p1, p2)
-        painter.setPen(QtCore.Qt.white)
-        painter.drawLine(line)
+def paint_switch(painter, y, viewportmapper):
+        pen = QtGui.QPen(QtGui.Qt.white)
+        pen.setWidth(3)
+        painter.setPen(pen)
+        y = viewportmapper.to_viewport_coords(QtCore.QPoint(0, y)).y()
+        x = viewportmapper.to_viewport(-1_000_000)
+        x2 = viewportmapper.to_viewport(1_000_000)
+        painter.drawLine(QtCore.QLine(x, y, x2, y))
 
 
 def paint_scores(painter, document, viewportmapper):
@@ -258,23 +255,17 @@ def paint_canvas_props(painter, document, viewportmapper):
 
 
 def paint_selected_prop(painter, prop, image, viewportmapper):
-        x = prop['position'][0] - prop['center'][0]
-        y = prop['position'][1] - prop['center'][1]
-        point = QtCore.QPoint(x, y)
-        img_rect = QtCore.QRect(point, image.size())
-        img_rect = viewportmapper.to_viewport_rect(img_rect)
-        pen = QtGui.QPen(QtCore.Qt.white)
-        pen.setWidth(3)
-        painter.setPen(pen)
-        painter.setBrush(QtCore.Qt.NoBrush)
-        painter.drawRect(img_rect)
-        pen.setWidth(2)
-        painter.setPen(pen)
-        p1 = QtCore.QPointF(-100_000, prop['position'][1])
-        p1 = viewportmapper.to_viewport_coords(p1)
-        p2 = QtCore.QPointF(100_000, prop['position'][1])
-        p2 = viewportmapper.to_viewport_coords(p2)
-        painter.drawLine(p1, p2)
+    x = prop['position'][0] - prop['center'][0]
+    y = prop['position'][1] - prop['center'][1]
+    point = QtCore.QPoint(x, y)
+    img_rect = QtCore.QRect(point, image.size())
+    img_rect = viewportmapper.to_viewport_rect(img_rect)
+    pen = QtGui.QPen(QtCore.Qt.white)
+    pen.setWidth(3)
+    painter.setPen(pen)
+    painter.setBrush(QtCore.Qt.NoBrush)
+    painter.drawRect(img_rect)
+    paint_switch(painter, prop['position'][1], viewportmapper)
 
 
 def paint_canvas_shadow_zones(painter, document, viewportmapper):
@@ -586,6 +577,20 @@ def paint_selected_path(painter, path, point_selected_index, viewportmapper):
             painter.drawEllipse(points[point_selected_index], 5, 5)
 
 
+def paint_path(painter, points, color, width, viewportmapper):
+    pen = QtGui.QPen(QtGui.QColor(color))
+    pen.setWidth(width)
+    painter.setPen(pen)
+    start = None
+    for end in points:
+        end = viewportmapper.to_viewport_coords(QtCore.QPoint(*end))
+        if start is None:
+            start = end
+            continue
+        painter.drawLine(start, end)
+        start = end
+
+
 def paint_npc(painter, npc, viewportmapper, selected=False):
     image = {
         'dog': 'dogo-bark-03.png',
@@ -596,7 +601,9 @@ def paint_npc(painter, npc, viewportmapper, selected=False):
         'banjo': 'bandjo-loop-001.png',
         'loop': 'bandjo-loop-001.png',
         'chicken': 'paulette-idle-A-01.png'}.get(npc['type'])
-    offset = {'chicken': [32, 55]}.get(npc['type'], (0, 0))
+    offset = {
+        'chicken': [32, 55],
+        'dog': [40, 54]}.get(npc['type'], (0, 0))
     image = get_image(image)
     pos = npc.get('startposition') or npc.get('position')
     pos = pos[0] - offset[0], pos[1] - offset[1]
@@ -610,3 +617,74 @@ def paint_npc(painter, npc, viewportmapper, selected=False):
     painter.setPen(pen)
     painter.setBrush(QtCore.Qt.NoBrush)
     painter.drawRect(rect)
+    method = {
+        'chicken': paint_selected_chicken,
+        'barman': paint_selected_dog,
+        'saloon-door': paint_saloon_door,
+        'sniper': paint_selected_sniper,
+        'loop': paint_loop,
+        'dog': paint_selected_dog}.get(npc['type'])
+    if method:
+        method(painter, npc, viewportmapper)
+
+
+def paint_loop(painter, npc, viewportmapper):
+    paint_switch(painter, npc['switch'], viewportmapper)
+
+
+def paint_saloon_door(painter, npc, viewportmapper):
+    paint_switch(painter, npc['switch'], viewportmapper)
+    paint_rect_object(painter, npc['zone'], viewportmapper)
+
+
+def paint_selected_dog(painter, npc, viewportmapper):
+    pen = QtGui.QPen(QtGui.QColor(255, 255, 150))
+    pen.setWidth(3)
+    painter.setPen(pen)
+    p = QtCore.QPointF(*npc['startposition'])
+    p = viewportmapper.to_viewport_coords(p)
+    painter.drawPoint(p)
+    painter.setPen(QtCore.Qt.NoPen)
+    painter.setBrush(QtGui.QColor(255, 255, 0, 120))
+    paint_path(
+        painter=painter,
+        points=npc['path'],
+        color='blue',
+        width=2,
+        viewportmapper=viewportmapper)
+
+
+def paint_selected_sniper(painter, npc, viewportmapper):
+    pen = QtGui.QPen(QtGui.QColor(255, 255, 150))
+    pen.setWidth(3)
+    painter.setPen(pen)
+    p = QtCore.QPointF(*npc['startposition'])
+    p = viewportmapper.to_viewport_coords(p)
+    painter.drawPoint(p)
+    paint_switch(painter, npc['y'], viewportmapper)
+    paint_rect_object(painter, npc['zone'], viewportmapper)
+    paint_rect_object(
+        painter,
+        npc['interaction_zone'],
+        viewportmapper,
+        color=QtGui.QColor('green'))
+
+
+def paint_selected_chicken(painter, npc, viewportmapper):
+    pen = QtGui.QPen(QtGui.QColor(255, 255, 150))
+    pen.setWidth(3)
+    painter.setPen(pen)
+    p = QtCore.QPointF(*npc['startposition'])
+    p = viewportmapper.to_viewport_coords(p)
+    painter.drawPoint(p)
+    painter.setPen(QtCore.Qt.NoPen)
+    painter.setBrush(QtGui.QColor(255, 255, 0, 120))
+
+    rect = QtCore.QRectF(*npc['zone'])
+    painter.drawRect(viewportmapper.to_viewport_rect(rect))
+    pen = QtGui.QPen(QtGui.QColor(255, 255, 0))
+    pen.setStyle(QtCore.Qt.DashLine)
+    painter.setPen(pen)
+    painter.setBrush(QtCore.Qt.NoBrush)
+    radius = viewportmapper.to_viewport(npc['run_radius'])
+    painter.drawEllipse(p, radius, radius)
