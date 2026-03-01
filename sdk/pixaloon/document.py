@@ -112,6 +112,8 @@ class Document(QtCore.QObject):
             case Selection.NO_GO_ZONE:
                 index = self.selection.data
                 del self.data['no_go_zones'][index]
+            case Selection.PROP:
+                del self.data['props'][self.selection.data]
             case Selection.INTERACTION:
                 index = self.selection.data
                 del self.data['interactions'][index]

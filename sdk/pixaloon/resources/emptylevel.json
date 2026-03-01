@@ -66,10 +66,10 @@
                     ]
                 ],
                 "interactions": {
-                    "left": null,
-                    "right": null,
-                    "up":  null,
-                    "down": null
+                    "left": "startup-1-left",
+                    "right": "startup-1-right",
+                    "up": "startup-1-up",
+                    "down": "startup-1-down"
                 }
             },
             {
@@ -110,10 +110,10 @@
                     ]
                 ],
                 "interactions": {
-                    "left": null,
-                    "right": null,
-                    "up": null,
-                    "down": null
+                      "left": "startup-2-left",
+                      "right": "startup-2-right",
+                      "up": "startup-2-up",
+                      "down": "startup-2-down"
                 }
             },
             {
@@ -154,10 +154,11 @@
                     ]
                 ],
                 "interactions": {
-                    "left": null,
-                    "right": null,
-                    "up": null,
-                    "down": null
+
+                  "left": "startup-3-left",
+                  "right": "startup-3-right",
+                  "up": "startup-3-up",
+                  "down": "startup-3-down"
                 }
             },
             {
@@ -198,10 +199,10 @@
                     ]
                 ],
                 "interactions": {
-                    "left": null,
-                    "right": null,
-                    "up": null,
-                    "down": null
+                    "left": "startup-4-left",
+                    "right": "startup-4-right",
+                    "up": "startup-4-up",
+                    "down": "startup-4-down"
                 }
             }
         ]
@@ -314,7 +315,552 @@
     "fences": [],
     "no_go_zones": [],
     "walls": [],
-    "interactions": [],
+    "interactions": [
+    {
+      "gametypes": [
+        "basic",
+        "advanced"
+      ],
+      "play_once": true,
+      "action": "startup",
+      "id": "startup-2-left",
+      "busy": true,
+      "lockable": true,
+      "direction": "right",
+      "insound": null,
+      "outsound": null,
+      "zone": [
+        5,
+        63,
+        25,
+        25
+      ],
+      "target": [
+        17,
+        76
+      ],
+      "attraction": [
+        0,
+        57,
+        23,
+        40
+      ],
+      "position": [
+        28,
+        45
+      ]
+    },
+    {
+      "gametypes": [
+        "basic",
+        "advanced"
+      ],
+      "play_once": true,
+      "action": "startup",
+      "id": "startup-2-up",
+      "busy": true,
+      "lockable": true,
+      "direction": "down",
+      "insound": null,
+      "outsound": null,
+      "zone": [
+        21,
+        48,
+        25,
+        25
+      ],
+      "target": [
+        33,
+        60
+      ],
+      "attraction": [
+        13,
+        48,
+        46,
+        16
+      ],
+      "position": [
+        52,
+        22
+      ]
+    },
+    {
+      "gametypes": [
+        "basic",
+        "advanced"
+      ],
+      "play_once": true,
+      "action": "startup",
+      "id": "startup-2-right",
+      "busy": true,
+      "lockable": true,
+      "direction": "left",
+      "insound": null,
+      "outsound": null,
+      "zone": [
+        37,
+        63,
+        25,
+        25
+      ],
+      "target": [
+        49,
+        76
+      ],
+      "attraction": [
+        37,
+        59,
+        39,
+        32
+      ],
+      "position": [
+        78,
+        43
+      ]
+    },
+    {
+      "gametypes": [
+        "basic",
+        "advanced"
+      ],
+      "play_once": true,
+      "action": "startup",
+      "id": "startup-2-down",
+      "busy": true,
+      "lockable": true,
+      "direction": "up",
+      "insound": null,
+      "outsound": null,
+      "zone": [
+        21,
+        81,
+        25,
+        25
+      ],
+      "target": [
+        33,
+        92
+      ],
+      "attraction": [
+        17,
+        83,
+        37,
+        30
+      ],
+      "position": [
+        52,
+        70
+      ]
+    },
+    {
+      "gametypes": [
+        "basic",
+        "advanced"
+      ],
+      "play_once": true,
+      "action": "startup",
+      "id": "startup-1-up",
+      "busy": true,
+      "lockable": true,
+      "direction": "down",
+      "insound": null,
+      "outsound": null,
+      "zone": [
+        24,
+        287,
+        25,
+        25
+      ],
+      "target": [
+        36,
+        300
+      ],
+      "attraction": [
+        16,
+        279,
+        42,
+        24
+      ],
+      "position": [
+        55,
+        289
+      ]
+    },
+    {
+      "gametypes": [
+        "basic",
+        "advanced"
+      ],
+      "play_once": true,
+      "action": "startup",
+      "id": "startup-1-right",
+      "busy": true,
+      "lockable": true,
+      "direction": "left",
+      "insound": null,
+      "outsound": null,
+      "zone": [
+        41,
+        303,
+        25,
+        25
+      ],
+      "target": [
+        53,
+        316
+      ],
+      "attraction": [
+        50,
+        299,
+        29,
+        33
+      ],
+      "position": [
+        82,
+        313
+      ]
+    },
+    {
+      "gametypes": [
+        "basic",
+        "advanced"
+      ],
+      "play_once": true,
+      "action": "startup",
+      "id": "startup-1-left",
+      "busy": true,
+      "lockable": true,
+      "direction": "right",
+      "insound": null,
+      "outsound": null,
+      "zone": [
+        8,
+        303,
+        25,
+        25
+      ],
+      "target": [
+        20,
+        316
+      ],
+      "attraction": [
+        0,
+        297,
+        35,
+        39
+      ],
+      "position": [
+        32,
+        314
+      ]
+    },
+    {
+      "gametypes": [
+        "basic",
+        "advanced"
+      ],
+      "play_once": true,
+      "action": "startup",
+      "id": "startup-1-down",
+      "busy": true,
+      "lockable": true,
+      "direction": "up",
+      "insound": null,
+      "outsound": null,
+      "zone": [
+        25,
+        318,
+        25,
+        25
+      ],
+      "target": [
+        37,
+        332
+      ],
+      "attraction": [
+        20,
+        332,
+        38,
+        20
+      ],
+      "position": [
+        54,
+        336
+      ]
+    },
+    {
+      "gametypes": [
+        "basic",
+        "advanced"
+      ],
+      "play_once": true,
+      "action": "startup",
+      "id": "startup-3-up",
+      "busy": true,
+      "lockable": true,
+      "direction": "down",
+      "insound": null,
+      "outsound": null,
+      "zone": [
+        568,
+        45,
+        25,
+        25
+      ],
+      "target": [
+        580,
+        59
+      ],
+      "attraction": [
+        563,
+        33,
+        35,
+        35
+      ],
+      "position": [
+        559,
+        25
+      ]
+    },
+    {
+      "gametypes": [
+        "basic",
+        "advanced"
+      ],
+      "play_once": true,
+      "action": "startup",
+      "id": "startup-3-right",
+      "busy": true,
+      "lockable": true,
+      "direction": "left",
+      "insound": null,
+      "outsound": null,
+      "zone": [
+        585,
+        62,
+        25,
+        25
+      ],
+      "target": [
+        596,
+        75
+      ],
+      "attraction": [
+        595,
+        59,
+        35,
+        35
+      ],
+      "position": [
+        598,
+        50
+      ]
+    },
+    {
+      "gametypes": [
+        "basic",
+        "advanced"
+      ],
+      "play_once": false,
+      "action": "startup",
+      "id": "startup-3-down",
+      "busy": true,
+      "lockable": true,
+      "direction": "up",
+      "insound": null,
+      "outsound": null,
+      "zone": [
+        568,
+        80,
+        25,
+        25
+      ],
+      "target": [
+        580,
+        92
+      ],
+      "attraction": [
+        564,
+        85,
+        35,
+        35
+      ],
+      "position": [
+        559,
+        72
+      ]
+    },
+    {
+      "gametypes": [
+        "basic",
+        "advanced"
+      ],
+      "play_once": true,
+      "action": "startup",
+      "id": "startup-3-left",
+      "busy": true,
+      "lockable": true,
+      "direction": "right",
+      "insound": null,
+      "outsound": null,
+      "zone": [
+        552,
+        62,
+        25,
+        25
+      ],
+      "target": [
+        564,
+        75
+      ],
+      "attraction": [
+        541,
+        57,
+        35,
+        35
+      ],
+      "position": [
+        512,
+        44
+      ]
+    },
+    {
+      "gametypes": [
+        "basic",
+        "advanced"
+      ],
+      "play_once": true,
+      "action": "startup",
+      "id": "startup-4-up",
+      "busy": true,
+      "lockable": true,
+      "direction": "down",
+      "insound": null,
+      "outsound": null,
+      "zone": [
+        568,
+        283,
+        25,
+        25
+      ],
+      "target": [
+        580,
+        296
+      ],
+      "attraction": [
+        555,
+        272,
+        51,
+        26
+      ],
+      "position": [
+        564,
+        294
+      ]
+    },
+    {
+      "gametypes": [
+        "basic",
+        "advanced"
+      ],
+      "play_once": true,
+      "action": "startup",
+      "id": "startup-4-right",
+      "busy": true,
+      "lockable": true,
+      "direction": "left",
+      "insound": null,
+      "outsound": null,
+      "zone": [
+        586,
+        301,
+        23,
+        25
+      ],
+      "target": [
+        598,
+        314
+      ],
+      "attraction": [
+        596,
+        294,
+        22,
+        37
+      ],
+      "position": [
+        602,
+        310
+      ]
+    },
+    {
+      "gametypes": [
+        "basic",
+        "advanced"
+      ],
+      "play_once": true,
+      "action": "startup",
+      "id": "startup-4-down",
+      "busy": true,
+      "lockable": true,
+      "direction": "up",
+      "insound": null,
+      "outsound": null,
+      "zone": [
+        568,
+        320,
+        25,
+        25
+      ],
+      "target": [
+        580,
+        332
+      ],
+      "attraction": [
+        556,
+        326,
+        50,
+        26
+      ],
+      "position": [
+        564,
+        326
+      ]
+    },
+    {
+      "gametypes": [
+        "basic",
+        "advanced"
+      ],
+      "play_once": true,
+      "action": "startup",
+      "id": "startup-4-left",
+      "busy": true,
+      "lockable": true,
+      "direction": "right",
+      "insound": null,
+      "outsound": null,
+      "zone": [
+        549,
+        300,
+        25,
+        26
+      ],
+      "target": [
+        562,
+        314
+      ],
+      "attraction": [
+        536,
+        297,
+        35,
+        34
+      ],
+      "position": [
+        517,
+        306
+      ]
+    }
+   ],
     "popspots": [],
     "stairs": [],
     "backgrounds": [],
@@ -327,7 +873,50 @@
         "resources/animdata/jo.json"
     ],
     "overlays": [],
-    "vfx": [],
-    "interactive_props": [],
+    "vfx": [
+    {
+      "name": "vomit",
+      "type": "static",
+      "file": "resources/props/vomit.png",
+      "y": -1000
+    },
+    {
+      "name": "coin-alert",
+      "type": "animated",
+      "file": "resources/vfx/coin-alert.json"
+    }],
+    "interactive_props": [
+    {
+      "name": "bottle",
+      "action": "drink",
+      "insound": "resources/sounds/glouglou.wav",
+      "outsound": null,
+      "offset": [
+        20,
+        -20
+      ],
+      "target": [
+        -20,
+        20
+      ],
+      "play_once": false,
+      "zone": [
+        -40,
+        0,
+        40,
+        30
+      ],
+      "image": "resources/props/beer.png",
+      "switch": 15,
+      "attraction": [
+        -100,
+        -30,
+        100,
+        100
+      ],
+      "direction": "right",
+      "lockable": false
+    }
+  ],
     "props": []
 }
