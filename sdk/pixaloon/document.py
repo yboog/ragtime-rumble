@@ -87,6 +87,8 @@ class Document(QtCore.QObject):
         if not self.selection:
             return
         match self.selection.tool:
+            case Selection.BACKGROUND:
+                    del self.data['backgrounds'][self.selection.data]
             case Selection.POPSPOT:
                 for row in sorted(self.selection.data, reverse=True):
                     del self.data['popspots'][row]

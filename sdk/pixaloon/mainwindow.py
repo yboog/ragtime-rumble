@@ -137,13 +137,18 @@ class Pixaloon(QtWidgets.QMainWindow):
     def create_menu(self):
         new = QtGui.QAction('New', self)
         new.triggered.connect(self.create_new)
+        new.setShortcut(QtGui.QKeySequence('CTRL+N'))
         open_ = QtGui.QAction('Open', self)
+        open_.setShortcut(QtGui.QKeySequence('CTRL+O'))
         open_.triggered.connect(self.open_document_prompt)
         save = QtGui.QAction('Save', self)
+        save.setShortcut(QtGui.QKeySequence('CTRL+S'))
         save.triggered.connect(self.save_current_document)
         save_as = QtGui.QAction('Save as', self)
+        save_as.setShortcut(QtGui.QKeySequence('SHIFT+CTRL+S'))
         save_as.triggered.connect(self.save_current_document_as)
         exit_action = QtGui.QAction('Exit', self)
+        exit_action.setShortcut(QtGui.QKeySequence('CTRL+Q'))
         exit_action.triggered.connect(self.close)
 
         filemenu = QtWidgets.QMenu('File', self)
@@ -164,6 +169,10 @@ class Pixaloon(QtWidgets.QMainWindow):
 
         self.menuBar().addMenu(import_menu)
 
+        run_level = QtGui.QAction('Run level', self)
+        run_level.setShortcut(QtGui.QKeySequence('F5'))
+        run_level.triggered.connect(self.run_level)
+
         run_game = QtGui.QAction('Run game', self)
         run_game.triggered.connect(
             lambda: RunGameDialog(self.current_canvas().document).exec())
@@ -171,10 +180,13 @@ class Pixaloon(QtWidgets.QMainWindow):
         heatmap_analytics.triggered.connect(self.open_hitmap_display)
         txt = 'Render placeholder background'
         render_placeholder = QtGui.QAction(txt, self)
+        render_placeholder.setShortcut(QtGui.QKeySequence('F6'))
         render_placeholder.triggered.connect(self.render_placeholders)
 
         tools_menu = QtWidgets.QMenu('Tools')
+        tools_menu.addAction(run_level)
         tools_menu.addAction(run_game)
+        tools_menu.addSeparator()
         tools_menu.addAction(heatmap_analytics)
         tools_menu.addAction(render_placeholder)
 
@@ -334,6 +346,14 @@ class Pixaloon(QtWidgets.QMainWindow):
         image = render_placeholder_image(document)
         image.save(f'{document.gameroot}/{document.get_placeholder_path()}')
         document.update_placeholder()
+
+    def run_level(self):
+        run_game(
+            document=self.current_canvas().document,
+            loop_on_default_scene=True,
+            windowed=True,
+            use_document_as_default_scene=True,
+            record_replay_filepath=None)
 
 
 class RunGameDialog(QtWidgets.QDialog):

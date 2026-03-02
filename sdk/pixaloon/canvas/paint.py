@@ -459,6 +459,7 @@ def paint_canvas_startups(painter, document, viewportmapper):
         if last_point:
             painter.drawLine(point, last_point)
         last_point = point
+    user_rect = viewportmapper.to_viewport_rect(QtCore.QRectF(-10, -8, 20, 10))
     for i, group in enumerate(document.data['startups']['groups']):
         # startup groups
         directions = 'left', 'up', 'right', 'down'
@@ -473,17 +474,24 @@ def paint_canvas_startups(painter, document, viewportmapper):
         painter.setBrush(color)
         polygon = QtGui.QPolygonF(points)
         painter.drawPolygon(polygon)
-        painter.setBrush(QtCore.Qt.black)
-        painter.setPen(QtCore.Qt.black)
         center = QtCore.QPointF()
+        pen = QtGui.QPen()
+        pen.setStyle(QtCore.Qt.DashLine)
+        painter.setPen(pen)
+        painter.setBrush(QtCore.Qt.NoBrush)
         for p in points:
+            user_rect.moveCenter(p)
+            painter.drawRect(user_rect)
             center += p
         center /= 4
+        painter.setBrush(QtCore.Qt.black)
+        painter.setPen(QtCore.Qt.black)
         for direction in directions:
             point = QtCore.QPoint(*group['popspots'][direction])
             painter.drawText(
                 viewportmapper.to_viewport_coords(point),
                 direction)
+
 
         # gamepad placement
         painter.setBrush(QtCore.Qt.green)
