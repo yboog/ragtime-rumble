@@ -12,6 +12,7 @@ NPC_TYPES = {
         "gametypes": ["advanced"],
         "startposition": [0, 0],
         "direction": "left",
+        "blendmode": "normal",
         "path": [[0, 0], [0, 50]]},
     'chicken': {
         "type": "chicken",
@@ -19,6 +20,7 @@ NPC_TYPES = {
         "gametypes": ["basic", "advanced"],
         "startposition": [0, 0],
         "zone": [0, 0, 50, 50],
+        "blendmode": "normal",
         "run_radius": 50},
     'dog': {
         "type": "dog",
@@ -26,17 +28,20 @@ NPC_TYPES = {
         "gametypes": ["basic", "advanced"],
         "startposition": [0, 107],
         "direction": "right",
+        "blendmode": "normal",
         "path": [[0, 0], [0, 50]]},
     'loop': {
         "type": "loop",
         "file": "resources/animdata/banjo.json",
         "gametypes": ["basic", "advanced"],
         "position": [0, 0],
+        "blendmode": "normal",
         "switch": 243},
     'pianist': {
         "type": "pianist",
         "file": "resources/animdata/pianist.json",
         "gametypes": ["basic", "advanced"],
+        "blendmode": "normal",
         "startposition": [0, 0]},
     'sniper': {
         "type": "sniper",
@@ -45,6 +50,7 @@ NPC_TYPES = {
         "startposition": [0, 0],
         "y": 400,
         "zone": [0, 0, 150, 150],
+        "blendmode": "normal",
         "interaction_zone": [-50, -50, 60, 60]},
     'saloon-door': {
         "file": "resources/animdata/saloon-door-a.json",
@@ -53,6 +59,7 @@ NPC_TYPES = {
         "position": [0, 0],
         "switch": 94,
         "zone": [95, 83, 47, 9],
+        "blendmode": "normal",
     }
 }
 

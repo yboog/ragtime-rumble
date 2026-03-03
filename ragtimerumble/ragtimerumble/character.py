@@ -30,6 +30,10 @@ class Character:
         self.shorn = False
 
     @property
+    def blendmode(selt):
+        return 'normal'
+
+    @property
     def box(self):
         return self.spritesheet.data['box'][:]
 

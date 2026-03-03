@@ -2903,7 +2903,8 @@
       "position": [
         0,
         0
-      ]
+      ],
+      "blendmode": "normal"
     }
   ],
   "targets": [
@@ -3152,12 +3153,14 @@
       "name": "vomit",
       "type": "static",
       "file": "resources/props/vomit.png",
-      "y": -1000
+      "y": -1000,
+      "blendmode": "normal"
     },
     {
       "name": "coin-alert",
       "type": "animated",
-      "file": "resources/vfx/coin-alert.json"
+      "file": "resources/vfx/coin-alert.json",
+      "blendmode": "normal"
     }
   ],
   "interactive_props": [
@@ -3190,7 +3193,8 @@
         100
       ],
       "direction": "right",
-      "lockable": false
+      "lockable": false,
+      "blendmode": "normal"
     }
   ],
   "props": []

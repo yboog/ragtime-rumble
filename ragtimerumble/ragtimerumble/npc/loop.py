@@ -5,9 +5,10 @@ from ragtimerumble.sprite import SpriteSheet
 
 
 class Loop:
-    def __init__(self, file, position, switch, **_):
+    def __init__(self, file, position, switch, blendmode, **_):
         self.data = load_data(file)
         self.switch = switch
+        self.blendmode = blendmode
         self.spritesheet = SpriteSheet(self.data, 'loop')
         self.coordinates = Coordinates((position))
 

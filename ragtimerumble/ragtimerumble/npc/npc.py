@@ -22,6 +22,7 @@ class Npc:
 
     def __init__(self, character, scene):
         self.character = character
+        self.blendmode = 'normal'
         self.scene = scene
         self.next_duel_check_countdown = self.get_next_duel_check_countdown()
         self.coma_count_down = random.randrange(

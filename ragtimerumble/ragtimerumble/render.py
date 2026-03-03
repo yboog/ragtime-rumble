@@ -24,6 +24,19 @@ MESSAGE_FONT_SIZE = 8
 MESSAGE_FONT_FILE = 'Pixel-Western.otf'
 TEXT_FONT_FILE = 'Retro-Gaming.ttf'
 LOSER_POSITIONS = [(125, 240), (305, 240), (490, 240)]
+BLENDMODES = {
+    'normal': 0,
+    'rgba_add': pygame.BLEND_RGBA_ADD,
+    'rgba_sub': pygame.BLEND_RGBA_SUB,
+    'rgba_mult': pygame.BLEND_RGBA_MULT,
+    'rgba_min': pygame.BLEND_RGBA_MIN,
+    'rgba_max': pygame.BLEND_RGBA_MAX,
+    'rgb_add': pygame.BLEND_RGB_ADD,
+    'rgb_sub': pygame.BLEND_RGB_SUB,
+    'rgb_mult': pygame.BLEND_RGB_MULT,
+    'rgb_min': pygame.BLEND_RGB_MIN,
+    'rgb_max': pygame.BLEND_RGB_MAX,
+}
 
 
 def render_game(screen, loop):
@@ -732,7 +745,14 @@ def draw_possible_duel(screen, char1, char2, line=True):
 def render_element(screen, element):
     try:
         img = element.image
-        screen.blit(get_image(img), element.render_position)
+        m = BLENDMODES[getattr(element, 'blendmode', 'normal')]
+        if m:
+            temp = pygame.Surface(screen.get_size(), pygame.SRCALPHA)
+            temp.blit(screen, (0,0))
+            temp.blit(get_image(img), element.render_position, special_flags=m)
+            screen.blit(temp, (0,0))
+        else:
+            screen.blit(get_image(img), element.render_position, special_flags=m)
         if hasattr(element, 'shorn') and element.shorn:
             image = get_image(element.image).copy()
             image.fill((0, 0, 0), special_flags=pygame.BLEND_MULT)
@@ -740,6 +760,9 @@ def render_element(screen, element):
             screen.blit(image, element.render_position)
     except TypeError:
         print(img, get_image(img), element.render_position)
+        raise
+    except KeyError:
+        print(element)
         raise
     if debug.render_path:
         condition = (

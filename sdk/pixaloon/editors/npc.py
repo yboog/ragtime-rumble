@@ -3,18 +3,21 @@ from pixaloon.editors.base import BaseEditor
 from pixaloon.intarrayeditor import IntArrayEditor, IntArrayListEditor
 from pixaloon.intlisteditor import IntListEditor
 from pixaloon.selection import Selection
-from pixaloon.widgets import GameTypesSelector
+from pixaloon.widgets import GameTypesSelector, BlendmodeSelector
 
 
 class NPCEditor(BaseEditor):
     def __init__(self, parent=None):
         super().__init__(parent)
+        self.blendmode = BlendmodeSelector()
+        self.blendmode.currentIndexChanged.connect(self.values_changed)
         self.npc_type = QtWidgets.QLabel()
         self.gametypes = GameTypesSelector()
         self.gametypes.edited.connect(self.data_edited)
         self.subeditor = None
         self.add_row('Type', self.npc_type)
         self.add_row('Game types', self.gametypes)
+        self.add_row('Blend mode', self.blendmode)
         self.add_separator()
 
     def selection_changed(self):
@@ -25,6 +28,7 @@ class NPCEditor(BaseEditor):
         npc = self.document.data['npcs'][selection.data]
         self.npc_type.setText(npc["type"])
         self.gametypes.set_game_types(npc["gametypes"])
+        self.blendmode.set_blendmode(npc["blendmode"])
         cls = SUBEDITORS_BY_TYPES.get(npc['type'], NotEditableNpc)
         if self.subeditor:
             self.layout.removeWidget(self.subeditor)
@@ -39,7 +43,9 @@ class NPCEditor(BaseEditor):
         if self.document.selection.tool != Selection.NPC:
             return
         npc = self.document.data['npcs'][self.document.selection.data]
-        npc.update({'gametypes': self.gametypes.game_types()})
+        npc.update(
+            {'gametypes': self.gametypes.game_types(),
+             'blendmode': self.blendmode.blendmode()})
         npc.update(self.subeditor.data())
         self.document.edited.emit()
 

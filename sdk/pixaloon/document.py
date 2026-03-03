@@ -79,7 +79,10 @@ class Document(QtCore.QObject):
     def update_placeholder(self):
         backgrounds = [bg['file'] for bg in self.data['backgrounds']]
         if self.get_placeholder_path() not in backgrounds:
-            ph = {"file": self.get_placeholder_path(), "position": [0, 0]}
+            ph = {
+                "file": self.get_placeholder_path(),
+                "position": [0, 0],
+                "blendmode": "normal"}
             self.data['backgrounds'].insert(0, ph)
         self.update_qimages()
 

@@ -2929,7 +2929,8 @@
       "position": [
         0,
         0
-      ]
+      ],
+      "blendmode": "normal"
     }
   ],
   "targets": [
@@ -3282,7 +3283,8 @@
         0,
         0
       ],
-      "y": 100
+      "y": 100,
+      "blendmode": "normal"
     },
     {
       "type": "prop",
@@ -3291,7 +3293,8 @@
         0,
         0
       ],
-      "y": 100
+      "y": 100,
+      "blendmode": "normal"
     },
     {
       "type": "prop",
@@ -3300,7 +3303,8 @@
         96,
         55
       ],
-      "y": 100
+      "y": 100,
+      "blendmode": "normal"
     },
     {
       "type": "prop",
@@ -3309,7 +3313,8 @@
         433,
         214
       ],
-      "y": 100
+      "y": 100,
+      "blendmode": "normal"
     },
     {
       "type": "prop",
@@ -3318,7 +3323,8 @@
         0,
         310
       ],
-      "y": 100
+      "y": 100,
+      "blendmode": "normal"
     }
   ],
   "vfx": [
@@ -3326,12 +3332,14 @@
       "name": "vomit",
       "type": "static",
       "file": "resources/props/vomit.png",
-      "y": -1000
+      "y": -1000,
+      "blendmode": "normal"
     },
     {
       "name": "coin-alert",
       "type": "animated",
-      "file": "resources/vfx/coin-alert.json"
+      "file": "resources/vfx/coin-alert.json",
+      "blendmode": "normal"
     }
   ],
   "interactive_props": [
@@ -3363,7 +3371,8 @@
         100
       ],
       "direction": "left",
-      "lockable": false
+      "lockable": false,
+      "blendmode": "normal"
     }
   ],
   "props": [],

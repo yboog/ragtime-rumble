@@ -212,6 +212,7 @@ class Pixaloon(QtWidgets.QMainWindow):
             'gametypes': ['advanced', 'basic'],
             'visible_at_dispatch': True,
             'file': filepath,
+            'blendmode': 'normal',
             'center': [0, 0],
             'position': [0, 0],
             'box': [0, 0, *image.size().toTuple()]})

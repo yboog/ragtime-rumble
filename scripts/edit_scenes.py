@@ -17,10 +17,22 @@ for file in files:
 
     # popspots = [{'gametypes': ['advanced', 'basic'], 'position': p} for p in data['popspots']]
     # data['popspots'] = popspots
-    if not 'edit_data' in data:
-        data['edit_data'] = {'background_placeholders': []}
-    for bgph in data['edit_data']['background_placeholders']:
-        bgph['tile'] = None
+    # if not 'edit_data' in data:
+    #     data['edit_data'] = {'background_placeholders': []}
+    # for bgph in data['edit_data']['background_placeholders']:
+    #     bgph['tile'] = None
+    for overlay in data['overlays']:
+        overlay['blendmode'] = 'normal'
+    for overlay in data['props']:
+        overlay['blendmode'] = 'normal'
+    for overlay in data['backgrounds']:
+        overlay['blendmode'] = 'normal'
+    for overlay in data['npcs']:
+        overlay['blendmode'] = 'normal'
+    for overlay in data['interactive_props']:
+        overlay['blendmode'] = 'normal'
+    for overlay in data['vfx']:
+        overlay['blendmode'] = 'normal'
 
     with open(file, 'w') as f:
         json.dump(data, f, indent=2)

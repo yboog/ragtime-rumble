@@ -40,6 +40,29 @@ class BoolCombo(QtWidgets.QComboBox):
         self.setCurrentIndex(int(state))
 
 
+class BlendmodeSelector(QtWidgets.QComboBox):
+    def __init__(self, parent=None):
+        super().__init__(parent)
+        self.addItems((
+            'normal',
+            'rgba_add',
+            'rgba_sub',
+            'rgba_mult',
+            'rgba_min',
+            'rgba_max',
+            'rgb_add',
+            'rgb_sub',
+            'rgb_mult',
+            'rgb_min',
+            'rgb_max'))
+
+    def set_blendmode(self, blendmode):
+        self.setCurrentText(blendmode)
+
+    def blendmode(self):
+        return self.currentText()
+
+
 class TileSelector(QtWidgets.QWidget):
     edited = QtCore.Signal()
 

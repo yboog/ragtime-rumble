@@ -74,15 +74,19 @@ def load_scene(filename):
 
     position = data['score']['ol']['position']
     image = load_image(data['score']['ol']['file'], key_color=(0, 255, 0))
-    scene.score_ol = Overlay(image, position, sys.maxsize)
+    scene.score_ol = Overlay(image, position, sys.maxsize, blendmode='normal')
     for background in data['backgrounds']:
         image = load_image(background['file'])
         position = background['position']
-        scene.backgrounds.append(Background(image=image, position=position))
+        blendmode = background['blendmode']
+        scene.backgrounds.append(
+            Background(image=image, position=position, blendmode=blendmode))
 
     for ol in data['overlays']:
         image = load_image(ol['file'], (0, 255, 0))
-        scene.overlays.append(Overlay(image, ol['position'], ol['y']))
+        blendmode = ol['blendmode']
+        scene.overlays.append(
+            Overlay(image, ol['position'], ol['y'], blendmode))
 
     return scene
 
@@ -150,12 +154,14 @@ def populate_scene(filename, scene, gametype):
     for prop in data['props']:
         if gametype not in prop['gametypes']:
             continue
-        image = load_image(prop['file'])
-        position = prop['position']
-        center = prop['center']
-        box = prop['box']
-        visible_at_dispatch = prop['visible_at_dispatch']
-        prop = Prop(image, position, center, box, visible_at_dispatch, scene)
+        prop = Prop(
+            image=load_image(prop['file']),
+            position=prop['position'],
+            center=prop['center'],
+            box=prop['box'],
+            blendmode=prop['blendmode'],
+            visible_at_dispatch=prop['visible_at_dispatch'],
+            scene=scene)
         scene.props.append(prop)
 
     popspots = [
@@ -233,7 +239,8 @@ class Scene:
                 image = load_image(vfx['file'])
                 if flipped:
                     image = image_mirror(image, horizontal=True)
-                self.vfx_overlays.append(Overlay(image, position, vfx['y']))
+                self.vfx_overlays.append(
+                    Overlay(image, position, vfx['y'], vfx['blendmode']))
                 return
             if vfx.get('type') == 'animated' and vfx.get('name') == name:
                 data = load_data(vfx['file'])

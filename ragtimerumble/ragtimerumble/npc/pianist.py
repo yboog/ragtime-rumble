@@ -17,8 +17,9 @@ class Pianist:
         'fast3',
         'fast4']
 
-    def __init__(self, file='', startposition=None, **_):
+    def __init__(self, file='', startposition=None, blendmode='normal', **_):
         self.data = load_data(file)
+        self.blendmode = blendmode
         self.spritesheet = SpriteSheet(self.data, 'slow1')
         self.coordinates = Coordinates((startposition))
         self.sequence = []

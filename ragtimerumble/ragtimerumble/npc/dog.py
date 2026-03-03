@@ -14,9 +14,10 @@ from ragtimerumble.sprite import SpriteSheet
 class Dog:
     def __init__(
             self, scene=None, file=None, startposition=None,
-            path=None, direction=None, **_):
+            path=None, direction=None, blendmode='normal', **_):
         self.data = load_data(file)
         self.scene = scene
+        self.blendmode = blendmode
         self.spritesheet = SpriteSheet(self.data, 'sit')
         self.coordinates = Coordinates((startposition))
         self.behavior_cooldown = random.randint(

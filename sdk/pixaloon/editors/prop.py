@@ -5,12 +5,14 @@ from pixaloon.filewidget import FileLineEdit
 from pixaloon.intlisteditor import IntListEditor
 from pixaloon.intarrayeditor import IntArrayEditor
 from pixaloon.editors.base import BaseEditor
-from pixaloon.widgets import GameTypesSelector, BoolCombo
+from pixaloon.widgets import GameTypesSelector, BoolCombo, BlendmodeSelector
 
 
 class PropEditor(BaseEditor):
     def __init__(self, parent=None):
         super().__init__(parent)
+        self.blendmode = BlendmodeSelector()
+        self.blendmode.currentIndexChanged.connect(self.values_changed)
 
         self.gametypes = GameTypesSelector()
         self.gametypes.edited.connect(self.values_changed)
@@ -32,6 +34,7 @@ class PropEditor(BaseEditor):
 
         self.add_row('Game types', self.gametypes)
         self.add_row('Image', self.image_filepath)
+        self.add_row('Blend mode', self.blendmode)
         self.add_row('Visible at dispatch', self.visible_at_dispatch)
         self.add_separator()
         self.add_row('Position', self.position)
@@ -47,6 +50,7 @@ class PropEditor(BaseEditor):
         prop = self.document.data['props'][index]
         self.block_signals(True)
 
+        self.blendmode.set_blendmode(prop['blendmode'])
         self.box.set_values(prop['box'])
         self.gametypes.set_game_types(prop['gametypes'])
         self.position.set_value(prop['position'])
@@ -69,6 +73,7 @@ class PropEditor(BaseEditor):
         fp = relative_normpath(self.image_filepath.filepath(), self.document)
         return {
             'gametypes': self.gametypes.game_types(),
+            'blendmode': self.blendmode.blendmode(),
             'visible_at_dispatch': self.visible_at_dispatch.state(),
             'file': fp,
             'center': self.center.value(),

@@ -6,10 +6,12 @@ from ragtimerumble.sprite import SpriteSheet
 
 class SaloonDoor:
 
-    def __init__(self, scene, file, position, switch, zone, **_):
+    def __init__(self, scene, file, position, switch,
+                 zone, blendmode='normal', **_):
         self.data = load_data(file)
         self.scene = scene
         self.switch = switch
+        self.blendmode = blendmode
         self.spritesheet = SpriteSheet(self.data, 'closed')
         self.coordinates = Coordinates((position))
         self.zone = zone

@@ -3011,7 +3011,8 @@
       "position": [
         0,
         0
-      ]
+      ],
+      "blendmode": "normal"
     }
   ],
   "targets": [
@@ -3498,7 +3499,8 @@
         60,
         40,
         40
-      ]
+      ],
+      "blendmode": "normal"
     },
     {
       "type": "pianist",
@@ -3510,7 +3512,8 @@
       "startposition": [
         91,
         221
-      ]
+      ],
+      "blendmode": "normal"
     },
     {
       "type": "barman",
@@ -3532,7 +3535,8 @@
           454,
           214
         ]
-      ]
+      ],
+      "blendmode": "normal"
     },
     {
       "type": "dog",
@@ -3635,7 +3639,8 @@
           45,
           230
         ]
-      ]
+      ],
+      "blendmode": "normal"
     },
     {
       "type": "dog",
@@ -3766,7 +3771,8 @@
           585,
           175
         ]
-      ]
+      ],
+      "blendmode": "normal"
     }
   ],
   "characters": [
@@ -3781,12 +3787,14 @@
       "name": "vomit",
       "type": "static",
       "file": "resources/props/vomit.png",
-      "y": -1000
+      "y": -1000,
+      "blendmode": "normal"
     },
     {
       "name": "coin-alert",
       "type": "animated",
-      "file": "resources/vfx/coin-alert.json"
+      "file": "resources/vfx/coin-alert.json",
+      "blendmode": "normal"
     }
   ],
   "interactive_props": [
@@ -3819,7 +3827,8 @@
         100
       ],
       "direction": "right",
-      "lockable": false
+      "lockable": false,
+      "blendmode": "normal"
     }
   ],
   "props": []

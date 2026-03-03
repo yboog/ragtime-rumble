@@ -4276,7 +4276,8 @@
       "position": [
         0,
         0
-      ]
+      ],
+      "blendmode": "normal"
     }
   ],
   "targets": [
@@ -4972,7 +4973,8 @@
         324,
         109
       ],
-      "switch": 352
+      "switch": 352,
+      "blendmode": "normal"
     },
     {
       "file": "resources/animdata/saloon-door-a.json",
@@ -4991,7 +4993,8 @@
         83,
         47,
         9
-      ]
+      ],
+      "blendmode": "normal"
     },
     {
       "file": "resources/animdata/chicken.json",
@@ -5009,7 +5012,8 @@
         50,
         50
       ],
-      "run_radius": 50
+      "run_radius": 50,
+      "blendmode": "normal"
     },
     {
       "file": "resources/animdata/chicken.json",
@@ -5028,7 +5032,8 @@
         20,
         20
       ],
-      "run_radius": 50
+      "run_radius": 50,
+      "blendmode": "normal"
     },
     {
       "type": "barman",
@@ -5050,7 +5055,8 @@
           466,
           280
         ]
-      ]
+      ],
+      "blendmode": "normal"
     }
   ],
   "characters": [
@@ -5067,7 +5073,8 @@
         0,
         0
       ],
-      "y": 84
+      "y": 84,
+      "blendmode": "normal"
     },
     {
       "type": "props",
@@ -5076,7 +5083,8 @@
         0,
         0
       ],
-      "y": 143
+      "y": 143,
+      "blendmode": "normal"
     },
     {
       "type": "props",
@@ -5085,7 +5093,8 @@
         0,
         310
       ],
-      "y": -100
+      "y": -100,
+      "blendmode": "normal"
     },
     {
       "type": "prop",
@@ -5094,7 +5103,8 @@
         108,
         115
       ],
-      "y": -1000
+      "y": -1000,
+      "blendmode": "normal"
     }
   ],
   "vfx": [
@@ -5102,12 +5112,14 @@
       "name": "vomit",
       "type": "static",
       "file": "resources/props/vomit.png",
-      "y": -1000
+      "y": -1000,
+      "blendmode": "normal"
     },
     {
       "name": "coin-alert",
       "type": "animated",
-      "file": "resources/vfx/coin-alert.json"
+      "file": "resources/vfx/coin-alert.json",
+      "blendmode": "normal"
     }
   ],
   "interactive_props": [
@@ -5140,7 +5152,8 @@
         100
       ],
       "direction": "right",
-      "lockable": false
+      "lockable": false,
+      "blendmode": "normal"
     }
   ],
   "props": [
@@ -5163,7 +5176,8 @@
         -3,
         178,
         93
-      ]
+      ],
+      "blendmode": "normal"
     },
     {
       "gametypes": [
@@ -5184,7 +5198,8 @@
         1,
         69,
         36
-      ]
+      ],
+      "blendmode": "normal"
     }
   ]
 }

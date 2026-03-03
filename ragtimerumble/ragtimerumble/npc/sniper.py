@@ -9,9 +9,11 @@ class Sniper:
     def __init__(
             self, scene=None, file=None,
             startposition=None, zone=None, y=2000,
-            interaction_zone=None, **_):
+            interaction_zone=None,
+            blendmode='normal', **_):
         self.data = load_data(file)
         self.y = y
+        self.blendmode = blendmode
         self.spritesheet = SpriteSheet(self.data, 'idle')
         self.coordinates = Coordinates((startposition))
         self.reticle = SniperReticle(zone, scene)

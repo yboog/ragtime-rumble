@@ -3588,7 +3588,8 @@
       "position": [
         0,
         0
-      ]
+      ],
+      "blendmode": "normal"
     }
   ],
   "targets": [
@@ -3895,7 +3896,8 @@
         66,
         32,
         30
-      ]
+      ],
+      "blendmode": "normal"
     },
     {
       "type": "barman",
@@ -3917,7 +3919,8 @@
           130,
           90
         ]
-      ]
+      ],
+      "blendmode": "normal"
     }
   ],
   "characters": [
@@ -3932,12 +3935,14 @@
       "name": "vomit",
       "type": "static",
       "file": "resources/props/vomit.png",
-      "y": -1000
+      "y": -1000,
+      "blendmode": "normal"
     },
     {
       "name": "coin-alert",
       "type": "animated",
-      "file": "resources/vfx/coin-alert.json"
+      "file": "resources/vfx/coin-alert.json",
+      "blendmode": "normal"
     }
   ],
   "interactive_props": [
@@ -3970,7 +3975,8 @@
         100
       ],
       "direction": "right",
-      "lockable": false
+      "lockable": false,
+      "blendmode": "normal"
     }
   ],
   "props": [
@@ -3994,7 +4000,8 @@
         0,
         58,
         29
-      ]
+      ],
+      "blendmode": "normal"
     },
     {
       "gametypes": [
@@ -4016,7 +4023,8 @@
         0,
         58,
         28
-      ]
+      ],
+      "blendmode": "normal"
     },
     {
       "gametypes": [
@@ -4038,7 +4046,8 @@
         0,
         58,
         28
-      ]
+      ],
+      "blendmode": "normal"
     },
     {
       "gametypes": [
@@ -4060,7 +4069,8 @@
         0,
         58,
         29
-      ]
+      ],
+      "blendmode": "normal"
     },
     {
       "gametypes": [
@@ -4082,7 +4092,8 @@
         0,
         30,
         136
-      ]
+      ],
+      "blendmode": "normal"
     }
   ]
 }

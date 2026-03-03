@@ -33,8 +33,9 @@ class Chicken:
 
     def __init__(
             self, scene=None, file=None, startposition=None,
-            zone=None, run_radius=50, **_):
+            zone=None, run_radius=50, blendmode='normal', **_):
         self.data = load_data(file)
+        self.blendmode = blendmode
         self.scene = scene
         self.spritesheet = SpriteSheet(self.data, 'idle-a')
         self.startposition = startposition

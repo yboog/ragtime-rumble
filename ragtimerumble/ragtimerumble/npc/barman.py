@@ -13,8 +13,9 @@ class Barman:
 
     def __init__(
             self, file=None, startposition=None,
-            path=None, direction=None, **_):
+            path=None, direction=None, blendmode='normal', **_):
         self.data = load_data(file)
+        self.blendmode = blendmode
         self.direction = direction or DIRECTIONS.LEFT
         self.spritesheet = SpriteSheet(self.data, 'idle')
         self.coordinates = Coordinates((startposition))

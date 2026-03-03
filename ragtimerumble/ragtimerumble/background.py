@@ -2,14 +2,16 @@ from ragtimerumble.coordinates import Coordinates
 
 
 class Background:
-    def __init__(self, image, position):
+    def __init__(self, image, position, blendmode):
+        self.blendmode = blendmode
         self.position = position
         self.image = image
 
 
 class Overlay:
-    def __init__(self, image, position, y):
+    def __init__(self, image, position, y, blendmode):
         self.image = image
+        self.blendmode = blendmode
         self.switch = y
         self.render_position = position
         self.coordinates = Coordinates(position)
@@ -17,9 +19,11 @@ class Overlay:
 
 class Prop:
     def __init__(
-            self, image, position, center, box, visible_at_dispatch, scene):
+            self, image, position, center, box,
+            visible_at_dispatch, blendmode, scene):
         self.coordinates = Coordinates(position)
         self.visible_at_dispatch = visible_at_dispatch
+        self.blendmode = blendmode
         self.center = center
         self.image = image
         self.scene = scene

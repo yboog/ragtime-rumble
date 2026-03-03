@@ -4,14 +4,16 @@ from pixaloon.selection import Selection
 from pixaloon.intarrayeditor import IntArrayEditor
 from pixaloon.filewidget import FileLineEdit
 from pixaloon.editors.base import BaseEditor
+from pixaloon.widgets import BlendmodeSelector
 
 
 class OverlayEditor(BaseEditor):
     def __init__(self, parent=None):
         super().__init__(parent)
         self.document = None
-
         self.image_filepath = FileLineEdit(self.document, '*.png')
+        self.blendmode = BlendmodeSelector()
+        self.blendmode.currentIndexChanged.connect(self.values_changed)
         self.position = IntArrayEditor()
         self.position.value_changed.connect(self.values_changed)
         self.switch = QtWidgets.QSpinBox()
@@ -23,6 +25,7 @@ class OverlayEditor(BaseEditor):
         self.add_row('Position', self.position)
         self.add_row('Y switch', self.switch)
         self.add_row('Image', self.image_filepath)
+        self.add_row('Blend mode', self.blendmode)
 
     def selection_changed(self):
         selection = self.document.selection
@@ -36,6 +39,7 @@ class OverlayEditor(BaseEditor):
         fp = relative_normpath(ol["file"], self.document)
         self.image_filepath.set_file(fp)
         self.switch.setValue(ol['y'])
+        self.blendmode.set_blendmode(ol['blendmode'])
         self.block_signals(False)
 
     def values_changed(self, *_):
@@ -52,4 +56,5 @@ class OverlayEditor(BaseEditor):
             'type': 'props',
             'file': fp,
             'y': self.switch.value(),
+            'blendmode': self.blendmode.blendmode(),
             'position': self.position.value()}

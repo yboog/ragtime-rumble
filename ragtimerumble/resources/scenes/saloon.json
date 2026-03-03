@@ -4332,7 +4332,8 @@
       "position": [
         0,
         0
-      ]
+      ],
+      "blendmode": "normal"
     }
   ],
   "targets": [
@@ -5236,7 +5237,8 @@
         40,
         30,
         50
-      ]
+      ],
+      "blendmode": "normal"
     },
     {
       "file": "resources/animdata/diego.json",
@@ -5371,7 +5373,8 @@
           60,
           107
         ]
-      ]
+      ],
+      "blendmode": "normal"
     },
     {
       "file": "resources/animdata/diego.json",
@@ -5465,7 +5468,8 @@
           377,
           210
         ]
-      ]
+      ],
+      "blendmode": "normal"
     },
     {
       "file": "resources/animdata/pianist.json",
@@ -5477,7 +5481,8 @@
         30,
         5
       ],
-      "type": "pianist"
+      "type": "pianist",
+      "blendmode": "normal"
     },
     {
       "file": "resources/animdata/barman.json",
@@ -5499,7 +5504,8 @@
           225,
           180
         ]
-      ]
+      ],
+      "blendmode": "normal"
     }
   ],
   "characters": [
@@ -5516,7 +5522,8 @@
         0,
         0
       ],
-      "y": 500
+      "y": 500,
+      "blendmode": "normal"
     },
     {
       "type": "prop",
@@ -5525,7 +5532,8 @@
         0,
         0
       ],
-      "y": 163
+      "y": 163,
+      "blendmode": "normal"
     },
     {
       "type": "prop",
@@ -5534,7 +5542,8 @@
         0,
         0
       ],
-      "y": 0
+      "y": 0,
+      "blendmode": "normal"
     },
     {
       "type": "prop",
@@ -5543,7 +5552,8 @@
         0,
         0
       ],
-      "y": 140
+      "y": 140,
+      "blendmode": "normal"
     },
     {
       "type": "prop",
@@ -5552,7 +5562,8 @@
         0,
         0
       ],
-      "y": 260
+      "y": 260,
+      "blendmode": "normal"
     }
   ],
   "vfx": [
@@ -5560,12 +5571,14 @@
       "name": "vomit",
       "type": "static",
       "file": "resources/props/vomit.png",
-      "y": -1000
+      "y": -1000,
+      "blendmode": "normal"
     },
     {
       "name": "coin-alert",
       "type": "animated",
-      "file": "resources/vfx/coin-alert.json"
+      "file": "resources/vfx/coin-alert.json",
+      "blendmode": "normal"
     }
   ],
   "shadow_zones": [],
@@ -5599,14 +5612,15 @@
       ],
       "play_once": false,
       "direction": "left",
-      "lockable": false
+      "lockable": false,
+      "blendmode": "normal"
     }
   ],
   "props": [
     {
       "gametypes": [
-        "advanced",
-        "basic"
+        "basic",
+        "advanced"
       ],
       "file": "resources/props/poker-droite-bas.png",
       "visible_at_dispatch": true,
@@ -5623,13 +5637,14 @@
         -30,
         56,
         32
-      ]
+      ],
+      "blendmode": "normal"
     },
     {
       "file": "resources/props/poker-droite-haut.png",
       "gametypes": [
-        "advanced",
-        "basic"
+        "basic",
+        "advanced"
       ],
       "visible_at_dispatch": true,
       "position": [
@@ -5645,13 +5660,14 @@
         -30,
         56,
         32
-      ]
+      ],
+      "blendmode": "normal"
     },
     {
       "file": "resources/props/poker-gauche-bas.png",
       "gametypes": [
-        "advanced",
-        "basic"
+        "basic",
+        "advanced"
       ],
       "visible_at_dispatch": true,
       "position": [
@@ -5667,7 +5683,8 @@
         -30,
         56,
         32
-      ]
+      ],
+      "blendmode": "normal"
     },
     {
       "file": "resources/props/poker-gauche-haut.png",
@@ -5689,7 +5706,8 @@
         -30,
         56,
         32
-      ]
+      ],
+      "blendmode": "normal"
     },
     {
       "file": "resources/props/machine-a-sous.png",
@@ -5710,7 +5728,8 @@
         0,
         23,
         22
-      ]
+      ],
+      "blendmode": "normal"
     }
   ]
 }
