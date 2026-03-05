@@ -59,15 +59,9 @@ def serialize_animations(document):
 
 def export_anim_data(document):
     data = deepcopy(document.data)
-    return {
-        'name': data['name'],
-        'names': data['names'],
-        'type': 'playable',
-        'framesize': data['framesize'],
-        'center': data['center'],
-        'box': data['box'],
-        'hitbox': data['hitbox'],
+    data.update({
         'palettes': document.palettes,
         'animations': serialize_animations(document),
         'filepath': f'resources/skins/{data["name"]}.png'
-    }
+    })
+    return data

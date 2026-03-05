@@ -11,12 +11,12 @@ from pixoleros.template import EMPTY_ANIMDATA
 
 
 class Document:
-    def __init__(self):
-        self.data = deepcopy(EMPTY_ANIMDATA)
+    def __init__(self, data):
+        self.data = deepcopy(data)
         self.library = {}
         self.gamedirectory = None
         self.filepath = None
-        self.animation = 'idle'
+        self.animation = list(self.data['animations'])[0]
         self.hzoom = 1
         self._index = 0
         self.displayed_variants = {}
@@ -25,8 +25,7 @@ class Document:
 
     @staticmethod
     def load(data):
-        document = Document()
-        document.data = data['data']
+        document = Document(data['data'])
         document.gamedirectory = data.get('gamedirectory')
         document.library = {
             k: PixoImage.load(v) for k, v in data['library'].items()}
@@ -36,6 +35,10 @@ class Document:
             images = document.data['animations'][animation]['images']
             document.data['animations'][animation]['images'] = images
         return document
+
+    @property
+    def type(self):
+        return self.data['type']
 
     @property
     def palettes(self):
@@ -169,8 +172,10 @@ class Document:
             paths = [path.lstrip('/') for path in paths]
         images = [remove_key_color(path) for path in paths]
         for image in images:
-            if image.size != (64, 64):
-                raise ValueError('Image size must be 64px on 64px')
+            if list(image.size) != self.data['framesize']:
+                raise ValueError(
+                    'Image size must correspond sheet frame size:'
+                    f' {self.data["framesize"]}')
         images = [
             PixoImage(img, path, os.path.getctime(path))
             for img, path in zip(images, paths)]

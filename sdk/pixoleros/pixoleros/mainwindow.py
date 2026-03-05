@@ -1,6 +1,7 @@
 import os
 import json
 import msgpack
+from functools import partial
 import subprocess
 
 from PIL import ImageQt
@@ -14,6 +15,7 @@ from pixoleros.model import Document
 from pixoleros.navigator import Navigator
 from pixoleros.palette import Palettes
 from pixoleros.viewport import ViewportMapper, zoom
+from pixoleros.template import EMPTY_ANIMDATA, SIZE_LOCK_SHEET_TYPES
 
 
 def set_shortcut(keysequence, parent, method):
@@ -35,14 +37,6 @@ class Pixoleros(QtWidgets.QMainWindow):
         self.mdi.setViewMode(QtWidgets.QMdiArea.TabbedView)
         self.mdi.setTabsClosable(True)
 
-        self.toolbar = MainToolbar()
-        self.toolbar.new.triggered.connect(self.new)
-        self.toolbar.open.triggered.connect(self.open)
-        self.toolbar.save.triggered.connect(self.save)
-        self.toolbar.export.triggered.connect(self.export)
-        self.toolbar.assign.triggered.connect(self.assign)
-        self.toolbar.play.triggered.connect(self.play)
-
         areas = (
             QtCore.Qt.TopDockWidgetArea |
             QtCore.Qt.BottomDockWidgetArea |
@@ -54,8 +48,8 @@ class Pixoleros(QtWidgets.QMainWindow):
         self.library_dock.setAllowedAreas(areas)
         self.library_dock.setWidget(self.library)
 
-        self.parameters = CharacterParameters()
-        title = 'Character parameters'
+        self.parameters = SheetParameters()
+        title = 'Parameters'
         self.parameters_dock = QtWidgets.QDockWidget(title, self)
         self.parameters_dock.setAllowedAreas(areas)
         self.parameters_dock.setWidget(self.parameters)
@@ -90,22 +84,76 @@ class Pixoleros(QtWidgets.QMainWindow):
             QtCore.Qt.BottomRightCorner,
             QtCore.Qt.RightDockWidgetArea)
 
-        self.addToolBar(QtCore.Qt.TopToolBarArea, self.toolbar)
-
-        set_shortcut('CTRL+N', self, self.new)
-        set_shortcut('CTRL+O', self, self.open)
-        set_shortcut('CTRL+S', self, self.save)
         set_shortcut('RIGHT', self, self.next)
         set_shortcut('LEFT', self, self.prev)
         set_shortcut('F', self, self.focus)
-        set_shortcut('DEL', self, self.delete)
-        set_shortcut('CTRL+E', self, self.export)
-        set_shortcut('CTRL+A', self, self.assign)
+        self.create_menu()
+
+    def create_menu(self):
+
+        new = QtGui.QAction(get_icon('new.png'), 'New', self)
+        new.setShortcut('CTRL+N')
+        new.triggered.connect(self.new)
+
+        open_ = QtGui.QAction(get_icon('open.png'), 'Open', self)
+        open_.setShortcut('CTRL+O')
+        open_.triggered.connect(self.open)
+
+        save = QtGui.QAction(get_icon('save.png'), 'Save', self)
+        save.setShortcut('CTRL+S')
+        save.triggered.connect(self.save)
+
+        save_as = QtGui.QAction(get_icon('save.png'), 'Save as', self)
+        save_as.triggered.connect(self.save_as)
+
+        export = QtGui.QAction(get_icon('export.png'), 'Export sheet', self)
+        export.setShortcut('CTRL+E')
+        export.triggered.connect(self.export)
+
+        export_color = QtGui.QAction(
+            get_icon('export.png'), 'Export sheet with color', self)
+        export_color.setShortcut('CTRL+SHIFT+E')
+        export_color.triggered.connect(partial(self.export, True))
+
+        assign = QtGui.QAction(
+            'Assign player to scene',self)
+        assign.setShortcut('CTRL+A')
+        assign.triggered.connect(self.assign)
+
+        run = QtGui.QAction(get_icon('play.png'), 'Run game', self)
+        run.triggered.connect(self.play)
+        run.setShortcut('F5')
+
+        exit_ = QtGui.QAction('Exit', self)
+        exit_.triggered.connect(self.close)
+
+        menu = QtWidgets.QMenu('File')
+        menu.addAction(new)
+        menu.addAction(open_)
+        menu.addAction(save)
+        menu.addAction(save_as)
+        menu.addSeparator()
+        menu.addAction(export)
+        menu.addAction(export_color)
+        menu.addAction(assign)
+        menu.addAction(run)
+        menu.addSeparator()
+        menu.addAction(exit_)
+
+        self.menuBar().addMenu(menu)
 
     def assign(self):
+        if not self.current_document:
+            return QtWidgets.QMessageBox.critical(
+                self, 'Error', 'No pixoleros opened')
+
+        if self.current_document.type != 'playable':
+            return QtWidgets.QMessageBox.critical(
+                self, 'Error',
+                'Only playable character can be assigned to scenes')
         CharacterAssignment(self).exec()
 
-    def save(self):
+    def save_as(self):
         if not self.current_document:
             return
         document = self.current_document
@@ -121,13 +169,22 @@ class Pixoleros(QtWidgets.QMainWindow):
         if not result:
             return
         document.filepath = path
+        self.save()
+
+    def save(self):
+        if not self.current_document:
+            return
+        path = self.current_document.filepath
+        if path is None:
+            return self.save_as()
         with open(path, 'wb') as f:
             msgpack.dump(serialize_document(self.current_document), f)
 
-    def export(self):
+    def export(self, use_current_overrides=False):
         if not self.current_document:
             return
-        images = build_sprite_sheet(self.current_document)
+        images = build_sprite_sheet(
+            self.current_document, use_current_overrides)
         data = export_anim_data(self.current_document)
         dialog = Exporter(images, data, self.current_document)
         dialog.exec()
@@ -181,7 +238,12 @@ class Pixoleros(QtWidgets.QMainWindow):
         widget.focus()
 
     def new(self):
-        document = Document()
+        dialog = GetSheetType()
+        if not dialog.exec_():
+            return
+        data = EMPTY_ANIMDATA[dialog.get_sheet_type()].copy()
+        data['framesize'] = dialog.get_frame_size()
+        document = Document(data)
         self.add_document(document, 'New character')
 
     def open(self):
@@ -196,6 +258,7 @@ class Pixoleros(QtWidgets.QMainWindow):
         if not filepath:
             return
         self.open_filepath(filepath)
+        self.focus()
 
     def open_filepath(self, filepath):
         with open(filepath, 'rb') as f:
@@ -262,25 +325,6 @@ class PlayerToolbar(QtWidgets.QToolBar):
         spacer = QtWidgets.QWidget()
         spacer.setSizePolicy(*[QtWidgets.QSizePolicy.Expanding] * 2)
         self.addWidget(spacer)
-
-
-class MainToolbar(QtWidgets.QToolBar):
-    def __init__(self):
-        super().__init__()
-        self.new = QtGui.QAction(get_icon('new.png'), '', self)
-        self.open = QtGui.QAction(get_icon('open.png'), '', self)
-        self.save = QtGui.QAction(get_icon('save.png'), '', self)
-        self.export = QtGui.QAction(get_icon('export.png'), '', self)
-        self.assign = QtGui.QAction(get_icon('assign.png'), '', self)
-        self.play = QtGui.QAction(get_icon('play.png'), '', self)
-        self.addAction(self.new)
-        self.addAction(self.open)
-        self.addAction(self.save)
-        self.addSeparator()
-        self.addAction(self.export)
-        self.addAction(self.assign)
-        self.addSeparator()
-        self.addAction(self.play)
 
 
 class Canvas(QtWidgets.QWidget):
@@ -417,10 +461,11 @@ class NamesModel(QtCore.QAbstractListModel):
             return self.document.data.get('names', [])[index.row()]
 
 
-class CharacterParameters(QtWidgets.QWidget):
+class SheetParameters(QtWidgets.QWidget):
     def __init__(self, parent=None):
         super().__init__(parent=parent)
         self.document = None
+        self.sheettype = QtWidgets.QLabel()
         self.name = QtWidgets.QLineEdit()
         self.name.textEdited.connect(self.update)
 
@@ -429,22 +474,23 @@ class CharacterParameters(QtWidgets.QWidget):
         self.names.setSelectionMode(mode)
         self.names_model = NamesModel()
         self.names.setModel(self.names_model)
-        add = QtWidgets.QPushButton('Add')
-        add.released.connect(self.add_names)
-        remove = QtWidgets.QPushButton('Remove')
-        remove.released.connect(self.remove_names)
+        self.add_names = QtWidgets.QPushButton('Add')
+        self.add_names.released.connect(self.call_add_names)
+        self.remove_names = QtWidgets.QPushButton('Remove')
+        self.remove_names.released.connect(self.call_remove_names)
 
         names = QtWidgets.QWidget()
         buttons = QtWidgets.QHBoxLayout()
         buttons.setContentsMargins(0, 0, 0, 0)
-        buttons.addWidget(add)
-        buttons.addWidget(remove)
+        buttons.addWidget(self.add_names)
+        buttons.addWidget(self.remove_names)
         names_layout = QtWidgets.QVBoxLayout(names)
         names_layout.setContentsMargins(0, 0, 0, 0)
         names_layout.addWidget(self.names)
         names_layout.addLayout(buttons)
 
         layout = QtWidgets.QFormLayout(self)
+        layout.addRow('Type', self.sheettype)
         layout.addRow('Name', self.name)
         layout.addRow('Diplay names', names)
 
@@ -452,17 +498,22 @@ class CharacterParameters(QtWidgets.QWidget):
         if not document:
             return
         self.document = document
+        self.sheettype.setText(document.type)
         self.name.blockSignals(True)
         self.name.setText(self.document.data['name'])
         self.name.blockSignals(False)
+
         self.names_model.set_document(document)
+        self.names.setEnabled('names' in self.document.data)
+        self.add_names.setEnabled('names' in self.document.data)
+        self.remove_names.setEnabled('names' in self.document.data)
 
     def update(self):
         if not self.document:
             return
         self.document.data['name'] = self.name.text()
 
-    def add_names(self):
+    def call_add_names(self):
         names, _ = QtWidgets.QInputDialog.getText(
             self, 'Names', 'Enter names, split names with a coma')
         if not names:
@@ -473,7 +524,7 @@ class CharacterParameters(QtWidgets.QWidget):
         data.extend(names)
         self.names_model.layoutChanged.emit()
 
-    def remove_names(self):
+    def call_remove_names(self):
         rows = self.names.selectionModel().selectedRows()
         if not rows:
             return
@@ -588,6 +639,7 @@ class Exporter(QtWidgets.QDialog):
         self.package = QtWidgets.QPushButton('Export package')
         self.package.released.connect(self.call_export_package)
         self.togame = QtWidgets.QPushButton('Import in game')
+        self.togame.setEnabled(data['type'] == 'playable')
         self.togame.released.connect(self.call_import_in_game)
         layout = QtWidgets.QHBoxLayout()
         layout.addStretch()
@@ -611,14 +663,11 @@ class Exporter(QtWidgets.QDialog):
         filenames = (data_filename, spritesheet_filename)
         if any(os.path.exists(f) for f in filenames):
             result = QtWidgets.QMessageBox.question(
-                parent=self,
-                title='Overwrite files',
-                text=(
+                self,
+                'Overwrite files',
+                (
                     f'{filenames} already exists.'
-                    'Would you like to overwrite them ?'),
-                button0=QtWidgets.QMessageBox.Yes,
-                button1=QtWidgets.QMessageBox.No,
-                defaultButton=QtWidgets.QMessageBox.No)
+                    'Would you like to overwrite them ?'))
             if result == QtWidgets.QMessageBox.No:
                 return
 
@@ -644,14 +693,60 @@ class Exporter(QtWidgets.QDialog):
         if not all(os.path.exists(d) for d in directories):
             m = f'"{directory}" is not a valid Ragtime-Rumble game directory'
             return QtWidgets.QMessageBox.critical(
-                parent=self,
-                title='Wrong directory',
-                text=m)
+                self,
+                'Wrong directory',
+                m)
         data_filename = f'{data_directory}/{self.data["name"]}.json'
         spritesheet_filename = f'{skins_directory}/{self.data["name"]}.png'
         with open(data_filename, 'w') as f:
             json.dump(self.data, f, indent=2)
         self.image.save(spritesheet_filename, 'PNG')
+
+
+class GetSheetType(QtWidgets.QDialog):
+    def __init__(self, parent=None):
+        super().__init__(parent)
+        self._width = QtWidgets.QSpinBox()
+        self._width.setMinimum(10)
+        self._width.setMaximum(200)
+        self._height = QtWidgets.QSpinBox()
+        self._height.setMinimum(10)
+        self._height.setMaximum(200)
+
+        self._framesize = QtWidgets.QWidget()
+        frame_size_layout = QtWidgets.QHBoxLayout(self._framesize)
+        frame_size_layout.setContentsMargins(0, 0, 0, 0)
+        frame_size_layout.setSpacing(0)
+        frame_size_layout.addWidget(QtWidgets.QLabel('Framesize  '))
+        frame_size_layout.addWidget(self._width)
+        frame_size_layout.addWidget(self._height)
+
+        self.sheet_types = QtWidgets.QComboBox()
+        self.sheet_types.addItems(sorted(list(EMPTY_ANIMDATA)))
+        self.sheet_types.currentTextChanged.connect(self.update_states)
+        self.sheet_types.setCurrentText('playable')
+
+        accept = QtWidgets.QPushButton('Ok')
+        accept.released.connect(self.accept)
+
+        layout = QtWidgets.QVBoxLayout(self)
+        layout.addWidget(self.sheet_types)
+        layout.addWidget(self._framesize)
+        layout.addWidget(accept)
+        self.setMinimumWidth(350)
+
+    def update_states(self, *_):
+        sheet_type = self.sheet_types.currentText()
+        framesize = EMPTY_ANIMDATA[sheet_type]['framesize']
+        self._width.setValue(framesize[0])
+        self._height.setValue(framesize[1])
+        self._framesize.setEnabled(sheet_type not in SIZE_LOCK_SHEET_TYPES)
+
+    def get_frame_size(self):
+        return [self._width.value(), self._height.value()]
+
+    def get_sheet_type(self):
+        return self.sheet_types.currentText()
 
 
 def list_playable_characters(directory):

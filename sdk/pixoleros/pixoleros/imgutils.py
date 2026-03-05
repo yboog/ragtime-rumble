@@ -56,13 +56,20 @@ def get_canvas_size(frame_count, column_lenght, frame_width, frame_height):
     return QtCore.QSize(frame_width * column_lenght, frame_height * row)
 
 
-def build_sprite_sheet(document):
+def build_sprite_sheet(document, use_current_overrides):
     image_ids = [
         image for anim in document.data['animations'].values()
         for image in anim['images']]
-    images = [
-        ImageQt.ImageQt(document.library[id_].image)
-        for id_ in image_ids]
+    if use_current_overrides:
+        origins, overrides = document.palette_override
+        images = [
+            ImageQt.ImageQt(switch_colors(
+                document.library[id_].image, origins, overrides))
+            for id_ in image_ids]
+    else:
+        images = [
+            ImageQt.ImageQt(document.library[id_].image)
+            for id_ in image_ids]
     column_lenght = math.ceil(math.sqrt(len(images)))
     canvas_size = get_canvas_size(len(images), column_lenght, 64, 64)
     image = QtGui.QImage(canvas_size, QtGui.QImage.Format_ARGB32)

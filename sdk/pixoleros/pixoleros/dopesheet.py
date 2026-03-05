@@ -1,7 +1,6 @@
 import json
 import codecs
 from PySide6 import QtWidgets, QtGui, QtCore
-from pixoleros.template import ANIMATIONS
 
 
 TOP_MARGIN = 0
@@ -309,7 +308,10 @@ class DopeSheetExposures(QtWidgets.QWidget):
             self.selection.set(selection)
         else:
             paths = [url.path() for url in event.mimeData().urls()]
-            self.document.import_images_at(paths, destination)
+            try:
+                self.document.import_images_at(paths, destination)
+            except ValueError as e:
+                QtWidgets.QMessageBox.critical(self, 'Error', str(e))
         self.repaint()
 
     def mouseReleaseEvent(self, event):
@@ -345,8 +347,9 @@ class DopeSheetExposures(QtWidgets.QWidget):
         self.repaint()
 
     def get_full_height(self):
+        animations = len(self.document.data['animations'])
         return (
-            COLLAPSED_ROW_HEIGHT * len(ANIMATIONS) - 1) + EXPANDED_ROW_HEIGHT
+            COLLAPSED_ROW_HEIGHT * animations - 1) + EXPANDED_ROW_HEIGHT
 
     def get_full_width(self):
         width = dopesheet_width(self.document)
@@ -360,7 +363,7 @@ class DopeSheetExposures(QtWidgets.QWidget):
         left = LEFT_COLUMN_WIDTH
         width = self.get_full_width() - left
         rects = []
-        for animation in ANIMATIONS:
+        for animation in self.document.data['animations']:
             height = (
                 COLLAPSED_ROW_HEIGHT
                 if animation != self.document.animation
@@ -380,9 +383,10 @@ class DopeSheetExposures(QtWidgets.QWidget):
     def rows(self):
         if self.document is None:
             return []
+        animations = self.document.data['animations']
         return [
             _Row(self.document, anim, rect, self.document.hzoom)
-            for anim, rect in zip(ANIMATIONS, self.get_rows_rect())]
+            for anim, rect in zip(animations, self.get_rows_rect())]
 
     def get_frame_color(self, animation, frame):
         if self.selected(animation, frame):

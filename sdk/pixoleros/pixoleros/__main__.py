@@ -7,11 +7,18 @@ from pixoleros.mainwindow import Pixoleros
 from pixoleros.io import get_icon
 
 app = QtWidgets.QApplication([])
-css_filepath = (f'{os.path.dirname(__file__)}/flatdark.css')
+
+FROZEN = getattr(sys, 'frozen', False)
+if not FROZEN:
+    css_filepath = (f'{os.path.dirname(__file__)}/flatdark.css')
+else:
+    css_filepath = f'{os.path.dirname(sys.executable)}/lib/pixoleros/flatdark.css'
+
 with open(css_filepath, 'r') as f:
     css = f.read()
 app.setWindowIcon(get_icon('ragtime-ico.ico'))
 app.setStyleSheet(css)
+app.setStyle('fusion')
 window = Pixoleros()
 
 if len(sys.argv) > 1:

@@ -105,7 +105,6 @@ class Pixaloon(QtWidgets.QMainWindow):
         self.option_dock.setWidget(self.optioneditor)
         self.addDockWidget(QtCore.Qt.RightDockWidgetArea, self.option_dock)
 
-
         self.scene_dock = QtWidgets.QDockWidget()
         self.scene_dock.setWindowTitle('Scene')
         self.scene_dock.setWidget(self.sceneeditor)

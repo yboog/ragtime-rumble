@@ -57,8 +57,9 @@ else:
 
 print("ROOT", ROOT, args.build_directory)
 
-venv_name = 'ragtime_rumble_venv'
+venv_name = 'pixoleros_venv'
 HERE = os.path.dirname(__file__)
+PIXOLEROS_ROOT = f'{HERE}/../../sdk/pixoleros'
 
 # Build venv and install/copy dependencies
 requirement_paths = [f'{HERE}/requirements.txt']
@@ -78,15 +79,17 @@ build_number = f'{datetime.datetime.now():%y-%m-%d_%H-%M-%S}'
 
 # Config cx_Freeze includes.
 includes = [
+    'uuid',
     'json',
-    'matplotlib',
+    'PySide6',
     'msgpack',
-    'pygame',]
+    'numpy',
+    'PIL',]
 
 # Launch CX_Freeze script
 setup_source = os.path.expandvars(f'{HERE}/setup.py')
-executable_file = os.path.expandvars(f'{HERE}/../ragtimerumble/__main__.py')
-icon_file = os.path.expandvars(f'{HERE}/../resources/ragtime.ico')
+executable_file = os.path.expandvars(f'{PIXOLEROS_ROOT}/pixoleros/__main__.py')
+icon_file = os.path.expandvars(f'{PIXOLEROS_ROOT}/pixoleros/icons/ragtime-ico.ico')
 
 setup_file = f'{ROOT}/setup.py'
 shutil.copy(setup_source, setup_file)
@@ -108,7 +111,7 @@ with open(f'{os.getcwd()}/build_config.json', 'w') as f:
         f'{version_data["major"]}.{version_data["minor"]}.'
         f'{version_data["build"]}{version_data["name"]}')
     d = f'{datetime.datetime.now():%Y-%m-%d_%H-%M-%S}'
-    name = f'ragtimerumble-{version}-{d}'
+    name = f'pixoleros-{version}-{d}'
     json.dump({
         'includes': includes,
         'executable': executable_file,
@@ -132,16 +135,9 @@ with open(VERSION_YAML_FILE, 'w') as f:
 lib_directory = f'{ROOT}/{name}/lib'
 
 shutil.copytree(
-    f'{os.path.dirname(HERE)}/ragtimerumble',
-    f'{lib_directory}/ragtimerumble')
+    f'{PIXOLEROS_ROOT}/pixoleros',
+    f'{lib_directory}/pixoleros')
 
-shutil.copytree(
-    f'{os.path.dirname(HERE)}/resources',
-    f'{lib_directory}/resources')
-
-
-with open(f'{lib_directory}/resources/version', 'w') as f:
-    f.write(version)
 
 
 destination = f'{ROOT}/{name}'
@@ -152,4 +148,4 @@ if args.create_archive:
         f'{ROOT}/{name}')
 
 
-print("build is done ! Let's fight begin !")
+print("build is done ! Let's mod !")
