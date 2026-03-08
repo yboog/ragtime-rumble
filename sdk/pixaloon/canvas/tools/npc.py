@@ -30,6 +30,14 @@ NPC_TYPES = {
         "direction": "right",
         "blendmode": "normal",
         "path": [[0, 0], [0, 50]]},
+    'ghost': {
+        "type": "ghost",
+        "file": "resources/animdata/ghost.json",
+        "gametypes": ["basic", "advanced"],
+        "startposition": [0, 107],
+        "direction": "right",
+        "blendmode": "normal",
+        "zone": [0, 0, 640, 360]},
     'loop': {
         "type": "loop",
         "file": "resources/animdata/banjo.json",
@@ -104,7 +112,3 @@ class NpcTool(NavigationTool):
         self.selection.data = len(self.document.data['npcs']) - 1
         self.selection.changed.emit(self.canvas)
         self.document.edited.emit()
-
-
-
-

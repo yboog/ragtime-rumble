@@ -617,6 +617,10 @@ def paint_path(painter, points, color, width, viewportmapper):
         painter.drawLine(start, end)
         start = end
 
+NPC_OFFSETS = {
+        'chicken': [32, 55],
+        'ghost': [32, 55],
+        'dog': [40, 54]}
 
 def paint_npc(painter, npc, viewportmapper, selected=False):
     image = {
@@ -624,15 +628,14 @@ def paint_npc(painter, npc, viewportmapper, selected=False):
         'sniper': 'sniper-aim-idle-00.png',
         'pianist': 'pianiste-fast-01-00.png',
         'saloon-door': 'saloondoorA-14.png',
+        'ghost': 'ghost-idle-001.png',
         'barman': 'barman-iddle-01.png',
         'banjo': 'bandjo-loop-001.png',
         'loop': 'bandjo-loop-001.png',
         'chicken': 'paulette-idle-A-01.png'}.get(npc['type'])
-    offset = {
-        'chicken': [32, 55],
-        'dog': [40, 54]}.get(npc['type'], (0, 0))
     image = get_image(image)
     pos = npc.get('startposition') or npc.get('position')
+    offset = NPC_OFFSETS.get(npc['type'], (0, 0))
     pos = pos[0] - offset[0], pos[1] - offset[1]
     rect = QtCore.QRectF(QtCore.QPointF(*pos), image.size())
     rect = viewportmapper.to_viewport_rect(rect)
@@ -649,10 +652,18 @@ def paint_npc(painter, npc, viewportmapper, selected=False):
         'barman': paint_selected_dog,
         'saloon-door': paint_saloon_door,
         'sniper': paint_selected_sniper,
+        'ghost': paint_ghost,
         'loop': paint_loop,
         'dog': paint_selected_dog}.get(npc['type'])
     if method:
         method(painter, npc, viewportmapper)
+
+
+def paint_ghost(painter, npc, viewportmapper):
+    brush = QtGui.QBrush(QtCore.Qt.NoBrush)
+    paint_rect_object(painter, npc['zone'], viewportmapper, brush=brush)
+    paint_switch(
+        painter, NPC_OFFSETS['ghost'][1] - npc['y'], viewportmapper)
 
 
 def paint_loop(painter, npc, viewportmapper):

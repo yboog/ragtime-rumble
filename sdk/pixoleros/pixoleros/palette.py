@@ -1,3 +1,4 @@
+import math
 from PySide6 import QtWidgets, QtGui, QtCore
 from pixoleros.colorwheel import ColorWheel
 from pixoleros.imgutils import list_rgb_colors
@@ -453,7 +454,7 @@ class ColorSelection(QtWidgets.QDialog):
         self.setModal(True)
         self.setWindowFlags(QtCore.Qt.FramelessWindowHint)
         width = self.COLORSIZE * self.COLCOUNT
-        height = self.COLORSIZE * (len(self.colors) // self.COLCOUNT)
+        height = self.COLORSIZE * math.ceil(len(self.colors) / self.COLCOUNT)
         self.resize(width, height)
 
     def mouseMoveEvent(self, _):

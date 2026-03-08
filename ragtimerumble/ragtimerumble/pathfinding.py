@@ -2,6 +2,7 @@ import random
 from ragtimerumble.config import HAT_TO_DIRECTION, DIRECTIONS
 from ragtimerumble.coordinates import (
     distance, get_box, point_in_rectangle, norm)
+from ragtimerumble.mathutils import is_vertical_segment
 
 
 def vector_to_direction(vector):
@@ -110,10 +111,15 @@ def choice_destination(scene, position, box):
     return pos
 
 
-def random_position_in_rect(rect):
-    x = random.choice(range(rect[0], rect[0] + rect[2]))
-    y = random.choice(range(rect[1], rect[1] + rect[3]))
-    return x, y
+def random_position_in_rect(rect, position=None):
+    while True:
+        x = random.choice(range(rect[0], rect[0] + rect[2]))
+        y = random.choice(range(rect[1], rect[1] + rect[3]))
+        if position is None:
+            return [x, y]
+        if is_vertical_segment(position, [x, y]):
+            continue
+        return x, y
 
 
 def choice_destination_from(targets, point):

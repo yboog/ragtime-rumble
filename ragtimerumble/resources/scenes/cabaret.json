@@ -1,5 +1,5 @@
 {
-  "character_number": 60,
+  "character_number": 10,
   "name": "Cabaret",
   "musics": [
     "resources/sounds/ragtime_1_MA_BrunoFreitas_OldWestSaloon_HonkyTonk.ogg"
@@ -3542,8 +3542,7 @@
       "type": "dog",
       "file": "resources/animdata/diego.json",
       "gametypes": [
-        "basic",
-        "advanced"
+        "basic"
       ],
       "startposition": [
         45,
@@ -3773,6 +3772,186 @@
         ]
       ],
       "blendmode": "normal"
+    },
+    {
+      "type": "ghost",
+      "file": "resources/animdata/ghost.json",
+      "gametypes": [
+        "basic"
+      ],
+      "startposition": [
+        542,
+        63
+      ],
+      "direction": "right",
+      "blendmode": "normal",
+      "zone": [
+        0,
+        0,
+        640,
+        360
+      ],
+      "y": 10
+    },
+    {
+      "type": "chicken",
+      "file": "resources/animdata/chicken.json",
+      "gametypes": [
+        "basic",
+        "advanced"
+      ],
+      "startposition": [
+        263,
+        170
+      ],
+      "zone": [
+        263,
+        170,
+        50,
+        50
+      ],
+      "blendmode": "normal",
+      "run_radius": 50
+    },
+    {
+      "type": "chicken",
+      "file": "resources/animdata/chicken.json",
+      "gametypes": [
+        "basic",
+        "advanced"
+      ],
+      "startposition": [
+        360,
+        171
+      ],
+      "zone": [
+        360,
+        171,
+        50,
+        50
+      ],
+      "blendmode": "normal",
+      "run_radius": 50
+    },
+    {
+      "type": "chicken",
+      "file": "resources/animdata/chicken.json",
+      "gametypes": [
+        "basic",
+        "advanced"
+      ],
+      "startposition": [
+        240,
+        256
+      ],
+      "zone": [
+        240,
+        256,
+        50,
+        50
+      ],
+      "blendmode": "normal",
+      "run_radius": 50
+    },
+    {
+      "type": "chicken",
+      "file": "resources/animdata/chicken.json",
+      "gametypes": [
+        "basic",
+        "advanced"
+      ],
+      "startposition": [
+        411,
+        279
+      ],
+      "zone": [
+        411,
+        279,
+        50,
+        50
+      ],
+      "blendmode": "normal",
+      "run_radius": 50
+    },
+    {
+      "type": "ghost",
+      "file": "resources/animdata/ghost.json",
+      "gametypes": [
+        "basic",
+        "advanced"
+      ],
+      "startposition": [
+        193,
+        49
+      ],
+      "direction": "right",
+      "blendmode": "normal",
+      "zone": [
+        0,
+        0,
+        640,
+        360
+      ]
+    },
+    {
+      "type": "ghost",
+      "file": "resources/animdata/ghost.json",
+      "gametypes": [
+        "basic",
+        "advanced"
+      ],
+      "startposition": [
+        90,
+        104
+      ],
+      "direction": "right",
+      "blendmode": "normal",
+      "zone": [
+        0,
+        0,
+        640,
+        360
+      ]
+    },
+    {
+      "type": "ghost",
+      "file": "resources/animdata/ghost.json",
+      "gametypes": [
+        "basic",
+        "advanced"
+      ],
+      "startposition": [
+        35,
+        288
+      ],
+      "direction": "right",
+      "blendmode": "normal",
+      "zone": [
+        0,
+        0,
+        640,
+        360
+      ]
+    },
+    {
+      "type": "ghost",
+      "file": "resources/animdata/ghost.json",
+      "gametypes": [
+        "basic",
+        "advanced"
+      ],
+      "startposition": [
+        321,
+        239
+      ],
+      "direction": "right",
+      "blendmode": "normal",
+      "zone": [
+        0,
+        0,
+        640,
+        360
+      ]
     }
   ],
   "characters": [

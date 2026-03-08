@@ -13,7 +13,7 @@ from ragtimerumble.menu import (
 from ragtimerumble.scene import (
     load_scene, populate_scene, depopulate_scene, scene_iterator)
 from ragtimerumble.player import Player
-from ragtimerumble.npc import Npc
+from ragtimerumble.behavior import Npc
 from ragtimerumble.scores import VIRGIN_SCORES
 
 

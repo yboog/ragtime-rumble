@@ -5,7 +5,7 @@ from ragtimerumble.config import (
 from ragtimerumble.config import CHARACTER_STATUSES, SPEED
 from ragtimerumble.coordinates import Coordinates
 from ragtimerumble.io import load_data, play_sound
-from ragtimerumble.mathutils import set_vector_length
+from ragtimerumble.mathutils import set_vector_length, is_vertical_segment
 from ragtimerumble.pathfinding import (
     shortest_path, points_to_direction, distance, random_position_in_rect)
 from ragtimerumble.randomutils import choose
@@ -89,6 +89,7 @@ class Chicken:
 
         self.path = iter(shortest_path(self.coordinates.position, dst))
         self.spritesheet.animation = 'runcycle'
+        self.coordinates.round()
         self.destination = next(self.path)
         self.spritesheet.index = 1
         self.walk()
@@ -115,6 +116,7 @@ class Chicken:
         dst = random_position_in_rect(self.zone)
         self.path = iter(shortest_path(self.coordinates.position, dst))
         self.spritesheet.animation = 'walkcycle'
+        self.coordinates.round()
         self.destination = next(self.path)
         self.spritesheet.index = 1
         self.walk()
@@ -123,19 +125,23 @@ class Chicken:
         p1 = self.coordinates.position
         direction = points_to_direction(p1, self.destination)
         if not direction:
+            self.coordinates.round()
             self.destination = next(self.path)
             return self.walk()
         speed = (
             SPEED.CHICKEN_WALK if self.spritesheet.animation == 'walkcycle'
             else SPEED.CHICKEN_RUN)
         p2 = self.coordinates.shift(direction, speed, 0)
-        if p2[0] > p1[0]:
-            self.direction = DIRECTIONS.LEFT
-        else:
-            self.direction = DIRECTIONS.RIGHT
+        if not is_vertical_segment(p1, p2):
+            if p2[0] > p1[0]:
+                self.direction = DIRECTIONS.LEFT
+            else:
+                self.direction = DIRECTIONS.RIGHT
 
         if distance(p1, self.destination) < distance(p2, self.destination):
             try:
+                self.coordinates.position = self.destination
+                self.coordinates.round()
                 self.destination = next(self.path)
                 return self.walk()
             except StopIteration:
@@ -149,6 +155,7 @@ class Chicken:
 
     def set_idle(self):
         # Avoid looping the same animation
+        self.coordinates.round()
         possible_animations = {
             k: v for k, v in self.IDLE_ANIMATIONS.items()
             if k != self.spritesheet.animation}

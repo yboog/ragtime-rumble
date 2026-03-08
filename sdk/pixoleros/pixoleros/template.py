@@ -52,6 +52,17 @@ EMPTY_ANIMDATA = {
             'siderun': {'images': [], 'exposures': []},
             'sit': {'images': [], 'exposures': []}}
         },
+    'ghost' : {
+        'name': 'casper',
+        'type': 'ghost',
+        'palettes': [],
+        'y': 5,
+        "center": [32, 55],
+        'framesize': [64, 64],
+        'animations': {
+            'idle': {'images': [], 'exposures': []},
+            'walk': {'images': [], 'exposures': []}}
+        },
     'loop' : {
         'name': 'bob',
         'type': 'loop',

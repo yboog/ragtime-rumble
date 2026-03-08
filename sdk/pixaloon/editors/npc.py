@@ -3,22 +3,29 @@ from pixaloon.editors.base import BaseEditor
 from pixaloon.intarrayeditor import IntArrayEditor, IntArrayListEditor
 from pixaloon.intlisteditor import IntListEditor
 from pixaloon.selection import Selection
-from pixaloon.widgets import GameTypesSelector, BlendmodeSelector
+from pixaloon.widgets import (
+    GameTypesSelector, BlendmodeSelector, SpriteSheetSelector)
 
 
 class NPCEditor(BaseEditor):
     def __init__(self, parent=None):
         super().__init__(parent)
         self.blendmode = BlendmodeSelector()
-        self.blendmode.currentIndexChanged.connect(self.values_changed)
+        self.blendmode.currentIndexChanged.connect(self.data_edited)
         self.npc_type = QtWidgets.QLabel()
         self.gametypes = GameTypesSelector()
         self.gametypes.edited.connect(self.data_edited)
+        self.spritesheet = SpriteSheetSelector()
+        self.spritesheet.edited.connect(self.data_edited)
         self.subeditor = None
         self.add_row('Type', self.npc_type)
+        self.add_row('Spritesheet', self.spritesheet)
         self.add_row('Game types', self.gametypes)
         self.add_row('Blend mode', self.blendmode)
         self.add_separator()
+
+    def set_document(self, document):
+        return super().set_document(document)
 
     def selection_changed(self):
         selection = self.document.selection
@@ -26,6 +33,7 @@ class NPCEditor(BaseEditor):
             return
         self.block_signals(True)
         npc = self.document.data['npcs'][selection.data]
+        self.spritesheet.set_document(self.document, npc['type'], npc['file'])
         self.npc_type.setText(npc["type"])
         self.gametypes.set_game_types(npc["gametypes"])
         self.blendmode.set_blendmode(npc["blendmode"])
@@ -45,9 +53,32 @@ class NPCEditor(BaseEditor):
         npc = self.document.data['npcs'][self.document.selection.data]
         npc.update(
             {'gametypes': self.gametypes.game_types(),
+             'file': self.spritesheet.sheet(),
              'blendmode': self.blendmode.blendmode()})
         npc.update(self.subeditor.data())
+        import pprint
+        pprint.pprint(npc)
         self.document.edited.emit()
+
+
+class PositionEditor(BaseEditor):
+    def __init__(self, parent=None):
+        super().__init__(parent)
+        self.startposition = IntArrayEditor()
+        self.startposition.value_changed.connect(self.values_changed)
+        self.add_row('Start position', self.startposition)
+
+    def data(self):
+        return {
+            "startposition": self.startposition.value()}
+
+    def values_changed(self, *_):
+        self.changed.emit()
+
+    def set_npc(self, npc):
+        self.block_signals(True)
+        self.startposition.set_value(npc['startposition'])
+        self.block_signals(False)
 
 
 class NotEditableNpc(BaseEditor):
@@ -56,6 +87,36 @@ class NotEditableNpc(BaseEditor):
 
     def data(self):
         return {}
+
+
+class GhostEditor(BaseEditor):
+    def __init__(self, parent=None):
+        super().__init__(parent)
+        self.position = IntArrayEditor()
+        self.position.value_changed.connect(self.values_changed)
+        self.switch = QtWidgets.QSpinBox()
+        self.switch.setMaximum(1_000_000_000)
+        self.switch.setMinimum(-1_000_000_000)
+        self.switch.valueChanged.connect(self.values_changed)
+        self.zone = IntListEditor()
+        self.zone.values_changed.connect(self.values_changed)
+
+        self.add_row('Position', self.position)
+        self.add_row('Zone', self.zone)
+
+    def values_changed(self, *_):
+        self.changed.emit()
+
+    def set_npc(self, npc):
+        self.block_signals(True)
+        self.position.set_value(npc['startposition'])
+        self.zone.set_values(npc['zone'])
+        self.block_signals(False)
+
+    def data(self):
+        return {
+            "zone": self.zone.values(),
+            "startposition": self.position.value()}
 
 
 class SaloonDoorEditor(BaseEditor):
@@ -90,25 +151,6 @@ class SaloonDoorEditor(BaseEditor):
             "switch": self.switch.value(),
             "position": self.position.value()}
 
-
-class PositionEditor(BaseEditor):
-    def __init__(self, parent=None):
-        super().__init__(parent)
-        self.startposition = IntArrayEditor()
-        self.startposition.value_changed.connect(self.values_changed)
-        self.add_row('Start position', self.startposition)
-
-    def data(self):
-        return {
-            "startposition": self.startposition.value()}
-
-    def values_changed(self, *_):
-        self.changed.emit()
-
-    def set_npc(self, npc):
-        self.block_signals(True)
-        self.startposition.set_value(npc['startposition'])
-        self.block_signals(False)
 
 
 class LoopEditor(BaseEditor):
@@ -242,11 +284,12 @@ class SniperEditor(BaseEditor):
 
 
 SUBEDITORS_BY_TYPES = {
-    'chicken': ChickenEditor,
-    'pianist': PositionEditor,
-    'saloon-door': SaloonDoorEditor,
     'barman': BarmanEditor,
+    'chicken': ChickenEditor,
     'dog': BarmanEditor,
+    'ghost': GhostEditor,
+    'saloon-door': SaloonDoorEditor,
     'sniper': SniperEditor,
     'loop': LoopEditor,
+    'pianist': PositionEditor,
 }

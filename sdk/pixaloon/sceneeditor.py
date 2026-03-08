@@ -2,29 +2,37 @@
 from PySide6 import QtWidgets, QtCore
 from pixaloon.filewidget import FilesList
 from pixaloon.path import relative_normpath
+from pixaloon.editors.base import BaseEditor
 
 
-class SceneEditor(QtWidgets.QWidget):
+class SceneEditor(BaseEditor):
     def __init__(self, parent=None):
         super().__init__(parent)
         self.character_number = QtWidgets.QSpinBox()
+        self.character_number.valueChanged.connect(self.data_edited)
         self.characters = FilesList('characters', filters='*.json')
         self.ambiance = AmbianceEdit()
         self.musics = FilesList('musics', filters='*.ogg')
-        self.backgrounds = FilesList('backgrounds', filters='*.png')
 
-        form = QtWidgets.QFormLayout(self)
-        form.setContentsMargins(0, 0, 0, 0)
-        form.addRow('Number of character', self.character_number)
-        form.addRow('Characters', self.characters)
-        form.addRow('Ambiance', self.ambiance)
-        form.addRow('Musics', self.musics)
+        self.add_row('Number of character', self.character_number)
+        self.add_row('Characters', self.characters)
+        self.add_row('Ambiance', self.ambiance)
+        self.add_row('Musics', self.musics)
+
+    def selection_changed(self):
+        return
 
     def set_document(self, document):
+        super().set_document(document)
+        self.block_signals(True)
         self.character_number.setValue(document.data['character_number'])
         self.ambiance.set_document(document)
         self.musics.set_document(document)
         self.characters.set_document(document)
+        self.block_signals(False)
+
+    def data_edited(self, _):
+        self.document.data['character_number'] = self.character_number.value()
 
 
 class AmbianceEdit(QtWidgets.QLineEdit):

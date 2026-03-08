@@ -1,4 +1,4 @@
-
+import os
 from PySide6 import QtCore, QtWidgets, QtGui
 from pixaloon.io import list_tiles, get_tile
 
@@ -104,3 +104,22 @@ class TileSelector(QtWidgets.QWidget):
         if self.tiles.currentIndex() == 0:
             return None
         return self.tiles.currentText()
+
+
+class SpriteSheetSelector(QtWidgets.QComboBox):
+    edited = QtCore.Signal()
+
+    def __init__(self, parent=None):
+        super().__init__(parent=parent)
+        self.currentIndexChanged.connect(lambda *_: self.edited.emit())
+
+    def sheet(self):
+        return self.currentData()
+
+    def set_document(self, document, sheettype, default=None):
+        self.clear()
+        sheets = document.spritesheets.get(sheettype, [])
+        for sheet in sheets:
+            self.addItem(os.path.basename(sheet), userData=sheet)
+        if default:
+            self.setCurrentText(os.path.basename(default))

@@ -15,6 +15,10 @@ class Coordinates:
     def position(self, position):
         self.x, self.y = position
 
+    def round(self):
+        self.x = round(self.x)
+        self.y = round(self.y)
+
     def shift(self, direction, speed, inclination):
         vector = list(DIRECTION_TO_VECTOR[direction])
         vector[1] = vector[1] + (inclination * vector[0])
@@ -82,7 +86,9 @@ def norm(vector):
 
 def offset_point(point, vector, distance):
     v_norm = norm(vector)
-    return [point[0] + distance * v_norm[0], point[1] + distance * v_norm[1]]
+    return [
+        (point[0] + distance * v_norm[0]),
+        (point[1] + distance * v_norm[1])]
 
 
 def clamp_to_zone(position, zone):

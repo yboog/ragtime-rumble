@@ -1,10 +1,12 @@
 import os
 import json
+from collections import defaultdict
 from PySide6 import QtGui, QtCore
 from pixaloon.canvas.navigator import Navigator
 from pixaloon.canvas.viewport import ViewportMapper
 from pixaloon.imgutils import remove_key_color
 from pixaloon.selection import Selection
+from pixaloon.path import relative_normpath
 
 
 class Document(QtCore.QObject):
@@ -18,6 +20,9 @@ class Document(QtCore.QObject):
         self.selection: Selection = Selection()
         self.navigator: Navigator = Navigator()
         self.gameroot = gameroot.replace('\\', '/')
+        self.spritesheets = list_spritesheets(self)
+        import pprint
+        pprint.pprint(self.spritesheets)
 
         self.elements_to_render = []
         self.gametypes_display_filters = ['basic', 'advanced']
@@ -122,6 +127,8 @@ class Document(QtCore.QObject):
             case Selection.INTERACTION:
                 index = self.selection.data
                 del self.data['interactions'][index]
+            case Selection.NPC:
+                del self.data['npcs'][self.selection.data]
             case Selection.FENCE:
                 del self.data['fences'][self.selection.data]
             case Selection.OVERLAY:
@@ -131,3 +138,16 @@ class Document(QtCore.QObject):
         self.selection.clear()
         self.selection.changed.emit(None)
         self.edited.emit()
+
+
+def list_spritesheets(document):
+    root = f'{document.gameroot}/resources/animdata'
+    files = os.listdir(root)
+    spritesheets = defaultdict(list)
+    for file in files:
+        path = f'{root}/{file}'
+        with open(path, 'r') as f:
+            data = json.load(f)
+            spritesheets[data['type']].append(
+                relative_normpath(path, document))
+    return spritesheets

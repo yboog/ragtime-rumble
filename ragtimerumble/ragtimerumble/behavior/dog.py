@@ -59,11 +59,13 @@ class Dog:
         p1 = self.coordinates.position
         direction = points_to_direction(p1, self.destination)
         if not direction:
+            self.coordinates.round()
             self.destination = next(self.path)
             return self.walk()
         self.direction = direction
         p2 = self.coordinates.shift(direction, SPEED.DOG, 0)
         if distance(p1, self.destination) < distance(p2, self.destination):
+            self.coordinates.round()
             self.destination = next(self.path)
             return self.walk()
 

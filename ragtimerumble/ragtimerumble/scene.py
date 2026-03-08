@@ -20,16 +20,17 @@ from ragtimerumble.duel import find_possible_duels
 from ragtimerumble.io import (
     load_image, load_data, image_mirror, choice_display_name,
     choice_kill_sentence, load_frames)
-from ragtimerumble.npc import (
-    Npc, Pianist, Barman, Sniper, Dog, Chicken, Loop, SaloonDoor)
+from ragtimerumble.behavior import (
+    Npc, Pianist, Barman, Ghost, Sniper, Dog, Chicken, Loop, SaloonDoor)
 from ragtimerumble.sprite import SpriteSheet, image_index_from_exposures
 
 
-NPC_TYPES = {
+BEHAVIOR_TYPES = {
     'chicken': Chicken,
     'pianist': Pianist,
     'barman': Barman,
     'sniper': Sniper,
+    'ghost': Ghost,
     'saloon-door': SaloonDoor,
     'dog': Dog,
     'loop': Loop
@@ -138,7 +139,7 @@ def populate_scene(filename, scene, gametype):
     for npc in data['npcs']:
         if gametype not in npc['gametypes']:
             continue
-        scene.secondary_npcs.append(NPC_TYPES[npc['type']](scene=scene, **npc))
+        scene.secondary_npcs.append(BEHAVIOR_TYPES[npc['type']](scene=scene, **npc))
 
     for interaction_zone in data['interactions']:
         if gametype not in interaction_zone['gametypes']:

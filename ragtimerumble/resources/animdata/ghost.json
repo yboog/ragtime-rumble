@@ -1,0 +1,31 @@
+{
+  "name": "casper",
+  "type": "ghost",
+  "y": 5,
+  "center": [
+    32,
+    55
+  ],
+  "framesize": [
+    64,
+    64
+  ],
+  "filepath": "resources/skins/ghost.png",
+  "animations": {
+    "idle": {
+      "exposures": [
+        6
+      ],
+      "startframe": 0
+    },
+    "walk": {
+      "exposures": [
+        6,
+        6,
+        6,
+        6
+      ],
+      "startframe": 1
+    }
+  }
+}

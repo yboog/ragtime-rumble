@@ -5016,7 +5016,7 @@
       "blendmode": "normal"
     },
     {
-      "file": "resources/animdata/chicken.json",
+      "file": "resources/animdata/paulette-white.json",
       "gametypes": [
         "basic",
         "advanced"
