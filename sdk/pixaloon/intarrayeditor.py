@@ -125,7 +125,8 @@ class IntArrayListModel(QtCore.QAbstractListModel):
     def insertRows(self, row, count, parent=QtCore.QModelIndex()):
         self.beginInsertRows(parent, row, row + count - 1)
         for _ in range(count):
-            self._values.insert(row, (0, 0))
+            values = self._values[-1][:] if self._values else [0, 0]
+            self._values.insert(row, values)
         self.endInsertRows()
         self.values_changed.emit()
         return True

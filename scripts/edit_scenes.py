@@ -21,18 +21,21 @@ for file in files:
     #     data['edit_data'] = {'background_placeholders': []}
     # for bgph in data['edit_data']['background_placeholders']:
     #     bgph['tile'] = None
-    for overlay in data['overlays']:
-        overlay['blendmode'] = 'normal'
-    for overlay in data['props']:
-        overlay['blendmode'] = 'normal'
-    for overlay in data['backgrounds']:
-        overlay['blendmode'] = 'normal'
-    for overlay in data['npcs']:
-        overlay['blendmode'] = 'normal'
-    for overlay in data['interactive_props']:
-        overlay['blendmode'] = 'normal'
-    for overlay in data['vfx']:
-        overlay['blendmode'] = 'normal'
+    # for overlay in data['overlays']:
+    #     overlay['blendmode'] = 'normal'
+    # for overlay in data['props']:
+    #     overlay['blendmode'] = 'normal'
+    # for overlay in data['backgrounds']:
+    #     overlay['blendmode'] = 'normal'
+    # for overlay in data['npcs']:
+    #     overlay['blendmode'] = 'normal'
+    # for overlay in data['interactive_props']:
+    #     overlay['blendmode'] = 'normal'
+    # for overlay in data['vfx']:
+    #     overlay['blendmode'] = 'normal'
+    for stair in data['stairs']:
+        print(stair)
+        continue
 
     with open(file, 'w') as f:
         json.dump(data, f, indent=2)

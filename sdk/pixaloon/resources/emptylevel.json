@@ -878,44 +878,47 @@
       "name": "vomit",
       "type": "static",
       "file": "resources/props/vomit.png",
-      "y": -1000
+      "y": -1000,
+      "blendmode": "normal"
     },
     {
       "name": "coin-alert",
       "type": "animated",
-      "file": "resources/vfx/coin-alert.json"
-    }],
-    "interactive_props": [
-    {
-      "name": "bottle",
-      "action": "drink",
-      "insound": "resources/sounds/glouglou.wav",
-      "outsound": null,
-      "offset": [
-        20,
-        -20
-      ],
-      "target": [
-        -20,
-        20
-      ],
-      "play_once": false,
-      "zone": [
-        -40,
-        0,
-        40,
-        30
-      ],
-      "image": "resources/props/beer.png",
-      "switch": 15,
-      "attraction": [
-        -100,
-        -30,
-        100,
-        100
-      ],
-      "direction": "right",
-      "lockable": false
+      "file": "resources/vfx/coin-alert.json",
+      "blendmode": "normal"
+      }],
+      "interactive_props": [
+        {
+          "name": "bottle",
+          "action": "drink",
+          "insound": "resources/sounds/glouglou.wav",
+          "outsound": null,
+          "offset": [
+            20,
+            -20
+          ],
+          "target": [
+            -20,
+            20
+          ],
+          "play_once": false,
+          "zone": [
+            -40,
+            0,
+            40,
+            30
+          ],
+          "image": "resources/props/beer.png",
+          "switch": 15,
+          "attraction": [
+            -100,
+            -30,
+            100,
+            100
+          ],
+          "direction": "right",
+          "lockable": false,
+          "blendmode": "normal"
     }
   ],
     "props": []

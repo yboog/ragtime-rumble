@@ -160,10 +160,16 @@ class Pixaloon(QtWidgets.QMainWindow):
 
         self.menuBar().addMenu(filemenu)
 
+        import_bg = QtGui.QAction('Background', self)
+        import_bg.triggered.connect(self.import_background)
+        import_ol = QtGui.QAction('Overlay', self)
+        import_ol.triggered.connect(self.import_overlay)
         import_prop = QtGui.QAction('Prop', self)
         import_prop.triggered.connect(self.import_prop)
 
         import_menu = QtWidgets.QMenu('Import')
+        import_menu.addAction(import_bg)
+        import_menu.addAction(import_ol)
         import_menu.addAction(import_prop)
 
         self.menuBar().addMenu(import_menu)
@@ -191,6 +197,60 @@ class Pixaloon(QtWidgets.QMainWindow):
 
         self.menuBar().addMenu(tools_menu)
 
+    def import_overlay(self):
+        document = self.current_canvas().document
+        filepath, _ = QtWidgets.QFileDialog.getOpenFileName(
+            self, 'Import overlay',
+            document.gameroot, '*.png')
+        if not filepath:
+            return
+
+        if not filepath.replace('\\', '/').startswith(document.gameroot):
+            n = self.current_canvas().document.data['name']
+            scene_folder = f'{document.gameroot}/resources/sets/{n}'
+            os.makedirs(scene_folder, exist_ok=True)
+            dst = f'{scene_folder}/{os.path.basename(filepath)}'
+            shutil.copy(filepath, dst)
+            filepath = relative_normpath(dst, document)
+            print(filepath)
+        else:
+            filepath = relative_normpath(filepath, document)
+
+        image = QtGui.QImage(filepath)
+        document.data['overlays'].append({
+            "file": filepath,
+            "position": [0, 0],
+            "y": image.height(),
+            "blendmode": "normal"})
+        document.update_qimages()
+        document.edited.emit()
+
+    def import_background(self):
+        document = self.current_canvas().document
+        filepath, _ = QtWidgets.QFileDialog.getOpenFileName(
+            self, 'Import background',
+            document.gameroot, '*.png')
+        if not filepath:
+            return
+
+        if not filepath.replace('\\', '/').startswith(document.gameroot):
+            n = self.current_canvas().document.data['name']
+            scene_folder = f'{document.gameroot}/resources/sets/{n}'
+            os.makedirs(scene_folder, exist_ok=True)
+            dst = f'{scene_folder}/{os.path.basename(filepath)}'
+            shutil.copy(filepath, dst)
+            filepath = relative_normpath(dst, document)
+            print(filepath)
+        else:
+            filepath = relative_normpath(filepath, document)
+
+        document.data['backgrounds'].append({
+            "file": filepath,
+            "position": [0, 0],
+            "blendmode": "normal"})
+        document.update_qimages()
+        document.edited.emit()
+
     def import_prop(self):
         document = self.current_canvas().document
         filepath, _ = QtWidgets.QFileDialog.getOpenFileName(
@@ -201,7 +261,7 @@ class Pixaloon(QtWidgets.QMainWindow):
         image = QtGui.QImage(filepath)
 
         if not filepath.replace('\\', '/').startswith(document.gameroot):
-            dst = f'{document.gameroot}/props/{os.path.basename(filepath)}'
+            dst = f'{document.gameroot}/resources/props/{os.path.basename(filepath)}'
             shutil.copy(filepath, dst)
             filepath = relative_normpath(dst, document)
         else:
@@ -299,7 +359,7 @@ class Pixaloon(QtWidgets.QMainWindow):
     def save_current_document(self):
         document = self.current_canvas().document
         if not document.filepath:
-            return self.save_current_document_as(self)
+            return self.save_current_document_as()
         with open(document.filepath, 'w') as f:
             json.dump(document.data, f, indent=2)
 
