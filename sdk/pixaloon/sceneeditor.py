@@ -8,12 +8,15 @@ from pixaloon.editors.base import BaseEditor
 class SceneEditor(BaseEditor):
     def __init__(self, parent=None):
         super().__init__(parent)
+        self.name = QtWidgets.QLineEdit()
+        self.name.textEdited.connect(self.data_edited)
         self.character_number = QtWidgets.QSpinBox()
         self.character_number.valueChanged.connect(self.data_edited)
         self.characters = FilesList('characters', filters='*.json')
         self.ambiance = AmbianceEdit()
         self.musics = FilesList('musics', filters='*.ogg')
 
+        self.add_row('Scene name', self.name)
         self.add_row('Number of character', self.character_number)
         self.add_row('Characters', self.characters)
         self.add_row('Ambiance', self.ambiance)
@@ -25,6 +28,7 @@ class SceneEditor(BaseEditor):
     def set_document(self, document):
         super().set_document(document)
         self.block_signals(True)
+        self.name.setText(document.data['name'])
         self.character_number.setValue(document.data['character_number'])
         self.ambiance.set_document(document)
         self.musics.set_document(document)
@@ -33,6 +37,7 @@ class SceneEditor(BaseEditor):
 
     def data_edited(self, _):
         self.document.data['character_number'] = self.character_number.value()
+        self.document.data['name'] = self.name.text()
 
 
 class AmbianceEdit(QtWidgets.QLineEdit):
